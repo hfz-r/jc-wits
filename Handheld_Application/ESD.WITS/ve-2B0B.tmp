@@ -1,0 +1,1174 @@
+﻿using System;
+using System.Data.SqlClient;
+using System.Data.SqlServerCe;
+using System.Drawing;
+using System.IO;
+using System.Net;
+using System.Reflection;
+using System.Windows.Forms;
+using System.Xml;
+using System.Linq;
+using ESD.WITS.Model;
+using System.Collections.Generic;
+
+namespace ESD.WITS
+{
+    public partial class frmMain : Form
+    {
+        #region Variable
+
+        private Color placeHolderDefaultColor = Color.Gray;
+        private Color defaultColor = Color.Black;
+        private const string placeHolder = "Barcode/Search...";       
+        private bool IsStockIn = false;
+        private string userID = string.Empty;
+        private string gStrProgPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase) + @"\";
+        private string gStrSQLServer = string.Empty;
+        private string gStrDBName = string.Empty;
+        private string gStrSQLUser = string.Empty;
+        private string gStrSQLPwd = string.Empty;
+        private bool isOffline = false;
+        private string connectionString = string.Empty;
+        
+        private static string databasePath = @"\Application\";
+        private static string databaseName = "SparePartDB.sdf";
+        private string localConnectionString = "Data Source=" + databasePath + databaseName; 
+
+
+        #endregion
+
+        #region Initialization
+
+        public frmMain()
+        {
+            InitializeComponent();
+
+            GetXMLSetting();
+            isOffline = CheckNetwork();
+            if (isOffline)
+            {
+                pnlOffline.Visible = true;
+                pnlOffline.Dock = DockStyle.Fill;
+            }
+            else
+            {
+                pnlOffline.Visible = false;
+                pnlLogin.Visible = true;
+                pnlLogin.Dock = DockStyle.Fill;
+            }
+
+            InitializeDatabase(); //Initialize DB
+            ClearScanValue();
+            lblVersion.Text = "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            SetPlaceholder();
+            
+            #region Placeholder Event for GotFocus and LostFocus Event
+
+            this.txtPartNumberIn.GotFocus += txtPartNumberIn_GotFocus;
+            this.txtPartNumberIn.LostFocus += txtPartNumberIn_LostFocus;
+            this.txtPartNumberOut.GotFocus += txtPartNumberOut_GotFocus;
+            this.txtPartNumberOut.LostFocus += txtPartNumberOut_LostFocus;
+
+            #endregion
+        }
+
+        #endregion
+
+        #region Private Method
+
+        /// <summary>
+        /// Truncate transaction table for user easy view purposes
+        /// </summary>
+        private void InitializeDatabase()
+        {
+            //// if table exist, check date, if date is not the same as datetime.now(), truncate 'Transactions' the table
+            #region Transaction Table
+
+            string sSQL = string.Empty;
+
+            if (!isOffline)
+            {
+                sSQL = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Transactions'";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(sSQL, connection);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                        {
+                            if (reader.Read())
+                            {
+                                connection.Close();
+
+                                sSQL = "UPDATE Transactions ";
+                                sSQL += "SET Enabled='N' ";
+                                sSQL += "WHERE CONVERT(date, CreatedOn) < CONVERT(date, GETDATE())";
+
+                                using (SqlConnection innerConnection = new SqlConnection(connectionString))
+                                {
+                                    innerConnection.Open();
+                                    command = new SqlCommand(sSQL, innerConnection);
+                                    command.ExecuteReader();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+        }
+
+        /// <summary>
+        /// Populate Summary List Header
+        /// </summary>
+        private void PopulateListHeader()
+        {
+            string partNumber = string.Empty;
+            string quantity = string.Empty;
+            string sSQL = string.Empty;
+
+            if (isOffline)
+            {
+                SyncListView.Items.Clear();
+                sSQL = "SELECT C.PartNumber, Quantity FROM Transactions T ";
+                sSQL += "INNER JOIN Container C ON T.ContainerID = C.ID ";
+                sSQL += "WHERE T.Enabled = 'Y'";
+
+                using (SqlCeConnection connection = new SqlCeConnection(localConnectionString))
+                {
+                    connection.Open();
+                    SqlCeCommand command = new SqlCeCommand(sSQL, connection);
+
+                    using (SqlCeDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                        {
+                            while (reader.Read())
+                            {
+                                partNumber = reader[0].ToString();
+                                quantity = reader[1].ToString();
+
+                                if (!string.IsNullOrEmpty(partNumber) && !string.IsNullOrEmpty(quantity))
+                                {
+                                    //Initialize the ListView control and add columns to it.
+                                    SyncListView.View = View.Details;
+
+                                    //Create ListView items to add to the control.
+                                    ListViewItem item = new ListViewItem(partNumber);
+                                    item.SubItems.Add(quantity);
+                                    SyncListView.Items.Add(item);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ScannedListView.Items.Clear();
+                sSQL = "SELECT C.PartNumber, Quantity FROM Transactions T ";
+                sSQL += "INNER JOIN Container C ON T.ContainerID = C.ID ";
+                sSQL += "WHERE T.Enabled = 'Y'";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(sSQL, connection);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                        {
+                            while (reader.Read())
+                            {
+                                partNumber = reader[0].ToString();
+                                quantity = reader[1].ToString();
+
+                                if (!string.IsNullOrEmpty(partNumber) && !string.IsNullOrEmpty(quantity))
+                                {
+                                    //Initialize the ListView control and add columns to it.
+                                    ScannedListView.View = View.Details;
+
+                                    //Create ListView items to add to the control.
+                                    ListViewItem item = new ListViewItem(partNumber);
+                                    item.SubItems.Add(quantity);
+                                    ScannedListView.Items.Add(item);
+                                }
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get Connection string by xml file
+        /// </summary>
+        private void GetXMLSetting()
+        {
+            if (File.Exists(gStrProgPath + @"\Config.XML") == false)
+            {
+                return;
+            }
+
+            FileStream filePath = new FileStream(gStrProgPath + @"\Config.XML", FileMode.Open);
+            System.Xml.XmlTextReader configReader = new System.Xml.XmlTextReader(filePath);
+            string strElementName = "";
+
+            while (configReader.Read())
+            {
+                if (configReader.NodeType==XmlNodeType.Element)
+                {
+                    strElementName = configReader.Name;
+                }
+                else if (configReader.NodeType == XmlNodeType.Text)
+                {
+                    switch (strElementName.ToUpper().ToString().Trim())
+                    {
+                        case "SQLSERVERNAME":
+                            gStrSQLServer = configReader.Value;
+                            break;
+                        case "SQLDATABASENAME":
+                            gStrDBName = configReader.Value;
+                            break;
+                        case "SQLUSERID":
+                            gStrSQLUser = configReader.Value;
+                            break;
+                        case "SQLPASSWORD":
+                            gStrSQLPwd = configReader.Value;
+                            break;
+                    }
+                }                
+            }
+            configReader.Close();
+            filePath.Close();
+
+            connectionString = @"Data Source=" + gStrSQLServer + ";Initial Catalog=" + gStrDBName + ";Trusted_Connection=Yes;User ID=" + gStrSQLUser + ";Password=" + gStrSQLPwd + ";Persist Security Info=False;Integrated Security=False;";
+        }
+
+        /// <summary>
+        /// To clear all cache value and reset to default value
+        /// </summary>
+        private void ClearScanValue()
+        {
+            txtPartNumberIn.Text = string.Empty;
+            txtPartNumberOut.Text = string.Empty;
+            txtUserID.Text = string.Empty;
+            txtPassword.Text = string.Empty;
+            txtQtyIn.Text = "0";
+            txtQtyOut.Text = "0";
+        }
+
+        /// <summary>
+        /// Function navigation back to Dashboard menu
+        /// </summary>
+        /// <param name="isStockIn"></param>
+        private void BackButtonClicked(bool isStockIn)
+        {
+            ClearScanValue();
+
+            if (isStockIn)
+            {
+                pnlStockIn.Visible = false;
+            }
+            else
+            {
+                pnlStockOut.Visible = false;
+            }
+
+            pnlSelection.Visible = true;
+            pnlSelection.Dock = DockStyle.Fill;
+        }
+
+        /// <summary>
+        /// View List of scanned items
+        /// </summary>
+        /// <param name="isStockIn"></param>
+        private void ScannedListVisibility(bool isStockIn)
+        {
+            IsStockIn = isStockIn;
+            if (IsStockIn)
+            {
+                pnlStockIn.Visible = false;
+            }
+            else
+            {
+                pnlStockOut.Visible = false;
+            }
+
+            panelPendingItem.Visible = true;
+            panelPendingItem.Dock = DockStyle.Fill;
+        }
+
+        /// <summary>
+        /// Validate respective field before submitting to DB
+        /// </summary>
+        /// <returns></returns>
+        private bool Validation(bool isStockIn)
+        {
+            if (isStockIn)
+            {
+                if (string.IsNullOrEmpty(txtPartNumberIn.Text) || txtPartNumberIn.Text == placeHolder)
+                {
+                    MessageBox.Show("Part number cannot be empty.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                    return false;
+                }
+
+                if(int.Parse(txtQtyIn.Text) <= 0)
+                {
+                    MessageBox.Show("Quantity must be more than 0.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                    return false;
+                }
+            }
+            else if (!isStockIn)
+            {
+                if (string.IsNullOrEmpty(txtPartNumberOut.Text) || txtPartNumberOut.Text == placeHolder)
+                {
+                    MessageBox.Show("Part number cannot be empty.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                    return false;
+                }
+
+                if (int.Parse(txtQtyOut.Text) <= 0)
+                {
+                    MessageBox.Show("Quantity must be more than 0.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Check if offline mode
+        /// </summary>
+        private bool CheckNetwork()
+        {
+            //TODO
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    conn.Close();
+                    return false;
+                }
+                catch (SqlException)
+                {
+                    conn.Close();
+                    return true;
+                }
+            }
+            //HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create("http://www.google.com");
+            //myRequest.Timeout = 5000;
+            //HttpWebResponse response = (HttpWebResponse)myRequest.GetResponse();
+
+            //if (response.StatusCode == HttpStatusCode.OK)
+            //{
+            //    response.Close();
+            //    return false;
+            //}
+            //else
+            //{
+            //    response.Close();
+            //    return true;
+            //}
+        }
+
+        #region Database SQLCE
+
+        private void DatabaseHealthCheck()
+        {
+            SqlCeConnection localConnection = new SqlCeConnection(localConnectionString);
+
+            //If database .sdf exist
+            if (!File.Exists(databasePath + databaseName))
+            {
+                SqlCeConnection conn = null;
+
+                try
+                {
+                    SqlCeCommand command = new SqlCeCommand();
+                    SqlCeEngine engine = new SqlCeEngine(localConnectionString);
+                    engine.CreateDatabase();
+                    engine.Dispose();
+                    conn = new SqlCeConnection(localConnectionString);
+                    conn.Open();
+
+                    //Add table - Role
+                    command = new SqlCeCommand(Properties.Resources._01_CREATE_Table_Role, conn);
+                    command.ExecuteNonQuery();
+
+                    //Add table - User
+                    command = new SqlCeCommand(Properties.Resources._02_CREATE_Table_User, conn);
+                    command.ExecuteNonQuery();
+
+                    //Add table - Currency
+                    command = new SqlCeCommand(Properties.Resources._03_CREATE_Table_Currency, conn);
+                    command.ExecuteNonQuery();
+
+                    //Add table - Supplier
+                    command = new SqlCeCommand(Properties.Resources._04_CREATE_Table_Supplier, conn);
+                    command.ExecuteNonQuery();
+
+                    //Add table - Container
+                    command = new SqlCeCommand(Properties.Resources._05_CREATE_Table_Container, conn);
+                    command.ExecuteNonQuery();
+
+                    //Add table - Transactions
+                    command = new SqlCeCommand(Properties.Resources._06_CREATE_Table_Transactions, conn);
+                    command.ExecuteNonQuery();
+                }
+                catch (SqlCeException ex)
+                {
+                    MessageBox.Show(ex.Message, "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+        private void DatabaseFetchAll()
+        {
+            string sSQL = string.Empty;
+            List<Role> roleList = new List<Role>();
+
+            #region Role Table
+
+            sSQL = "SELECT * FROM Role";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(sSQL, connection);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader != null)
+                    {
+                        while (reader.Read())
+                        {
+                            roleList.Add(new Role()
+                            {
+                                ID = Convert.ToInt32(reader[0].ToString()),
+                                Name = reader[1].ToString(),
+                                Code = reader[2].ToString(),
+                                Description = reader[3].ToString(),
+                                Enabled = reader[4].ToString(),
+                                CreatedOn = Convert.ToDateTime(reader[5].ToString()), //TO DO - check if correct
+                            });
+                        }
+                    }
+                }
+                connection.Close();
+            }
+
+            using (SqlCeConnection localConnection = new SqlCeConnection(localConnectionString))
+            {
+                SqlCeCommand localCommand = new SqlCeCommand(sSQL, localConnection);
+                localConnection.Open();
+
+                if (roleList != null && roleList.Count() > 0)
+                {
+                    foreach (var item in roleList)
+                    {
+                        sSQL = "INSERT INTO [Role]([RoleName], [RoleCode], [Description], [Enabled], [CreatedOn], [CreatedBy], [ModifiedOn], [ModifiedBy]) VALUES ";
+                        sSQL += "(" + item.ID + ", '" + item.Name + "', '" + item.Code + "', '" + item.Description + "', '" + item.Enabled + "', " + item.CreatedOn + ", " + item.CreatedBy + ", " + item.ModifiedOn + ", " + item.ModifiedBy + ")";
+
+                        localCommand = new SqlCeCommand(sSQL, localConnection);
+                        localCommand.ExecuteReader();
+                    }
+                }
+            }
+            #endregion
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Event Handler
+
+        #region Placeholder Control for GotFocus and LostFocus Event
+
+        #region Stock In Event
+
+        private void txtPartNumberIn_LostFocus(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(this.txtPartNumberIn.Text))
+            {
+                return;
+            }
+            else
+            {
+                SetPlaceholder();
+            }
+        }
+
+        private void txtPartNumberIn_GotFocus(object sender, EventArgs e)
+        {
+            if (this.txtPartNumberIn.Text == placeHolder)
+            {
+                this.txtPartNumberIn.Text = string.Empty;
+            }
+            this.txtPartNumberIn.ForeColor = defaultColor;
+        }
+
+        #endregion
+
+        #region Stock Out Event
+
+        private void txtPartNumberOut_LostFocus(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(this.txtPartNumberOut.Text))
+            {
+                return;
+            }
+            else
+            {
+                SetPlaceholder();
+            }
+        }
+
+        private void txtPartNumberOut_GotFocus(object sender, EventArgs e)
+        {
+            if (this.txtPartNumberOut.Text == placeHolder)
+            {
+                this.txtPartNumberOut.Text = "";
+            }
+            this.txtPartNumberOut.ForeColor = Color.Black;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Set placeholder text on textbox
+        /// </summary>
+        private void SetPlaceholder()
+        {
+            this.txtPartNumberIn.ForeColor = placeHolderDefaultColor;
+            this.txtPartNumberIn.Text = placeHolder;
+            this.txtPartNumberOut.ForeColor = placeHolderDefaultColor;
+            this.txtPartNumberOut.Text = placeHolder;
+        }
+
+        #endregion
+
+        #region Enter Event
+
+        /// <summary>
+        /// Click Enter to login
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtUserID_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return || e.KeyCode == Keys.Enter)
+            {
+                if (!string.IsNullOrEmpty(txtPassword.Text))
+                {
+                    btnSignIn_Click(sender, e);
+                }
+                else if (!string.IsNullOrEmpty(txtUserID.Text))
+                {
+                    txtPassword.Focus();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Click Enter to login
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return || e.KeyCode == Keys.Enter)
+            {
+                btnSignIn_Click(sender, e);
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Close application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want exit?", "Application Terminate", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+                Application.Exit();
+        }
+
+        /// <summary>
+        /// Sign in to application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSignIn_Click(object sender, EventArgs e)
+        {
+            bool isPass = false;
+            string username = txtUserID.Text;
+            string password = txtPassword.Text;
+
+            if (string.IsNullOrEmpty(username))
+            {
+                MessageBox.Show("Enter User ID.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                txtUserID.Focus(); 
+                return;
+            }
+            else if (string.IsNullOrEmpty(password))
+            {
+                MessageBox.Show("Enter Password.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                txtPassword.Focus(); 
+                return;
+            }
+            if (isOffline)
+            {
+                if (!CheckNetwork())
+                {
+                    MessageBox.Show("There is no internet connection detected. Proceed to area with internet connection.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                    return;
+                }
+            }
+            
+            try
+            {
+                // Create the command 
+                string sSQL = string.Empty;
+
+                if (isOffline)
+                {
+                    sSQL = "SELECT ID ";
+                    sSQL += "FROM Users ";
+                    sSQL += "WHERE Username = '" + username + "' AND Password = HASHBYTES('MD5', '" + password + "')";
+
+                    using (SqlCeConnection connection = new SqlCeConnection(localConnectionString))
+                    {
+                        connection.Open();
+                        SqlCeCommand command = new SqlCeCommand(sSQL, connection);
+
+                        using (SqlCeDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader != null)
+                            {
+                                while (reader.Read())
+                                {
+                                    isPass = true;
+                                    userID = reader[0].ToString();
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    sSQL = "SELECT ID ";
+                    sSQL += "FROM Users ";
+                    sSQL += "WHERE Username = '" + username + "' AND Password = HASHBYTES('MD5', '" + password + "')";
+
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        SqlCommand command = new SqlCommand(sSQL, connection);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader != null)
+                            {
+                                while (reader.Read())
+                                {
+                                    isPass = true;
+                                    userID = reader[0].ToString();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (isPass)
+                {
+                    pnlLogin.Visible = false;
+                    pnlSelection.Visible = true;
+                    pnlSelection.Dock = DockStyle.Fill;
+                    PopulateListHeader();
+
+                    if (isOffline)
+                    {
+                        syncList.Visible = true;
+                    }
+                    else
+                    {
+                        syncList.Visible = false;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Invalid login", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.Message, "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+            }
+        }
+
+        /// <summary>
+        /// Sign out from application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSignOut_Click(object sender, EventArgs e)
+        {
+            pnlSelection.Visible = false;
+            pnlLogin.Visible = true;
+            pnlSelection.Dock = DockStyle.Fill;
+            txtUserID.Focus();
+            ClearScanValue();
+        }
+
+        /// <summary>
+        /// Navigate back to home page of Stock In
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnStockInMenuBack_Click(object sender, EventArgs e)
+        {
+            BackButtonClicked(true);
+        }
+
+        /// <summary>
+        /// Navigate back to home page of Stock Out
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnStockOutMenuBack_Click(object sender, EventArgs e)
+        {
+            BackButtonClicked(false);
+        }
+
+        /// <summary>
+        /// Dashboard selection to Stock In menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnStockIn_Click(object sender, EventArgs e)
+        {
+            pnlSelection.Visible = false;
+            pnlStockIn.Visible = true;
+            pnlStockIn.Dock = DockStyle.Fill;
+            SetPlaceholder();
+        }
+
+        /// <summary>
+        /// Dashboard selection to Stock Out menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnStockOut_Click(object sender, EventArgs e)
+        {
+            pnlSelection.Visible = false;
+            pnlStockOut.Visible = true;
+            pnlStockOut.Dock = DockStyle.Fill;
+            SetPlaceholder();
+        }
+
+        /// <summary>
+        /// Submit stock in list to database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnStockInSubmit_Click(object sender, EventArgs e)
+        {
+            if (Validation(true))
+            {
+                try
+                {
+                    string sSQL = string.Empty;
+                    bool IsExist = false;
+
+                    if (isOffline)
+                    {
+                        sSQL = "SELECT CASE WHEN COUNT(1) > 0 THEN 1 ELSE 0 END AS [Value] ";
+                        sSQL += "FROM Container WHERE PartNumber = '" + txtPartNumberIn.Text + "' ";
+
+                        using (SqlCeConnection connection = new SqlCeConnection(localConnectionString))
+                        {
+                            connection.Open();
+                            SqlCeCommand command = new SqlCeCommand(sSQL, connection);
+
+                            using (SqlCeDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader != null)
+                                {
+                                    string temp = string.Empty;
+                                    while (reader.Read())
+                                    {
+                                        temp = reader[0].ToString();
+                                        if (reader[0].ToString() == "1")
+                                        {
+                                            IsExist = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (IsExist)
+                        {
+                            sSQL = "DECLARE @ContainerID BIGINT ";
+                            sSQL += "SET @ContainerID = (SELECT ID FROM Container WHERE PartNumber = '" + txtPartNumberIn.Text + "') ";
+                            sSQL += "INSERT INTO Transactions([ContainerID], [Quantity], [TxnType], [IsOffline], [IsSync], [CreatedOn], [CreatedBy], [ModifiedOn], [ModifiedBy]) ";
+                            sSQL += "VALUES (@ContainerID, " + txtQtyIn.Text + ", 'IN', 'Y', 'N', '" + DateTime.UtcNow + "', '" + userID + "', '" + DateTime.UtcNow + "', '" + userID + "')";
+
+                            using (SqlCeConnection connection = new SqlCeConnection(localConnectionString))
+                            {
+                                connection.Open();
+                                SqlCeCommand command = new SqlCeCommand(sSQL, connection);
+                                command.ExecuteReader();
+                                PopulateListHeader();
+                                MessageBox.Show("Transaction has been submitted successfully.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1);
+                                ClearScanValue();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Part number does not exist!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                        }
+                    }
+                    else
+                    {
+                        sSQL = "SELECT CASE WHEN COUNT(1) > 0 THEN 1 ELSE 0 END AS [Value] ";
+                        sSQL += "FROM Container WHERE PartNumber = '" + txtPartNumberIn.Text + "' ";
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            connection.Open();
+                            SqlCommand command = new SqlCommand(sSQL, connection);
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader != null)
+                                {
+                                    string temp = string.Empty;
+                                    while (reader.Read())
+                                    {
+                                        temp = reader[0].ToString();
+                                        if (reader[0].ToString() == "1")
+                                        {
+                                            IsExist = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (IsExist)
+                        {
+                            sSQL = "DECLARE @ContainerID BIGINT ";
+                            sSQL += "SET @ContainerID = (SELECT ID FROM Container WHERE PartNumber = '" + txtPartNumberIn.Text + "') ";
+                            sSQL += "INSERT INTO Transactions([ContainerID], [Quantity], [TxnType], [IsOffline], [IsSync], [CreatedOn], [CreatedBy], [ModifiedOn], [ModifiedBy]) ";
+                            sSQL += "VALUES (@ContainerID, " + txtQtyIn.Text + ", 'IN', 'N', 'Y', '" + DateTime.UtcNow + "', '" + userID + "', '" + DateTime.UtcNow + "', '" + userID + "')";
+
+                            using (SqlConnection connection = new SqlConnection(connectionString))
+                            {
+                                connection.Open();
+                                SqlCommand command = new SqlCommand(sSQL, connection);
+                                command.ExecuteReader();
+                                PopulateListHeader();
+                                MessageBox.Show("Transaction has been submitted successfully.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1);
+                                ClearScanValue();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Part number does not exist!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show(ex.Message, "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Submit stock out list to database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnStockOutSubmit_Click(object sender, EventArgs e)
+        {
+            if (Validation(false))
+            {
+                try
+                {
+                    string sSQL = string.Empty;
+                    bool IsExist = false;
+
+                    if (isOffline)
+                    {
+                        sSQL = "SELECT CASE WHEN COUNT(1) > 0 THEN 1 ELSE 0 END AS [Value] ";
+                        sSQL += "FROM Container WHERE PartNumber = '" + txtPartNumberOut.Text + "' ";
+
+                        using (SqlCeConnection connection = new SqlCeConnection(localConnectionString))
+                        {
+                            connection.Open();
+                            SqlCeCommand command = new SqlCeCommand(sSQL, connection);
+
+                            using (SqlCeDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader != null)
+                                {
+                                    string temp = string.Empty;
+                                    while (reader.Read())
+                                    {
+                                        temp = reader[0].ToString();
+                                        if (reader[0].ToString() == "1")
+                                        {
+                                            IsExist = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (IsExist)
+                        {
+                            sSQL = "DECLARE @ContainerID BIGINT ";
+                            sSQL += "SET @ContainerID = (SELECT ID FROM Container WHERE PartNumber = '" + txtPartNumberOut.Text + "') ";
+                            sSQL += "INSERT INTO Transactions([ContainerID], [Quantity], [TxnType], [IsOffline], [IsSync], [CreatedOn], [CreatedBy], [ModifiedOn], [ModifiedBy]) ";
+                            sSQL += "VALUES (@ContainerID, -" + txtQtyOut.Text + ", 'OUT', 'Y', 'N', '" + DateTime.UtcNow + "', '" + userID + "', '" + DateTime.UtcNow + "', '" + userID + "')";
+
+                            using (SqlCeConnection connection = new SqlCeConnection(localConnectionString))
+                            {
+                                connection.Open();
+                                SqlCeCommand command = new SqlCeCommand(sSQL, connection);
+                                command.ExecuteReader();
+                                PopulateListHeader();
+                                MessageBox.Show("Transaction has been submitted successfully.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1);
+                                ClearScanValue();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Part number does not exist!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                        }
+                    }
+                    else
+                    {
+                        sSQL = "SELECT CASE WHEN COUNT(1) > 0 THEN 1 ELSE 0 END AS [Value] ";
+                        sSQL += "FROM Container WHERE PartNumber = '" + txtPartNumberOut.Text + "' ";
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            connection.Open();
+                            SqlCommand command = new SqlCommand(sSQL, connection);
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader != null)
+                                {
+                                    string temp = string.Empty;
+                                    while (reader.Read())
+                                    {
+                                        temp = reader[0].ToString();
+                                        if (reader[0].ToString() == "1")
+                                        {
+                                            IsExist = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (IsExist)
+                        {
+                            sSQL = "DECLARE @ContainerID BIGINT ";
+                            sSQL += "SET @ContainerID = (SELECT ID FROM Container WHERE PartNumber = '" + txtPartNumberOut.Text + "') ";
+                            sSQL += "INSERT INTO Transactions([ContainerID], [Quantity], [TxnType], [IsOffline], [IsSync], [CreatedOn], [CreatedBy], [ModifiedOn], [ModifiedBy]) ";
+                            sSQL += "VALUES (@ContainerID, -" + txtQtyOut.Text + ", 'OUT', 'N', 'Y', '" + DateTime.UtcNow + "', '" + userID + "', '" + DateTime.UtcNow + "', '" + userID + "')";
+
+                            using (SqlConnection connection = new SqlConnection(connectionString))
+                            {
+                                connection.Open();
+                                SqlCommand command = new SqlCommand(sSQL, connection);
+                                command.ExecuteReader();
+                                PopulateListHeader();
+                                MessageBox.Show("Transaction has been submitted successfully.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1);
+                                ClearScanValue();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Part number does not exist!", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show(ex.Message, "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Display list of scanned items
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void scannedListIn_Click(object sender, EventArgs e)
+        {
+            ScannedListVisibility(true);
+        }
+
+        /// <summary>
+        /// Display list of scanned items
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void scannedListOut_Click(object sender, EventArgs e)
+        {
+            ScannedListVisibility(false);
+        }
+
+        /// <summary>
+        /// Return back to respective pages
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnStockInOutMenuBack_Click(object sender, EventArgs e)
+        {
+            panelPendingItem.Visible = false;
+
+            if (IsStockIn)
+            {
+                pnlStockIn.Visible = true;
+                pnlStockIn.Dock = DockStyle.Fill;
+            }
+            else
+            {
+                pnlStockOut.Visible = true;
+                pnlStockOut.Dock = DockStyle.Fill;
+            }
+        }
+
+        /// <summary>
+        /// Quantity Decrease Stock Out
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnMinusOut_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtQtyOut.Text))
+            {
+                txtQtyOut.Text = "0";
+            }
+            int decreasedVal = int.Parse(txtQtyOut.Text) - 1;
+            txtQtyOut.Text = decreasedVal.ToString();
+        }
+
+        /// <summary>
+        /// Quantity Increase Stock Out
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnAddOut_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtQtyOut.Text))
+            {
+                txtQtyOut.Text = "0";
+            }
+            int increasedVal = int.Parse(txtQtyOut.Text) + 1;
+            txtQtyOut.Text = increasedVal.ToString();
+        }
+
+        /// <summary>
+        /// Quantity Decrease Stock In
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnMinusIn_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtQtyIn.Text))
+            {
+                txtQtyIn.Text = "0";
+            }
+            int decreasedVal = int.Parse(txtQtyIn.Text) - 1;
+            txtQtyIn.Text = decreasedVal.ToString();
+        }
+
+        /// <summary>
+        /// Quantity Increase Stock In
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnAddIn_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtQtyIn.Text))
+            {
+                txtQtyIn.Text = "0";
+            }
+            int increasedVal = int.Parse(txtQtyIn.Text) + 1;
+            txtQtyIn.Text = increasedVal.ToString();
+        }
+
+        /// <summary>
+        /// Fetch data from server(Offline Mode)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGoOffline_Click(object sender, EventArgs e)
+        {
+            isOffline = true;
+
+            //Temp
+            //if (CheckNetwork())
+            //{
+            //    if (MessageBox.Show("Please proceed to area with internet connection. Try again.", "Notification", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+            //    {
+            //        if (CheckNetwork())
+            //            return;
+            //    }
+            //    else
+            //    {
+            //        return;
+            //    }
+            //}
+
+            DatabaseHealthCheck();
+
+            if (checkbox_IsFetch.Checked)
+            {
+                DatabaseFetchAll();
+            }
+
+            pnlOffline.Visible = false;
+            pnlSelection.Visible = false;
+            pnlLogin.Visible = true;
+            pnlLogin.Dock = DockStyle.Fill;
+        }
+
+        /// <summary>
+        /// Sync local database to server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSyncAll_Click(object sender, EventArgs e)  
+        {
+            //TODO if Sync, change the status in online DB for IsSync = true; and IsOffline = true;
+        }
+        
+        #endregion
+    }
+}

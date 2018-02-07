@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="InventoryModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="GoodsReceive">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PurchaseOrder" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="Vendor" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="DeliveryNote" Type="varchar" MaxLength="50" />
+    <Property Name="BillOfLading" Type="varchar" MaxLength="20" />
+    <Property Name="HeaderText" Type="varchar" MaxLength="50" />
+    <Property Name="Material" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="MaterialShortText" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="Ok" Type="bit" />
+    <Property Name="Quantity" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+    <Property Name="Eun" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="MvmtType" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="StorageLoc" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="Plant" Type="int" Nullable="false" />
+    <Property Name="StorageBin" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="DocumentDate" Type="datetime" Nullable="false" />
+    <Property Name="PostingDate" Type="datetime" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="varchar" MaxLength="20" Nullable="false" />
+  </EntityType>
+  <EntityType Name="GRTransaction">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ReasonID" Type="bigint" />
+    <Property Name="Quantity" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="GRID" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Reason">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ReasonDesc" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="varchar" MaxLength="20" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Roles">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RoleCode" Type="varchar" MaxLength="25" Nullable="false" />
+    <Property Name="RoleName" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Module" Type="varchar" MaxLength="50" />
+    <Property Name="Description" Type="varchar" MaxLength="200" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Username" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Password" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="RoleID" Type="bigint" Nullable="false" />
+    <Property Name="Email" Type="varchar" MaxLength="50" />
+    <Property Name="Address" Type="varchar" MaxLength="200" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_GoodsReceive_GRID">
+    <End Role="GoodsReceive" Type="Self.GoodsReceive" Multiplicity="1" />
+    <End Role="GRTransaction" Type="Self.GRTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GoodsReceive">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="GRTransaction">
+        <PropertyRef Name="GRID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Reason_ReasonID">
+    <End Role="Reason" Type="Self.Reason" Multiplicity="0..1" />
+    <End Role="GRTransaction" Type="Self.GRTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Reason">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="GRTransaction">
+        <PropertyRef Name="ReasonID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Role_RoleID">
+    <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+    <End Role="Users" Type="Self.Users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Roles">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="RoleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="InventoryModelStoreContainer">
+    <EntitySet Name="GoodsReceive" EntityType="Self.GoodsReceive" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="GRTransaction" EntityType="Self.GRTransaction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Reason" EntityType="Self.Reason" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_GoodsReceive_GRID" Association="Self.FK_GoodsReceive_GRID">
+      <End Role="GoodsReceive" EntitySet="GoodsReceive" />
+      <End Role="GRTransaction" EntitySet="GRTransaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Reason_ReasonID" Association="Self.FK_Reason_ReasonID">
+      <End Role="Reason" EntitySet="Reason" />
+      <End Role="GRTransaction" EntitySet="GRTransaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Role_RoleID" Association="Self.FK_Role_RoleID">
+      <End Role="Roles" EntitySet="Roles" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

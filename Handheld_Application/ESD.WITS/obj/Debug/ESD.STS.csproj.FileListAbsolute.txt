@@ -1,0 +1,10 @@
+C:\JCSTS\Handheld-Application\ESD.STS\bin\Debug\Stock Management Tracking System.exe
+C:\JCSTS\Handheld-Application\ESD.STS\bin\Debug\Stock Management Tracking System.pdb
+C:\JCSTS\Handheld-Application\ESD.STS\bin\Debug\System.Data.SqlClient.dll
+C:\JCSTS\Handheld-Application\ESD.STS\bin\Debug\System.Data.SqlServerCe.dll
+C:\JCSTS\Handheld-Application\ESD.STS\obj\Debug\ResolveAssemblyReference.cache
+C:\JCSTS\Handheld-Application\ESD.STS\obj\Debug\ESD.STS.frmMain.resources
+C:\JCSTS\Handheld-Application\ESD.STS\obj\Debug\ESD.STS.Properties.Resources.resources
+C:\JCSTS\Handheld-Application\ESD.STS\obj\Debug\ESD.STS.csproj.GenerateResource.Cache
+C:\JCSTS\Handheld-Application\ESD.STS\obj\Debug\Stock Management Tracking System.exe
+C:\JCSTS\Handheld-Application\ESD.STS\obj\Debug\Stock Management Tracking System.pdb

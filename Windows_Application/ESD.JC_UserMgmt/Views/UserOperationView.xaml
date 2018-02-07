@@ -1,0 +1,146 @@
+﻿<UserControl x:Class="ESD.JC_UserMgmt.Views.UserOperationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactions"
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:prism="http://www.codeplex.com/prism" 
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="400">
+    <UserControl.Resources>
+        <DataTemplate x:Key="ConfirmExitDialogTemplate">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding}"/>
+        </DataTemplate>
+        <Style TargetType="GroupBox">
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontWeight="Bold" FontFamily="Cambria" FontSize="15"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" Background="White">
+        <ei:Interaction.Behaviors>
+            <i:DataStateBehavior Binding="{Binding SendState}" Value="Saving" TrueState="Saving" FalseState="Normal"/>
+        </ei:Interaction.Behaviors>
+        <ei:Interaction.Triggers>
+            <prism:InteractionRequestTrigger SourceObject="{Binding ConfirmExitInteractionRequest}">
+                <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
+            </prism:InteractionRequestTrigger>
+            <ei:EventTrigger EventName="Loaded">
+                <wpf:InvokeCommandAction Command="{Binding OnLoadedCommand}" />
+            </ei:EventTrigger>
+        </ei:Interaction.Triggers>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualState x:Name="Normal"/>
+                <VisualState x:Name="Saving">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Control.IsEnabled)" Storyboard.TargetName="MainControl">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame.Value>
+                                    <sys:Boolean>False</sys:Boolean>
+                                </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <ContentControl x:Name="MainControl" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="10,15,15,5">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <GroupBox Grid.Row="0" Grid.ColumnSpan="2" Margin="5" Header="User Infomation">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Name:</Label>
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding UserData.Name}"  Margin="0,5,0,0" 
+                         AutomationProperties.AutomationId="UsernameData"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Email:</Label>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding UserData.Email}" Margin="0,5,0,0" 
+                         AutomationProperties.AutomationId="EmailData"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Top">Address:</Label>
+                        <TextBox Text="{Binding UserData.Address}" AcceptsReturn="True" MinHeight="100"
+                         Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" 
+                         VerticalScrollBarVisibility="Auto" Padding="0" Margin="0,5" AutomationProperties.AutomationId="AddressData"/>
+
+                    </Grid>
+                </GroupBox>
+                
+                <GroupBox Grid.Row="2" Grid.ColumnSpan="2" Margin="5" Header="User Account">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Username:</Label>
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding UsernameAlias}" Margin="0,5,0,0" 
+                         AutomationProperties.AutomationId="UsernameData" TextChanged="TextBox_TextChanged" />
+
+                        <Label Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom" Content="{Binding PasswordLabel}"></Label>
+                        <PasswordBox x:Name="PasswordBoxText" Grid.Row="1" Grid.Column="1" PasswordChanged="PasswordBoxText_PasswordChanged" Margin="0,5,0,0" 
+                         AutomationProperties.AutomationId="PasswordData" BorderBrush="#FF0F68A6" BorderThickness="2"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Role:</Label>
+                        <ComboBox ItemsSource="{Binding RoleList}"
+                          Style="{StaticResource ComboBoxStyle}"
+                          DisplayMemberPath="RoleCode"
+                          Width="Auto"
+                          Margin="0,5,0,0" 
+                          Grid.Row="2" 
+                          Grid.Column="1"
+                          AutomationProperties.AutomationId="RoleCodeData"
+                          SelectedItem="{Binding SelectedRole, Mode=TwoWay}" />
+                    </Grid>
+                </GroupBox>
+
+                <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Command="{Binding SaveCommand}" Width="60" Margin="6,0">
+                        Save
+                    </Button>
+
+                    <Button Command="{Binding CancelCommand}" Width="60">
+                        Cancel
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </ContentControl>
+    </Grid>
+</UserControl>

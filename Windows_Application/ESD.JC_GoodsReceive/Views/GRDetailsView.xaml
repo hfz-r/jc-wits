@@ -1,0 +1,153 @@
+﻿<UserControl x:Class="ESD.JC_GoodsReceive.Views.GRDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ESD.JC_GoodsReceive.Views"
+             mc:Ignorable="d" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:prism="http://prismlibrary.com/"
+             d:DesignHeight="300" d:DesignWidth="400">
+    <UserControl.Resources>
+        <DataTemplate x:Key="GRTemplate">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="{Binding PurchaseOrder}" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="13" Margin="5" AutomationProperties.AutomationId="PONoData"/>
+
+                <TextBlock Text="Vendor: " FontWeight="Bold"
+                           Grid.Row="1" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="VendorLabel"/>
+                <TextBlock Text="{Binding Vendor}"                           
+                           Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="VendorData"/>
+
+                <TextBlock Text="Delivery Note: " FontWeight="Bold"
+                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="DNoteLabel"/>
+                <TextBlock Text="{Binding DeliveryNote}"                           
+                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="DNoteData"/>
+
+                <TextBlock Text="Bill of Lading: " FontWeight="Bold"
+                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="BOLLabel"/>
+                <TextBlock Text="{Binding BillOfLading}"                           
+                           Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="BOLData"/>
+
+                <TextBlock Text="Header Text " FontWeight="Bold"
+                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="HTLabel"/>
+                <TextBlock Text="{Binding HeaderText}"                           
+                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="HTData"/>
+
+                <TextBlock Text="Material: " FontWeight="Bold"
+                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="MaterialLabel"/>
+                <TextBlock Text="{Binding Material}"                           
+                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="MaterialData"/>
+
+                <TextBlock Text="Material Short Text: " FontWeight="Bold"
+                           Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="MSTLabel"/>
+                <TextBlock Text="{Binding MaterialShortText}"                           
+                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="MSTData"/>
+
+                <TextBlock Text="OK: " FontWeight="Bold"
+                           Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="OkLabel"/>
+                <TextBlock Text="{Binding Ok}"                           
+                           Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="OkData"/>
+
+                <TextBlock Text="Quantity: " FontWeight="Bold"
+                           Grid.Row="8" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QuantityLabel"/>
+                <TextBlock Text="{Binding Quantity}"                           
+                           Grid.Row="8" Grid.Column="1" AutomationProperties.AutomationId="QuantityData"/>
+
+                <TextBlock Text="Eun: " FontWeight="Bold"
+                           Grid.Row="9" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="EunLabel"/>
+                <TextBlock Text="{Binding Eun}"                           
+                           Grid.Row="9" Grid.Column="1" AutomationProperties.AutomationId="EunData"/>
+
+                <TextBlock Text="Mvmt Type: " FontWeight="Bold"
+                           Grid.Row="10" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="MvmtTypeLabel"/>
+                <TextBlock Text="{Binding MvmtType}"                           
+                           Grid.Row="10" Grid.Column="1" AutomationProperties.AutomationId="MvmtTypeData"/>
+
+                <TextBlock Text="Storage Loc: " FontWeight="Bold"
+                           Grid.Row="11" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="SLLabel"/>
+                <TextBlock Text="{Binding StorageLoc}"                           
+                           Grid.Row="11" Grid.Column="1" AutomationProperties.AutomationId="SLData"/>
+
+                <TextBlock Text="Plant: " FontWeight="Bold"
+                           Grid.Row="12" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="PlantLabel"/>
+                <TextBlock Text="{Binding Plant}"                           
+                           Grid.Row="12" Grid.Column="1" AutomationProperties.AutomationId="PlantData"/>
+
+                <TextBlock Text="Storage Bin: " FontWeight="Bold"
+                           Grid.Row="13" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="SBLabel"/>
+                <TextBlock Text="{Binding StorageBin}"                           
+                           Grid.Row="13" Grid.Column="1" AutomationProperties.AutomationId="SBData"/>
+
+                <TextBlock Text="Document Date: " FontWeight="Bold"
+                           Grid.Row="14" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="DocDateLabel"/>
+                <TextBlock Text="{Binding DocumentDate, StringFormat=g}"                          
+                           Grid.Row="14" Grid.Column="1" AutomationProperties.AutomationId="DocDateData"/>
+
+                <TextBlock Text="Posting Date: " FontWeight="Bold"
+                           Grid.Row="15" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="PostingDateLabel"/>
+                <TextBlock Text="{Binding PostingDate, StringFormat=g}"                          
+                           Grid.Row="15" Grid.Column="1" AutomationProperties.AutomationId="PostingDateData"/>
+
+                <TextBlock Text="Last Modified Date: " FontWeight="Bold"
+                           Grid.Row="16" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
+                <TextBlock Text="{Binding ModifiedOn, StringFormat=g}"                           
+                           Grid.Row="16" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOnData"/>
+
+                <TextBlock Text="Last Modified By: " FontWeight="Bold"
+                           Grid.Row="17" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedByLabel"/>
+                <TextBlock Text="{Binding ModifiedBy}"                           
+                           Grid.Row="17" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" Background="White">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ContentControl Content="{Binding GoodReceive}" ContentTemplate="{StaticResource GRTemplate}"
+                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1"  Width="Auto" HorizontalAlignment="Right" Margin="0,5,5,5" Command="{Binding GoBackCommand}" Content="Go Back" />
+        </Grid>
+    </Grid>
+</UserControl>

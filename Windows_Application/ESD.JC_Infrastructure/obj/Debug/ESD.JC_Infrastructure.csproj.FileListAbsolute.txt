@@ -1,0 +1,15 @@
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\ESD.JC_Infrastructure.dll
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\ESD.JC_Infrastructure.pdb
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\Microsoft.Practices.ServiceLocation.dll
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\Prism.dll
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\Prism.Wpf.dll
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\System.Windows.Interactivity.dll
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\Microsoft.Practices.ServiceLocation.pdb
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\Microsoft.Practices.ServiceLocation.xml
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\Prism.xml
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\Prism.Wpf.xml
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.Properties.Resources.resources
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.csproj.GenerateResource.Cache
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.dll
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.pdb
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.csprojResolveAssemblyReference.cache

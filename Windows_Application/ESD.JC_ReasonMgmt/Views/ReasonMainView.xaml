@@ -1,0 +1,131 @@
+﻿<UserControl x:Class="ESD.JC_ReasonMgmt.Views.ReasonMainView"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d"
+            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+            xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
+            xmlns:prism="http://prismlibrary.com/"
+            xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure" 
+            d:DesignWidth="800" d:DesignHeight="600">
+
+    <UserControl.Resources>
+        <infrastructure:ObservableCommand x:Key="OpenReasonDetailsCommand" Value="{Binding OpenReasonDetailsCommand}"/>
+    </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <wpf:InvokeCommandAction Command="{Binding OnLoadedCommand}" />
+        </i:EventTrigger>
+        <prism:InteractionRequestTrigger SourceObject="{Binding ConfirmDeleteInteractionRequest, Mode=OneWay}">
+            <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
+        </prism:InteractionRequestTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 0" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
+                    <Button ToolTipService.ToolTip="Click to add new reason!" Command="{Binding AddReasonCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_add.png" Height="40" Width="40" Margin="4"/>
+                        </StackPanel>
+                    </Button>
+                    <Separator />
+                    <Button ToolTipService.ToolTip="Click to edit reason!" Command="{Binding EditReasonCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_edit.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </StackPanel>
+                    </Button>
+                    <Separator />
+                    <Button ToolTipService.ToolTip="Click to delete reason!" Command="{Binding DeleteReasonCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </StackPanel>
+                    </Button>
+                </ToolBar>
+
+                <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,10,20,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
+                            VerticalAlignment="Center" CornerRadius="5">
+                        <StackPanel Margin="5" Orientation="Horizontal">
+                            <Image Source="/Resources/btn_find.png" Height="18"/>
+                            <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
+                                     HorizontalAlignment="Stretch" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </StackPanel>
+
+        <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
+
+        <DataGrid ItemsSource="{Binding Path=Reasons}" SelectedItem="{Binding SelectedReason}" CurrentCell="{Binding CellInfo, Mode=TwoWay}" AutoGenerateColumns="False" 
+                  IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutomationProperties.AutomationId="ReasonGrid" 
+                  HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" Grid.Row="2" Margin="0,10,0,0">
+
+            <DataGrid.Columns>
+                <!--<DataGridTemplateColumn Header="Reason Code" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                <Hyperlink Command="{Binding DataContext.OpenReasonDetailsCommand, ElementName=LayoutRoot}" CommandParameter="{Binding}"
+                                           AutomationProperties.AutomationId="OpenDetailHyperLink">
+                                    <TextBlock Text="{Binding ReasonCode}" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+                <DataGridTextColumn Header="Description" Width="*" Binding="{Binding ReasonDesc}" CanUserSort="False" Foreground="Black">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+
+        </DataGrid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,17 @@
+{U2;0100|}
+<xpml><page quantity='0' pitch='55.0 mm'></xpml>{D0570,1000,0550|}
+{AY;+10,0|}
+<xpml></page></xpml><xpml><page quantity='1' pitch='55.0 mm'></xpml>{C|}
+{PV00;0038,0394,0031,0038,B,00,B=<DESC1>|}
+{PV01;0045,0300,0031,0038,B,00,B=Legacy No: |}
+{PV02;0045,0211,0031,0038,B,00,B=SAP No:|}
+{PV03;0045,0117,0031,0038,B,00,B=PO Number:  |}
+{XB00;0750,0080,T,L,10,A,0,M2=<PARTNUMBER>|}
+{PV04;0340,0117,0031,0038,B,00,B=<PARTNUMBER>|}
+{PV05;0340,0211,0031,0038,B,00,B=<MACHINE>|}
+{PV06;0340,0300,0031,0038,B,00,B=<COMPANYNAME>|}
+{PV07;0035,0454,0031,0038,B,00,B=<DESC2>|}
+{PV08;0035,0514,0031,0038,B,00,B=<DESC3>|}
+{XS;I,0001,0002C2201|}
+<xpml></page></xpml>{U1;0100|}
+<xpml><end/></xpml>

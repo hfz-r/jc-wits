@@ -1,0 +1,265 @@
+﻿<UserControl x:Class="ESD.JC_GoodsReceive.Views.GRMainView" 
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d"
+            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+            xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
+            xmlns:prism="http://prismlibrary.com/"
+            xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
+            d:DesignWidth="800" d:DesignHeight="600">
+
+    <UserControl.Resources>
+        <infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+        <infrastructure:BoolConverter x:Key="BoolConv"/>
+        <infrastructure:ObservableCommand x:Key="OpenGRDetailsCommand" Value="{Binding OpenGRDetailsCommand}"/>
+        <DataTemplate x:Key="GRTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="{Binding PurchaseOrder}" FontWeight="Bold" FontSize="13" Margin="5" AutomationProperties.AutomationId="PartNumberDataBlock"/>
+
+                        <TextBlock Text="SAP No:" FontWeight="Bold"
+                           Grid.Row="1" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="SAPNoLbl"/>
+                        <TextBlock Text="{Binding Material}"                           
+                           Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="SAPNoData"/>
+
+                        <TextBlock Text="Legacy No:" FontWeight="Bold"
+                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LegacyNoLbl"/>
+                        <TextBlock Text="{Binding Material}"                           
+                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="LegacyNoData"/>
+
+                        <TextBlock Text="EN:" FontWeight="Bold"
+                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ENLbl"/>
+                        <TextBlock Text="{Binding MaterialShortText}"                           
+                           Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="ENData"/>
+
+                        <TextBlock Text="MS:" FontWeight="Bold"
+                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="MSLbl"/>
+                        <TextBlock Text="{Binding MaterialShortText}"                           
+                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="MSData"/>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1">
+                    <Grid HorizontalAlignment="Left">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Label`s Preview" VerticalAlignment="Center" FontWeight="Bold" TextDecorations="underline" FontFamily="Cambria" FontSize="13"/>
+
+                        <Border Grid.Row="1" Grid.RowSpan="4" Grid.Column="1" Grid.ColumnSpan="3" Margin="-5" BorderThickness="2" BorderBrush="Black"/>
+
+                        <Image Grid.Row="1" Grid.RowSpan="2" Grid.Column="3" Grid.ColumnSpan="1"
+                       Source="/Resources/img_qrcode.png" Height="60" Width="60"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="1"  Text="SAP No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoLbl"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="Legacy No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoLbl"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="EN:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="ENLbl"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="MS:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSLbl"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Material}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoData"/>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Material}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoData"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding MaterialShortText}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="ENData"/>
+                        <TextBlock Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding MaterialShortText}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSData"/>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <wpf:InvokeCommandAction Command="{Binding OnLoadedCommand}" />
+        </i:EventTrigger>
+        <prism:InteractionRequestTrigger SourceObject="{Binding ConfirmDeleteInteractionRequest, Mode=OneWay}">
+            <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
+        </prism:InteractionRequestTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 0" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
+                    <Button ToolTipService.ToolTip="OK?" Command="{Binding OKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_ok.png" Height="40" Width="40" Margin="4"/>
+                        </StackPanel>
+                    </Button>
+                    <Separator Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}" />
+                    <Button ToolTipService.ToolTip="NOT OK?" Command="{Binding XOKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_xok.png" Height="40" Width="40" Margin="4"/>
+                        </StackPanel>
+                    </Button>
+                    <Separator Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}" />
+                    <Button ToolTipService.ToolTip="Click to print the label!" Command="{Binding PrintLblCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </StackPanel>
+                    </Button>
+                    <StackPanel Width="20"/>
+                    <Button ToolTipService.ToolTip="Click to import goods!" Command="{Binding ImportGRCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/img_btn_import.png" Height="40" Width="40" Margin="4">
+                            </Image>
+                        </StackPanel>
+                    </Button>
+                    <Separator />
+                    <Button ToolTipService.ToolTip="Click to export goods!" Command="{Binding ExportGRCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/img_btn_export.png" Height="40" Width="40" Margin="4">
+                            </Image>
+                        </StackPanel>
+                    </Button>
+                </ToolBar>
+
+                <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,10,20,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
+                            VerticalAlignment="Center" CornerRadius="5">
+                        <StackPanel Margin="5" Orientation="Horizontal">
+                            <Image Source="/Resources/btn_find.png" Height="18"/>
+                            <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
+                                     HorizontalAlignment="Stretch" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </StackPanel>
+
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
+
+        <DataGrid x:Name="dgGrid" ItemsSource="{Binding Path=GoodReceives}" CurrentCell="{Binding CellInfo, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                  AutomationProperties.AutomationId="GRGrid" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="0,10,0,0">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="Auto">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.Header>
+                        <!--<CheckBox ToolTipService.ToolTip="Check All"
+                                  IsChecked="{Binding Path=DataContext.AllSelected, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" />-->
+                        <CheckBox ToolTipService.ToolTip="Check All">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Checked" >
+                                    <wpf:InvokeCommandAction Command="{Binding DataContext.CheckedAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" />
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="Unchecked" >
+                                    <wpf:InvokeCommandAction Command="{Binding DataContext.UnCheckedAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </CheckBox>
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox HorizontalAlignment="Center" 
+                                      IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" 
+					                  Command="{Binding DataContext.IsSelected, ElementName=LayoutRoot}" 
+					                  CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Purchase Order" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                <Hyperlink Command="{Binding DataContext.OpenGRDetailsCommand, ElementName=LayoutRoot}" CommandParameter="{Binding}"
+                                           AutomationProperties.AutomationId="OpenDetailHyperLink">
+                                    <TextBlock Text="{Binding PurchaseOrder}" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Vendor" Width="Auto" Binding="{Binding Vendor}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Material" Width="Auto" Binding="{Binding Material}" CanUserSort="False" Foreground="Black"/>
+                <DataGridTextColumn Header="Material Short Text" Width="Auto" Binding="{Binding MaterialShortText}" CanUserSort="False" Foreground="Black">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="OK" Width="Auto" Binding="{Binding Ok}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Quantity" Width="Auto" Binding="{Binding Quantity}" CanUserSort="False" Foreground="Black"/>
+                <DataGridTextColumn Header="Storage Loc" Width="Auto" Binding="{Binding StorageLoc}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Plant" Width="Auto" Binding="{Binding Plant}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Storage Bin" Width="Auto" Binding="{Binding StorageBin}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Document Date" Width="Auto" Binding="{Binding DocumentDate, StringFormat=g}" CanUserSort="True" Foreground="Black"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="15" ShowsPreview="True" />
+        <ContentControl x:Name="Preview" Content="{Binding GoodReceives.CurrentItem}"
+                        Margin="5,15,5,5"
+                        ContentTemplate="{StaticResource GRTemplate}"
+                        Grid.Row="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                        Visibility="{Binding GoodReceives.CurrentItem, Converter={StaticResource ObjectToVisibility}}">
+        </ContentControl>
+    </Grid>
+</UserControl>

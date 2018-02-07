@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="ESD.JC_RoleMgmt.Views.RoleDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ESD.JC_RoleMgmt.Views"
+             mc:Ignorable="d" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:prism="http://prismlibrary.com/"
+             d:DesignHeight="300" d:DesignWidth="400">
+    <UserControl.Resources>
+        <DataTemplate x:Key="RoleTemplate">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="{Binding RoleCode}" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="13" Margin="5" AutomationProperties.AutomationId="RoleCodeData"/>
+
+                <TextBlock Text="Role Name: " FontWeight="Bold"
+                           Grid.Row="1" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="RoleNameLabel"/>
+                <TextBlock Text="{Binding RoleName}"                           
+                           Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="RoleNameData"/>
+
+                <TextBlock Text="Module: " FontWeight="Bold"
+                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModuleLabel"/>
+                <TextBlock Text="{Binding Module}"                           
+                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="ModuleData"/>
+
+                <TextBlock Text="Description: " FontWeight="Bold"
+                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="DescriptionLabel"/>
+                <ScrollViewer Grid.Row="3" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                              VerticalScrollBarVisibility="Auto">
+                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" AutomationProperties.AutomationId="DescriptionData"/>
+                </ScrollViewer>
+
+                <TextBlock Text="Last Modified Date: " FontWeight="Bold"
+                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
+                <TextBlock Text="{Binding ModifiedOn, StringFormat=g}"                           
+                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOnData"/>
+
+                <TextBlock Text="Last Modified By: " FontWeight="Bold"
+                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedByLabel"/>
+                <TextBlock Text="{Binding ModifiedBy}"                           
+                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <prism:InteractionRequestTrigger SourceObject="{Binding ConfirmRemoveThisInteractionRequest, Mode=OneWay}">
+            <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
+        </prism:InteractionRequestTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid x:Name="LayoutRoot" Background="White">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ContentControl Content="{Binding Role}" ContentTemplate="{StaticResource RoleTemplate}"
+                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1"  Width="Auto" HorizontalAlignment="Right" Margin="0,5,5,5" Command="{Binding EditThisCommand}" Content="Edit This" />
+            <Button Grid.Column="2"  Width="Auto" HorizontalAlignment="Right" Margin="0,5,5,5" Command="{Binding RemoveThisCommand}" Content="Remove This" />
+            <Button Grid.Column="3"  Width="Auto" HorizontalAlignment="Right" Margin="0,5,5,5" Command="{Binding GoBackCommand}" Content="Go Back" />
+        </Grid>
+    </Grid>
+</UserControl>
