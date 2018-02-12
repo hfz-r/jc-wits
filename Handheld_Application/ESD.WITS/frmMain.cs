@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.SqlClient;
-using System.Data.SqlServerCe;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -18,9 +17,29 @@ namespace ESD.WITS
 {
     public partial class frmMain : Form
     {
+        private class GI
+        {
+            public int ID { get; set; }     
+            public string SAPNo { get; set; }
+            public string Qty { get; set; }
+            public string ENDesc { get; set; }         
+        }
+
+        private class Location
+        {
+            public int ID { get; set; }
+            public string Loc { get; set; }
+        }
+
+        public enum TransferType
+        {
+            TRANSFER_PROD = 0,
+            TRANSFER_POST = 1
+        }
+
         #region Variable
 
-        private Color placeHolderDefaultColor = Color.Gray;
+        private Color placeHolderDefaultColor = Color.Black;
         private Color defaultColor = Color.Black;
         private const string placeHolder = "Scan...";       
         private string userID = string.Empty;
@@ -30,12 +49,15 @@ namespace ESD.WITS
         private string gStrSQLUser = string.Empty;
         private string gStrSQLPwd = string.Empty;
         private string connectionString = "Data Source=192.168.56.1,5050;Initial Catalog=INVENTORY;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";        
-        private static string databasePath = @"\Application\";
-        private static string databaseName = "InventoryDB.sdf";
-        private string localConnectionString = "Data Source=" + databasePath + databaseName;
         private int GRID = 0;
         private bool isPartialTxn = false;
-
+        private List<GI> GIList = new List<GI>();
+        private List<Location> LocationList = new List<Location>();
+        private string SelectedSAP = string.Empty;
+        private string SelectedQty = string.Empty;
+        private TransferType transferType = new TransferType();
+        private string SLoc = string.Empty;
+        private string ENMatShortText = string.Empty;
         #endregion
 
         #region Initialization
@@ -210,7 +232,6 @@ namespace ESD.WITS
             bool isPass = false;
             string username = txtUserID.Text;
             string password = txtPassword.Text;
-            SqlCeConnection localConnection = null;
             SqlConnection connection = null;
 
             if (string.IsNullOrEmpty(username))
@@ -232,7 +253,6 @@ namespace ESD.WITS
             {
                 // Create the command 
                 string sSQL = string.Empty;
-                //string pass = GetMD5Hash(password).ToUpper();
                 string pass = HashConverter.CalculateHash(password, username);
 
                 sSQL = "SELECT ID ";
@@ -277,10 +297,6 @@ namespace ESD.WITS
                 if (connection != null)
                 {
                     connection.Close();
-                }
-                if (localConnection != null)
-                {
-                    localConnection.Close();
                 }
             }
         }
@@ -336,6 +352,11 @@ namespace ESD.WITS
             SetGIPlaceholder();
             txtGISAPNo.Focus();
             txtGISAPNo.SelectAll();
+            btnGINext.Enabled = false;
+            btnGIDelete.Enabled = false;
+            LoadLocation();
+            rdBtnGITfrtoProd.Checked = true;
+            rdBtnGITfrPosting.Checked = false;
         }
 
         #endregion
@@ -355,6 +376,55 @@ namespace ESD.WITS
                 txtGRSAPNo.SelectAll();
                 return false;
             }
+            else if (isPartialTxn && Convert.ToInt32(txtGRQtyRcvd.Text) < Convert.ToInt32(txtGRQtyOrdered.Text))
+            {
+                int remaining = Convert.ToInt32(txtGRQtyOrdered.Text) - Convert.ToInt32(txtGRQtyRcvd.Text);
+                if (Convert.ToInt32(txtGRQty.Text) > remaining)
+                {
+                    MessageBox.Show("Qty exceeded", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                    txtGRQty.Focus();
+                    txtGRQty.SelectAll();
+                    return false;
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(txtGRQtyOrdered.Text) && Convert.ToInt32(txtGRQty.Text) > Convert.ToInt32(txtGRQtyOrdered.Text))
+                {
+                    MessageBox.Show("Qty exceeded", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                    txtGRQty.Focus();
+                    txtGRQty.SelectAll();
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(txtGRQtyOrdered.Text) && !string.IsNullOrEmpty(txtGRQty.Text))
+            {
+                if (isPartialTxn)
+                {
+                    int remaining = Convert.ToInt32(txtGRQty.Text) + Convert.ToInt32(txtGRQtyRcvd.Text);
+                    if (Convert.ToInt32(txtGRQty.Text) > 0 &&
+                        remaining < Convert.ToInt32(txtGRQtyOrdered.Text) &&
+                        string.IsNullOrEmpty(cmbBoxGRReason.Text))
+                    {
+                        MessageBox.Show("Select Reason", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                        cmbBoxGRReason.Focus();
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (Convert.ToInt32(txtGRQty.Text) > 0 &&
+                        Convert.ToInt32(txtGRQty.Text) < Convert.ToInt32(txtGRQtyOrdered.Text) &&
+                        string.IsNullOrEmpty(cmbBoxGRReason.Text))
+                    {
+                        MessageBox.Show("Select Reason", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                        cmbBoxGRReason.Focus();
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
 
@@ -429,14 +499,20 @@ namespace ESD.WITS
                         qtyRcvd = reader[5].ToString(); //var
                         txtGRQtyRcvd.Text = qtyRcvd;
                         txtGRRcvdEun.Text = txtGROrderedEun.Text;
+                        txtGRMSDesc.BackColor = Color.Black;
+                        txtGRQtyOrdered.BackColor = Color.Black;
+                        txtGROrderedEun.BackColor = Color.Black;
+                        txtGRQtyRcvd.BackColor = Color.Black;
+                        txtGRRcvdEun.BackColor = Color.Black;
+                        txtGREun.BackColor = Color.Black;
 
                         if (isTxnCompleted != null && Convert.ToBoolean(isTxnCompleted)) //complete
                         {
                             btnGRSubmit.Enabled = false;
                             labelGRQty.Visible = false;
-                            btnMinusIn.Visible = false;
+                            btnGRMinusQty.Visible = false;
                             txtGRQty.Visible = false;
-                            btnAddIn.Visible = false;
+                            btnGRAddQty.Visible = false;
                             txtGREun.Visible = false;
                             labelGRReason.Visible = false;
                             cmbBoxGRReason.Visible = false;
@@ -452,22 +528,22 @@ namespace ESD.WITS
                                 isPartialTxn = true;
                                 btnGRSubmit.Enabled = true;
                                 labelGRQty.Visible = true;
-                                btnMinusIn.Visible = true;
+                                btnGRMinusQty.Visible = true;
                                 txtGRQty.Visible = true;
-                                btnAddIn.Visible = true;
+                                btnGRAddQty.Visible = true;
                                 txtGREun.Visible = true;
                                 labelGRReason.Visible = true;
                                 cmbBoxGRReason.Visible = true;
                                 labelGRQtyRcvd.Visible = true;
                                 txtGRQtyRcvd.Visible = true;
                                 txtGRRcvdEun.Visible = true;
-                                labelGRQty.Location = new Point(7, 178);
-                                btnMinusIn.Location = new Point(104, 175);
-                                txtGRQty.Location = new Point(126, 175);
-                                btnAddIn.Location = new Point(170, 175);
-                                txtGREun.Location = new Point(197, 175);
-                                labelGRReason.Location = new Point(8, 207);
-                                cmbBoxGRReason.Location = new Point(103, 204);
+                                labelGRQty.Location = new Point(7, 190);
+                                btnGRMinusQty.Location = new Point(104, 187);
+                                txtGRQty.Location = new Point(126, 187);
+                                btnGRAddQty.Location = new Point(170, 187);
+                                txtGREun.Location = new Point(197, 187);
+                                labelGRReason.Location = new Point(8, 219);
+                                cmbBoxGRReason.Location = new Point(103, 216);
                             }
                         }
                     }
@@ -490,19 +566,19 @@ namespace ESD.WITS
         {
             btnGRSubmit.Enabled = true;
             labelGRQty.Visible = true;
-            labelGRQty.Location = new Point(7, 149);
-            btnMinusIn.Visible = true;
-            btnMinusIn.Location = new Point(104, 149);
+            labelGRQty.Location = new Point(7, 161);
+            btnGRMinusQty.Visible = true;
+            btnGRMinusQty.Location = new Point(104, 157);
             txtGRQty.Visible = true;
-            txtGRQty.Location = new Point(126, 149);
-            btnAddIn.Visible = true;
-            btnAddIn.Location = new Point(170, 149);
+            txtGRQty.Location = new Point(126, 157);
+            btnGRAddQty.Visible = true;
+            btnGRAddQty.Location = new Point(170, 157);
             txtGREun.Visible = true;
-            txtGREun.Location = new Point(197, 149);
+            txtGREun.Location = new Point(197, 157);
             labelGRReason.Visible = true;
-            labelGRReason.Location = new Point(8, 178);
+            labelGRReason.Location = new Point(8, 190);
             cmbBoxGRReason.Visible = true;
-            cmbBoxGRReason.Location = new Point(103, 175);
+            cmbBoxGRReason.Location = new Point(103, 187);
             labelGRQtyRcvd.Visible = false;
             txtGRQtyRcvd.Visible = false;
             txtGRRcvdEun.Visible = false;
@@ -559,15 +635,33 @@ namespace ESD.WITS
         {
             if (!string.IsNullOrEmpty(txtGRQty.Text) && !string.IsNullOrEmpty(txtGRQtyOrdered.Text))
             {
-                if (Convert.ToInt32(txtGRQty.Text) < Convert.ToInt32(txtGRQtyOrdered.Text))
+                if (isPartialTxn)
                 {
-                    cmbBoxGRReason.Visible = true;
-                    labelGRReason.Visible = true;
+                    int remaining = Convert.ToInt32(txtGRQty.Text) + Convert.ToInt32(txtGRQtyRcvd.Text);
+
+                    if (remaining == Convert.ToInt32(txtGRQtyOrdered.Text))
+                    {
+                        cmbBoxGRReason.Visible = false;
+                        labelGRReason.Visible = false;
+                    }
+                    else if (remaining < Convert.ToInt32(txtGRQtyOrdered.Text))
+                    {
+                        cmbBoxGRReason.Visible = true;
+                        labelGRReason.Visible = true;
+                    }
                 }
-                else if (Convert.ToInt32(txtGRQty.Text) == Convert.ToInt32(txtGRQtyOrdered.Text))
+                else
                 {
-                    cmbBoxGRReason.Visible = false;
-                    labelGRReason.Visible = false;
+                    if (Convert.ToInt32(txtGRQty.Text) < Convert.ToInt32(txtGRQtyOrdered.Text))
+                    {
+                        cmbBoxGRReason.Visible = true;
+                        labelGRReason.Visible = true;
+                    }
+                    else if (Convert.ToInt32(txtGRQty.Text) == Convert.ToInt32(txtGRQtyOrdered.Text))
+                    {
+                        cmbBoxGRReason.Visible = false;
+                        labelGRReason.Visible = false;
+                    }
                 }
             }
             else
@@ -673,7 +767,8 @@ namespace ESD.WITS
                         sSQL += " ," + GRID + ")";
 
                         sSQL += " UPDATE [dbo].[GoodsReceive]";
-                        sSQL += " SET PostingDate = '" + DateTime.Now + "'";
+                        sSQL += " SET [DocumentDate] = '" + DateTime.Now + "', ";
+                        sSQL += " [PostingDate] = '" + dtPickerGRPostingDate.Value + "'";
                         sSQL += " WHERE ID = @GRID";
 
                         sSQL += " UPDATE [dbo].[GoodsReceive]";
@@ -716,14 +811,6 @@ namespace ESD.WITS
 
         #region Goods Issue
 
-        private void btnGIHome_Click(object sender, EventArgs e)
-        {
-            txtGISAPNo.Text = string.Empty;
-            pnlGdIssue.Visible = false;
-            pnlSelection.Visible = true;
-            pnlSelection.Dock = DockStyle.Fill;
-        }
-
         /// <summary>
         /// Set placeholder text on textbox
         /// </summary>
@@ -731,6 +818,479 @@ namespace ESD.WITS
         {
             this.txtGISAPNo.ForeColor = placeHolderDefaultColor;
             this.txtGISAPNo.Text = placeHolder;
+        }
+
+        /// <summary>
+        /// get all data
+        /// </summary>
+        private void GetGoodsIssueForGI()
+        {
+            string sSQL = string.Empty;
+            txtGIQtyAvbl.Text = string.Empty;
+            txtGIQtyAvblEun.Text = string.Empty;
+            txtGIQtyEun.Text = string.Empty;
+
+            sSQL = " SELECT GR.[ID], GR.[MaterialShortText], GR.[Quantity], GR.[Eun], GR.[StorageLoc],";
+            sSQL += " ISNULL(SUM(GRT.Quantity),0) AS QtyAvailable, ISNULL(SUM(GRT.Quantity),0) -";
+            sSQL += " (SELECT ISNULL(SUM(GIT.Quantity),0) AS QtyAvailableGI";
+            sSQL += " FROM [INVENTORY].[dbo].[GoodsReceive] GR ";
+            sSQL += " INNER JOIN [dbo].[GITransaction] GIT   ON GR.ID = GIT.GRID ";
+            sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "') AS QtyRemaining, GR.[ENMaterialShortText]";
+            sSQL += " FROM [INVENTORY].[dbo].[GoodsReceive] GR ";
+            sSQL += " LEFT OUTER JOIN [dbo].[GRTransaction] GRT   ON GR.ID = GRT.GRID ";
+            sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "' ";
+            sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Quantity], GR.[Eun], GR.[StorageLoc], GR.[ENMaterialShortText]";
+            sSQL += " HAVING SUM(GRT.Quantity) > 0 ";
+
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(sSQL, connection);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader != null && reader.Read())
+                    {
+                        GRID = Convert.ToInt32(reader[0]);
+                        txtGIQtyAvblEun.Text = reader[3].ToString();
+                        txtGIQtyEun.Text = reader[3].ToString();
+                        txtGIQty.Text = "0";
+                        SLoc = reader[4].ToString();
+                        txtGIQtyAvbl.Text = Convert.ToInt32(reader[6]).ToString();
+                        ENMatShortText = reader[7].ToString();
+                    }
+                    else
+                    {
+                        txtGIQtyAvbl.Text = string.Empty;
+                        txtGIQtyAvblEun.Text = string.Empty;
+                        txtGIQtyEun.Text = string.Empty;
+                        dataGrdGI.DataSource = null;
+                        GIList = new List<GI>();
+                        MessageBox.Show("Invalid SAP No/GR not complete");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// validate submit page
+        /// </summary>
+        /// <returns></returns>
+        private bool ValidateGISubmit()
+        {
+            if (string.IsNullOrEmpty(txtText.Text))
+            {
+                MessageBox.Show("Enter Text");
+                txtText.Focus();
+                return false;
+            }
+            else if (rdBtnGITfrtoProd.Checked && string.IsNullOrEmpty(txtGIProdNo.Text))
+            {
+                MessageBox.Show("Enter Production No.");
+                txtGIProdNo.Focus();
+                return false;
+            }
+            else if (rdBtnGITfrPosting.Checked && cmbBoxGILocTo.SelectedIndex == -1)
+            {
+                MessageBox.Show("Select Location To");
+                cmbBoxGILocTo.Focus();
+                return false;
+            }
+            else if (cmbBoxGILocTo.Text == cmbBoxGILocFrom.Text)
+            {
+                MessageBox.Show("Location To and From must not be the same");
+                cmbBoxGILocTo.Focus();
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// load location to
+        /// </summary>
+        private void LoadLocation()
+        {
+            string sSQL = string.Empty;
+            sSQL = "SELECT [ID] ";
+            sSQL += " ,[Location] ";
+            sSQL += "FROM [INVENTORY].[dbo].[Location] ";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(sSQL, connection);
+
+                using (SqlDataAdapter sda = new SqlDataAdapter(command))
+                {
+                    DataTable dtTo = new DataTable();
+                    sda.Fill(dtTo);
+
+                    cmbBoxGILocTo.DataSource = dtTo;
+                    cmbBoxGILocTo.DisplayMember = "Location";
+                    cmbBoxGILocTo.ValueMember = "ID";
+                    cmbBoxGILocTo.SelectedIndex = -1;
+
+                    DataTable dtFrom = new DataTable();
+                    sda.Fill(dtFrom);
+                    cmbBoxGILocFrom.DataSource = dtFrom;
+                    cmbBoxGILocFrom.DisplayMember = "Location";
+                    cmbBoxGILocFrom.ValueMember = "ID";
+                    cmbBoxGILocFrom.SelectedIndex = -1;
+
+                    /////Get ID
+                    //int? defaultID = null;
+                    //foreach (DataRow dr in dt.Rows)
+                    //{
+                    //    if ((dr["ID"] != DBNull.Value) && ((string)dr["Location"] == SLoc))
+                    //    {
+                    //        defaultID = Convert.ToInt32(dr["ID"].ToString());
+                    //    }
+                    //}
+                    //if (defaultID != null)
+                    //{
+                    //    SLocID = defaultID;
+                    //}
+
+                    connection.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Clear all data
+        /// </summary>
+        private void ClearGICache()
+        {
+            txtGIQty.Text = string.Empty;
+            txtGISAPNo.Text = string.Empty;
+            dataGrdGI.DataSource = null;
+            txtGIQtyAvbl.Text = string.Empty;
+            txtGIQtyAvblEun.Text = string.Empty;
+            txtGIQtyEun.Text = string.Empty;
+            dataGrdGI.DataSource = null;
+            GIList = new List<GI>();
+            txtGIProdNo.Text = string.Empty;
+            cmbBoxGILocFrom.DataSource = null;
+            cmbBoxGILocTo.DataSource = null;
+            SLoc = string.Empty;
+            rdBtnGITfrtoProd.Checked = true;
+            rdBtnGITfrPosting.Checked = false;
+            btnGIDelete.Enabled = false;
+            btnGINext.Enabled = false;
+            txtText.Text = string.Empty;
+        }
+
+        /// <summary>
+        /// set enable visibility
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdBtnGITfrtoProd_CheckedChanged(object sender, EventArgs e)
+        {
+            lblGIProdNo.Enabled = true;
+            txtGIProdNo.Enabled = true;
+            transferType = TransferType.TRANSFER_PROD;
+            lblGILocFrom.Enabled = false;
+            cmbBoxGILocFrom.Enabled = false;
+            lblGILocTo.Enabled = false;
+            cmbBoxGILocTo.Enabled = false;
+        }
+
+        /// <summary>
+        /// set enable visibility
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdBtnGITfrPosting_CheckedChanged(object sender, EventArgs e)
+        {
+            lblGILocFrom.Enabled = true;
+            cmbBoxGILocFrom.Enabled = true;
+            lblGILocTo.Enabled = true;
+            cmbBoxGILocTo.Enabled = true;
+            transferType = TransferType.TRANSFER_POST;
+            lblGIProdNo.Enabled = false;
+            txtGIProdNo.Enabled = false;
+        }
+
+        /// <summary>
+        /// Get GI
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtGISAPNo_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e != null && e.KeyCode == Keys.Enter)
+            {
+                GetGoodsIssueForGI();
+            }
+        }
+
+        /// <summary>
+        /// Add quantity by 1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGIAddQty_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtGIQty.Text))
+            {
+                txtGIQty.Text = "0";
+            }
+            int increasedVal = int.Parse(txtGIQty.Text) + 1;
+
+            if (!string.IsNullOrEmpty(txtGIQtyAvbl.Text))
+            {
+                if (increasedVal <= Convert.ToInt32(txtGIQtyAvbl.Text))
+                {
+                    txtGIQty.Text = increasedVal.ToString();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Minus quantity by 1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btGIMinusQty_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtGIQty.Text))
+            {
+                txtGIQty.Text = "0";
+            }
+
+            int decreasedVal = int.Parse(txtGIQty.Text) - 1;
+
+            if (decreasedVal >= 0)
+            {
+                txtGIQty.Text = decreasedVal.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Go back menu home page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGIHome_Click(object sender, EventArgs e)
+        {
+            pnlGdIssue.Visible = false;
+            pnlSelection.Visible = true;
+            pnlSelection.Dock = DockStyle.Fill;
+            ClearGICache();
+        }
+
+        /// <summary>
+        /// Add to list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGIAdd_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtGIQtyAvbl.Text) && !string.IsNullOrEmpty(txtGIQty.Text) && GRID != 0)
+            {
+                if (Convert.ToInt32(txtGIQty.Text) > Convert.ToInt32(txtGIQtyAvbl.Text))
+                {
+                    MessageBox.Show("Qty exceeded", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                    txtGIQty.Focus();
+                    txtGIQty.SelectAll();
+                }
+                else
+                {
+                    if (Convert.ToInt32(txtGIQty.Text) > 0)
+                    {
+                        if (GIList != null && GIList.Count > 0)
+                        {
+                            bool isExist = false;
+                            foreach (var item in GIList)
+                            {
+                                if (item.SAPNo == txtGISAPNo.Text)
+                                {
+                                    item.Qty = (Convert.ToInt32(item.Qty) + Convert.ToInt32(txtGIQty.Text)).ToString();
+                                    isExist = true;
+                                    break;
+                                }
+                            }
+                            if (!isExist)
+                            {
+                                GIList.Add(new GI
+                                { 
+                                    ID = GRID,
+                                    SAPNo = txtGISAPNo.Text,
+                                    Qty = txtGIQty.Text,
+                                    ENDesc = ENMatShortText
+                                });
+                            }
+                        }
+                        else
+                        {
+                            GIList.Add(new GI
+                            {
+                                ID = GRID,
+                                SAPNo = txtGISAPNo.Text,
+                                Qty = txtGIQty.Text,
+                                ENDesc = ENMatShortText
+                            });
+                        }
+
+                        dataGrdGI.DataSource = null;
+                        dataGrdGI.DataSource = GIList;
+
+                        if (GIList != null && GIList.Count > 0)
+                        {
+                            btnGINext.Enabled = true;
+                            btnGIDelete.Enabled = true;
+                        }
+
+                        txtGISAPNo.Text = string.Empty;
+                        txtGIQtyAvbl.Text = string.Empty;
+                        txtGIQtyAvblEun.Text = string.Empty;
+                        txtGIQtyEun.Text = string.Empty;
+                        txtGIQty.Text = string.Empty;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Qty must be more than 0");
+                    }
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(txtGISAPNo.Text))
+                {
+                    MessageBox.Show("Enter SAP No");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Delete specific row
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGIDelete_Click(object sender, EventArgs e)
+        {
+            if (GIList.Count > 0)
+            {
+                Point pt = dataGrdGI.PointToClient(Control.MousePosition);
+                DataGrid.HitTestInfo info = dataGrdGI.HitTest(pt.X, pt.Y);
+                int row;
+
+                if (info.Row < 0)
+                    row = 0;
+                else
+                    row = info.Row;
+
+                object cellData = dataGrdGI[row, 0];
+                SelectedSAP = cellData != null ? cellData.ToString() : string.Empty;
+
+
+                cellData = dataGrdGI[row, 1];
+                SelectedQty = cellData != null ? cellData.ToString() : string.Empty;
+
+                if (MessageBox.Show("Confirm to delete?", string.Empty, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+                {
+                    int i = dataGrdGI.CurrentRowIndex;
+
+                    //to remove and bind again
+                    GIList.RemoveAt(i);
+                    dataGrdGI.DataSource = null;
+                    dataGrdGI.DataSource = GIList;
+                    if (GIList.Count > 0)
+                    {
+                        dataGrdGI.CurrentRowIndex = 0;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Submit GI to GITransaction db
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGISubmit_Click(object sender, EventArgs e)
+        {
+            if (ValidateGISubmit())
+            {
+                if (GIList != null && GIList.Count > 0)
+                {
+                    if (MessageBox.Show("Confirm to submit?", "Goods Receipt", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+                    {
+                        string sSQL = string.Empty;
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            foreach (var item in GIList)
+                            {
+                                sSQL += " INSERT INTO [dbo].[GITransaction]";
+                                sSQL += " ([Text]";
+                                sSQL += " ,[Quantity]";
+                                sSQL += " ,[CreatedOn]";
+                                sSQL += " ,[CreatedBy]";
+                                sSQL += " ,[GRID]";
+                                sSQL += " ,[TransferType]";
+                                sSQL += " ,[ProductionNo]";
+                                sSQL += " ,[LocationTo]";
+                                sSQL += " ,[LocationFrom])";
+                                sSQL += " VALUES";
+                                sSQL += " ('" + txtText.Text + "'";
+                                sSQL += " ,'" + item.Qty + "'";
+                                sSQL += " ,'" + DateTime.Now + "'";
+                                sSQL += " ,'" + userID + "'";
+                                sSQL += " ,'" + item.ID + "'";
+                                sSQL += " ,'" + transferType + "'";
+                                sSQL += !string.IsNullOrEmpty(txtGIProdNo.Text) ? " ,'" + txtGIProdNo.Text + "'" : " ,NULL";
+                                sSQL += !string.IsNullOrEmpty(cmbBoxGILocTo.Text) ? " ,'" + cmbBoxGILocTo.Text + "'" : " ,NULL";
+                                sSQL += !string.IsNullOrEmpty(cmbBoxGILocFrom.Text) ? " ,'" + cmbBoxGILocFrom.Text + "')" : " ,NULL)";
+                            }
+                            connection.Open();
+                            SqlCommand command = new SqlCommand(sSQL, connection);
+                            command.ExecuteReader();
+                            connection.Close();
+                        }
+
+                        MessageBox.Show(txtText.Text + " Submitted");
+                    }
+
+                    ClearGICache();
+                    pnlGdIssueSubmit.Visible = false;
+                    pnlGdIssue.Visible = true;
+                    pnlGdIssue.Dock = DockStyle.Fill;
+                }
+                else
+                {
+                    MessageBox.Show("Empty record");
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Return to previous page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGISubmitBack_Click(object sender, EventArgs e)
+        {
+            pnlGdIssueSubmit.Visible = false;
+            pnlGdIssue.Visible = true;
+            pnlGdIssue.Dock = DockStyle.Fill;
+        }
+
+        /// <summary>
+        /// Go to GI Submit page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGINext_Click(object sender, EventArgs e)
+        {
+            if (GIList != null && GIList.Count > 0)
+            {
+                pnlGdIssue.Visible = false;
+                pnlGdIssueSubmit.Visible = true;
+                pnlGdIssueSubmit.Dock = DockStyle.Fill;
+            }
         }
 
         #endregion
