@@ -2,7 +2,8 @@
 
 ### Objective :
 ---
-To 
+- To have barcode label to be pasted on Raw Material.
+- To utilize mobile application to for Goods Receiving and Goods Issuing.
 
 ### Scope :
 ---
