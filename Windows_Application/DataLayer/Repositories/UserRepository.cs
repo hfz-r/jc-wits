@@ -5,69 +5,72 @@ using System.Data.Entity;
 
 namespace DataLayer.Repositories
 {
-    public class UserRepository : IUserRepository, IDisposable
+    public class UserRepository : IUserRepository
     {
-        private InventoryContext context;
-
-        public UserRepository(InventoryContext context)
-        {
-            this.context = context;
-        }
-
         public User Login(string username, string password)
         {
-            return context.Users.Where(x => x.Username == username && x.Password == password).FirstOrDefault();
+            using (var context = new InventoryContext())
+            {
+                var user = context.Users.Where(x => x.Username == username && x.Password == password).FirstOrDefault();
+                if (user != null)
+                {
+                    context.Entry(user).Reference(x => x.Role).Load();
+                }
+                return user;
+            }
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<User> GetAll(bool eagerLoading)
         {
-            return context.Users.OrderBy(x => x.Username).ToList();
+            using (var context = new InventoryContext())
+            {
+                if (eagerLoading)
+                    return context.Users.Include(r => r.Role).OrderBy(x => x.Username).ToList();
+                else
+                    return context.Users.OrderBy(x => x.Username).ToList();
+            }
         }
 
         public User GetUser(long ID)
         {
-            return context.Users.Find(ID);
+            using (var context = new InventoryContext())
+            {
+                var user = context.Users.Find(ID);
+                if (user != null)
+                {
+                    context.Entry(user).Reference(x => x.Role).Load();
+                }
+                return user;
+            }
         }
 
-        public void AddInto(User user)
+        public void Add(User user)
         {
-            context.Users.Add(user);
-        }
-
-        public void Save()
-        {
-            context.SaveChanges();
+            using (var context = new InventoryContext())
+            {
+                context.Users.Add(user);
+                context.SaveChanges();
+            }
         }
 
         public void Update(User user)
         {
-            context.Entry(user).State = EntityState.Modified;
+            using (var context = new InventoryContext())
+            {
+                context.Entry(user).State = EntityState.Modified;
+                context.SaveChanges();
+            }
         }
 
         public void Delete(long ID)
         {
-            User user = context.Users.Find(ID);
-            context.Users.Remove(user);
-        }
-
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
+            using (var context = new InventoryContext())
             {
-                if (disposing)
-                {
-                    context.Dispose();
-                }
-            }
-            this.disposed = true;
-        }
+                User user = context.Users.Find(ID);
+                context.Users.Remove(user);
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+                context.SaveChanges();
+            }
         }
     }
 }

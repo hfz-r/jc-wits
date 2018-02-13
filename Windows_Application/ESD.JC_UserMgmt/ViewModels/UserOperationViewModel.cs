@@ -132,8 +132,8 @@ namespace ESD.JC_UserMgmt.ViewModels
                 {
                     RoleList.Add(new Role
                     {
-                        RoleCode = r.RoleCode,
-                        RoleName = r.RoleName
+                        ID = r.ID,
+                        RoleCode = r.RoleCode
                     });
                 }
                 SelectedRole = RoleList.Where(x => x.ID == UserData.RoleID).FirstOrDefault();
@@ -144,7 +144,6 @@ namespace ESD.JC_UserMgmt.ViewModels
         {
             return !string.IsNullOrEmpty(_UsernameAlias);
         }
-
 
         private void Save(object ignored)
         {
@@ -173,37 +172,29 @@ namespace ESD.JC_UserMgmt.ViewModels
                 MessageBox.Show("Name is required.", "Notification", MessageBoxButton.OK);
                 return;
             }
+            else if (SelectedRole == null)
+            {
+                this.SendState = NormalStateKey;
+
+                MessageBox.Show("Role is required.", "Notification", MessageBoxButton.OK);
+                return;
+            }
 
             try
             {
-                var user = UserServices.GetUser(data.ID);
-                if (user != null)
+                bool ok = false;
+                if (data.ID != 0)
                 {
-                    user.Username = UsernameAlias;
-                    user.Password = HashConverter.CalculateHash(Password, UsernameAlias);
-                    user.RoleID = SelectedRole.ID;
-                    user.Name = data.Name;
-                    user.Email = data.Email;
-                    user.Address = data.Address;
-                    user.ModifiedOn = DateTime.Now;
-                    user.ModifiedBy = AuthenticatedUser;
+                    var updateObj = Update(data);
+                    ok = UserServices.Save(updateObj, "Update");
                 }
                 else
                 {
-                    user = new User();
-                    user.Username = UsernameAlias;
-                    user.Password = HashConverter.CalculateHash(Password, UsernameAlias);
-                    user.RoleID = SelectedRole.ID;
-                    user.Name = data.Name;
-                    user.Email = data.Email;
-                    user.Address = data.Address;
-                    user.CreatedOn = DateTime.Now;
-                    user.CreatedBy = AuthenticatedUser;
-                    user.ModifiedOn = DateTime.Now;
-                    user.ModifiedBy = AuthenticatedUser;
+                    var newObj = Add(data);
+                    ok = UserServices.Save(newObj, "Save");
                 }
 
-                if (UserServices.Save(user))
+                if (ok)
                 {
                     this.SendState = SavedStateKey;
                     if (this.navigationJournal != null)
@@ -218,6 +209,41 @@ namespace ESD.JC_UserMgmt.ViewModels
 
                 this.SendState = NormalStateKey;
             }
+        }
+
+        private User Add(User data)
+        {
+            return new User
+            {
+                Username = UsernameAlias,
+                Password = HashConverter.CalculateHash(Password, UsernameAlias),
+                RoleID = SelectedRole.ID,
+                Name = data.Name,
+                Email = data.Email,
+                Address = data.Address,
+                CreatedOn = DateTime.Now,
+                CreatedBy = AuthenticatedUser,
+                ModifiedOn = DateTime.Now,
+                ModifiedBy = AuthenticatedUser
+            };
+        }
+
+        private User Update(User data)
+        {
+            var userUpdate = UserServices.GetUser(data.ID);
+            if (userUpdate != null)
+            {
+                userUpdate.Username = UsernameAlias;
+                userUpdate.Password = HashConverter.CalculateHash(Password, UsernameAlias);
+                userUpdate.Role = SelectedRole;
+                userUpdate.RoleID = SelectedRole.ID;
+                userUpdate.Name = data.Name;
+                userUpdate.Email = data.Email;
+                userUpdate.Address = data.Address;
+                userUpdate.ModifiedOn = DateTime.Now;
+                userUpdate.ModifiedBy = AuthenticatedUser;
+            }
+            return userUpdate;
         }
 
         private void Cancel()

@@ -72,12 +72,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoolConverter.cs" />
+    <Compile Include="TooltipsConverter.cs" />
+    <Compile Include="BrushColorConverter.cs" />
+    <Compile Include="CollectionToBooleanConverter.cs" />
     <Compile Include="Events\AuthenticatedUserEvent.cs" />
     <Compile Include="Events\SelectedRoleEvent.cs" />
     <Compile Include="Events\UserSelectedEvent.cs" />
     <Compile Include="HashConverter.cs" />
+    <Compile Include="IgnoreNewItemPlaceHolderConverter.cs" />
     <Compile Include="ObjectToVisibilityConverter.cs" />
     <Compile Include="ObservableCommand.cs" />
+    <Compile Include="Utilities\ISequencedObject.cs" />
+    <Compile Include="Utilities\ObservableObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -102,6 +108,12 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
+      <Project>{833691bf-1faf-402e-8230-d883ba77d682}</Project>
+      <Name>DataLayer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

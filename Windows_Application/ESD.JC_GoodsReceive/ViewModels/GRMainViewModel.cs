@@ -177,9 +177,20 @@ namespace ESD.JC_GoodsReceive.ViewModels
         {
             ImportBtn = null;
 
+            tempCollection = new ObservableCollection<GoodsReceive>();
             grCollection = new ObservableCollection<GoodsReceive>();
             foreach (var obj in grServices.GetAll())
             {
+                if (obj.QtyReceived == null)
+                    obj.Ok = false;
+                else
+                {
+                    if (obj.QtyReceived == obj.Quantity)
+                        obj.Ok = true;
+                    else if (obj.QtyReceived < obj.Quantity)
+                        obj.Ok = null;
+                }
+                
                 obj.IsChecked = false;
                 grCollection.Add(obj);
             }
@@ -216,6 +227,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 if (CountChecked.Where(x => x == true).Count() > 0)
                     CountChecked.Remove(true);
             }
+            RaisePropertyChanged("GoodReceives");
 
             _PrintLblCommand.RaiseCanExecuteChanged();
         }
@@ -289,10 +301,14 @@ namespace ESD.JC_GoodsReceive.ViewModels
                         Content = "Are you confirm you want to save this?",
                         Title = "Confirm"
                     },
-                    c => { InteractionResultMessage = c.Confirmed ? Save() : "NOT OK!"; });
-
-            if (Save() == "OK")
-                OnLoaded();
+                     c =>
+                     {
+                         if (c.Confirmed)
+                         {
+                            if (Save())
+                                 OnLoaded();
+                         }
+                     });
         }
 
         private void ReadCSVFile(string fullName)
@@ -334,25 +350,61 @@ namespace ESD.JC_GoodsReceive.ViewModels
             }
         }
 
-        private string Save()
+        private bool Save()
         {
+            bool ok = false;
             try
             {
+                List<GoodsReceive> toAddList = new List<GoodsReceive>();
+                List<GoodsReceive> toUpdateList = new List<GoodsReceive>();
+
                 foreach (GoodsReceive gr in tempCollection)
                 {
                     if (gr.IsChecked == true)
                     {
-                        if (!grServices.Save(gr))
-                            throw new Exception();
+                        var obj = grServices.GetSAPNo(gr.Material);
+                        {
+                            if (obj != null)
+                            {
+                                Update(ref obj, gr);
+                                toUpdateList.Add(obj);
+                            }
+                            else
+                            {
+                                toAddList.Add(gr);
+                            }
+                        }
                     }
                 }
+
+                if (toAddList.Count() > 0)
+                    ok = grServices.Save(toAddList, "Save");
+                if (toUpdateList.Count() > 0)
+                    ok = grServices.Save(toUpdateList, "Update");
+
+                return ok;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+        }
 
-            return "OK";
+        private void Update(ref GoodsReceive obj, GoodsReceive gr)
+        {
+            obj.Vendor = gr.Vendor;
+            obj.Material = gr.Material;
+            //received checking, to-do
+            obj.MaterialShortText = gr.MaterialShortText;
+            obj.Ok = gr.Ok;
+            obj.Quantity = gr.Quantity;
+            obj.StorageLoc = gr.StorageLoc;
+            obj.Plant = gr.Plant;
+            obj.StorageBin = gr.StorageBin;
+            obj.DocumentDate = gr.DocumentDate;
+            obj.PostingDate = DateTime.Now;
+            obj.ModifiedOn = DateTime.Now;
+            obj.ModifiedBy = AuthenticatedUser;
         }
 
         private void PopulateRecords(ImportCLassModel rec, ObservableCollection<GoodsReceive> temp)
@@ -385,12 +437,30 @@ namespace ESD.JC_GoodsReceive.ViewModels
         {
             ExcelNPOIStorage storage = new ExcelNPOIStorage(typeof(ImportCLassModel), 0, 0);
 
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string path = Path.Combine( Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Export GR");
+
+            if (!Directory.Exists(path))
+            {
+                try
+                {
+                    Directory.CreateDirectory(path);
+                }
+                catch (IOException ie)
+                {
+                    Console.WriteLine("IO Error: " + ie.Message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("General Error: " + e.Message);
+                }
+            }
+
             storage.FileName = path + 
-                string.Concat("GoodsReceiveExport_" + DateTime.Now.ToString("yyyy-MM-dd_HHmm", 
+                string.Concat(@"\GoodsReceiveExport_" + DateTime.Now.ToString("yyyy-MM-dd_HHmm", 
                 System.Globalization.CultureInfo.InvariantCulture)) + 
                 ".xlsx";
 
+            storage.ColumnsHeaders.Add("Document Date");
             storage.ColumnsHeaders.Add("PO Number");
             storage.ColumnsHeaders.Add("Vendor");
             storage.ColumnsHeaders.Add("Material");
@@ -400,7 +470,6 @@ namespace ESD.JC_GoodsReceive.ViewModels
             storage.ColumnsHeaders.Add("Storage Loc");
             storage.ColumnsHeaders.Add("Plant");
             storage.ColumnsHeaders.Add("Storage Bin");
-            storage.ColumnsHeaders.Add("Document Date");
 
             ObservableCollection<ImportCLassModel> importObj = new ObservableCollection<ImportCLassModel>();
             foreach (var gr in grCollection)
@@ -473,7 +542,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                         StreamReader txtReader = new StreamReader(fileName, false);
                         string xTemp = txtReader.ReadToEnd();
                         txtReader.Close();
-                        List<string>[] splitString = new List<string>[2];
+                        var parts = new Dictionary<int, string>[2];
 
                         foreach (var item in listObj)
                         {
@@ -488,14 +557,16 @@ namespace ESD.JC_GoodsReceive.ViewModels
                             strPallet.Append(strPalletTemplate.ToString());
                             strPallet.Replace("<SAPNO>", item.Material);
                             strPallet.Replace("<LEGACYNO>", item.Material);
+                            strPallet.Replace("<BIN>", item.StorageBin);
+                            strPallet.Replace("<QTY>", item.Quantity.ToString());
 
                             //start EN & MS String Builder
                             for (int x = 0; x < 2; x++)
                             {
-                                splitString[x] = new List<string>();
+                                parts[x] = new Dictionary<int, string>();
+
                                 string input = string.Empty;
                                 string lbl = string.Empty;
-
                                 switch (x)
                                 {
                                     case 0:
@@ -508,28 +579,32 @@ namespace ESD.JC_GoodsReceive.ViewModels
                                         break;
                                 }
 
-                                splitString[x] = Split(input, 33);
+                                string[] words = input.Split(' ');
 
-                                int splitStringLength = splitString[x].Count;
-                                int counter = 1;
-
-                                if (splitStringLength == 1)
+                                string part = string.Empty;
+                                int partCounter = 0;
+                                foreach (var word in words)
                                 {
-                                    for (int i = 0; i < 2; i++)
+                                    if (part.Length + word.Length < 33)
                                     {
-                                        splitString[x].Add(string.Empty);
+                                        part += string.IsNullOrEmpty(part) ? word : " " + word;
+                                    }
+                                    else
+                                    {
+                                        parts[x].Add(partCounter, part);
+                                        part = word;
+                                        partCounter++;
                                     }
                                 }
+                                parts[x].Add(partCounter, part);
 
-                                foreach (var strItem in splitString[x])
+                                if (partCounter == 0)
+                                    parts[x].Add((partCounter + 1), string.Empty);
+
+                                foreach (var i in parts[x])
                                 {
-                                    string index = lbl + counter.ToString() + ">";
-
-                                    if (counter <= 2)
-                                    {
-                                        strPallet.Replace(index, strItem);
-                                    }
-                                    counter++;
+                                    string index = lbl + (i.Key + 1).ToString() + ">";
+                                    strPallet.Replace(index, i.Value);
                                 }
                             }
                             //end EN & MS String Builder
@@ -582,14 +657,20 @@ namespace ESD.JC_GoodsReceive.ViewModels
         {
             var parameters = new NavigationParameters();
             parameters.Add("AuthenticatedUser", AuthenticatedUser);
-            parameters.Add("PurchaseOrder", gr.PurchaseOrder);
+            parameters.Add("ID", gr.ID);
 
             this.regionManager.RequestNavigate(RegionNames.MainContentRegion, new Uri(grDetailsViewName + parameters, UriKind.Relative));
         }
 
         private void SetIsSelectedProperty(bool isSelected)
         {
-            foreach (var gr in grCollection)
+            ObservableCollection<GoodsReceive> tempObj = new ObservableCollection<GoodsReceive>();
+            if (tempCollection != null && tempCollection.Count() > 0)
+                tempObj = tempCollection;
+            else
+                tempObj = grCollection;
+
+            foreach (var gr in tempObj)
             {
                 gr.IsChecked = isSelected;
             }
@@ -606,32 +687,43 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
             _PrintLblCommand.RaiseCanExecuteChanged();
 
-            GoodReceives = new ListCollectionView(grCollection);
+            GoodReceives = new ListCollectionView(tempObj);
+            CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
         }
     }
 
     [DelimitedRecord("")]
     public class ImportCLassModel
     {
+        [FieldOrder(1)]
         public DateTime DocumentDate { get; set; }
 
+        [FieldOrder(2)]
         public string PurchaseOrder { get; set; }
 
+        [FieldOrder(3)]
         public string Vendor { get; set; }
 
+        [FieldOrder(4)]
         public string Material { get; set; }
 
+        [FieldOrder(5)]
         public string MaterialShortText { get; set; }
 
+        [FieldOrder(6)]
         public bool? Ok { get; set; }
 
+        [FieldOrder(7)]
         [FieldConverter(ConverterKind.Decimal, ".")]
         public decimal Quantity { get; set; }
 
+        [FieldOrder(8)]
         public string StorageLoc { get; set; }
 
+        [FieldOrder(9)]
         public int Plant { get; set; }
 
+        [FieldOrder(10)]
         public string StorageBin { get; set; }
     }
 }

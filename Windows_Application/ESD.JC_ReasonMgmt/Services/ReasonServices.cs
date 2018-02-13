@@ -16,9 +16,9 @@ namespace ESD.JC_ReasonMgmt.Services
             reasonRepository = _reasonRepository;
         }
 
-        public List<Reason> GetAll()
+        public IEnumerable<Reason> GetAll()
         {
-            return reasonRepository.GetAll();
+            return reasonRepository.GetAll(false);
         }
 
         public Reason GetReason(long ID)
@@ -26,11 +26,18 @@ namespace ESD.JC_ReasonMgmt.Services
             return reasonRepository.GetReason(ID);
         }
 
-        public bool Save(Reason reason)
+        public bool Save(List<Reason> reasons, string state = "")
         {
             try
             {
-                reasonRepository.Save(reason);
+                if (!string.IsNullOrEmpty(state) && state == "Save")
+                {
+                    reasons.ForEach(x => reasonRepository.Add(x));
+                }
+                else if (!string.IsNullOrEmpty(state) && state == "Update")
+                {
+                    reasons.ForEach(x => reasonRepository.Update(x));
+                }
             }
             catch (DbEntityValidationException e)
             {
@@ -54,25 +61,26 @@ namespace ESD.JC_ReasonMgmt.Services
             return true;
         }
 
-        public void Delete(long? ID)
+        public bool Delete(long ID)
         {
             try
             {
-                var reasonObj = GetReason(ID.GetValueOrDefault());
+                var reasonObj = GetReason(ID);
                 if (reasonObj != null)
                 {
-                    reasonRepository.Delete(ID.Value);
+                    reasonRepository.Delete(ID);
                 }
                 else
                 {
-                    throw new Exception("ReasonCode Not Found.");
+                    throw new Exception("Reason Not Found.");
                 }
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-        }
 
+            return true;
+        }
     }
 }

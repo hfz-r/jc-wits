@@ -1,15 +1,20 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System;
+using System.Data.Entity;
 
 namespace DataLayer.Repositories
 {
     public class RoleRepository : IRoleRepository
     {
-        public List<Role> GetAll()
+        public IEnumerable<Role> GetAll(bool eagerLoading)
         {
             using (var context = new InventoryContext())
             {
-                return context.Roles.OrderBy(x => x.RoleCode).ToList();
+                if (eagerLoading)
+                    return context.Roles.Include(u => u.Users).OrderBy(x => x.RoleCode).ToList();
+                else
+                    return context.Roles.OrderBy(x => x.RoleCode).ToList();
             }
         }
 
@@ -17,32 +22,29 @@ namespace DataLayer.Repositories
         {
             using (var context = new InventoryContext())
             {
-                var roles = GetAll();
-
-                return roles.Where(x => x.ID == ID).FirstOrDefault();
+                var role = context.Roles.Find(ID);
+                if (role != null)
+                {
+                    context.Entry(role).Collection(x => x.Users).Load();
+                }
+                return role;
             }
         }
 
-        public void Save(Role role)
+        public void Add(Role role)
         {
             using (var context = new InventoryContext())
             {
-                var obj = context.Roles.Where(x => x.ID == role.ID).FirstOrDefault();
+                context.Roles.Add(role);
+                context.SaveChanges();
+            }
+        }
 
-                if (obj == null)
-                {
-                    context.Roles.Add(role);
-                }
-                else
-                {
-                    obj.RoleCode = role.RoleCode;
-                    obj.RoleName = role.RoleName;
-                    obj.Module = role.Module;
-                    obj.Description = role.Description;
-                    obj.ModifiedOn = role.ModifiedOn;
-                    obj.ModifiedBy = role.ModifiedBy;
-                }
-
+        public void Update(Role role)
+        {
+            using (var context = new InventoryContext())
+            {
+                context.Entry(role).State = EntityState.Modified;
                 context.SaveChanges();
             }
         }
@@ -51,11 +53,8 @@ namespace DataLayer.Repositories
         {
             using (var context = new InventoryContext())
             {
-                var obj = context.Roles.Where(x => x.ID == ID).FirstOrDefault();
-                if (obj != null)
-                {
-                    context.Roles.Remove(obj);
-                }
+                var roles = context.Roles.Where(id => id.ID == ID).Include(u => u.Users);
+                context.Roles.RemoveRange(roles);
 
                 context.SaveChanges();
             }

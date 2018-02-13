@@ -12,4 +12,8 @@ C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructur
 C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.csproj.GenerateResource.Cache
 C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.dll
 C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.pdb
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\DataLayer.dll
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\EntityFramework.dll
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\DataLayer.pdb
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\bin\Debug\EntityFramework.xml
 C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.csprojResolveAssemblyReference.cache

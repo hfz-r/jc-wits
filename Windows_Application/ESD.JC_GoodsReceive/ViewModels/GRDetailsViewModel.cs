@@ -49,15 +49,15 @@ namespace ESD.JC_GoodsReceive.ViewModels
             }
         }
 
-        private string GetRequestedPONo(NavigationContext navigationContext)
+        private long? GetRequestedGRID(NavigationContext navigationContext)
         {
-            var pono = navigationContext.Parameters["PurchaseOrder"];
-            if (pono != null)
+            var grid = navigationContext.Parameters["ID"];
+            if (grid != null)
             {
-                return pono.ToString();
+                return long.Parse(grid.ToString());
             }
 
-            return string.Empty;
+            return null;
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -67,9 +67,9 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 return true;
             }
 
-            var requestedPONo = GetRequestedPONo(navigationContext);
+            var requestedGRID = GetRequestedGRID(navigationContext);
 
-            return !string.IsNullOrEmpty(requestedPONo) == (requestedPONo == GoodReceive.PurchaseOrder);
+            return requestedGRID.HasValue && requestedGRID.Value == GoodReceive.ID;
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
@@ -81,10 +81,10 @@ namespace ESD.JC_GoodsReceive.ViewModels
             AuthenticatedUser = (!string.IsNullOrEmpty((string)navigationContext.Parameters["AuthenticatedUser"]) ?
                 (string)navigationContext.Parameters["AuthenticatedUser"] : string.Empty);
 
-            var po_no = GetRequestedPONo(navigationContext);
-            if (!string.IsNullOrEmpty(po_no))
+            var grid = GetRequestedGRID(navigationContext);
+            if (grid.HasValue)
             {
-                this.GoodReceive = GRServices.GetGR(po_no);
+                this.GoodReceive = GRServices.GetGR(grid.Value);
             }
 
             this.navigationJournal = navigationContext.NavigationService.Journal;

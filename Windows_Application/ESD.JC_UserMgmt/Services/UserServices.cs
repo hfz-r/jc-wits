@@ -10,11 +10,6 @@ namespace ESD.JC_UserMgmt.Services
     {
         private IUserRepository userRepository;
 
-        public UserServices()
-        {
-            userRepository = new UserRepository(new InventoryContext());
-        }
-
         public UserServices(IUserRepository _userRepository)
         {
             userRepository = _userRepository;
@@ -22,28 +17,26 @@ namespace ESD.JC_UserMgmt.Services
 
         public IEnumerable<User> GetAll()
         {
-            return userRepository.GetAll();
+            return userRepository.GetAll(true);
         }
 
-        public User GetUser(long? ID)
+        public User GetUser(long ID)
         {
-            return userRepository.GetUser(ID.GetValueOrDefault());
+            return userRepository.GetUser(ID);
         }
 
-        public bool Save(User User)
+        public bool Save(User User, string state = "")
         {
             try
             {
-                User obj = GetUser(User.ID);
-                if (obj == null)
+                if (!string.IsNullOrEmpty(state) && state == "Save")
                 {
-                    userRepository.AddInto(User);
+                    userRepository.Add(User);
                 }
-                else
+                else if (!string.IsNullOrEmpty(state) && state == "Update")
                 {
                     userRepository.Update(User);
                 }
-                userRepository.Save();
             }
             catch (DbEntityValidationException e)
             {
@@ -67,14 +60,14 @@ namespace ESD.JC_UserMgmt.Services
             return true;
         }
 
-        public void Delete(long? ID)
+        public void Delete(long ID)
         {
             try
             {
-                var userObj = GetUser(ID.GetValueOrDefault());
+                var userObj = GetUser(ID);
                 if (userObj != null)
                 {
-                    userRepository.Delete(ID.Value);
+                    userRepository.Delete(ID);
                 }
                 else
                 {

@@ -1,6 +1,9 @@
 ﻿using System.Windows.Controls;
 using ESD.JC_ReasonMgmt.ViewModels;
+using ESD.JC_ReasonMgmt.ModelsExt;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Input;
 
 namespace ESD.JC_ReasonMgmt.Views
 {
@@ -9,6 +12,8 @@ namespace ESD.JC_ReasonMgmt.Views
     /// </summary>
     public partial class ReasonMainView : UserControl
     {
+        private ReasonMainViewViewModel m_ViewModel;
+
         public ReasonMainView(ReasonMainViewViewModel viewModel)
         {
             InitializeComponent();
@@ -30,6 +35,14 @@ namespace ESD.JC_ReasonMgmt.Views
             {
                 mainPanelBorder.Margin = new Thickness(0);
             }
+        }
+
+        /// <summary>
+        /// Gets the view model from the data Context and assigns it to a member variable.
+        /// </summary>
+        private void OnMainGridDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            m_ViewModel = (ReasonMainViewViewModel)this.DataContext;
         }
     }
 }

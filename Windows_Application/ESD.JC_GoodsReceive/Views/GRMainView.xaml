@@ -12,7 +12,9 @@
 
     <UserControl.Resources>
         <infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
-        <infrastructure:BoolConverter x:Key="BoolConv"/>
+        <infrastructure:BrushColorConverter x:Key="BooleanToBrushConverter"/>
+        <infrastructure:TooltipsConverter x:Key="TooltipsToString"/>
+        <infrastructure:CollectionToBooleanConverter x:Key="CollectionToBooleanConverter"/>
         <infrastructure:ObservableCommand x:Key="OpenGRDetailsCommand" Value="{Binding OpenGRDetailsCommand}"/>
         <DataTemplate x:Key="GRTemplate">
             <Grid>
@@ -83,8 +85,7 @@
 
                         <Border Grid.Row="1" Grid.RowSpan="4" Grid.Column="1" Grid.ColumnSpan="3" Margin="-5" BorderThickness="2" BorderBrush="Black"/>
 
-                        <Image Grid.Row="1" Grid.RowSpan="2" Grid.Column="3" Grid.ColumnSpan="1"
-                       Source="/Resources/img_qrcode.png" Height="60" Width="60"/>
+                        <Image Grid.Row="1" Grid.RowSpan="2" Grid.Column="3" Grid.ColumnSpan="1" Source="/Resources/img_qrcode.png" Height="60" Width="60"/>
 
                         <TextBlock Grid.Row="1" Grid.Column="1"  Text="SAP No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoLbl"/>
                         <TextBlock Grid.Row="2" Grid.Column="1" Text="Legacy No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoLbl"/>
@@ -202,15 +203,15 @@
                         </Style>
                     </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.Header>
-                        <!--<CheckBox ToolTipService.ToolTip="Check All"
-                                  IsChecked="{Binding Path=DataContext.AllSelected, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" />-->
-                        <CheckBox ToolTipService.ToolTip="Check All">
+                        <CheckBox ToolTipService.ToolTip="Check All" 
+                                  IsThreeState="True"
+                                  IsChecked="{Binding DataContext.GoodReceives, ElementName=LayoutRoot, Converter={StaticResource CollectionToBooleanConverter}, Mode=OneWay}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Checked" >
-                                    <wpf:InvokeCommandAction Command="{Binding DataContext.CheckedAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" />
+                                    <wpf:InvokeCommandAction Command="{Binding DataContext.CheckedAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
                                 </i:EventTrigger>
                                 <i:EventTrigger EventName="Unchecked" >
-                                    <wpf:InvokeCommandAction Command="{Binding DataContext.UnCheckedAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" />
+                                    <wpf:InvokeCommandAction Command="{Binding DataContext.UnCheckedAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </CheckBox>
@@ -238,14 +239,32 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Vendor" Width="Auto" Binding="{Binding Vendor}" CanUserSort="True" Foreground="Black"/>
                 <DataGridTextColumn Header="Material" Width="Auto" Binding="{Binding Material}" CanUserSort="False" Foreground="Black"/>
-                <DataGridTextColumn Header="Material Short Text" Width="Auto" Binding="{Binding MaterialShortText}" CanUserSort="False" Foreground="Black">
+                <DataGridTextColumn Header="Material Short Text" Width="*" Binding="{Binding MaterialShortText}" CanUserSort="False" Foreground="Black">
                     <DataGridTextColumn.ElementStyle>
                         <Style>
                             <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="OK" Width="Auto" Binding="{Binding Ok}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="OK" Width="Auto" Binding="{Binding Ok}" Foreground="Transparent">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="{Binding Ok, Converter={StaticResource BooleanToBrushConverter}}"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource TooltipsToString}" >
+                                        <Binding Path="QtyReceived" />
+                                        <Binding Path="Quantity"/>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Quantity" Width="Auto" Binding="{Binding Quantity}" CanUserSort="False" Foreground="Black"/>
                 <DataGridTextColumn Header="Storage Loc" Width="Auto" Binding="{Binding StorageLoc}" CanUserSort="True" Foreground="Black"/>
                 <DataGridTextColumn Header="Plant" Width="Auto" Binding="{Binding Plant}" CanUserSort="True" Foreground="Black"/>

@@ -8,7 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/btn_ok.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/btn_xok.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/btn_save.png")]
 
 

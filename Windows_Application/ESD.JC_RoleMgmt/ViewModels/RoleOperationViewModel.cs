@@ -116,30 +116,19 @@ namespace ESD.JC_RoleMgmt.ViewModels
 
             try
             {
-                var role = RoleServices.GetRole(data.ID);
-                if (role != null)
+                bool ok = false;
+                if (data.ID != 0)
                 {
-                    role.RoleCode = RoleCodeAlias;
-                    role.RoleName = data.RoleName;
-                    role.Module = data.Module;
-                    role.Description = !string.IsNullOrEmpty(data.Description) ? data.Description : string.Empty;
-                    role.ModifiedOn = DateTime.Now;
-                    role.ModifiedBy = AuthenticatedUser;
+                    var updateObj = Update(data);
+                    ok = RoleServices.Save(updateObj, "Update");
                 }
                 else
                 {
-                    role = new Role();
-                    role.RoleCode = RoleCodeAlias;
-                    role.RoleName = data.RoleName;
-                    role.Module = data.Module;
-                    role.Description = data.Description;
-                    role.CreatedOn = DateTime.Now;
-                    role.CreatedBy = AuthenticatedUser;
-                    role.ModifiedOn = DateTime.Now;
-                    role.ModifiedBy = AuthenticatedUser;
+                    var newObj = Add(data);
+                    ok = RoleServices.Save(newObj, "Save");
                 }
 
-                if (RoleServices.Save(role))
+                if (ok)
                 {
                     this.SendState = SavedStateKey;
                     if (this.navigationJournal != null)
@@ -154,6 +143,36 @@ namespace ESD.JC_RoleMgmt.ViewModels
 
                 this.SendState = NormalStateKey;
             }
+        }
+
+        private Role Add(Role data)
+        {
+            return new Role
+            {
+                RoleCode = RoleCodeAlias,
+                RoleName = data.RoleName,
+                Module = data.Module,
+                Description = data.Description,
+                CreatedOn = DateTime.Now,
+                CreatedBy = AuthenticatedUser,
+                ModifiedOn = DateTime.Now,
+                ModifiedBy = AuthenticatedUser
+            };
+        }
+
+        private Role Update(Role data)
+        {
+            var roleUpdate = RoleServices.GetRole(data.ID);
+            if (roleUpdate != null)
+            {
+                roleUpdate.RoleCode = RoleCodeAlias;
+                roleUpdate.RoleName = data.RoleName;
+                roleUpdate.Module = data.Module;
+                roleUpdate.Description = !string.IsNullOrEmpty(data.Description) ? data.Description : string.Empty;
+                roleUpdate.ModifiedOn = DateTime.Now;
+                roleUpdate.ModifiedBy = AuthenticatedUser;
+            }
+            return roleUpdate;
         }
 
         private bool CanSave(object ignored)

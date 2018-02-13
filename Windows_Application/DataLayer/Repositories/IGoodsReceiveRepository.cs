@@ -4,10 +4,10 @@ namespace DataLayer.Repositories
 {
     public interface IGoodsReceiveRepository
     {
-        List<GoodsReceive> GetAll();
-
-        GoodsReceive GetGR(string purchase_order);
-
-        void Save(GoodsReceive gr);
+        IEnumerable<GoodsReceive> GetAll(bool eagerLoading);
+        GoodsReceive GetGR(long ID);
+        GoodsReceive GetSAPNo(string sap_no);
+        void Add(GoodsReceive gr);
+        void Update(GoodsReceive gr);
     }
 }

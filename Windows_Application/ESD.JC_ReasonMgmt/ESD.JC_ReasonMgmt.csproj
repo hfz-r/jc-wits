@@ -96,6 +96,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ModelsExt\ReasonExt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -112,20 +113,13 @@
     <Compile Include="ReasonMgmtModule.cs" />
     <Compile Include="Services\IReasonServices.cs" />
     <Compile Include="Services\ReasonServices.cs" />
-    <Compile Include="ViewModels\ReasonDetailsViewModel.cs" />
+    <Compile Include="Services\SequencingService.cs" />
     <Compile Include="ViewModels\ReasonMainViewViewModel.cs" />
-    <Compile Include="ViewModels\ReasonOperationViewModel.cs" />
-    <Compile Include="Views\ReasonDetailsView.xaml.cs">
-      <DependentUpon>ReasonDetailsView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ReasonMainView.xaml.cs">
       <DependentUpon>ReasonMainView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReasonMgmtNavigationItemView.xaml.cs">
       <DependentUpon>ReasonMgmtNavigationItemView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ReasonOperationView.xaml.cs">
-      <DependentUpon>ReasonOperationView.xaml</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -153,19 +147,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\ReasonDetailsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ReasonMainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ReasonMgmtNavigationItemView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ReasonOperationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

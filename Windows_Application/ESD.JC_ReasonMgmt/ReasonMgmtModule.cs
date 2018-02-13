@@ -27,8 +27,6 @@ namespace ESD.JC_ReasonMgmt
 
             this.regionManager.RegisterViewWithRegion(RegionNames.MainNavigationRegion, () => this.container.Resolve<ReasonMgmtNavigationItemView>());
             this.regionManager.RegisterViewWithRegion(RegionNames.MainContentRegion, () => this.container.Resolve<ReasonMainView>());
-            this.container.RegisterTypeForNavigation<ReasonDetailsView>();
-            this.container.RegisterTypeForNavigation<ReasonOperationView>();
         }
     }
 }

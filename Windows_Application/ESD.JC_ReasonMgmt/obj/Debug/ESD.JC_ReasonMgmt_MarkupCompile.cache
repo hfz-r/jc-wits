@@ -4,17 +4,17 @@
 library
 C#
 .cs
-C:\Users\yennyenn\Desktop\Windows_Application\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\
+C:\WITS\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\
 ESD.JC_ReasonMgmt
 none
 false
 DEBUG;TRACE
 
-4-858407050
+291955410
 
-13-88288884
-781586125825
-Views\ReasonDetailsView.xaml;Views\ReasonMainView.xaml;Views\ReasonMgmtNavigationItemView.xaml;Views\ReasonOperationView.xaml;
+11-930180573
+78702429920
+Views\ReasonMainView.xaml;Views\ReasonMgmtNavigationItemView.xaml;
 
 False
 

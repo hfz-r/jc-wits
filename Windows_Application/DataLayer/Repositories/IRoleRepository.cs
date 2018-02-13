@@ -4,12 +4,10 @@ namespace DataLayer.Repositories
 {
     public interface IRoleRepository
     {
-        List<Role> GetAll();
-
+        IEnumerable<Role> GetAll(bool eagerLoading);
         Role GetRole(long ID);
-
-        void Save(Role role);
-
+        void Add(Role user);
+        void Update(Role user);
         void Delete(long ID);
     }
 }

@@ -4,12 +4,10 @@ namespace DataLayer.Repositories
 {
     public interface IReasonRepository
     {
-        List<Reason> GetAll();
-
+        IEnumerable<Reason> GetAll(bool eagerLoading);
         Reason GetReason(long ID);
-
-        void Save(Reason reason);
-
+        void Add(Reason reason);
+        void Update(Reason reason);
         void Delete(long ID);
     }
 }

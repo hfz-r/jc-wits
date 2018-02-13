@@ -4,15 +4,15 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="9df45a4359ca4f6f921b805a21eacd57" Name="Diagram1" ZoomLevel="89">
-        <EntityTypeShape EntityType="InventoryModel.GoodsReceive" Width="1.5" PointX="0.75" PointY="1.125" />
-        <EntityTypeShape EntityType="InventoryModel.GRTransaction" Width="1.5" PointX="3" PointY="2.375" />
-        <EntityTypeShape EntityType="InventoryModel.Role" Width="1.5" PointX="5.75" PointY="1.125" />
-        <EntityTypeShape EntityType="InventoryModel.User" Width="1.5" PointX="8" PointY="1" />
+      <Diagram DiagramId="9df45a4359ca4f6f921b805a21eacd57" Name="Diagram1" ZoomLevel="108">
+        <EntityTypeShape EntityType="InventoryModel.GoodsReceive" Width="1.5" PointX="0.75" PointY="8.25" />
+        <EntityTypeShape EntityType="InventoryModel.GRTransaction" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="InventoryModel.Reason" Width="1.5" PointX="0.75" PointY="1" />
+        <EntityTypeShape EntityType="InventoryModel.Role" Width="1.5" PointX="2.75" PointY="5.125" />
         <AssociationConnector Association="InventoryModel.FK_GoodsReceive_GRID" />
-        <AssociationConnector Association="InventoryModel.FK_Role_RoleID" />
-        <EntityTypeShape EntityType="InventoryModel.Reason" Width="1.5" PointX="3.375" PointY="6" />
         <AssociationConnector Association="InventoryModel.FK_Reason_ReasonID" />
+        <EntityTypeShape EntityType="InventoryModel.User" Width="1.5" PointX="5" PointY="5" />
+        <AssociationConnector Association="InventoryModel.FK_Role_RoleID" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

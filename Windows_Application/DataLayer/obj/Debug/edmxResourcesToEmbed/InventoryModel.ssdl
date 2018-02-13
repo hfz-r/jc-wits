@@ -14,8 +14,8 @@
     <Property Name="MaterialShortText" Type="varchar" MaxLength="200" Nullable="false" />
     <Property Name="Ok" Type="bit" />
     <Property Name="Quantity" Type="numeric" Precision="18" Scale="0" Nullable="false" />
-    <Property Name="Eun" Type="varchar" MaxLength="10" Nullable="false" />
-    <Property Name="MvmtType" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="Eun" Type="varchar" MaxLength="10" />
+    <Property Name="MvmtType" Type="varchar" MaxLength="10" />
     <Property Name="StorageLoc" Type="nvarchar" MaxLength="200" Nullable="false" />
     <Property Name="Plant" Type="int" Nullable="false" />
     <Property Name="StorageBin" Type="varchar" MaxLength="20" Nullable="false" />
@@ -25,6 +25,7 @@
     <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
     <Property Name="ModifiedBy" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="QtyReceived" Type="numeric" Precision="18" Scale="0" />
   </EntityType>
   <EntityType Name="GRTransaction">
     <Key>

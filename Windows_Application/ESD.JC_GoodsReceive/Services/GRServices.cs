@@ -16,21 +16,33 @@ namespace ESD.JC_GoodsReceive.Services
             this.grRepository = grRepository;
         }
 
-        public List<GoodsReceive> GetAll()
+        public IEnumerable<GoodsReceive> GetAll()
         {
-            return grRepository.GetAll();
+            return grRepository.GetAll(false);
         }
 
-        public GoodsReceive GetGR(string purchase_order)
+        public GoodsReceive GetGR(long ID)
         {
-            return grRepository.GetGR(purchase_order);
+            return grRepository.GetGR(ID);
         }
 
-        public bool Save(GoodsReceive gr)
+        public GoodsReceive GetSAPNo(string sap_no)
+        {
+            return grRepository.GetSAPNo(sap_no);
+        }
+
+        public bool Save(List<GoodsReceive> grs, string state = "")
         {
             try
             {
-                grRepository.Save(gr);
+                if (!string.IsNullOrEmpty(state) && state == "Save")
+                {
+                    grs.ForEach(x => grRepository.Add(x));
+                }
+                else if (!string.IsNullOrEmpty(state) && state == "Update")
+                {
+                    grs.ForEach(x => grRepository.Update(x));
+                }
             }
             catch (DbEntityValidationException e)
             {

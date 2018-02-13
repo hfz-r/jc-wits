@@ -9,6 +9,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -125,7 +126,7 @@ namespace ESD.JC_RoleMgmt.ViewModels
 
         private void OnLoaded()
         {
-            Roles = new ListCollectionView(RoleServices.GetAll());
+            Roles = new ListCollectionView(RoleServices.GetAll().ToList());
 
             CollectionViewSource.GetDefaultView(Roles).Filter = RoleFilter;
         }
@@ -198,11 +199,11 @@ namespace ESD.JC_RoleMgmt.ViewModels
             return true;
         }
 
-        private string InitDelete(long? ID)
+        private string InitDelete(long ID)
         {
             try
             {
-                if (ID.HasValue)
+                if (ID != 0)
                 {
                     RoleServices.Delete(ID);
                 }

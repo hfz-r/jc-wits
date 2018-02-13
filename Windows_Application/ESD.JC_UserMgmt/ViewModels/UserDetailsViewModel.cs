@@ -96,11 +96,11 @@ namespace ESD.JC_UserMgmt.ViewModels
             GoBack();
         }
 
-        private string InitDelete(long? ID)
+        private string InitDelete(long ID)
         {
             try
             {
-                if (ID.HasValue)
+                if (ID != 0)
                 {
                     UserServices.Delete(ID);
                 }

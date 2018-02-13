@@ -3,13 +3,12 @@ using System.Collections.Generic;
 
 namespace DataLayer.Repositories
 {
-    public interface IUserRepository : IDisposable
+    public interface IUserRepository
     {
         User Login(string username, string password);
-        IEnumerable<User> GetAll();
+        IEnumerable<User> GetAll(bool eagerLoading);
         User GetUser(long ID);
-        void AddInto(User user);
-        void Save();
+        void Add(User user);
         void Update(User user);
         void Delete(long ID);
     }

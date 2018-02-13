@@ -4,7 +4,7 @@
 library
 C#
 .cs
-C:\Users\yennyenn\Desktop\Windows_Application\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\
+C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\
 ESD.JC_RoleMgmt
 none
 false
@@ -12,8 +12,8 @@ DEBUG;TRACE
 
 4-1489901370
 
-17-1656719500
-841766118665
+17-556279583
+84-2118913090
 Views\RoleMainView.xaml;Views\RoleDetailsView.xaml;Views\RoleMgmtNavigationItemView.xaml;Views\RoleOperationView.xaml;
 
 True

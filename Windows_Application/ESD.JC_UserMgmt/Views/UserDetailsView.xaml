@@ -39,7 +39,7 @@
 
                 <TextBlock Text="Role: " FontWeight="Bold"
                            Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="RoleLabel"/>
-                <TextBlock Text="{Binding RoleCode}"                           
+                <TextBlock Text="{Binding Role.RoleCode}"                           
                            Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="RoleData"/>
 
                 <TextBlock Text="Email: " FontWeight="Bold"

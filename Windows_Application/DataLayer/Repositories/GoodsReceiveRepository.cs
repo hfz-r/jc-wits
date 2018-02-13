@@ -1,41 +1,62 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System.Data.Entity;
 
 namespace DataLayer.Repositories
 {
     public class GoodsReceiveRepository : IGoodsReceiveRepository
     {
-        public List<GoodsReceive> GetAll()
+        public IEnumerable<GoodsReceive> GetAll(bool eagerLoading)
         {
             using (var context = new InventoryContext())
             {
-                return context.GoodsReceives.OrderBy(x => x.PostingDate).ToList();
-            }
-        }
-
-        public GoodsReceive GetGR(string purchase_order)
-        {
-            using (var context = new InventoryContext())
-            {
-                return context.GoodsReceives.Where(x => x.PurchaseOrder == purchase_order).FirstOrDefault();
-            }
-        }
-
-        public void Save(GoodsReceive gr)
-        {
-            using (var context = new InventoryContext())
-            {
-                var obj = context.GoodsReceives.Where(x => x.PurchaseOrder == gr.PurchaseOrder).FirstOrDefault();
-
-                if (obj == null)
-                {
-                    context.GoodsReceives.Add(gr);
-                }
+                if (eagerLoading)
+                    return context.GoodsReceives.Include(t => t.GRTransactions).ToList();
                 else
-                {
-                    //edit func
-                }
+                    return context.GoodsReceives.ToList();
+            }
+        }
 
+        public GoodsReceive GetGR(long ID)
+        {
+            using (var context = new InventoryContext())
+            {
+                var gr = context.GoodsReceives.Find(ID);
+                if (gr != null)
+                {
+                    context.Entry(gr).Collection(x => x.GRTransactions).Load();
+                }
+                return gr;
+            }
+        }
+
+        public GoodsReceive GetSAPNo(string sap_no)
+        {
+            using (var context = new InventoryContext())
+            {
+                var gr = context.GoodsReceives.Where(x => x.Material == sap_no).FirstOrDefault();
+                if (gr != null)
+                {
+                    context.Entry(gr).Collection(x => x.GRTransactions).Load();
+                }
+                return gr;
+            }
+        }
+
+        public void Add(GoodsReceive gr)
+        {
+            using (var context = new InventoryContext())
+            {
+                context.GoodsReceives.Add(gr);
+                context.SaveChanges();
+            }
+        }
+
+        public void Update(GoodsReceive gr)
+        {
+            using (var context = new InventoryContext())
+            {
+                context.Entry(gr).State = EntityState.Modified;
                 context.SaveChanges();
             }
         }

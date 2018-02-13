@@ -1,32 +1,36 @@
-﻿using DataLayer;
-using ESD.JC_Infrastructure;
-using ESD.JC_Infrastructure.Events;
+﻿using ESD.JC_Infrastructure.Events;
 using ESD.JC_ReasonMgmt.Services;
+using ESD.JC_ReasonMgmt.ModelsExt;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Windows.Data;
 using System.Windows.Input;
+using ESD.JC_Infrastructure;
+using System.Windows;
+using Prism.Interactivity.InteractionRequest;
+using System.Windows.Controls;
+using System.Linq;
+using System.Collections.Generic;
+using DataLayer;
 
 namespace ESD.JC_ReasonMgmt.ViewModels
 {
     public class ReasonMainViewViewModel : BindableBase
     {
-        private ICollectionView _Reasons;
-        public ICollectionView Reasons
+        private ObservableCollection<ReasonExt> _Reasons;
+        public ObservableCollection<ReasonExt> Reasons
         {
             get { return _Reasons; }
             set { SetProperty(ref _Reasons, value); }
         }
 
-        private Reason _SelectedReason;
-        public Reason SelectedReason
+        private ReasonExt _SelectedReason;
+        public ReasonExt SelectedReason
         {
             get { return _SelectedReason; }
             set { SetProperty(ref _SelectedReason, value); }
@@ -41,7 +45,6 @@ namespace ESD.JC_ReasonMgmt.ViewModels
                 _cellInfo = value;
                 if (_cellInfo != null)
                 {
-                    _editReasonCommand.RaiseCanExecuteChanged();
                     _deleteReasonCommand.RaiseCanExecuteChanged();
                 }
             }
@@ -52,17 +55,6 @@ namespace ESD.JC_ReasonMgmt.ViewModels
         {
             get { return _AuthenticatedUser; }
             set { SetProperty(ref _AuthenticatedUser, value); }
-        }
-
-        private string _InteractionResultMessage;
-        public string InteractionResultMessage
-        {
-            get { return _InteractionResultMessage; }
-            set
-            {
-                SetProperty(ref _InteractionResultMessage, value);
-                this.RaisePropertyChanged("InteractionResultMessage");
-            }
         }
 
         private string _FilterTextBox;
@@ -77,16 +69,22 @@ namespace ESD.JC_ReasonMgmt.ViewModels
             }
         }
 
+        private int _ItemCount;
+        public int ItemCount
+        {
+            get { return _ItemCount; }
+            set { SetProperty(ref _ItemCount, value); }
+        }
+
         private const string reasonDetailsViewName = "ReasonDetailsView";
         private const string reasonOperationViewName = "ReasonOperationView";
 
         private IEventAggregator EventAggregator;
         private IRegionManager RegionManager;
         private IReasonServices ReasonServices;
-        private DelegateCommand<object> _addReasonCommand;
-        private DelegateCommand<object> _editReasonCommand;
+        private DelegateCommand<object> _saveReasonCommand;
         private DelegateCommand<object> _deleteReasonCommand;
-        private InteractionRequest<Confirmation> confirmDeleteInteractionRequest;
+        private InteractionRequest<Confirmation> interactionRequest;
 
         public ReasonMainViewViewModel(IEventAggregator _EventAggregator, IRegionManager _RegionManager, IReasonServices _ReasonServices)
         {
@@ -96,38 +94,52 @@ namespace ESD.JC_ReasonMgmt.ViewModels
             EventAggregator.GetEvent<AuthenticatedUserEvent>().Subscribe(InitAuthenticatedUser);
 
             OnLoadedCommand = new DelegateCommand(OnLoaded);
-            OpenReasonDetailsCommand = new DelegateCommand<Reason>(OpenReasonDetails);
 
-            _addReasonCommand = new DelegateCommand<object>(AddReason);
-            _editReasonCommand = new DelegateCommand<object>(EditReason, CanEdit);
+            _saveReasonCommand = new DelegateCommand<object>(SaveReason);
             _deleteReasonCommand = new DelegateCommand<object>(DeleteReason, CanDelete);
-            confirmDeleteInteractionRequest = new InteractionRequest<Confirmation>();
+            interactionRequest = new InteractionRequest<Confirmation>();
         }
 
         public DelegateCommand OnLoadedCommand { get; private set; }
-        public ICommand OpenReasonDetailsCommand { get; private set; }
-        public ICommand AddReasonCommand
+        public ICommand SaveReasonCommand
         {
-            get { return this._addReasonCommand; }
-        }
-        public ICommand EditReasonCommand
-        {
-            get { return this._editReasonCommand; }
+            get { return this._saveReasonCommand; }
         }
         public ICommand DeleteReasonCommand
         {
             get { return this._deleteReasonCommand; }
         }
-        public IInteractionRequest ConfirmDeleteInteractionRequest
+        public IInteractionRequest InteractionRequest
         {
-            get { return this.confirmDeleteInteractionRequest; }
+            get { return this.interactionRequest; }
         }
 
         private void OnLoaded()
         {
-            Reasons = new ListCollectionView(ReasonServices.GetAll());
+            Reasons = new ObservableCollection<ReasonExt>();
+            Reasons.CollectionChanged += Reasons_CollectionChanged;
+
+            foreach (var r in ReasonServices.GetAll())
+            {
+                Reasons.Add(new ReasonExt
+                {
+                    ID = r.ID,
+                    ReasonDesc = r.ReasonDesc,
+                    ModifiedOn = r.ModifiedOn,
+                    ModifiedBy = r.ModifiedBy
+                });
+            }
 
             CollectionViewSource.GetDefaultView(Reasons).Filter = ReasonFilter;
+
+            Reasons = SequencingService.SetCollectionSequence(Reasons);
+            RaisePropertyChanged("Reasons");
+        }
+
+        private void Reasons_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            ItemCount = Reasons.Count;
+            SequencingService.SetCollectionSequence(Reasons);
         }
 
         private void InitAuthenticatedUser(string user)
@@ -140,34 +152,29 @@ namespace ESD.JC_ReasonMgmt.ViewModels
             if (String.IsNullOrEmpty(FilterTextBox))
                 return true;
 
-            var reason = (Reason)item;
+            var reason = (ReasonExt)item;
+            if (reason.ID == 0)
+                return true;
 
             return (reason.ReasonDesc.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
         }
 
-        private void AddReason(object ignored)
+        private void SaveReason(object ignored)
         {
-            var parameters = new NavigationParameters();
-            parameters.Add("AuthenticatedUser", AuthenticatedUser);
-
-            RegionManager.RequestNavigate(RegionNames.MainContentRegion, new Uri(reasonOperationViewName + parameters, UriKind.Relative));
-        }
-
-        private void EditReason(object ignored)
-        {
-            if (SelectedReason == null)
-                return;
-
-            var parameters = new NavigationParameters();
-            parameters.Add("AuthenticatedUser", AuthenticatedUser);
-            parameters.Add("ID", SelectedReason.ID);
-
-            this.RegionManager.RequestNavigate(RegionNames.MainContentRegion, new Uri(reasonOperationViewName + parameters, UriKind.Relative));
-        }
-
-        private bool CanEdit(object ignored)
-        {
-            return SelectedReason != null;
+            this.interactionRequest.Raise(
+                    new Confirmation
+                    {
+                        Content = "Are you confirm you want to save this?",
+                        Title = "Confirm"
+                    },
+                    c =>
+                    {
+                        if (c.Confirmed)
+                        {
+                            if (InitSave())
+                                OnLoaded();
+                        }
+                    });
         }
 
         private void DeleteReason(object ignored)
@@ -175,32 +182,118 @@ namespace ESD.JC_ReasonMgmt.ViewModels
             if (SelectedReason == null)
                 return;
 
-            this.confirmDeleteInteractionRequest.Raise(
+            if (SelectedReason.ID != 0)
+            {
+                this.interactionRequest.Raise(
                     new Confirmation
                     {
                         Content = "Are you confirm you want to remove this?",
                         Title = "Confirm"
                     },
-                    c => { InteractionResultMessage = c.Confirmed ? InitDelete(SelectedReason.ID) : "NOT OK!"; });
+                    c =>
+                    {
+                        if (c.Confirmed)
+                        {
+                            if (InitDelete(SelectedReason.ID))
+                                OnLoaded();
+                        }
 
-            OnLoaded();
+                    });
+            }
+            else
+            {
+                Reasons.Remove(SelectedReason);
+            }
+        }
+
+        private bool InitSave()
+        {
+            bool ok = false;
+
+            List<ReasonExt> toSaveList = new List<ReasonExt>();
+            List<ReasonExt> toUpdateList = new List<ReasonExt>();
+            foreach (var rsn in Reasons.ToList())
+            {
+                if (rsn.ID == 0 && !string.IsNullOrEmpty(rsn.ReasonDesc))
+                    toSaveList.Add(rsn);
+                else if (rsn.ID != 0)
+                    toUpdateList.Add(rsn);
+            }
+
+            try
+            {
+                List<Reason> addObj = Add(toSaveList);
+                if (addObj.Count() > 0)
+                    ok = ReasonServices.Save(addObj, "Save");
+
+                List<Reason> updateObj = Update(toUpdateList);
+                if (updateObj.Count() > 0)
+                    ok = ReasonServices.Save(updateObj, "Update");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Notification", MessageBoxButton.OK);
+            }
+
+            return ok;
+        }
+
+        private List<Reason> Add(List<ReasonExt> toSaveList)
+        {
+            List<Reason> addObj = new List<Reason>();
+
+            foreach (var o in toSaveList)
+            {
+                var reason = new Reason
+                {
+                    ReasonDesc = o.ReasonDesc,
+                    CreatedOn = DateTime.Now,
+                    CreatedBy = AuthenticatedUser,
+                    ModifiedOn = o.ModifiedOn,
+                    ModifiedBy = AuthenticatedUser
+                };
+                addObj.Add(reason);
+            }
+            return addObj;
+        }
+
+        private List<Reason> Update(List<ReasonExt> toUpdateList)
+        {
+            List<Reason> updateObj = new List<Reason>();
+
+            foreach (var u in toUpdateList)
+            {
+                var reason = ReasonServices.GetReason(u.ID);
+                if (reason != null && reason.ReasonDesc != u.ReasonDesc)
+                {
+                    reason.ReasonDesc = u.ReasonDesc;
+                    reason.ModifiedOn = DateTime.Now;
+                    reason.ModifiedBy = AuthenticatedUser;
+                }
+                updateObj.Add(reason);
+            }
+            return updateObj;
         }
 
         private bool CanDelete(object ignored)
         {
             if (SelectedReason == null)
                 return false;
+            if (CellInfo.Item.ToString().Contains("NewItemPlaceholder"))
+                return false;
 
             return true;
         }
 
-        private string InitDelete(long? ID)
+        private bool InitDelete(long ID)
         {
+            bool ok = false;
+
             try
             {
-                if (ID.HasValue)
+                if (ID != 0)
                 {
-                    ReasonServices.Delete(ID);
+                    ok = ReasonServices.Delete(ID);
                 }
             }
             catch (Exception ex)
@@ -208,16 +301,7 @@ namespace ESD.JC_ReasonMgmt.ViewModels
                 MessageBox.Show(ex.Message, "Notification", MessageBoxButton.OK);
             }
 
-            return "OK!";
-        }
-
-        private void OpenReasonDetails(Reason reason)
-        {
-            var parameters = new NavigationParameters();
-            parameters.Add("AuthenticatedUser", AuthenticatedUser);
-            parameters.Add("ID", SelectedReason.ID);
-
-            this.RegionManager.RequestNavigate(RegionNames.MainContentRegion, new Uri(reasonDetailsViewName + parameters, UriKind.Relative));
+            return ok;
         }
     }
 }

@@ -296,6 +296,9 @@
     <Resource Include="Resources\btn_ok.png" />
     <Resource Include="Resources\btn_xok.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\btn_save.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

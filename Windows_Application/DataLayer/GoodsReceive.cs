@@ -41,6 +41,7 @@ namespace DataLayer
         public string CreatedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }
         public string ModifiedBy { get; set; }
+        public Nullable<decimal> QtyReceived { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GRTransaction> GRTransactions { get; set; }

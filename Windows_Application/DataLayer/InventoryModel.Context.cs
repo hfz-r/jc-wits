@@ -27,8 +27,8 @@ namespace DataLayer
     
         public virtual DbSet<GoodsReceive> GoodsReceives { get; set; }
         public virtual DbSet<GRTransaction> GRTransactions { get; set; }
+        public virtual DbSet<Reason> Reasons { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<Reason> Reasons { get; set; }
     }
 }

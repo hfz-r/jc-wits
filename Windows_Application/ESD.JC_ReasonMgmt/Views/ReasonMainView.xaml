@@ -9,16 +9,15 @@
             xmlns:prism="http://prismlibrary.com/"
             xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure" 
             d:DesignWidth="800" d:DesignHeight="600">
-
     <UserControl.Resources>
-        <infrastructure:ObservableCommand x:Key="OpenReasonDetailsCommand" Value="{Binding OpenReasonDetailsCommand}"/>
+        <infrastructure:IgnoreNewItemPlaceHolderConverter x:Key="ignoreNewItemPlaceHolderConverter"/>
     </UserControl.Resources>
-
+    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <wpf:InvokeCommandAction Command="{Binding OnLoadedCommand}" />
         </i:EventTrigger>
-        <prism:InteractionRequestTrigger SourceObject="{Binding ConfirmDeleteInteractionRequest, Mode=OneWay}">
+        <prism:InteractionRequestTrigger SourceObject="{Binding InteractionRequest, Mode=OneWay}">
             <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
         </prism:InteractionRequestTrigger>
     </i:Interaction.Triggers>
@@ -28,6 +27,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 0" >
@@ -38,25 +38,9 @@
                 </Grid.ColumnDefinitions>
 
                 <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
-                    <Button ToolTipService.ToolTip="Click to add new reason!" Command="{Binding AddReasonCommand}">
+                    <Button ToolTipService.ToolTip="Click to save reason!" Command="{Binding SaveReasonCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_add.png" Height="40" Width="40" Margin="4"/>
-                        </StackPanel>
-                    </Button>
-                    <Separator />
-                    <Button ToolTipService.ToolTip="Click to edit reason!" Command="{Binding EditReasonCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_edit.png" Height="40" Width="40" Margin="4">
-                                <Image.Style>
-                                    <Style TargetType="Image">
-                                        <Style.Triggers>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="Opacity" Value="0.5" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
+                            <Image Source="/Resources/btn_save.png" Height="40" Width="40" Margin="4"/>
                         </StackPanel>
                     </Button>
                     <Separator />
@@ -100,32 +84,30 @@
 
         <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
 
-        <DataGrid ItemsSource="{Binding Path=Reasons}" SelectedItem="{Binding SelectedReason}" CurrentCell="{Binding CellInfo, Mode=TwoWay}" AutoGenerateColumns="False" 
-                  IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutomationProperties.AutomationId="ReasonGrid" 
-                  HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" Grid.Row="2" Margin="0,10,0,0">
+        <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Bottom">
+            <TextBlock Text="Number of items: " TextWrapping="NoWrap"/>
+            <TextBlock Text="{Binding ItemCount}" TextWrapping="Wrap"/>
+        </StackPanel>
 
+        <DataGrid x:Name="ReasonGrid"
+                    ItemsSource="{Binding Reasons}" 
+                    SelectedItem="{Binding SelectedReason, Converter={StaticResource ignoreNewItemPlaceHolderConverter}}" 
+                    CurrentCell="{Binding CellInfo, Mode=TwoWay}"
+                    AutoGenerateColumns="False" 
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch" 
+                    AutomationProperties.AutomationId="ReasonGrid" 
+                    HorizontalScrollBarVisibility="Hidden" 
+                    VerticalScrollBarVisibility="Auto" 
+                    Grid.Row="2" 
+                    Margin="0,10,0,0"
+                    DataContextChanged="OnMainGridDataContextChanged">
             <DataGrid.Columns>
-                <!--<DataGridTemplateColumn Header="Reason Code" Width="*">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                                <Hyperlink Command="{Binding DataContext.OpenReasonDetailsCommand, ElementName=LayoutRoot}" CommandParameter="{Binding}"
-                                           AutomationProperties.AutomationId="OpenDetailHyperLink">
-                                    <TextBlock Text="{Binding ReasonCode}" />
-                                </Hyperlink>
-                            </TextBlock>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
-                <DataGridTextColumn Header="Description" Width="*" Binding="{Binding ReasonDesc}" CanUserSort="False" Foreground="Black">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style>
-                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGridTextColumn Header="No." Width="Auto" Binding="{Binding SequenceNumber}" CanUserSort="True" IsReadOnly="false" Foreground="Black"/>
+                <DataGridTextColumn Header="Description" Width="*" Binding="{Binding ReasonDesc}" IsReadOnly="false" Foreground="Black" />
+                <DataGridTextColumn Header="Last Modified Date: " Width="Auto" Binding="{Binding ModifiedOn, StringFormat=g}" IsReadOnly="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Last Modified By: " Width="Auto" Binding="{Binding ModifiedBy}" IsReadOnly="True" Foreground="Black"/>
             </DataGrid.Columns>
-
         </DataGrid>
     </Grid>
 </UserControl>

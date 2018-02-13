@@ -17,9 +17,9 @@ namespace ESD.JC_RoleMgmt.Services
             roleRepository = _roleRepository;
         }
 
-        public List<Role> GetAll()
+        public IEnumerable<Role> GetAll()
         {
-            return roleRepository.GetAll();
+            return roleRepository.GetAll(false);
         }
 
         public Role GetRole(long ID)
@@ -27,11 +27,18 @@ namespace ESD.JC_RoleMgmt.Services
             return roleRepository.GetRole(ID);
         }
 
-        public bool Save(Role role)
+        public bool Save(Role role, string state = "")
         {
             try
             {
-                roleRepository.Save(role);
+                if (!string.IsNullOrEmpty(state) && state == "Save")
+                {
+                    roleRepository.Add(role);
+                }
+                else if (!string.IsNullOrEmpty(state) && state == "Update")
+                {
+                    roleRepository.Update(role);
+                }
             }
             catch (DbEntityValidationException e)
             {
@@ -55,18 +62,18 @@ namespace ESD.JC_RoleMgmt.Services
             return true;
         }
 
-        public void Delete(long? ID)
+        public void Delete(long ID)
         {
             try
             {
-                var roleObj = GetRole(ID.GetValueOrDefault());
+                var roleObj = GetRole(ID);
                 if (roleObj != null)
                 {
-                    roleRepository.Delete(ID.Value);
+                    roleRepository.Delete(ID);
                 }
                 else
                 {
-                    throw new Exception("RoleCode Not Found.");
+                    throw new Exception("Role Not Found.");
                 }
             }
             catch (Exception ex)
