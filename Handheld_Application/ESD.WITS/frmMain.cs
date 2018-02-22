@@ -842,7 +842,6 @@ namespace ESD.WITS
             sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Quantity], GR.[Eun], GR.[StorageLoc], GR.[ENMaterialShortText]";
             sSQL += " HAVING SUM(GRT.Quantity) > 0 ";
 
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -871,6 +870,11 @@ namespace ESD.WITS
                     }
                 }
             }
+
+            if (Convert.ToInt32(txtGIQtyAvbl.Text) == 0)
+            {
+                MessageBox.Show("No Qty available");
+            }
         }
 
         /// <summary>
@@ -897,7 +901,7 @@ namespace ESD.WITS
                 cmbBoxGILocTo.Focus();
                 return false;
             }
-            else if (cmbBoxGILocTo.Text == cmbBoxGILocFrom.Text)
+            else if (rdBtnGITfrPosting.Checked && cmbBoxGILocTo.Text == cmbBoxGILocFrom.Text)
             {
                 MessageBox.Show("Location To and From must not be the same");
                 cmbBoxGILocTo.Focus();
