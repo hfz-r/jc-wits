@@ -154,7 +154,21 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void txtNumeric_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+            if ((e.KeyChar == '.') && (((TextBox)sender).Text.IndexOf('.') > -1))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (!Char.IsDigit(e.KeyChar))
+            {
+                if ((e.KeyChar != '.') &&
+                    (e.KeyChar != Convert.ToChar(Keys.Back)))
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
         }
 
         ///// <summary>
@@ -376,10 +390,10 @@ namespace ESD.WITS
                 txtGRSAPNo.SelectAll();
                 return false;
             }
-            else if (isPartialTxn && Convert.ToInt32(txtGRQtyRcvd.Text) < Convert.ToInt32(txtGRQtyOrdered.Text))
+            else if (isPartialTxn && Convert.ToDouble(txtGRQtyRcvd.Text) < Convert.ToDouble(txtGRQtyOrdered.Text))
             {
-                int remaining = Convert.ToInt32(txtGRQtyOrdered.Text) - Convert.ToInt32(txtGRQtyRcvd.Text);
-                if (Convert.ToInt32(txtGRQty.Text) > remaining)
+                double remaining = Convert.ToDouble(txtGRQtyOrdered.Text) - Convert.ToDouble(txtGRQtyRcvd.Text);
+                if (Convert.ToDouble(txtGRQty.Text) > remaining)
                 {
                     MessageBox.Show("Qty exceeded", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                     txtGRQty.Focus();
@@ -389,7 +403,7 @@ namespace ESD.WITS
             }
             else
             {
-                if (!string.IsNullOrEmpty(txtGRQtyOrdered.Text) && Convert.ToInt32(txtGRQty.Text) > Convert.ToInt32(txtGRQtyOrdered.Text))
+                if (!string.IsNullOrEmpty(txtGRQtyOrdered.Text) && Convert.ToDouble(txtGRQty.Text) > Convert.ToDouble(txtGRQtyOrdered.Text))
                 {
                     MessageBox.Show("Qty exceeded", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                     txtGRQty.Focus();
@@ -402,9 +416,9 @@ namespace ESD.WITS
             {
                 if (isPartialTxn)
                 {
-                    int remaining = Convert.ToInt32(txtGRQty.Text) + Convert.ToInt32(txtGRQtyRcvd.Text);
-                    if (Convert.ToInt32(txtGRQty.Text) > 0 &&
-                        remaining < Convert.ToInt32(txtGRQtyOrdered.Text) &&
+                    double remaining = Convert.ToDouble(txtGRQty.Text) + Convert.ToDouble(txtGRQtyRcvd.Text);
+                    if (Convert.ToDouble(txtGRQty.Text) > 0 &&
+                        remaining < Convert.ToDouble(txtGRQtyOrdered.Text) &&
                         string.IsNullOrEmpty(cmbBoxGRReason.Text))
                     {
                         MessageBox.Show("Select Reason", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
@@ -414,8 +428,8 @@ namespace ESD.WITS
                 }
                 else
                 {
-                    if (Convert.ToInt32(txtGRQty.Text) > 0 &&
-                        Convert.ToInt32(txtGRQty.Text) < Convert.ToInt32(txtGRQtyOrdered.Text) &&
+                    if (Convert.ToDouble(txtGRQty.Text) > 0 &&
+                        Convert.ToDouble(txtGRQty.Text) < Convert.ToDouble(txtGRQtyOrdered.Text) &&
                         string.IsNullOrEmpty(cmbBoxGRReason.Text))
                     {
                         MessageBox.Show("Select Reason", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
@@ -464,6 +478,14 @@ namespace ESD.WITS
         /// </summary>
         private void GetGoodsReceipt()
         {
+            string[] temp = null;
+            if (!string.IsNullOrEmpty(txtGRSAPNo.Text))
+            {
+                temp = txtGRSAPNo.Text.Split(';');
+                txtGRSAPNo.Text = temp[0];
+            }
+
+            txtGRSAPNo.SelectAll();
             isPartialTxn = false;
             string sSQL = string.Empty;
             byte? isTxnCompleted = null;
@@ -474,7 +496,7 @@ namespace ESD.WITS
             sSQL += " ,ISNULL(GR.[Ok],0)";
             sSQL += " ,GR.[Quantity]";
             sSQL += " ,GR.[Eun]";
-            sSQL += " ,SUM(GRT.Quantity) AS QtyOrdered ";
+            sSQL += " ,ISNULL(SUM(GRT.Quantity),0) AS QtyOrdered ";
             sSQL += "FROM [INVENTORY].[dbo].[GoodsReceive] GR ";
             sSQL += "LEFT OUTER JOIN [dbo].[GRTransaction] GRT  ";
             sSQL += " ON GR.ID = GRT.GRID ";
@@ -496,9 +518,10 @@ namespace ESD.WITS
                         txtGRQtyOrdered.Text = reader[3].ToString();
                         txtGREun.Text = reader[4].ToString();
                         txtGROrderedEun.Text = reader[4].ToString();
-                        qtyRcvd = reader[5].ToString(); //var
-                        txtGRQtyRcvd.Text = qtyRcvd;
                         txtGRRcvdEun.Text = txtGROrderedEun.Text;
+                        qtyRcvd = reader[5].ToString() == "0.00" ? "0" : reader[5].ToString();
+                        txtGRQtyRcvd.Text = txtGRRcvdEun.Text != "KG" ? 
+                            (Convert.ToInt64(Math.Floor(Convert.ToDouble(qtyRcvd)))).ToString() : qtyRcvd.ToString();
                         txtGRMSDesc.BackColor = Color.Black;
                         txtGRQtyOrdered.BackColor = Color.Black;
                         txtGROrderedEun.BackColor = Color.Black;
@@ -523,7 +546,29 @@ namespace ESD.WITS
                         }
                         else if (isTxnCompleted == 0) //not complete
                         {
-                            if (!string.IsNullOrEmpty(qtyRcvd) && Convert.ToInt32(qtyRcvd) < Convert.ToInt32(txtGRQtyOrdered.Text))
+                            if (!string.IsNullOrEmpty(qtyRcvd) && Convert.ToDouble(qtyRcvd) == 0)
+                            {
+                                isPartialTxn = true;
+                                btnGRSubmit.Enabled = true;
+                                labelGRQty.Visible = true;
+                                btnGRMinusQty.Visible = true;
+                                txtGRQty.Visible = true;
+                                btnGRAddQty.Visible = true;
+                                txtGREun.Visible = true;
+                                labelGRReason.Visible = true;
+                                cmbBoxGRReason.Visible = true;
+                                labelGRQtyRcvd.Visible = false;
+                                txtGRQtyRcvd.Visible = false;
+                                txtGRRcvdEun.Visible = false;
+                                labelGRQty.Location = new Point(7, 161);
+                                btnGRMinusQty.Location = new Point(104, 157);
+                                txtGRQty.Location = new Point(126, 157);
+                                btnGRAddQty.Location = new Point(170, 157);
+                                txtGREun.Location = new Point(197, 157);
+                                labelGRReason.Location = new Point(8, 190);
+                                cmbBoxGRReason.Location = new Point(103, 187);
+                            }
+                            else if (!string.IsNullOrEmpty(qtyRcvd) && Convert.ToDouble(qtyRcvd) < Convert.ToDouble(txtGRQtyOrdered.Text))
                             {
                                 isPartialTxn = true;
                                 btnGRSubmit.Enabled = true;
@@ -545,6 +590,12 @@ namespace ESD.WITS
                                 labelGRReason.Location = new Point(8, 219);
                                 cmbBoxGRReason.Location = new Point(103, 216);
                             }
+
+                        }
+
+                        if (temp.Length > 1)
+                        {
+                            txtGRQty.Text = temp[1];
                         }
                     }
                     else
@@ -564,6 +615,7 @@ namespace ESD.WITS
         /// </summary>
         private void ResetNewRecord()
         {
+            txtGRQty.Text = "0";
             btnGRSubmit.Enabled = true;
             labelGRQty.Visible = true;
             labelGRQty.Location = new Point(7, 161);
@@ -582,6 +634,7 @@ namespace ESD.WITS
             labelGRQtyRcvd.Visible = false;
             txtGRQtyRcvd.Visible = false;
             txtGRRcvdEun.Visible = false;
+            txtGRSAPNo.Focus();
         }
 
         /// <summary>
@@ -637,14 +690,14 @@ namespace ESD.WITS
             {
                 if (isPartialTxn)
                 {
-                    int remaining = Convert.ToInt32(txtGRQty.Text) + Convert.ToInt32(txtGRQtyRcvd.Text);
+                    double remaining = Convert.ToDouble(txtGRQty.Text) + Convert.ToDouble(txtGRQtyRcvd.Text);
 
-                    if (remaining == Convert.ToInt32(txtGRQtyOrdered.Text))
+                    if (remaining == Convert.ToDouble(txtGRQtyOrdered.Text))
                     {
                         cmbBoxGRReason.Visible = false;
                         labelGRReason.Visible = false;
                     }
-                    else if (remaining < Convert.ToInt32(txtGRQtyOrdered.Text))
+                    else if (remaining < Convert.ToDouble(txtGRQtyOrdered.Text))
                     {
                         cmbBoxGRReason.Visible = true;
                         labelGRReason.Visible = true;
@@ -652,12 +705,12 @@ namespace ESD.WITS
                 }
                 else
                 {
-                    if (Convert.ToInt32(txtGRQty.Text) < Convert.ToInt32(txtGRQtyOrdered.Text))
+                    if (Convert.ToDouble(txtGRQty.Text) < Convert.ToDouble(txtGRQtyOrdered.Text))
                     {
                         cmbBoxGRReason.Visible = true;
                         labelGRReason.Visible = true;
                     }
-                    else if (Convert.ToInt32(txtGRQty.Text) == Convert.ToInt32(txtGRQtyOrdered.Text))
+                    else if (Convert.ToDouble(txtGRQty.Text) == Convert.ToDouble(txtGRQtyOrdered.Text))
                     {
                         cmbBoxGRReason.Visible = false;
                         labelGRReason.Visible = false;
@@ -683,11 +736,23 @@ namespace ESD.WITS
                 txtGRQty.Text = "0";
             }
 
-            int decreasedVal = int.Parse(txtGRQty.Text) - 1;
-
-            if (decreasedVal >= 0)
+            if (txtGREun.Text == "KG")
             {
-                txtGRQty.Text = decreasedVal.ToString();
+                double decreasedVal = double.Parse(txtGRQty.Text) - 0.01;
+
+                if (decreasedVal >= 0)
+                {
+                    txtGRQty.Text = decreasedVal.ToString();
+                }
+            }
+            else
+            {
+                int decreasedVal = int.Parse(txtGRQty.Text) - 1;
+
+                if (decreasedVal >= 0)
+                {
+                    txtGRQty.Text = decreasedVal.ToString();
+                }
             }
         }
 
@@ -702,18 +767,37 @@ namespace ESD.WITS
             {
                 txtGRQty.Text = "0";
             }
-            int increasedVal = int.Parse(txtGRQty.Text) + 1;
-            if (isPartialTxn && Convert.ToInt32(txtGRQtyRcvd.Text) < Convert.ToInt32(txtGRQtyOrdered.Text))
+            if (txtGREun.Text == "KG")
             {
-                int remaining = Convert.ToInt32(txtGRQtyOrdered.Text) - Convert.ToInt32(txtGRQtyRcvd.Text);
-                if (increasedVal <= remaining)
+                double increasedVal = double.Parse(txtGRQty.Text) + 0.01;
+                if (isPartialTxn && Convert.ToDouble(txtGRQtyRcvd.Text) < Convert.ToDouble(txtGRQtyOrdered.Text))
+                {
+                    double remaining = Convert.ToDouble(txtGRQtyOrdered.Text) - Convert.ToDouble(txtGRQtyRcvd.Text);
+                    if (increasedVal <= remaining)
+                    {
+                        txtGRQty.Text = increasedVal.ToString();
+                    }
+                }
+                else if (increasedVal <= Convert.ToDouble(txtGRQtyOrdered.Text))
                 {
                     txtGRQty.Text = increasedVal.ToString();
                 }
             }
-            else if (increasedVal <= Convert.ToInt32(txtGRQtyOrdered.Text))
+            else
             {
-                txtGRQty.Text = increasedVal.ToString();
+                int increasedVal = int.Parse(txtGRQty.Text) + 1;
+                if (isPartialTxn && Convert.ToInt32(txtGRQtyRcvd.Text) < Convert.ToInt32(txtGRQtyOrdered.Text))
+                {
+                    int remaining = Convert.ToInt32(txtGRQtyOrdered.Text) - Convert.ToInt32(txtGRQtyRcvd.Text);
+                    if (increasedVal <= remaining)
+                    {
+                        txtGRQty.Text = increasedVal.ToString();
+                    }
+                }
+                else if (increasedVal <= Convert.ToInt32(txtGRQtyOrdered.Text))
+                {
+                    txtGRQty.Text = increasedVal.ToString();
+                }
             }
         }
 
@@ -744,9 +828,9 @@ namespace ESD.WITS
                     txtSAPNo_KeyDown(null, null);
                 }
 
-                if (!string.IsNullOrEmpty(txtGRQtyOrdered.Text) && Convert.ToInt32(txtGRQtyOrdered.Text) > 0)
+                if (!string.IsNullOrEmpty(txtGRQtyOrdered.Text) && Convert.ToDouble(txtGRQtyOrdered.Text) > 0)
                 {
-                    string ReasonID = Convert.ToInt32(txtGRQty.Text) == Convert.ToInt32(txtGRQtyOrdered.Text) ? null : cmbBoxGRReason.Text;
+                    string ReasonID = Convert.ToDouble(txtGRQty.Text) == Convert.ToDouble(txtGRQtyOrdered.Text) ? null : cmbBoxGRReason.Text;
                     if (MessageBox.Show("Confirm to post?", "Goods Receipt", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
                     {
                         string sSQL = string.Empty;
@@ -856,7 +940,7 @@ namespace ESD.WITS
                         txtGIQtyEun.Text = reader[3].ToString();
                         txtGIQty.Text = "0";
                         SLoc = reader[4].ToString();
-                        txtGIQtyAvbl.Text = Convert.ToInt32(reader[6]).ToString();
+                        txtGIQtyAvbl.Text = Convert.ToDouble(reader[6]).ToString();
                         ENMatShortText = reader[7].ToString();
                     }
                     else
@@ -871,7 +955,7 @@ namespace ESD.WITS
                 }
             }
 
-            if (Convert.ToInt32(txtGIQtyAvbl.Text) == 0)
+            if (!string.IsNullOrEmpty(txtGIQtyAvbl.Text) && Convert.ToDouble(txtGIQtyAvbl.Text) == 0)
             {
                 MessageBox.Show("No Qty available");
             }
@@ -1041,13 +1125,26 @@ namespace ESD.WITS
             {
                 txtGIQty.Text = "0";
             }
-            int increasedVal = int.Parse(txtGIQty.Text) + 1;
 
             if (!string.IsNullOrEmpty(txtGIQtyAvbl.Text))
             {
-                if (increasedVal <= Convert.ToInt32(txtGIQtyAvbl.Text))
+                if (txtGIQtyAvblEun.Text == "KG")
                 {
-                    txtGIQty.Text = increasedVal.ToString();
+                    double increasedVal = double.Parse(txtGIQty.Text) + 0.01;
+
+                    if (increasedVal <= Convert.ToDouble(txtGIQtyAvbl.Text))
+                    {
+                        txtGIQty.Text = increasedVal.ToString();
+                    }
+                }
+                else
+                {
+                    int increasedVal = int.Parse(txtGIQty.Text) + 1;
+
+                    if (increasedVal <= Convert.ToInt32(txtGIQtyAvbl.Text))
+                    {
+                        txtGIQty.Text = increasedVal.ToString();
+                    }
                 }
             }
         }
@@ -1064,11 +1161,26 @@ namespace ESD.WITS
                 txtGIQty.Text = "0";
             }
 
-            int decreasedVal = int.Parse(txtGIQty.Text) - 1;
-
-            if (decreasedVal >= 0)
+            if (!string.IsNullOrEmpty(txtGIQtyAvbl.Text))
             {
-                txtGIQty.Text = decreasedVal.ToString();
+                if (txtGIQtyAvblEun.Text == "KG")
+                {
+                    double decreasedVal = double.Parse(txtGIQty.Text) - 0.01;
+
+                    if (decreasedVal >= 0)
+                    {
+                        txtGIQty.Text = decreasedVal.ToString();
+                    }
+                }
+                else
+                {
+                    int decreasedVal = int.Parse(txtGIQty.Text) - 1;
+
+                    if (decreasedVal >= 0)
+                    {
+                        txtGIQty.Text = decreasedVal.ToString();
+                    }
+                }
             }
         }
 
@@ -1094,7 +1206,7 @@ namespace ESD.WITS
         {
             if (!string.IsNullOrEmpty(txtGIQtyAvbl.Text) && !string.IsNullOrEmpty(txtGIQty.Text) && GRID != 0)
             {
-                if (Convert.ToInt32(txtGIQty.Text) > Convert.ToInt32(txtGIQtyAvbl.Text))
+                if (Convert.ToDouble(txtGIQty.Text) > Convert.ToDouble(txtGIQtyAvbl.Text))
                 {
                     MessageBox.Show("Qty exceeded", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                     txtGIQty.Focus();
@@ -1102,7 +1214,7 @@ namespace ESD.WITS
                 }
                 else
                 {
-                    if (Convert.ToInt32(txtGIQty.Text) > 0)
+                    if (Convert.ToDouble(txtGIQty.Text) > 0)
                     {
                         if (GIList != null && GIList.Count > 0)
                         {
@@ -1111,7 +1223,7 @@ namespace ESD.WITS
                             {
                                 if (item.SAPNo == txtGISAPNo.Text)
                                 {
-                                    item.Qty = (Convert.ToInt32(item.Qty) + Convert.ToInt32(txtGIQty.Text)).ToString();
+                                    item.Qty = (Convert.ToDouble(item.Qty) + Convert.ToDouble(txtGIQty.Text)).ToString();
                                     isExist = true;
                                     break;
                                 }
@@ -1138,8 +1250,61 @@ namespace ESD.WITS
                             });
                         }
 
-                        dataGrdGI.DataSource = null;
-                        dataGrdGI.DataSource = GIList;
+                        DataTable t = new DataTable("INVENTORY");
+                        DataColumn dc1 = new DataColumn("ENDesc", typeof(string));
+                        DataColumn dc2 = new DataColumn("ID", typeof(string));
+                        DataColumn dc3 = new DataColumn("SAPNo", typeof(string));
+                        DataColumn dc4 = new DataColumn("Qty", typeof(string));
+                        t.Columns.Add(dc1);
+                        t.Columns.Add(dc2);
+                        t.Columns.Add(dc3);
+                        t.Columns.Add(dc4);
+
+                        foreach (var item in GIList)
+                        {
+                            DataRow newRow = t.NewRow();
+                            newRow["ENDesc"] = item.ENDesc;
+                            newRow["ID"] = item.ID;
+                            newRow["SAPNo"] = item.SAPNo;
+                            newRow["Qty"] = item.Qty;
+                            t.Rows.Add(newRow);
+                        }
+
+                        DataGridTableStyle tableStyle = new DataGridTableStyle();
+                        //take note of this mapping name, it's very important
+                        tableStyle.MappingName = "INVENTORY";
+
+                        //second column
+                        DataGridTextBoxColumn gridColumn1 = new DataGridTextBoxColumn();
+                        gridColumn1.Width = -1;
+                        gridColumn1.MappingName = "ID";
+                        gridColumn1.HeaderText = "ID";
+                        tableStyle.GridColumnStyles.Add(gridColumn1);
+
+                        //third column
+                        DataGridTextBoxColumn gridColumn2 = new DataGridTextBoxColumn();
+                        gridColumn2.Width = 80;
+                        gridColumn2.MappingName = "SAPNo";
+                        gridColumn2.HeaderText = "SAPNo";
+                        tableStyle.GridColumnStyles.Add(gridColumn2);
+
+                        //forth column
+                        DataGridTextBoxColumn gridColumn3 = new DataGridTextBoxColumn();
+                        gridColumn3.Width = 50;
+                        gridColumn3.MappingName = "Qty";
+                        gridColumn3.HeaderText = "Qty";
+                        tableStyle.GridColumnStyles.Add(gridColumn3);
+
+                        //our first column which is the ID
+                        DataGridTextBoxColumn gridColumn4 = new DataGridTextBoxColumn();
+                        gridColumn4.Width = 300;
+                        gridColumn4.MappingName = "ENDesc";
+                        gridColumn4.HeaderText = "ENDesc";
+                        tableStyle.GridColumnStyles.Add(gridColumn4);
+
+                        dataGrdGI.TableStyles.Clear();
+                        dataGrdGI.TableStyles.Add(tableStyle);
+                        dataGrdGI.DataSource = t;
 
                         if (GIList != null && GIList.Count > 0)
                         {
@@ -1298,6 +1463,11 @@ namespace ESD.WITS
         }
 
         #endregion
+
+        private void btnOutbound_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("In progress.");
+        }
 
         #endregion
     }

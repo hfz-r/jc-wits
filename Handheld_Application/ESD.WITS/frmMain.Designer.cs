@@ -277,6 +277,7 @@
             this.btnOutbound.Name = "btnOutbound";
             this.btnOutbound.Size = new System.Drawing.Size(80, 80);
             this.btnOutbound.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnOutbound.Click += new System.EventHandler(this.btnOutbound_Click);
             // 
             // btnSignOut
             // 
@@ -477,7 +478,7 @@
             // txtGRQty
             // 
             this.txtGRQty.Location = new System.Drawing.Point(126, 187);
-            this.txtGRQty.MaxLength = 4;
+            this.txtGRQty.MaxLength = 6;
             this.txtGRQty.Name = "txtGRQty";
             this.txtGRQty.Size = new System.Drawing.Size(45, 23);
             this.txtGRQty.TabIndex = 4;
@@ -584,7 +585,6 @@
             // txtGIQtyAvblEun
             // 
             this.txtGIQtyAvblEun.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGIQtyAvblEun.Enabled = false;
             this.txtGIQtyAvblEun.Location = new System.Drawing.Point(197, 77);
             this.txtGIQtyAvblEun.Name = "txtGIQtyAvblEun";
             this.txtGIQtyAvblEun.ReadOnly = true;
@@ -595,7 +595,6 @@
             // txtGIQtyEun
             // 
             this.txtGIQtyEun.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGIQtyEun.Enabled = false;
             this.txtGIQtyEun.Location = new System.Drawing.Point(197, 106);
             this.txtGIQtyEun.Name = "txtGIQtyEun";
             this.txtGIQtyEun.ReadOnly = true;
@@ -642,7 +641,7 @@
             // txtGIQty
             // 
             this.txtGIQty.Location = new System.Drawing.Point(126, 106);
-            this.txtGIQty.MaxLength = 4;
+            this.txtGIQty.MaxLength = 6;
             this.txtGIQty.Name = "txtGIQty";
             this.txtGIQty.Size = new System.Drawing.Size(45, 23);
             this.txtGIQty.TabIndex = 3;
