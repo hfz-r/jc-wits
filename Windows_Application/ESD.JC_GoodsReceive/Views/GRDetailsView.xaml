@@ -7,8 +7,39 @@
              mc:Ignorable="d" 
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:prism="http://prismlibrary.com/"
-             d:DesignHeight="300" d:DesignWidth="400">
+             xmlns:inf="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
+             d:DesignHeight="600" d:DesignWidth="400">
     <UserControl.Resources>
+        <inf:UnitKGsConverter x:Key="UnitKGs"/>
+        <inf:BrushColorConverter x:Key="BooleanToBrush"/>
+        <inf:TooltipsConverter x:Key="TooltipsToString"/>
+
+        <Style TargetType="Button" x:Key="FlatButtonStyle">
+            <Setter Property="Background" Value="{Binding Path=Ok, Converter={StaticResource BooleanToBrush}, Mode=OneWay}"/>
+            <Setter Property="Foreground" Value="Transparent"/>
+            <Setter Property="Width" Value="25"/>
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="ToolTip">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource TooltipsToString}" >
+                        <Binding Path="QtyReceived" />
+                        <Binding Path="Quantity"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderThickness="0"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="15">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <DataTemplate x:Key="GRTemplate">
             <Grid Margin="10">
                 <Grid.RowDefinitions>
@@ -38,7 +69,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="{Binding PurchaseOrder}" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="13" Margin="5" AutomationProperties.AutomationId="PONoData"/>
+                <TextBlock Text="{Binding PurchaseOrder}" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="13" Foreground="DarkBlue" Margin="5" AutomationProperties.AutomationId="PONoData"/>
 
                 <TextBlock Text="Vendor: " FontWeight="Bold"
                            Grid.Row="1" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="VendorLabel"/>
@@ -72,8 +103,13 @@
 
                 <TextBlock Text="OK: " FontWeight="Bold"
                            Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="OkLabel"/>
-                <TextBlock Text="{Binding Ok}"                           
-                           Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="OkData"/>
+                <Button 
+                    Grid.Row="7" 
+                    Grid.Column="1"
+                    AutomationProperties.AutomationId="OkData"
+                    HorizontalAlignment="Left"
+                    Content="{Binding Ok}"
+                    Style="{StaticResource FlatButtonStyle}"/>
 
                 <TextBlock Text="Quantity: " FontWeight="Bold"
                            Grid.Row="8" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QuantityLabel"/>
@@ -82,8 +118,28 @@
 
                 <TextBlock Text="Eun: " FontWeight="Bold"
                            Grid.Row="9" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="EunLabel"/>
-                <TextBlock Text="{Binding Eun}"                           
-                           Grid.Row="9" Grid.Column="1" AutomationProperties.AutomationId="EunData"/>
+                <TextBlock Grid.Row="9" 
+                           Grid.Column="1" 
+                           AutomationProperties.AutomationId="EunData">
+                    <Hyperlink Command="{Binding DataContext.EunSetDetails, ElementName=LayoutRoot}" 
+                               CommandParameter="{Binding}">
+                        <Hyperlink.Resources>
+                           <Style TargetType="{x:Type Hyperlink}">
+                               <Setter Property="FontWeight" Value="Bold"/>
+                               <Setter Property="Foreground" Value="DarkBlue"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Eun, Converter={StaticResource UnitKGs}}" Value="False">
+                                        <Setter Property="FontWeight" Value="Normal"/>
+                                        <Setter Property="Foreground" Value="Black"/>
+                                        <Setter Property="TextDecorations" Value="None"/>
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>              
+                                </Style.Triggers>
+                            </Style>
+                       </Hyperlink.Resources>
+                        <TextBlock Text="{Binding Eun}" />
+                    </Hyperlink>
+                </TextBlock>
 
                 <TextBlock Text="Mvmt Type: " FontWeight="Bold"
                            Grid.Row="10" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="MvmtTypeLabel"/>
@@ -126,19 +182,51 @@
                            Grid.Row="17" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
             </Grid>
         </DataTemplate>
+        <Style TargetType="{x:Type TabItem}" x:Key="HeaderStyle">
+            <Setter Property="Header"
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=Content.DataContext.ViewName}" />
+        </Style>
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot" Background="White">
+    <i:Interaction.Triggers>
+        <prism:InteractionRequestTrigger SourceObject="{Binding EunSetDetailsRequest, Mode=OneWay}">
+            <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True">
+                <prism:PopupWindowAction.WindowStyle>
+                    <Style TargetType="Window">
+                        <Setter Property="WindowStyle" Value="None" />
+                    </Style>
+                </prism:PopupWindowAction.WindowStyle>
+                <prism:PopupWindowAction.WindowContent>
+                    <local:EunKGDetailsView />
+                </prism:PopupWindowAction.WindowContent>
+            </prism:PopupWindowAction>
+        </prism:InteractionRequestTrigger>
+    </i:Interaction.Triggers>
 
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ContentControl Content="{Binding GoodReceive}" ContentTemplate="{StaticResource GRTemplate}"
+        <ContentControl Grid.Row="0" Content="{Binding GoodReceive}" ContentTemplate="{StaticResource GRTemplate}"
                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
 
-        <Grid Grid.Row="1">
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
+
+        <TabControl Grid.Row="1"
+            AutomationProperties.AutomationId="TrnxDtlsTabControl"
+            Margin="8"
+            prism:RegionManager.RegionName="TabRegion"
+            Width="Auto"
+            Height="Auto"
+            HorizontalAlignment="Stretch"
+            ItemContainerStyle="{StaticResource HeaderStyle}">
+        </TabControl>
+
+        <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>

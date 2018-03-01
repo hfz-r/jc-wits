@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace ESD.JC_Main.Views
+namespace ESD.JC_Infrastructure.Controls
 {
     /// <summary>
     /// Interaction logic for ProgressDialog.xaml
@@ -19,6 +19,12 @@ namespace ESD.JC_Main.Views
             {
                 this.ProgressBar.Value = value;
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            this.Visibility = Visibility.Hidden;
         }
     }
 }

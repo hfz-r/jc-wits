@@ -1,0 +1,334 @@
+﻿<UserControl Name="_userCtrl" x:Class="ESD.JC_GoodsReceive.Views.EunKGDetailsView"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d"
+            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+            xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
+            xmlns:prism="http://prismlibrary.com/"
+            prism:ViewModelLocator.AutoWireViewModel="True"
+            xmlns:local="clr-namespace:ESD.JC_GoodsReceive.Views"
+            xmlns:conv="clr-namespace:ESD.JC_GoodsReceive.ModelsExt"
+            xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure" 
+            d:DesignWidth="800" d:DesignHeight="600">
+    <UserControl.Resources>
+        <infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+        <infrastructure:IgnoreNewItemPlaceHolderConverter x:Key="ignoreNewItemPlaceHolderConverter"/>
+        <infrastructure:StringToDecimalConverter x:Key="StringToDecimalConverter"/>
+        <conv:CollectionEUnKGToBooleanConverter x:Key="CollectionEUnKGConverter"/>
+        
+        <DataTemplate x:Key="EunKGTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="{Binding PO}" FontWeight="Bold" FontSize="13" Margin="5" AutomationProperties.AutomationId="PartNumberDataBlock"/>
+
+                        <TextBlock Text="SAP No:" FontWeight="Bold"
+                           Grid.Row="1" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="SAPNoLbl"/>
+                        <TextBlock Text="{Binding SAPNO}"                           
+                           Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="SAPNoData"/>
+
+                        <TextBlock Text="Legacy No:" FontWeight="Bold"
+                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LegacyNoLbl"/>
+                        <TextBlock Text="{Binding SAPNO}"                           
+                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="LegacyNoData"/>
+
+                        <TextBlock Text="EN:" FontWeight="Bold"
+                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ENLbl"/>
+                        <TextBlock Text="{Binding EN}"                           
+                           Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="ENData"/>
+
+                        <TextBlock Text="MS:" FontWeight="Bold"
+                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="MSLbl"/>
+                        <TextBlock Text="{Binding EN}"                           
+                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="MSData"/>
+
+                        <TextBlock Text="Bin:" FontWeight="Bold"
+                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="BinLbl"/>
+                        <TextBlock Text="{Binding BIN}"                           
+                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="BinData"/>
+
+                        <TextBlock Text="Qty:" FontWeight="Bold"
+                           Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QtyLbl"/>
+                        <TextBlock Text="{Binding Qty}"                           
+                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="QtyData"/>
+
+                        <TextBlock Text="Bun:" FontWeight="Bold"
+                           Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="EunLbl"/>
+                        <TextBlock Text="{Binding EUN}"                           
+                           Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="EunData"/>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1">
+                    <Grid HorizontalAlignment="Left">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Label`s Preview" VerticalAlignment="Center" FontWeight="Bold" TextDecorations="underline" FontFamily="Cambria" FontSize="13"/>
+
+                        <Border Grid.Row="1" Grid.RowSpan="5" Grid.Column="1" Grid.ColumnSpan="3" Margin="-5" BorderThickness="2" BorderBrush="Black"/>
+
+                        <Image Grid.Row="1" Grid.RowSpan="2" Grid.Column="3" Grid.ColumnSpan="1" Source="/Resources/img_qrcode.png" Height="60" Width="60"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="1"  Text="SAP No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoLbl"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="Legacy No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoLbl"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="EN:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="ENLbl"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="MS:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSLbl"/>
+                        <Grid Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="BIN:" FontWeight="Bold" HorizontalAlignment="Right" />
+                            <TextBlock Grid.Column="1" Text="{Binding BIN}" FontWeight="Bold" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Column="3" Text="QTY:" FontWeight="Bold" HorizontalAlignment="Right" />
+                            <TextBlock Grid.Column="4" Text="{Binding Qty}" FontWeight="Bold" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Column="5" Text="{Binding EUN}" FontWeight="Bold" HorizontalAlignment="Left" />
+                        </Grid>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SAPNO}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoData"/>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SAPNO}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoData"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding EN}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="ENData"/>
+                        <TextBlock Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding EN}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSData"/>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <CheckBox x:Key="cbHeader"
+                ToolTipService.ToolTip="Check All" 
+                IsThreeState="True"
+                IsChecked="{Binding DataContext.CollectionView, Source={x:Reference _userCtrl}, Converter={StaticResource CollectionEUnKGConverter}, Mode=OneWay}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Checked" >
+                    <wpf:InvokeCommandAction Command="{Binding DataContext.CheckedAllCommand, Source={x:Reference _userCtrl}}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="Unchecked" >
+                    <wpf:InvokeCommandAction Command="{Binding DataContext.UnCheckedAllCommand, Source={x:Reference _userCtrl}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </CheckBox>
+    </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <wpf:InvokeCommandAction Command="{Binding OnLoadedCommand}" />
+        </i:EventTrigger>
+        <prism:InteractionRequestTrigger SourceObject="{Binding InteractionRequest, Mode=OneWay}">
+            <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
+        </prism:InteractionRequestTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 0" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
+                    <Button ToolTipService.ToolTip="Click to save!" Command="{Binding SaveEunKGCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_save.png" Height="40" Width="40" Margin="4"/>
+                        </StackPanel>
+                    </Button>
+                    <Separator />
+                    <Button ToolTipService.ToolTip="Click to delete!" Command="{Binding DeleteEunKGCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </StackPanel>
+                    </Button>
+                    <Separator />
+                    <Button ToolTipService.ToolTip="Click to print the label!" Command="{Binding PrintLblCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </StackPanel>
+                    </Button>
+                    <Separator />
+                    <Button ToolTipService.ToolTip="GO Back!" Command="{Binding _backCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_back.png" Height="40" Width="40" Margin="4"/>
+                        </StackPanel>
+                    </Button>
+                </ToolBar>
+
+                <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,10,20,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
+                            VerticalAlignment="Center" CornerRadius="5">
+                        <StackPanel Margin="5" Orientation="Horizontal">
+                            <Image Source="/Resources/btn_find.png" Height="18"/>
+                            <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
+                                     HorizontalAlignment="Stretch" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </StackPanel>
+
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
+
+        <DataGrid Name="dgEunKG" 
+                ItemsSource="{Binding Path=CollectionView}" 
+                SelectedItem="{Binding SelectedItem, Converter={StaticResource ignoreNewItemPlaceHolderConverter}}" 
+                CurrentCell="{Binding CellInfo, Mode=TwoWay}"
+                AutoGenerateColumns="False" 
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch" 
+                AutomationProperties.AutomationId="EunKGGrid" 
+                HorizontalScrollBarVisibility="Hidden" 
+                VerticalScrollBarVisibility="Auto" 
+                Grid.Row="1" 
+                Margin="0,10,0,0">
+            <DataGrid.Resources>
+                <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
+                    <Setter Property="Padding" Value="-2"/>
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="Background" Value="Red"/>
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="Padding" Value="-2"/>
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="Background" Value="Red"/>
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <local:BindingProxy x:Key="ColProxy" Data="{Binding Path=DataContext.EunKGs, ElementName=dgEunKG}"/>
+                <local:BindingProxy x:Key="MaxValProxy" Data="{Binding Path=MaximumValue, Mode=TwoWay}"/>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="Auto">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.Header>
+                        <StaticResource ResourceKey="cbHeader"/>
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox HorizontalAlignment="Center" 
+                                      IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" 
+					                  Command="{Binding DataContext.IsSelected, ElementName=LayoutRoot}" 
+					                  CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="No." Width="Auto" Binding="{Binding SequenceNumber}" CanUserSort="True" IsReadOnly="false" Foreground="Black"/>
+                <DataGridTextColumn Header="Purchase Order" Width="*" Binding="{Binding PO}" IsReadOnly="True" Foreground="Black" />
+                <DataGridTextColumn Header="Quantity" 
+                                    MinWidth="50" 
+                                    IsReadOnly="False" 
+                                    Foreground="Black"
+                                    EditingElementStyle="{StaticResource errorStyle}"
+                                    Binding="{Binding Qty, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToDecimalConverter}, ValidatesOnExceptions=True}" />
+                <DataGridTextColumn Header="Last Modified Date: " MinWidth="200" Binding="{Binding ModifiedOn, StringFormat=g}" IsReadOnly="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Last Modified By: " MinWidth="200" Binding="{Binding ModifiedBy}" IsReadOnly="True" Foreground="Black"/>
+            </DataGrid.Columns>
+            <DataGrid.RowValidationRules>
+                <local:QuantityValidationRules>
+                    <local:ComparisonValue Value="{Binding Data, Source={StaticResource MaxValProxy}}" 
+                                           Collection="{Binding Data, Source={StaticResource ColProxy}}"/>
+                </local:QuantityValidationRules>
+            </DataGrid.RowValidationRules>
+        </DataGrid>
+
+        <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="15" ShowsPreview="True" />
+        <ContentControl x:Name="Preview" Content="{Binding CollectionView.CurrentItem}"
+                        Margin="5,15,5,5"
+                        ContentTemplate="{StaticResource EunKGTemplate}"
+                        Grid.Row="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                        Visibility="{Binding CollectionView.CurrentItem, Converter={StaticResource ObjectToVisibility}}">
+        </ContentControl>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Bottom">
+            <TextBlock Text="Number of items: " TextWrapping="NoWrap"/>
+            <TextBlock Text="{Binding ItemCount}" TextWrapping="Wrap"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

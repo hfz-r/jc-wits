@@ -9,9 +9,11 @@ using ESD.JC_RoleMgmt;
 using ESD.JC_UserMgmt;
 using ESD.JC_ReasonMgmt;
 using ESD.JC_GoodsReceive;
+using ESD.JC_LabelPrinting;
 using System.Windows;
 using System.Threading;
 using Microsoft.Practices.Unity;
+using ESD.JC_GoodsIssue;
 
 namespace ESD.JC_Main
 {
@@ -48,6 +50,8 @@ namespace ESD.JC_Main
             moduleCatalog.AddModule(typeof(UserMgmtModule));
             moduleCatalog.AddModule(typeof(ReasonMgmtModule));
             moduleCatalog.AddModule(typeof(GRModule));
+            moduleCatalog.AddModule(typeof(LabelPrintingModule));
+            moduleCatalog.AddModule(typeof(GIModule));
         }
 
         protected override void ConfigureContainer()

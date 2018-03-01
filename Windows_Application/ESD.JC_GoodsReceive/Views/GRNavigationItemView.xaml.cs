@@ -9,7 +9,7 @@ namespace ESD.JC_GoodsReceive.Views
     /// <summary>
     /// Interaction logic for GRNavigationItemView.xaml
     /// </summary>
-    [ViewSortHint("04")]
+    [ViewSortHint("05")]
     public partial class GRNavigationItemView : UserControl
     {
         private static Uri mainViewUri = new Uri("GRMainView", UriKind.Relative);

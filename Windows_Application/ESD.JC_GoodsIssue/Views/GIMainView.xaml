@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="ESD.JC_GoodsIssue.Views.GIMainView"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d"
+            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+            xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
+            xmlns:prism="http://prismlibrary.com/"
+            xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
+            d:DesignWidth="800" d:DesignHeight="600">
+    <UserControl.Resources>
+        <infrastructure:ObservableCommand x:Key="OpenGIDetailsCommand" Value="{Binding OpenGIDetailsCommand}"/>
+    </UserControl.Resources>
+    
+    <i:Interaction.Triggers>
+        <prism:InteractionRequestTrigger SourceObject="{Binding ConfirmDeleteInteractionRequest, Mode=OneWay}">
+            <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
+        </prism:InteractionRequestTrigger>
+        <i:EventTrigger EventName="Loaded">
+            <wpf:InvokeCommandAction Command="{Binding OnLoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 0" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
+                    <Button ToolTipService.ToolTip="Click to export!" Command="{Binding ExportCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/img_btn_export.png" Height="40" Width="40" Margin="4">
+                            </Image>
+                        </StackPanel>
+                    </Button>
+                </ToolBar>
+
+                <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,10,20,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
+                            VerticalAlignment="Center" CornerRadius="5">
+                        <StackPanel Margin="5" Orientation="Horizontal">
+                            <Image Source="/Resources/btn_find.png" Height="18"/>
+                            <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
+                                     HorizontalAlignment="Stretch" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </StackPanel>
+
+        <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
+
+        <DataGrid ItemsSource="{Binding Path=GoodsIssues}" SelectedItem="{Binding SelectedGI}" CurrentCell="{Binding CellInfo, Mode=TwoWay}" AutoGenerateColumns="False" 
+                  IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutomationProperties.AutomationId="GIGrid" 
+                  HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" Grid.Row="2" Margin="0,10,0,0">
+
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="ID" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                <Hyperlink Command="{Binding DataContext.OpenGIDetailsCommand, ElementName=LayoutRoot}" CommandParameter="{Binding}"
+                                           AutomationProperties.AutomationId="OpenDetailHyperLink">
+                                    <TextBlock Text="{Binding ID}" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="SAP No." MinWidth="150" Binding="{Binding GoodsReceive.Material}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Text" MinWidth="250" Binding="{Binding Text}" CanUserSort="False" Foreground="Black"/>
+                <DataGridTextColumn Header="Quantity" MinWidth="30" Binding="{Binding Quantity}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Transfer Type" MinWidth="150" Binding="{Binding TransferType}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Production No." MinWidth="150" Binding="{Binding ProductionNo}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Location To" MinWidth="150" Binding="{Binding LocationTo}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Location From" MinWidth="150" Binding="{Binding LocationFrom}" CanUserSort="True" Foreground="Black"/>
+            </DataGrid.Columns>
+
+        </DataGrid>
+    </Grid>
+</UserControl>

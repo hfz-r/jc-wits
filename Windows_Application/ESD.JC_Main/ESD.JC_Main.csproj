@@ -150,9 +150,6 @@
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProgressDialog.xaml.cs">
-      <DependentUpon>ProgressDialog.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
@@ -203,10 +200,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ProgressDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\img_bg_dark.jpg" />
@@ -240,6 +233,10 @@
       <Project>{833691bf-1faf-402e-8230-d883ba77d682}</Project>
       <Name>DataLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ESD.JC_GoodsIssue\ESD.JC_GoodsIssue.csproj">
+      <Project>{87CC36B0-8A7D-46BE-9AB0-33173C8B0CD6}</Project>
+      <Name>ESD.JC_GoodsIssue</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ESD.JC_GoodsReceive\ESD.JC_GoodsReceive.csproj">
       <Project>{a3f089b9-8b24-4952-8c9c-0500aea8cc83}</Project>
       <Name>ESD.JC_GoodsReceive</Name>
@@ -247,6 +244,10 @@
     <ProjectReference Include="..\ESD.JC_Infrastructure\ESD.JC_Infrastructure.csproj">
       <Project>{3FFE8EC2-5990-4664-9F45-14C469255859}</Project>
       <Name>ESD.JC_Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ESD.JC_LabelPrinting\ESD.JC_LabelPrinting.csproj">
+      <Project>{db314da4-e8a5-4977-b203-83c57bfd52ad}</Project>
+      <Name>ESD.JC_LabelPrinting</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESD.JC_ReasonMgmt\ESD.JC_ReasonMgmt.csproj">
       <Project>{c32f7c1d-978a-4ac9-a64a-bfff64640c94}</Project>
@@ -298,6 +299,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\btn_save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\btn_back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\btn_paste.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

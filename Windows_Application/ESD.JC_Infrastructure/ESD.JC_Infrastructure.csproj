@@ -71,7 +71,17 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoolConverter.cs" />
+    <Compile Include="Controls\ProgressDialog.xaml.cs">
+      <DependentUpon>ProgressDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProgressDialogHelper.cs" />
+    <Compile Include="Controls\ProgressDialogViewModel.cs" />
+    <Compile Include="Controls\Slider.xaml.cs">
+      <DependentUpon>Slider.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Events\ObjectEvent.cs" />
+    <Compile Include="Events\ProgressDialogTextEvent.cs" />
+    <Compile Include="StringToDecimalConverter.cs" />
     <Compile Include="TooltipsConverter.cs" />
     <Compile Include="BrushColorConverter.cs" />
     <Compile Include="CollectionToBooleanConverter.cs" />
@@ -82,8 +92,7 @@
     <Compile Include="IgnoreNewItemPlaceHolderConverter.cs" />
     <Compile Include="ObjectToVisibilityConverter.cs" />
     <Compile Include="ObservableCommand.cs" />
-    <Compile Include="Utilities\ISequencedObject.cs" />
-    <Compile Include="Utilities\ObservableObject.cs" />
+    <Compile Include="UnitKGsConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -114,6 +123,16 @@
       <Project>{833691bf-1faf-402e-8230-d883ba77d682}</Project>
       <Name>DataLayer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\ProgressDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Slider.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

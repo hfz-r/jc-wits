@@ -1,9 +1,6 @@
 ﻿using System.Windows.Controls;
 using ESD.JC_ReasonMgmt.ViewModels;
-using ESD.JC_ReasonMgmt.ModelsExt;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Input;
 
 namespace ESD.JC_ReasonMgmt.Views
 {

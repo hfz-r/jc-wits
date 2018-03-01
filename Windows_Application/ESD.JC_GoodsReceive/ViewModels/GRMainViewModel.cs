@@ -25,23 +25,20 @@ using FileHelpers;
 using FileHelpers.ExcelNPOIStorage;
 using Microsoft.Office.Interop.Excel;
 using ESD.JC_Infrastructure;
+using FileHelpers.Events;
+using System.Threading;
 
 namespace ESD.JC_GoodsReceive.ViewModels
 {
     public class GRMainViewModel : BindableBase
     {
+        #region Properties
+
         private ICollectionView _GoodReceives;
         public ICollectionView GoodReceives
         {
             get { return _GoodReceives; }
             set { SetProperty(ref _GoodReceives, value); }
-        }
-
-        private string _AuthenticatedUser = string.Empty;
-        public string AuthenticatedUser
-        {
-            get { return _AuthenticatedUser; }
-            set { SetProperty(ref _AuthenticatedUser, value); }
         }
 
         private string _InteractionResultMessage;
@@ -95,6 +92,27 @@ namespace ESD.JC_GoodsReceive.ViewModels
             }
         }
 
+        public string AuthenticatedUser
+        {
+            get
+            {
+                if (IsAuthenticated)
+                    return Thread.CurrentPrincipal.Identity.Name;
+
+                return "Unauthorized User";
+            }
+        }
+
+        public bool IsAuthenticated
+        {
+            get
+            {
+                return Thread.CurrentPrincipal.Identity.IsAuthenticated;
+            }
+        }
+
+        #endregion
+
         private const string grDetailsViewName = "GRDetailsView";
 
         private IRegionManager regionManager;
@@ -117,7 +135,6 @@ namespace ESD.JC_GoodsReceive.ViewModels
             this.regionManager = regionManager;
             this.grServices = grServices;
             this.eventAggregator = eventAggregator;
-            this.eventAggregator.GetEvent<AuthenticatedUserEvent>().Subscribe(InitAuthenticatedUser);
 
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             OpenGRDetailsCommand = new DelegateCommand<GoodsReceive>(OpenGRDetails);
@@ -194,15 +211,11 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 obj.IsChecked = false;
                 grCollection.Add(obj);
             }
+
             GoodReceives = new ListCollectionView(grCollection);
             GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
 
             CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
-        }
-
-        private void InitAuthenticatedUser(string user)
-        {
-            AuthenticatedUser = user;
         }
 
         private bool Filter(object item)
@@ -227,6 +240,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 if (CountChecked.Where(x => x == true).Count() > 0)
                     CountChecked.Remove(true);
             }
+
             RaisePropertyChanged("GoodReceives");
 
             _PrintLblCommand.RaiseCanExecuteChanged();
@@ -316,6 +330,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             try
             {
                 var engine = new DelimitedFileEngine<ImportCLassModel>(Encoding.UTF8);
+                engine.AfterReadRecord += AfterReadCSVEvent;
                 engine.Options.Delimiter = ";";
 
                 var records = engine.ReadFile(fullName);
@@ -350,6 +365,21 @@ namespace ESD.JC_GoodsReceive.ViewModels
             }
         }
 
+        private void AfterReadCSVEvent(EngineBase engine, AfterReadEventArgs<ImportCLassModel> e)
+        {
+            if (e.Record.PurchaseOrder.Length > 11)
+                throw new Exception("Line " + e.LineNumber + ": PurchaseOrder is too long");
+
+            if (e.Record.Material.Length > 8)
+                throw new Exception("Line " + e.LineNumber + ": Material is too long");
+
+            if (e.Record.MaterialShortText.Length > 41)
+                throw new Exception("Line " + e.LineNumber + ": MaterialShortText is too long");
+
+            if (e.Record.StorageBin.Length > 6)
+                throw new Exception("Line " + e.LineNumber + ": StorageBin is too long");
+        }
+
         private bool Save()
         {
             bool ok = false;
@@ -362,7 +392,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 {
                     if (gr.IsChecked == true)
                     {
-                        var obj = grServices.GetSAPNo(gr.Material);
+                        var obj = grServices.GetGRBySAPNo(gr.Material);
                         {
                             if (obj != null)
                             {
@@ -394,7 +424,6 @@ namespace ESD.JC_GoodsReceive.ViewModels
         {
             obj.Vendor = gr.Vendor;
             obj.Material = gr.Material;
-            //received checking, to-do
             obj.MaterialShortText = gr.MaterialShortText;
             obj.Ok = gr.Ok;
             obj.Quantity = gr.Quantity;
@@ -419,6 +448,8 @@ namespace ESD.JC_GoodsReceive.ViewModels
                     MaterialShortText = rec.MaterialShortText,
                     Ok = rec.Ok,
                     Quantity = rec.Quantity,
+                    Eun = rec.Eun,
+                    MvmtType = rec.MvmtType,
                     StorageLoc = rec.StorageLoc,
                     Plant = rec.Plant,
                     StorageBin = rec.StorageBin,
@@ -476,16 +507,18 @@ namespace ESD.JC_GoodsReceive.ViewModels
             {
                 importObj.Add(new ImportCLassModel
                 {
+                    DocumentDate = gr.DocumentDate,
                     PurchaseOrder = gr.PurchaseOrder,
                     Vendor = gr.Vendor,
                     Material = gr.Material,
                     MaterialShortText = gr.MaterialShortText,
                     Ok = gr.Ok,
                     Quantity = gr.Quantity,
+                    Eun = gr.Eun,
+                    MvmtType = gr.MvmtType,
                     StorageLoc = gr.StorageLoc,
                     Plant = gr.Plant,
-                    StorageBin = gr.StorageBin,
-                    DocumentDate = gr.DocumentDate
+                    StorageBin = gr.StorageBin
                 });
             }
 
@@ -559,6 +592,12 @@ namespace ESD.JC_GoodsReceive.ViewModels
                             strPallet.Replace("<LEGACYNO>", item.Material);
                             strPallet.Replace("<BIN>", item.StorageBin);
                             strPallet.Replace("<QTY>", item.Quantity.ToString());
+                            strPallet.Replace("<BUN>", item.Eun);
+
+                            if (item.Eun == "KG")
+                                strPallet.Replace("<QRCODE>", item.Material + ";" + item.Quantity);
+                            else
+                                strPallet.Replace("<QRCODE>", item.Material);
 
                             //start EN & MS String Builder
                             for (int x = 0; x < 2; x++)
@@ -630,19 +669,6 @@ namespace ESD.JC_GoodsReceive.ViewModels
             }
         }
 
-        private List<string> Split(string originalString, int chunkSize)
-        {
-            List<string> test = new List<string>();
-            for (int i = 0; i < originalString.Length; i = i + chunkSize)
-            {
-                if (originalString.Length - i >= chunkSize)
-                    test.Add(originalString.Substring(i, chunkSize));
-                else
-                    test.Add(originalString.Substring(i, ((originalString.Length - i))));
-            }
-            return test;
-        }
-
         private bool CanPrint(object ignored)
         {
             if (ImportBtn != null)
@@ -678,7 +704,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             switch (isSelected)
             {
                 case true:
-                    CountChecked.AddRange(Enumerable.Repeat(true, grCollection.Count));
+                    CountChecked.AddRange(Enumerable.Repeat(true, tempObj.Count));
                     break;
                 case false:
                     CountChecked = new List<bool>();
@@ -688,6 +714,8 @@ namespace ESD.JC_GoodsReceive.ViewModels
             _PrintLblCommand.RaiseCanExecuteChanged();
 
             GoodReceives = new ListCollectionView(tempObj);
+            GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
+
             CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
         }
     }
@@ -718,12 +746,18 @@ namespace ESD.JC_GoodsReceive.ViewModels
         public decimal Quantity { get; set; }
 
         [FieldOrder(8)]
-        public string StorageLoc { get; set; }
+        public string Eun { get; set; }
 
         [FieldOrder(9)]
-        public int Plant { get; set; }
+        public string MvmtType { get; set; }
 
         [FieldOrder(10)]
+        public string StorageLoc { get; set; }
+
+        [FieldOrder(11)]
+        public int Plant { get; set; }
+
+        [FieldOrder(12)]
         public string StorageBin { get; set; }
     }
 }

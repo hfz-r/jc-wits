@@ -76,9 +76,6 @@ namespace ESD.JC_ReasonMgmt.ViewModels
             set { SetProperty(ref _ItemCount, value); }
         }
 
-        private const string reasonDetailsViewName = "ReasonDetailsView";
-        private const string reasonOperationViewName = "ReasonOperationView";
-
         private IEventAggregator EventAggregator;
         private IRegionManager RegionManager;
         private IReasonServices ReasonServices;

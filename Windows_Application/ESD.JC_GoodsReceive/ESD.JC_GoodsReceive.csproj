@@ -132,7 +132,11 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\TabRegionController.cs" />
     <Compile Include="GRModule.cs" />
+    <Compile Include="ModelsExt\CollectionEUnKGToBooleanConverter.cs" />
+    <Compile Include="ModelsExt\EunKGExt.cs" />
+    <Compile Include="Notifications\ObjectSelectionNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -146,10 +150,31 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Services\EunKGServices.cs" />
     <Compile Include="Services\GRServices.cs" />
+    <Compile Include="Services\GRTransactionServices.cs" />
+    <Compile Include="Services\IEunKGServices.cs" />
     <Compile Include="Services\IGRServices.cs" />
+    <Compile Include="Services\IGRTransactionServices.cs" />
+    <Compile Include="Services\SequencingService.cs" />
+    <Compile Include="Utilities\ISequencedObject.cs" />
+    <Compile Include="Utilities\ObservableObject.cs" />
+    <Compile Include="ViewModels\EunKGDetailsViewModel.cs" />
+    <Compile Include="ViewModels\GRDetailsSummaryViewModel.cs" />
+    <Compile Include="ViewModels\GRDetailsTransactionViewModel.cs" />
     <Compile Include="ViewModels\GRDetailsViewModel.cs" />
     <Compile Include="ViewModels\GRMainViewModel.cs" />
+    <Compile Include="Views\BindingProxy.cs" />
+    <Compile Include="Views\ComparisonValue.cs" />
+    <Compile Include="Views\EunKGDetailsView.xaml.cs">
+      <DependentUpon>EunKGDetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GRDetailsSummaryView.xaml.cs">
+      <DependentUpon>GRDetailsSummaryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GRDetailsTransactionView.xaml.cs">
+      <DependentUpon>GRDetailsTransactionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GRDetailsView.xaml.cs">
       <DependentUpon>GRDetailsView.xaml</DependentUpon>
     </Compile>
@@ -159,6 +184,7 @@
     <Compile Include="Views\GRNavigationItemView.xaml.cs">
       <DependentUpon>GRNavigationItemView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\QuantityValidationRules.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -184,6 +210,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\EunKGDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GRDetailsSummaryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GRDetailsTransactionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\GRDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

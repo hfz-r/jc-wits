@@ -16,7 +16,7 @@ namespace DataLayer
     {
         public long ID { get; set; }
         public Nullable<long> ReasonID { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
         public long GRID { get; set; }

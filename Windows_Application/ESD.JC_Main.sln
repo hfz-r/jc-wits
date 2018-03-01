@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESD.JC_GoodsReceive", "ESD.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESD.JC_ReasonMgmt", "ESD.JC_ReasonMgmt\ESD.JC_ReasonMgmt.csproj", "{C32F7C1D-978A-4AC9-A64A-BFFF64640C94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESD.JC_LabelPrinting", "ESD.JC_LabelPrinting\ESD.JC_LabelPrinting.csproj", "{DB314DA4-E8A5-4977-B203-83C57BFD52AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESD.JC_GoodsIssue", "ESD.JC_GoodsIssue\ESD.JC_GoodsIssue.csproj", "{87CC36B0-8A7D-46BE-9AB0-33173C8B0CD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{C32F7C1D-978A-4AC9-A64A-BFFF64640C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C32F7C1D-978A-4AC9-A64A-BFFF64640C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C32F7C1D-978A-4AC9-A64A-BFFF64640C94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB314DA4-E8A5-4977-B203-83C57BFD52AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB314DA4-E8A5-4977-B203-83C57BFD52AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB314DA4-E8A5-4977-B203-83C57BFD52AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB314DA4-E8A5-4977-B203-83C57BFD52AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87CC36B0-8A7D-46BE-9AB0-33173C8B0CD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87CC36B0-8A7D-46BE-9AB0-33173C8B0CD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87CC36B0-8A7D-46BE-9AB0-33173C8B0CD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87CC36B0-8A7D-46BE-9AB0-33173C8B0CD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

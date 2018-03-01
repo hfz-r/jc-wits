@@ -2,7 +2,7 @@
 
 namespace ESD.JC_Infrastructure.Events
 {
-    public class UserSelectedEvent : PubSubEvent<object>
+    public class UserSelectedEvent : PubSubEvent<long>
     {
     }
 }

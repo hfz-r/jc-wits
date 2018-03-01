@@ -9,6 +9,7 @@ using System.ComponentModel;
 using ESD.JC_Main.LoginServices;
 using ESD.JC_Main.Views;
 using ESD.JC_Infrastructure.Events;
+using ESD.JC_Infrastructure.Controls;
 using System.Threading;
 
 namespace ESD.JC_Main.ViewModels
@@ -108,6 +109,9 @@ namespace ESD.JC_Main.ViewModels
             }
 
             pgdialog = new ProgressDialog();
+
+            string ProgressDialogText = "Authenticating...";
+            _EventAggregator.GetEvent<ProgressDialogTextEvent>().Publish(ProgressDialogText);
 
             System.Windows.Threading.Dispatcher _Dispatcher = pgdialog.Dispatcher;
 
