@@ -4,17 +4,21 @@ using System.Windows.Data;
 
 namespace ESD.JC_Infrastructure
 {
-    public  class BoolConverter : IValueConverter
+    public class StringToDecimalConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool v = (bool)value;
-            return !v;
+            if (value == null)
+            {
+                return string.Empty;
+            }
+            return value.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException();
+            decimal retVal;
+            return decimal.TryParse(value.ToString(), out retVal) ? retVal : 0;
         }
     }
 }

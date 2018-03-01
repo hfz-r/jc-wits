@@ -7,7 +7,8 @@ namespace ESD.JC_GoodsReceive.Services
     {
         IEnumerable<GoodsReceive> GetAll();
         GoodsReceive GetGR(long ID);
-        GoodsReceive GetSAPNo(string sap_no);
+        GoodsReceive GetGRBySAPNo(string sap_no);
+        GoodsReceive GetEunKG(long ID);
         bool Save(List<GoodsReceive> gr, string state = "");
     }
 }

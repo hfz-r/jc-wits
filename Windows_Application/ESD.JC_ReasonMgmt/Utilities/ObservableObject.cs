@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace ESD.JC_Infrastructure.Utilities
+namespace ESD.JC_ReasonMgmt.Utilities
 {
     public class ObservableObject : INotifyPropertyChanged
     {

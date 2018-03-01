@@ -17,6 +17,8 @@ namespace DataLayer
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public GoodsReceive()
         {
+            this.EunKGs = new HashSet<EunKG>();
+            this.GITransactions = new HashSet<GITransaction>();
             this.GRTransactions = new HashSet<GRTransaction>();
         }
     
@@ -43,6 +45,10 @@ namespace DataLayer
         public string ModifiedBy { get; set; }
         public Nullable<decimal> QtyReceived { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EunKG> EunKGs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GITransaction> GITransactions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GRTransaction> GRTransactions { get; set; }
     }

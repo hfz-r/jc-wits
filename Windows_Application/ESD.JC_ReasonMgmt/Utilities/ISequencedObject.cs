@@ -1,4 +1,4 @@
-﻿namespace ESD.JC_Infrastructure.Utilities
+﻿namespace ESD.JC_ReasonMgmt.Utilities
 {
     public interface ISequencedObject
     {

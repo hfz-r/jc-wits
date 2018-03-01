@@ -5,6 +5,35 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="InventoryModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="EunKG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GRID" Type="bigint" Nullable="false" />
+          <Property Name="Eun" Type="varchar" MaxLength="10" />
+          <Property Name="Quantity" Type="numeric" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="QtyReceived" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GITransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Text" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="GRID" Type="bigint" Nullable="false" />
+          <Property Name="TransferType" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductionNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="LocationTo" Type="nvarchar" MaxLength="200" />
+          <Property Name="LocationFrom" Type="nchar" MaxLength="200" />
+        </EntityType>
         <EntityType Name="GoodsReceive">
           <Key>
             <PropertyRef Name="ID" />
@@ -38,7 +67,7 @@
           </Key>
           <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ReasonID" Type="bigint" />
-          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="GRID" Type="bigint" Nullable="false" />
@@ -84,6 +113,30 @@
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <Association Name="FK_EunKG_GoodsReceive">
+          <End Role="GoodsReceive" Type="Self.GoodsReceive" Multiplicity="1" />
+          <End Role="EunKG" Type="Self.EunKG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoodsReceive">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EunKG">
+              <PropertyRef Name="GRID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoodsIssue_GRID">
+          <End Role="GoodsReceive" Type="Self.GoodsReceive" Multiplicity="1" />
+          <End Role="GITransaction" Type="Self.GITransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoodsReceive">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GITransaction">
+              <PropertyRef Name="GRID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GoodsReceive_GRID">
           <End Role="GoodsReceive" Type="Self.GoodsReceive" Multiplicity="1" />
           <End Role="GRTransaction" Type="Self.GRTransaction" Multiplicity="*" />
@@ -121,11 +174,21 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="InventoryModelStoreContainer">
+          <EntitySet Name="EunKG" EntityType="Self.EunKG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GITransaction" EntityType="Self.GITransaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoodsReceive" EntityType="Self.GoodsReceive" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GRTransaction" EntityType="Self.GRTransaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Reason" EntityType="Self.Reason" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_EunKG_GoodsReceive" Association="Self.FK_EunKG_GoodsReceive">
+            <End Role="GoodsReceive" EntitySet="GoodsReceive" />
+            <End Role="EunKG" EntitySet="EunKG" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoodsIssue_GRID" Association="Self.FK_GoodsIssue_GRID">
+            <End Role="GoodsReceive" EntitySet="GoodsReceive" />
+            <End Role="GITransaction" EntitySet="GITransaction" />
+          </AssociationSet>
           <AssociationSet Name="FK_GoodsReceive_GRID" Association="Self.FK_GoodsReceive_GRID">
             <End Role="GoodsReceive" EntitySet="GoodsReceive" />
             <End Role="GRTransaction" EntitySet="GRTransaction" />
@@ -145,9 +208,24 @@
       <Schema Namespace="InventoryModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="InventoryContext" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="GoodsReceives" EntityType="InventoryModel.GoodsReceive" />
-          <EntitySet Name="GRTransactions" EntityType="InventoryModel.GRTransaction" />
           <EntitySet Name="Reasons" EntityType="InventoryModel.Reason" />
           <EntitySet Name="Roles" EntityType="InventoryModel.Role" />
+          <EntitySet Name="Users" EntityType="InventoryModel.User" />
+          <AssociationSet Name="FK_Role_RoleID" Association="InventoryModel.FK_Role_RoleID">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <EntitySet Name="EunKGs" EntityType="InventoryModel.EunKG" />
+          <AssociationSet Name="FK_EunKG_GoodsReceive" Association="InventoryModel.FK_EunKG_GoodsReceive">
+            <End Role="GoodsReceive" EntitySet="GoodsReceives" />
+            <End Role="EunKG" EntitySet="EunKGs" />
+          </AssociationSet>
+          <EntitySet Name="GITransactions" EntityType="InventoryModel.GITransaction" />
+          <EntitySet Name="GRTransactions" EntityType="InventoryModel.GRTransaction" />
+          <AssociationSet Name="FK_GoodsIssue_GRID" Association="InventoryModel.FK_GoodsIssue_GRID">
+            <End Role="GoodsReceive" EntitySet="GoodsReceives" />
+            <End Role="GITransaction" EntitySet="GITransactions" />
+          </AssociationSet>
           <AssociationSet Name="FK_GoodsReceive_GRID" Association="InventoryModel.FK_GoodsReceive_GRID">
             <End Role="GoodsReceive" EntitySet="GoodsReceives" />
             <End Role="GRTransaction" EntitySet="GRTransactions" />
@@ -155,11 +233,6 @@
           <AssociationSet Name="FK_Reason_ReasonID" Association="InventoryModel.FK_Reason_ReasonID">
             <End Role="Reason" EntitySet="Reasons" />
             <End Role="GRTransaction" EntitySet="GRTransactions" />
-          </AssociationSet>
-          <EntitySet Name="Users" EntityType="InventoryModel.User" />
-          <AssociationSet Name="FK_Role_RoleID" Association="InventoryModel.FK_Role_RoleID">
-            <End Role="Role" EntitySet="Roles" />
-            <End Role="User" EntitySet="Users" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="GoodsReceive">
@@ -187,21 +260,10 @@
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="GRTransactions" Relationship="InventoryModel.FK_GoodsReceive_GRID" FromRole="GoodsReceive" ToRole="GRTransaction" />
           <Property Name="QtyReceived" Type="Decimal" Precision="18" Scale="0" />
-        </EntityType>
-        <EntityType Name="GRTransaction">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ReasonID" Type="Int64" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
-          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="GRID" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="GoodsReceive" Relationship="InventoryModel.FK_GoodsReceive_GRID" FromRole="GRTransaction" ToRole="GoodsReceive" />
-          <NavigationProperty Name="Reason" Relationship="InventoryModel.FK_Reason_ReasonID" FromRole="GRTransaction" ToRole="Reason" />
+          <NavigationProperty Name="EunKGs" Relationship="InventoryModel.FK_EunKG_GoodsReceive" FromRole="GoodsReceive" ToRole="EunKG" />
+          <NavigationProperty Name="GITransactions" Relationship="InventoryModel.FK_GoodsIssue_GRID" FromRole="GoodsReceive" ToRole="GITransaction" />
+          <NavigationProperty Name="GRTransactions" Relationship="InventoryModel.FK_GoodsReceive_GRID" FromRole="GoodsReceive" ToRole="GRTransaction" />
         </EntityType>
         <EntityType Name="Reason">
           <Key>
@@ -230,30 +292,6 @@
           <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Users" Relationship="InventoryModel.FK_Role_RoleID" FromRole="Role" ToRole="User" />
         </EntityType>
-        <Association Name="FK_GoodsReceive_GRID">
-          <End Type="InventoryModel.GoodsReceive" Role="GoodsReceive" Multiplicity="1" />
-          <End Type="InventoryModel.GRTransaction" Role="GRTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="GoodsReceive">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="GRTransaction">
-              <PropertyRef Name="GRID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Reason_ReasonID">
-          <End Type="InventoryModel.Reason" Role="Reason" Multiplicity="0..1" />
-          <End Type="InventoryModel.GRTransaction" Role="GRTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Reason">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="GRTransaction">
-              <PropertyRef Name="ReasonID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="ID" />
@@ -280,6 +318,98 @@
             </Principal>
             <Dependent Role="User">
               <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EunKG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GRID" Type="Int64" Nullable="false" />
+          <Property Name="Eun" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="QtyReceived" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="GoodsReceive" Relationship="InventoryModel.FK_EunKG_GoodsReceive" FromRole="EunKG" ToRole="GoodsReceive" />
+        </EntityType>
+        <Association Name="FK_EunKG_GoodsReceive">
+          <End Type="InventoryModel.GoodsReceive" Role="GoodsReceive" Multiplicity="1" />
+          <End Type="InventoryModel.EunKG" Role="EunKG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoodsReceive">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EunKG">
+              <PropertyRef Name="GRID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="GITransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="GRID" Type="Int64" Nullable="false" />
+          <Property Name="TransferType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductionNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LocationTo" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="LocationFrom" Type="String" MaxLength="200" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="GoodsReceive" Relationship="InventoryModel.FK_GoodsIssue_GRID" FromRole="GITransaction" ToRole="GoodsReceive" />
+        </EntityType>
+        <EntityType Name="GRTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ReasonID" Type="Int64" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="GRID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="GoodsReceive" Relationship="InventoryModel.FK_GoodsReceive_GRID" FromRole="GRTransaction" ToRole="GoodsReceive" />
+          <NavigationProperty Name="Reason" Relationship="InventoryModel.FK_Reason_ReasonID" FromRole="GRTransaction" ToRole="Reason" />
+        </EntityType>
+        <Association Name="FK_GoodsIssue_GRID">
+          <End Type="InventoryModel.GoodsReceive" Role="GoodsReceive" Multiplicity="1" />
+          <End Type="InventoryModel.GITransaction" Role="GITransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoodsReceive">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GITransaction">
+              <PropertyRef Name="GRID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoodsReceive_GRID">
+          <End Type="InventoryModel.GoodsReceive" Role="GoodsReceive" Multiplicity="1" />
+          <End Type="InventoryModel.GRTransaction" Role="GRTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GoodsReceive">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GRTransaction">
+              <PropertyRef Name="GRID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Reason_ReasonID">
+          <End Type="InventoryModel.Reason" Role="Reason" Multiplicity="0..1" />
+          <End Type="InventoryModel.GRTransaction" Role="GRTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reason">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GRTransaction">
+              <PropertyRef Name="ReasonID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -313,18 +443,6 @@
                 <ScalarProperty Name="DeliveryNote" ColumnName="DeliveryNote" />
                 <ScalarProperty Name="Vendor" ColumnName="Vendor" />
                 <ScalarProperty Name="PurchaseOrder" ColumnName="PurchaseOrder" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="GRTransactions">
-            <EntityTypeMapping TypeName="InventoryModel.GRTransaction">
-              <MappingFragment StoreEntitySet="GRTransaction">
-                <ScalarProperty Name="GRID" ColumnName="GRID" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="ReasonID" ColumnName="ReasonID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -369,6 +487,49 @@
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EunKGs">
+            <EntityTypeMapping TypeName="InventoryModel.EunKG">
+              <MappingFragment StoreEntitySet="EunKG">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="QtyReceived" ColumnName="QtyReceived" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Eun" ColumnName="Eun" />
+                <ScalarProperty Name="GRID" ColumnName="GRID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GITransactions">
+            <EntityTypeMapping TypeName="InventoryModel.GITransaction">
+              <MappingFragment StoreEntitySet="GITransaction">
+                <ScalarProperty Name="LocationFrom" ColumnName="LocationFrom" />
+                <ScalarProperty Name="LocationTo" ColumnName="LocationTo" />
+                <ScalarProperty Name="ProductionNo" ColumnName="ProductionNo" />
+                <ScalarProperty Name="TransferType" ColumnName="TransferType" />
+                <ScalarProperty Name="GRID" ColumnName="GRID" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GRTransactions">
+            <EntityTypeMapping TypeName="InventoryModel.GRTransaction">
+              <MappingFragment StoreEntitySet="GRTransaction">
+                <ScalarProperty Name="GRID" ColumnName="GRID" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ReasonID" ColumnName="ReasonID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

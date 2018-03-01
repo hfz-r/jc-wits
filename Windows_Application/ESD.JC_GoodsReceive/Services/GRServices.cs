@@ -26,9 +26,14 @@ namespace ESD.JC_GoodsReceive.Services
             return grRepository.GetGR(ID);
         }
 
-        public GoodsReceive GetSAPNo(string sap_no)
+        public GoodsReceive GetGRBySAPNo(string sap_no)
         {
-            return grRepository.GetSAPNo(sap_no);
+            return grRepository.GetGRBySAPNo(sap_no);
+        }
+
+        public GoodsReceive GetEunKG(long ID)
+        {
+            return grRepository.GetEunKGDetails(ID);
         }
 
         public bool Save(List<GoodsReceive> grs, string state = "")

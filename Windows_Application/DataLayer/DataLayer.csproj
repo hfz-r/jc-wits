@@ -52,6 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EunKG.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GITransaction.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="GoodsReceive.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
@@ -78,8 +84,14 @@
     <Compile Include="Reason.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Repositories\EunKGRepository.cs" />
+    <Compile Include="Repositories\GoodsIssueRepository.cs" />
     <Compile Include="Repositories\GoodsReceiveRepository.cs" />
+    <Compile Include="Repositories\GRTransactionRepository.cs" />
+    <Compile Include="Repositories\IEunKGRepository.cs" />
+    <Compile Include="Repositories\IGoodsIssueRepository.cs" />
     <Compile Include="Repositories\IGoodsReceiveRepository.cs" />
+    <Compile Include="Repositories\IGRTransactionRepository.cs" />
     <Compile Include="Repositories\IReasonRepository.cs" />
     <Compile Include="Repositories\IRoleRepository.cs" />
     <Compile Include="Repositories\IUserRepository.cs" />

@@ -4,15 +4,19 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="9df45a4359ca4f6f921b805a21eacd57" Name="Diagram1" ZoomLevel="108">
-        <EntityTypeShape EntityType="InventoryModel.GoodsReceive" Width="1.5" PointX="0.75" PointY="8.25" />
-        <EntityTypeShape EntityType="InventoryModel.GRTransaction" Width="1.5" PointX="3" PointY="1" />
-        <EntityTypeShape EntityType="InventoryModel.Reason" Width="1.5" PointX="0.75" PointY="1" />
-        <EntityTypeShape EntityType="InventoryModel.Role" Width="1.5" PointX="2.75" PointY="5.125" />
+      <Diagram DiagramId="9df45a4359ca4f6f921b805a21eacd57" Name="Diagram1" ZoomLevel="92">
+        <EntityTypeShape EntityType="InventoryModel.GoodsReceive" Width="1.5" PointX="0.75" PointY="5" />
+        <EntityTypeShape EntityType="InventoryModel.Reason" Width="1.5" PointX="3.75" PointY="0.75" />
+        <EntityTypeShape EntityType="InventoryModel.Role" Width="1.5" PointX="8.75" PointY="2.75" />
+        <EntityTypeShape EntityType="InventoryModel.User" Width="1.5" PointX="11" PointY="2.5" />
+        <AssociationConnector Association="InventoryModel.FK_Role_RoleID" />
+        <EntityTypeShape EntityType="InventoryModel.EunKG" Width="1.5" PointX="3" PointY="11.75" />
+        <AssociationConnector Association="InventoryModel.FK_EunKG_GoodsReceive" />
+        <EntityTypeShape EntityType="InventoryModel.GITransaction" Width="1.5" PointX="3" PointY="4.5" />
+        <EntityTypeShape EntityType="InventoryModel.GRTransaction" Width="1.5" PointX="6" PointY="6.625" />
+        <AssociationConnector Association="InventoryModel.FK_GoodsIssue_GRID" />
         <AssociationConnector Association="InventoryModel.FK_GoodsReceive_GRID" />
         <AssociationConnector Association="InventoryModel.FK_Reason_ReasonID" />
-        <EntityTypeShape EntityType="InventoryModel.User" Width="1.5" PointX="5" PointY="5" />
-        <AssociationConnector Association="InventoryModel.FK_Role_RoleID" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

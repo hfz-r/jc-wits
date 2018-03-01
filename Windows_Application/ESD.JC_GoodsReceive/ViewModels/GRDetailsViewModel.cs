@@ -1,12 +1,20 @@
-﻿using DataLayer;
-using ESD.JC_GoodsReceive.Services;
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using System.Windows.Input;
+using DataLayer;
+using ESD.JC_GoodsReceive.Services;
+using Microsoft.Practices.Unity;
+using ESD.JC_Infrastructure.Events;
+using Prism.Events;
+using System.Linq;
+using ESD.JC_GoodsReceive.Notifications;
+using Prism.Interactivity.InteractionRequest;
+using System.Windows;
 
 namespace ESD.JC_GoodsReceive.ViewModels
 {
+    [RegionMemberLifetime(KeepAlive = false)]
     public class GRDetailsViewModel : BindableBase, INavigationAware
     {
         private GoodsReceive _GoodReceive;
@@ -28,18 +36,34 @@ namespace ESD.JC_GoodsReceive.ViewModels
         }
 
         private IRegionNavigationJournal navigationJournal;
+        private IUnityContainer Container;
         private IRegionManager RegionManager;
+        private IEventAggregator EventAggregator;
         private IGRServices GRServices;
+        private IGRTransactionServices GRTrnxServices;
 
-        public GRDetailsViewModel(IRegionManager _RegionManager, IGRServices _GRServices)
+        private InteractionRequest<ObjectSelectionNotification> eunSetDetailsRequest;
+
+        public GRDetailsViewModel(IUnityContainer _Container, IRegionManager _RegionManager, IEventAggregator _EventAggregator, 
+            IGRServices _GRServices, IGRTransactionServices _GRTrnxServices)
         {
+            Container = _Container;
             RegionManager = _RegionManager;
+            EventAggregator = _EventAggregator;
             GRServices = _GRServices;
+            GRTrnxServices = _GRTrnxServices;
 
             GoBackCommand = new DelegateCommand(GoBack);
+            EunSetDetails = new DelegateCommand<GoodsReceive>(EunDetails);
+            eunSetDetailsRequest = new InteractionRequest<ObjectSelectionNotification>();
         }
 
         public ICommand GoBackCommand { get; private set; }
+        public ICommand EunSetDetails { get; private set; }
+        public IInteractionRequest EunSetDetailsRequest
+        {
+            get { return this.eunSetDetailsRequest; }
+        }
 
         private void GoBack()
         {
@@ -85,9 +109,42 @@ namespace ESD.JC_GoodsReceive.ViewModels
             if (grid.HasValue)
             {
                 this.GoodReceive = GRServices.GetGR(grid.Value);
+
+                this.EventAggregator.GetEvent<UserSelectedEvent>().Publish(grid.Value);
             }
 
             this.navigationJournal = navigationContext.NavigationService.Journal;
         }
+
+        private void EunDetails(GoodsReceive obj)
+        {
+            ObjectSelectionNotification notification = new ObjectSelectionNotification();
+            notification.ParentItem = obj;
+            notification.Title = "Unit Kilogram (KG) Child Window";
+            notification.AuthenticatedUser = AuthenticatedUser;
+
+            var kgs = GRServices.GetEunKG(obj.ID).EunKGs;
+            if (kgs.Count() > 0)
+            {
+                foreach (var item in kgs)
+                    notification.Items.Add(item);
+            }
+
+            this.eunSetDetailsRequest.Raise(
+                notification,
+                returned =>
+                {
+                    //if (returned != null && returned.Confirmed && returned.SelectedItem != null)
+                    //{
+                    //    if (Save())
+                    //        OnLoaded();
+                    //}
+                    if (returned != null && returned.Confirmed)
+                    {
+                        MessageBox.Show("Child details successfully been added.", "Success", MessageBoxButton.OK);
+                    }
+                });
+        }
+
     }
 }

@@ -1,4 +1,4 @@
-﻿using ESD.JC_Infrastructure.Utilities;
+﻿using ESD.JC_ReasonMgmt.Utilities;
 using DataLayer;
 
 namespace ESD.JC_ReasonMgmt.ModelsExt

@@ -9,7 +9,6 @@
             xmlns:prism="http://prismlibrary.com/"
             xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
             d:DesignWidth="800" d:DesignHeight="600">
-
     <UserControl.Resources>
         <infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
         <infrastructure:BrushColorConverter x:Key="BooleanToBrushConverter"/>
@@ -26,6 +25,9 @@
                 <StackPanel Grid.Column="0">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -59,6 +61,21 @@
                            Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="MSLbl"/>
                         <TextBlock Text="{Binding MaterialShortText}"                           
                            Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="MSData"/>
+
+                        <TextBlock Text="Bin:" FontWeight="Bold"
+                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="BinLbl"/>
+                        <TextBlock Text="{Binding StorageBin}"                           
+                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="BinData"/>
+
+                        <TextBlock Text="Qty:" FontWeight="Bold"
+                           Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QtyLbl"/>
+                        <TextBlock Text="{Binding Quantity}"                           
+                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="QtyData"/>
+
+                        <TextBlock Text="Bun:" FontWeight="Bold"
+                           Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="EunLbl"/>
+                        <TextBlock Text="{Binding Eun}"                           
+                           Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="EunData"/>
                     </Grid>
                 </StackPanel>
 
@@ -79,11 +96,12 @@
                             <ColumnDefinition Width="200"/>
                             <ColumnDefinition Width="75"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Label`s Preview" VerticalAlignment="Center" FontWeight="Bold" TextDecorations="underline" FontFamily="Cambria" FontSize="13"/>
 
-                        <Border Grid.Row="1" Grid.RowSpan="4" Grid.Column="1" Grid.ColumnSpan="3" Margin="-5" BorderThickness="2" BorderBrush="Black"/>
+                        <Border Grid.Row="1" Grid.RowSpan="5" Grid.Column="1" Grid.ColumnSpan="3" Margin="-5" BorderThickness="2" BorderBrush="Black"/>
 
                         <Image Grid.Row="1" Grid.RowSpan="2" Grid.Column="3" Grid.ColumnSpan="1" Source="/Resources/img_qrcode.png" Height="60" Width="60"/>
 
@@ -91,6 +109,21 @@
                         <TextBlock Grid.Row="2" Grid.Column="1" Text="Legacy No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoLbl"/>
                         <TextBlock Grid.Row="3" Grid.Column="1" Text="EN:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="ENLbl"/>
                         <TextBlock Grid.Row="4" Grid.Column="1" Text="MS:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSLbl"/>
+                        <Grid Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="BIN:" FontWeight="Bold" HorizontalAlignment="Right" />
+                            <TextBlock Grid.Column="1" Text="{Binding StorageBin}" FontWeight="Bold" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Column="3" Text="QTY:" FontWeight="Bold" HorizontalAlignment="Right" />
+                            <TextBlock Grid.Column="4" Text="{Binding Quantity}" FontWeight="Bold" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Column="5" Text="{Binding Eun}" FontWeight="Bold" HorizontalAlignment="Left" />
+                        </Grid>
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Material}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoData"/>
                         <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Material}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoData"/>
                         <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding MaterialShortText}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="ENData"/>
@@ -249,7 +282,7 @@
                 <DataGridTextColumn Header="OK" Width="Auto" Binding="{Binding Ok}" Foreground="Transparent">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Background" Value="{Binding Ok, Converter={StaticResource BooleanToBrushConverter}}"/>
+                            <Setter Property="Background" Value="{Binding Ok, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                     <DataGridTextColumn.CellStyle>
@@ -266,6 +299,8 @@
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Quantity" Width="Auto" Binding="{Binding Quantity}" CanUserSort="False" Foreground="Black"/>
+                <DataGridTextColumn Header="Eun" Width="Auto" Binding="{Binding Eun}" CanUserSort="False" Foreground="Black"/>
+                <DataGridTextColumn Header="MvmtType" Width="Auto" Binding="{Binding MvmtType}" CanUserSort="False" Foreground="Black"/>
                 <DataGridTextColumn Header="Storage Loc" Width="Auto" Binding="{Binding StorageLoc}" CanUserSort="True" Foreground="Black"/>
                 <DataGridTextColumn Header="Plant" Width="Auto" Binding="{Binding Plant}" CanUserSort="True" Foreground="Black"/>
                 <DataGridTextColumn Header="Storage Bin" Width="Auto" Binding="{Binding StorageBin}" CanUserSort="True" Foreground="Black"/>
@@ -275,7 +310,7 @@
 
         <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="15" ShowsPreview="True" />
         <ContentControl x:Name="Preview" Content="{Binding GoodReceives.CurrentItem}"
-                        Margin="5,15,5,5"
+                        Margin="5,15,5,15"
                         ContentTemplate="{StaticResource GRTemplate}"
                         Grid.Row="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                         Visibility="{Binding GoodReceives.CurrentItem, Converter={StaticResource ObjectToVisibility}}">

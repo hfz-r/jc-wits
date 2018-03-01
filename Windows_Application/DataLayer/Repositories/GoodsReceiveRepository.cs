@@ -30,7 +30,7 @@ namespace DataLayer.Repositories
             }
         }
 
-        public GoodsReceive GetSAPNo(string sap_no)
+        public GoodsReceive GetGRBySAPNo(string sap_no)
         {
             using (var context = new InventoryContext())
             {
@@ -38,6 +38,19 @@ namespace DataLayer.Repositories
                 if (gr != null)
                 {
                     context.Entry(gr).Collection(x => x.GRTransactions).Load();
+                }
+                return gr;
+            }
+        }
+
+        public GoodsReceive GetEunKGDetails(long ID)
+        {
+            using (var context = new InventoryContext())
+            {
+                var gr = context.GoodsReceives.Find(ID);
+                if (gr != null)
+                {
+                    context.Entry(gr).Collection(x => x.EunKGs).Load();
                 }
                 return gr;
             }

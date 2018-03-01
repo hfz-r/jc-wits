@@ -1136,7 +1136,7 @@
         <Setter Property="GridLinesVisibility" Value="Vertical" />
         <Setter Property="IsTabStop" Value="True" />
     </Style>
-
+    
     <!--ComboBox Togglebutton-->
     <Style x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
         <Setter Property="Template">

@@ -1,11 +1,12 @@
 ﻿using Prism.Modularity;
-using DataLayer.Repositories;
-using ESD.JC_Infrastructure;
-using ESD.JC_GoodsReceive.Views;
 using Microsoft.Practices.Unity;
 using Prism.Regions;
+using DataLayer.Repositories;
 using ESD.JC_GoodsReceive.Services;
+using ESD.JC_Infrastructure;
+using ESD.JC_GoodsReceive.Views;
 using Prism.Unity;
+using ESD.JC_GoodsReceive.Controllers;
 
 namespace ESD.JC_GoodsReceive
 {
@@ -13,6 +14,8 @@ namespace ESD.JC_GoodsReceive
     {
         private readonly IUnityContainer container;
         private readonly IRegionManager regionManager;
+
+        private TabRegionController TabRegionController;
 
         public GRModule(IUnityContainer container, IRegionManager regionManager)
         {
@@ -24,11 +27,16 @@ namespace ESD.JC_GoodsReceive
         {
             this.container.RegisterType<IGoodsReceiveRepository, GoodsReceiveRepository>();
             this.container.RegisterType<IGRServices, GRServices>();
+            this.container.RegisterType<IGRTransactionRepository, GRTransactionRepository>();
+            this.container.RegisterType<IGRTransactionServices, GRTransactionServices>();
+            this.container.RegisterType<IEunKGRepository, EunKGRepository>();
+            this.container.RegisterType<IEunKGServices, EunKGServices>();
 
             this.regionManager.RegisterViewWithRegion(RegionNames.MainNavigationRegion, () => this.container.Resolve<GRNavigationItemView>());
-            //this.regionManager.RegisterViewWithRegion(RegionNames.MainContentRegion, () => this.container.Resolve<GRMainView>());
             this.container.RegisterTypeForNavigation<GRMainView>();
             this.container.RegisterTypeForNavigation<GRDetailsView>();
+
+            this.TabRegionController = this.container.Resolve<TabRegionController>();
         }
     }
 }
