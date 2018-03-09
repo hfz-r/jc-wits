@@ -11,8 +11,13 @@
             d:DesignWidth="800" d:DesignHeight="600">
     <UserControl.Resources>
         <infrastructure:ObservableCommand x:Key="OpenGIDetailsCommand" Value="{Binding OpenGIDetailsCommand}"/>
+        <CollectionViewSource x:Key="TrnxEntries" Source="{Binding GoodsIssues}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="TransferType" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
     </UserControl.Resources>
-    
+
     <i:Interaction.Triggers>
         <prism:InteractionRequestTrigger SourceObject="{Binding ConfirmDeleteInteractionRequest, Mode=OneWay}">
             <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
@@ -68,10 +73,54 @@
 
         <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
 
-        <DataGrid ItemsSource="{Binding Path=GoodsIssues}" SelectedItem="{Binding SelectedGI}" CurrentCell="{Binding CellInfo, Mode=TwoWay}" AutoGenerateColumns="False" 
-                  IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutomationProperties.AutomationId="GIGrid" 
-                  HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" Grid.Row="2" Margin="0,10,0,0">
-
+        <DataGrid ItemsSource="{Binding Source={StaticResource TrnxEntries}}" 
+                  SelectedItem="{Binding SelectedGI}" 
+                  CurrentCell="{Binding CellInfo, Mode=TwoWay}"
+                  IsSynchronizedWithCurrentItem="True"
+                  AutoGenerateColumns="False" 
+                  IsReadOnly="True" 
+                  HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Stretch" 
+                  AutomationProperties.AutomationId="GIGrid" 
+                  HorizontalScrollBarVisibility="Hidden" 
+                  VerticalScrollBarVisibility="Auto" 
+                  Grid.Row="2" 
+                  Margin="0,10,0,0">
+            <DataGrid.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Path=Name}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <Expander Background="LightGray" HorizontalAlignment="Stretch" IsExpanded="True">
+                                            <Expander.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Path=Name}" Margin="10,0,10,0" />
+                                                    <TextBlock>(</TextBlock>
+                                                    <TextBlock Text="{Binding Path=ItemCount}" Margin="0,0,5,0"/>
+                                                    <TextBlock Text="Items"/>
+                                                    <TextBlock>)</TextBlock>
+                                                </StackPanel>
+                                            </Expander.Header>
+                                            <Grid HorizontalAlignment="Stretch">
+                                                <ItemsPresenter HorizontalAlignment="Stretch" />
+                                            </Grid>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </DataGrid.GroupStyle>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="ID" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
@@ -88,7 +137,6 @@
                 <DataGridTextColumn Header="SAP No." MinWidth="150" Binding="{Binding GoodsReceive.Material}" CanUserSort="True" Foreground="Black"/>
                 <DataGridTextColumn Header="Text" MinWidth="250" Binding="{Binding Text}" CanUserSort="False" Foreground="Black"/>
                 <DataGridTextColumn Header="Quantity" MinWidth="30" Binding="{Binding Quantity}" CanUserSort="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Transfer Type" MinWidth="150" Binding="{Binding TransferType}" CanUserSort="True" Foreground="Black"/>
                 <DataGridTextColumn Header="Production No." MinWidth="150" Binding="{Binding ProductionNo}" CanUserSort="True" Foreground="Black"/>
                 <DataGridTextColumn Header="Location To" MinWidth="150" Binding="{Binding LocationTo}" CanUserSort="True" Foreground="Black"/>
                 <DataGridTextColumn Header="Location From" MinWidth="150" Binding="{Binding LocationFrom}" CanUserSort="True" Foreground="Black"/>

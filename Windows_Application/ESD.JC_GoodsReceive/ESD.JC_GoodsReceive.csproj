@@ -133,8 +133,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\TabRegionController.cs" />
+    <Compile Include="Converters\CollectionToBooleanConverter.cs" />
     <Compile Include="GRModule.cs" />
-    <Compile Include="ModelsExt\CollectionEUnKGToBooleanConverter.cs" />
+    <Compile Include="Converters\CollectionEUnKGToBooleanConverter.cs" />
     <Compile Include="ModelsExt\EunKGExt.cs" />
     <Compile Include="Notifications\ObjectSelectionNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

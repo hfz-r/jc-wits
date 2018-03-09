@@ -22,11 +22,13 @@ namespace ESD.JC_GoodsReceive.Views
 
             if (kg.Qty > ComparisonValue.Value)
             {
-                return new ValidationResult(false, $"Child quantity should be LESS than {ComparisonValue.Value}");
+                //return new ValidationResult(false, $"Child quantity should be LESS than {ComparisonValue.Value}");
+                return new ValidationResult(false, string.Format("Child quantity should be LESS than {0}", ComparisonValue.Value));
             }
             if (kgs.Sum(x => x.Qty) > ComparisonValue.Value)
             {
-                return new ValidationResult(false, $"Child quantity should be LESS than {ComparisonValue.Value}");
+                //return new ValidationResult(false, $"Child quantity should be LESS than {ComparisonValue.Value}");
+                return new ValidationResult(false, string.Format("Child quantity should be LESS than {0}", ComparisonValue.Value));
             }
 
             return ValidationResult.ValidResult;

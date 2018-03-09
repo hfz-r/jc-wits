@@ -12,7 +12,7 @@ namespace ESD.JC_GoodsIssue.Views
     [ViewSortHint("06")]
     public partial class GINavigationItemView : UserControl
     {
-        private static Uri mainViewUri = new Uri("GIMainViewExt", UriKind.Relative);
+        private static Uri mainViewUri = new Uri("GIMainView", UriKind.Relative);
 
         public IRegionManager regionManager;
 

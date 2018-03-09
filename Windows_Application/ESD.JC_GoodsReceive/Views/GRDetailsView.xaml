@@ -219,7 +219,7 @@
         <TabControl Grid.Row="1"
             AutomationProperties.AutomationId="TrnxDtlsTabControl"
             Margin="8"
-            prism:RegionManager.RegionName="TabRegion"
+            prism:RegionManager.RegionName="TabRegionGR"
             Width="Auto"
             Height="Auto"
             HorizontalAlignment="Stretch"

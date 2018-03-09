@@ -142,12 +142,13 @@
     </Compile>
     <Compile Include="Services\GIServices.cs" />
     <Compile Include="Services\IGIServices.cs" />
+    <Compile Include="ViewModels\GIDetailsViewModel.cs" />
     <Compile Include="ViewModels\GIMainViewModel.cs" />
+    <Compile Include="Views\GIDetailsView.xaml.cs">
+      <DependentUpon>GIDetailsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GIMainView.xaml.cs">
       <DependentUpon>GIMainView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\GIMainViewExt.xaml.cs">
-      <DependentUpon>GIMainViewExt.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GINavigationItemView.xaml.cs">
       <DependentUpon>GINavigationItemView.xaml</DependentUpon>
@@ -167,11 +168,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\GIMainView.xaml">
+    <Page Include="Views\GIDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\GIMainViewExt.xaml">
+    <Page Include="Views\GIMainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -27,7 +27,11 @@ namespace ESD.JC_GoodsIssue.ViewModels
         public ObservableCollection<GITransaction> GoodsIssues
         {
             get { return _GoodsIssues; }
-            set { SetProperty(ref _GoodsIssues, value); }
+            set
+            {
+                SetProperty(ref _GoodsIssues, value);
+                RaisePropertyChanged("GoodsIssues");
+            }
         }
 
         private GITransaction _SelectedGI;
@@ -58,17 +62,6 @@ namespace ESD.JC_GoodsIssue.ViewModels
             set { SetProperty(ref _AuthenticatedUser, value); }
         }
 
-        private string _InteractionResultMessage;
-        public string InteractionResultMessage
-        {
-            get { return _InteractionResultMessage; }
-            set
-            {
-                SetProperty(ref _InteractionResultMessage, value);
-                this.RaisePropertyChanged("InteractionResultMessage");
-            }
-        }
-
         private string _FilterTextBox;
         public string FilterTextBox
         {
@@ -76,13 +69,15 @@ namespace ESD.JC_GoodsIssue.ViewModels
             set
             {
                 SetProperty(ref _FilterTextBox, value);
-                if (GoodsIssues != null)
-                    CollectionViewSource.GetDefaultView(GoodsIssues).Refresh();
+                RaisePropertyChanged("FilterTextBox");
+
+                cvs.Filter += new FilterEventHandler(FilterGI);
             }
         }
 
+        private CollectionViewSource cvs { get; set; }
+
         private const string giDetailsViewName = "GIDetailsView";
-        private const string giOperationViewName = "GIOperationView";
 
         private IEventAggregator EventAggregator;
         private IRegionManager RegionManager;
@@ -96,6 +91,7 @@ namespace ESD.JC_GoodsIssue.ViewModels
             GIServices = _GIServices;
             EventAggregator = _EventAggregator;
             EventAggregator.GetEvent<AuthenticatedUserEvent>().Subscribe(InitAuthenticatedUser);
+            EventAggregator.GetEvent<CollectionViewSourceEvent>().Subscribe(InitCollectionViewSource);
 
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             _ExportCommand = new DelegateCommand<object>(Export);
@@ -117,13 +113,10 @@ namespace ESD.JC_GoodsIssue.ViewModels
         private void OnLoaded()
         {
             GoodsIssues = new ObservableCollection<GITransaction>();
-            
             foreach(var obj in GIServices.GetAll(true).ToList())
             {
                 GoodsIssues.Add(obj);
             }
-
-            CollectionViewSource.GetDefaultView(GoodsIssues).Filter = GIFilter;
         }
 
         private void InitAuthenticatedUser(string user)
@@ -131,15 +124,22 @@ namespace ESD.JC_GoodsIssue.ViewModels
             AuthenticatedUser = user;
         }
 
-        private bool GIFilter(object item)
+        private void InitCollectionViewSource(CollectionViewSource obj)
         {
-            if (String.IsNullOrEmpty(FilterTextBox))
-                return true;
+            cvs = obj;
+        }
 
-            var gi = (GITransaction)item;
+        private void FilterGI(object sender, FilterEventArgs e)
+        {
+            if (string.IsNullOrEmpty(FilterTextBox))
+                return;
 
-            return (gi.Text.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
-                    gi.GoodsReceive.Material.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
+            var gi = e.Item as GITransaction;
+            if (gi == null)
+                e.Accepted = false;
+            else if ((gi.GoodsReceive.Material.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) || 
+                      gi.Text.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase)) != true)
+                e.Accepted = false;
         }
 
         private void OpenGIDetails(GITransaction gi)

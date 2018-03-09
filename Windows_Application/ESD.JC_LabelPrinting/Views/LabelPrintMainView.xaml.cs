@@ -37,5 +37,14 @@ namespace ESD.JC_LabelPrinting.Views
         {
             //FocusExtensions.SetFocusOnActiveElementInScope(MainControl);
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (Control ctl in GridLP.Children)
+            {
+                if (ctl.GetType() == typeof(TextBox))
+                    ((TextBox)ctl).Text = string.Empty;
+            }
+        }
     }
 }

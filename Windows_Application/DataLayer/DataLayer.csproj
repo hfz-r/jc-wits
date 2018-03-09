@@ -52,7 +52,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AHU.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AHUTransaction.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="EunKG.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FCU.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FCUTransaction.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="GITransaction.cs">
@@ -79,16 +91,25 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>InventoryModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Location.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PartialModel\AHUPartial.cs" />
+    <Compile Include="PartialModel\FCUPartial.cs" />
     <Compile Include="PartialModel\GoodsReceivePartial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reason.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Repositories\AHURepository.cs" />
     <Compile Include="Repositories\EunKGRepository.cs" />
+    <Compile Include="Repositories\FCURepository.cs" />
     <Compile Include="Repositories\GoodsIssueRepository.cs" />
     <Compile Include="Repositories\GoodsReceiveRepository.cs" />
     <Compile Include="Repositories\GRTransactionRepository.cs" />
+    <Compile Include="Repositories\IAHURepository.cs" />
     <Compile Include="Repositories\IEunKGRepository.cs" />
+    <Compile Include="Repositories\IFCURepository.cs" />
     <Compile Include="Repositories\IGoodsIssueRepository.cs" />
     <Compile Include="Repositories\IGoodsReceiveRepository.cs" />
     <Compile Include="Repositories\IGRTransactionRepository.cs" />

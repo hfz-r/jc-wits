@@ -110,7 +110,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             {
                 this.GoodReceive = GRServices.GetGR(grid.Value);
 
-                this.EventAggregator.GetEvent<UserSelectedEvent>().Publish(grid.Value);
+                this.EventAggregator.GetEvent<GRUserSelectedEvent>().Publish(grid.Value);
             }
 
             this.navigationJournal = navigationContext.NavigationService.Journal;

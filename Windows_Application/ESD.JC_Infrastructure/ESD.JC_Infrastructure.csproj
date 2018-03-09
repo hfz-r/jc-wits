@@ -71,6 +71,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CompositeCommands.cs" />
     <Compile Include="Controls\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
     </Compile>
@@ -79,15 +80,16 @@
     <Compile Include="Controls\Slider.xaml.cs">
       <DependentUpon>Slider.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Events\CollectionViewSourceEvent.cs" />
+    <Compile Include="Events\FGUserSelectedEvent.cs" />
     <Compile Include="Events\ObjectEvent.cs" />
     <Compile Include="Events\ProgressDialogTextEvent.cs" />
     <Compile Include="StringToDecimalConverter.cs" />
     <Compile Include="TooltipsConverter.cs" />
     <Compile Include="BrushColorConverter.cs" />
-    <Compile Include="CollectionToBooleanConverter.cs" />
     <Compile Include="Events\AuthenticatedUserEvent.cs" />
     <Compile Include="Events\SelectedRoleEvent.cs" />
-    <Compile Include="Events\UserSelectedEvent.cs" />
+    <Compile Include="Events\GRUserSelectedEvent.cs" />
     <Compile Include="HashConverter.cs" />
     <Compile Include="IgnoreNewItemPlaceHolderConverter.cs" />
     <Compile Include="ObjectToVisibilityConverter.cs" />
