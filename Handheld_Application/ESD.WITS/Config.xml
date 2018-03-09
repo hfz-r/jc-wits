@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Configuration>
-  <SQLServerName>192.168.56.1,5050</SQLServerName> <!--To change the Server Name accordingly--> 
-  <SQLDatabaseName>INVENTORY</SQLDatabaseName>
+  <SQLServerName>172.20.31.218,1433</SQLServerName> <!--To change the Server Name accordingly--> 
+  <SQLDatabaseName>ESD_WITS</SQLDatabaseName>
   <SQLCommandTimeOut>60</SQLCommandTimeOut>
   <SQLUserID>sa</SQLUserID>
   <SQLPassword>p@ssw0rd</SQLPassword>

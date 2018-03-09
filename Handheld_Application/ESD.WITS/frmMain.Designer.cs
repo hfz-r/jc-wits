@@ -66,7 +66,7 @@
             this.btnGRMinusQty = new System.Windows.Forms.Button();
             this.txtGRQty = new System.Windows.Forms.TextBox();
             this.labelGRQty = new System.Windows.Forms.Label();
-            this.btnGRSubmit = new System.Windows.Forms.Button();
+            this.btnGRNext = new System.Windows.Forms.Button();
             this.txtGRSAPNo = new System.Windows.Forms.TextBox();
             this.lblGRSAPNo = new System.Windows.Forms.Label();
             this.btnGRHome = new System.Windows.Forms.PictureBox();
@@ -103,11 +103,40 @@
             this.rdBtnGITfrPosting = new System.Windows.Forms.RadioButton();
             this.rdBtnGITfrtoProd = new System.Windows.Forms.RadioButton();
             this.label7 = new System.Windows.Forms.Label();
+            this.pnlFG = new System.Windows.Forms.Panel();
+            this.label17 = new System.Windows.Forms.Label();
+            this.rdBtnFCU = new System.Windows.Forms.RadioButton();
+            this.rdBtnAHU = new System.Windows.Forms.RadioButton();
+            this.cmbBoxFGCountry = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.btnFGClear = new System.Windows.Forms.Button();
+            this.btnFGShip = new System.Windows.Forms.Button();
+            this.btnFGHome = new System.Windows.Forms.PictureBox();
+            this.btFGAddQty = new System.Windows.Forms.Button();
+            this.btFGMinusQty = new System.Windows.Forms.Button();
+            this.txtFGQty = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.dataGrdFG = new System.Windows.Forms.DataGrid();
+            this.txtFGSerial = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.pnlGdReceiptCont = new System.Windows.Forms.Panel();
+            this.btnGRContClear = new System.Windows.Forms.Button();
+            this.txtGRBillLading = new System.Windows.Forms.TextBox();
+            this.btnGRBack = new System.Windows.Forms.Button();
+            this.btnGRSubmit = new System.Windows.Forms.Button();
+            this.txtGRDelNote = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.btnGRHomeCont = new System.Windows.Forms.PictureBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
             this.pnlLogin.SuspendLayout();
             this.pnlSelection.SuspendLayout();
             this.pnlGdReceipt.SuspendLayout();
             this.pnlGdIssue.SuspendLayout();
             this.pnlGdIssueSubmit.SuspendLayout();
+            this.pnlFG.SuspendLayout();
+            this.pnlGdReceiptCont.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSignIn
@@ -117,7 +146,7 @@
             this.btnSignIn.Location = new System.Drawing.Point(12, 255);
             this.btnSignIn.Name = "btnSignIn";
             this.btnSignIn.Size = new System.Drawing.Size(105, 30);
-            this.btnSignIn.TabIndex = 5;
+            this.btnSignIn.TabIndex = 4;
             this.btnSignIn.Text = "Login";
             this.btnSignIn.Click += new System.EventHandler(this.btnSignIn_Click);
             // 
@@ -136,7 +165,7 @@
             this.btnExit.Location = new System.Drawing.Point(123, 255);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(105, 30);
-            this.btnExit.TabIndex = 4;
+            this.btnExit.TabIndex = 5;
             this.btnExit.Text = "Exit";
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
@@ -224,7 +253,7 @@
             this.label9.Location = new System.Drawing.Point(126, 140);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(100, 19);
-            this.label9.Text = "Goods Issue";
+            this.label9.Text = "Good Issue";
             this.label9.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label4
@@ -233,7 +262,7 @@
             this.label4.Location = new System.Drawing.Point(6, 141);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(114, 18);
-            this.label4.Text = "Goods Receipt";
+            this.label4.Text = "Good Receive";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // btnGdIssue
@@ -328,7 +357,7 @@
             this.pnlGdReceipt.Controls.Add(this.btnGRMinusQty);
             this.pnlGdReceipt.Controls.Add(this.txtGRQty);
             this.pnlGdReceipt.Controls.Add(this.labelGRQty);
-            this.pnlGdReceipt.Controls.Add(this.btnGRSubmit);
+            this.pnlGdReceipt.Controls.Add(this.btnGRNext);
             this.pnlGdReceipt.Controls.Add(this.txtGRSAPNo);
             this.pnlGdReceipt.Controls.Add(this.lblGRSAPNo);
             this.pnlGdReceipt.Controls.Add(this.btnGRHome);
@@ -353,7 +382,7 @@
             this.btnGRClear.Location = new System.Drawing.Point(97, 256);
             this.btnGRClear.Name = "btnGRClear";
             this.btnGRClear.Size = new System.Drawing.Size(65, 24);
-            this.btnGRClear.TabIndex = 8;
+            this.btnGRClear.TabIndex = 7;
             this.btnGRClear.Text = "Clear";
             this.btnGRClear.Click += new System.EventHandler(this.btnGRClear_Click);
             // 
@@ -480,7 +509,7 @@
             this.txtGRQty.Location = new System.Drawing.Point(126, 187);
             this.txtGRQty.MaxLength = 6;
             this.txtGRQty.Name = "txtGRQty";
-            this.txtGRQty.Size = new System.Drawing.Size(45, 23);
+            this.txtGRQty.Size = new System.Drawing.Size(44, 23);
             this.txtGRQty.TabIndex = 4;
             this.txtGRQty.TextChanged += new System.EventHandler(this.txtGRQty_TextChanged);
             this.txtGRQty.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumeric_KeyPress);
@@ -493,15 +522,15 @@
             this.labelGRQty.Size = new System.Drawing.Size(100, 20);
             this.labelGRQty.Text = "Quantity:";
             // 
-            // btnGRSubmit
+            // btnGRNext
             // 
-            this.btnGRSubmit.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.btnGRSubmit.Location = new System.Drawing.Point(168, 256);
-            this.btnGRSubmit.Name = "btnGRSubmit";
-            this.btnGRSubmit.Size = new System.Drawing.Size(65, 24);
-            this.btnGRSubmit.TabIndex = 7;
-            this.btnGRSubmit.Text = "Post";
-            this.btnGRSubmit.Click += new System.EventHandler(this.btnGRSubmit_Click);
+            this.btnGRNext.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnGRNext.Location = new System.Drawing.Point(168, 256);
+            this.btnGRNext.Name = "btnGRNext";
+            this.btnGRNext.Size = new System.Drawing.Size(65, 24);
+            this.btnGRNext.TabIndex = 8;
+            this.btnGRNext.Text = "Next";
+            this.btnGRNext.Click += new System.EventHandler(this.btnGRNext_Click);
             // 
             // txtGRSAPNo
             // 
@@ -509,7 +538,6 @@
             this.txtGRSAPNo.Name = "txtGRSAPNo";
             this.txtGRSAPNo.Size = new System.Drawing.Size(129, 23);
             this.txtGRSAPNo.TabIndex = 1;
-            this.txtGRSAPNo.TabStop = false;
             this.txtGRSAPNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSAPNo_KeyDown);
             // 
             // lblGRSAPNo
@@ -537,7 +565,7 @@
             this.label5.Location = new System.Drawing.Point(3, 3);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(236, 28);
-            this.label5.Text = "Goods Receipt";
+            this.label5.Text = "Good Receive";
             this.label5.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label12
@@ -643,7 +671,7 @@
             this.txtGIQty.Location = new System.Drawing.Point(126, 106);
             this.txtGIQty.MaxLength = 6;
             this.txtGIQty.Name = "txtGIQty";
-            this.txtGIQty.Size = new System.Drawing.Size(45, 23);
+            this.txtGIQty.Size = new System.Drawing.Size(44, 23);
             this.txtGIQty.TabIndex = 3;
             this.txtGIQty.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumeric_KeyPress);
             // 
@@ -689,7 +717,6 @@
             this.txtGISAPNo.Name = "txtGISAPNo";
             this.txtGISAPNo.Size = new System.Drawing.Size(129, 23);
             this.txtGISAPNo.TabIndex = 1;
-            this.txtGISAPNo.TabStop = false;
             this.txtGISAPNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtGISAPNo_KeyDown);
             // 
             // lblGISAPNo
@@ -717,7 +744,7 @@
             this.label6.Location = new System.Drawing.Point(1, 12);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(236, 28);
-            this.label6.Text = "Goods Issue";
+            this.label6.Text = "Good Issue";
             this.label6.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // btnGISubmit
@@ -726,7 +753,7 @@
             this.btnGISubmit.Location = new System.Drawing.Point(157, 255);
             this.btnGISubmit.Name = "btnGISubmit";
             this.btnGISubmit.Size = new System.Drawing.Size(65, 24);
-            this.btnGISubmit.TabIndex = 7;
+            this.btnGISubmit.TabIndex = 8;
             this.btnGISubmit.Text = "Submit";
             this.btnGISubmit.Click += new System.EventHandler(this.btnGISubmit_Click);
             // 
@@ -746,7 +773,7 @@
             this.pnlGdIssueSubmit.Controls.Add(this.rdBtnGITfrtoProd);
             this.pnlGdIssueSubmit.Controls.Add(this.label7);
             this.pnlGdIssueSubmit.Controls.Add(this.btnGISubmit);
-            this.pnlGdIssueSubmit.Location = new System.Drawing.Point(988, 3);
+            this.pnlGdIssueSubmit.Location = new System.Drawing.Point(741, 299);
             this.pnlGdIssueSubmit.Name = "pnlGdIssueSubmit";
             this.pnlGdIssueSubmit.Size = new System.Drawing.Size(240, 292);
             // 
@@ -756,7 +783,6 @@
             this.txtText.Name = "txtText";
             this.txtText.Size = new System.Drawing.Size(170, 23);
             this.txtText.TabIndex = 1;
-            this.txtText.TabStop = false;
             // 
             // label8
             // 
@@ -779,7 +805,7 @@
             this.btnGISubmitBack.Location = new System.Drawing.Point(98, 255);
             this.btnGISubmitBack.Name = "btnGISubmitBack";
             this.btnGISubmitBack.Size = new System.Drawing.Size(53, 24);
-            this.btnGISubmitBack.TabIndex = 8;
+            this.btnGISubmitBack.TabIndex = 7;
             this.btnGISubmitBack.Text = "Back";
             this.btnGISubmitBack.Click += new System.EventHandler(this.btnGISubmitBack_Click);
             // 
@@ -816,7 +842,6 @@
             this.txtGIProdNo.Name = "txtGIProdNo";
             this.txtGIProdNo.Size = new System.Drawing.Size(118, 23);
             this.txtGIProdNo.TabIndex = 3;
-            this.txtGIProdNo.TabStop = false;
             // 
             // lblGIProdNo
             // 
@@ -853,8 +878,268 @@
             this.label7.Location = new System.Drawing.Point(3, 10);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(236, 28);
-            this.label7.Text = "Goods Issue";
+            this.label7.Text = "Good Issue";
             this.label7.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // pnlFG
+            // 
+            this.pnlFG.BackColor = System.Drawing.SystemColors.Window;
+            this.pnlFG.Controls.Add(this.label17);
+            this.pnlFG.Controls.Add(this.rdBtnFCU);
+            this.pnlFG.Controls.Add(this.rdBtnAHU);
+            this.pnlFG.Controls.Add(this.cmbBoxFGCountry);
+            this.pnlFG.Controls.Add(this.label15);
+            this.pnlFG.Controls.Add(this.btnFGClear);
+            this.pnlFG.Controls.Add(this.btnFGShip);
+            this.pnlFG.Controls.Add(this.btnFGHome);
+            this.pnlFG.Controls.Add(this.btFGAddQty);
+            this.pnlFG.Controls.Add(this.btFGMinusQty);
+            this.pnlFG.Controls.Add(this.txtFGQty);
+            this.pnlFG.Controls.Add(this.label14);
+            this.pnlFG.Controls.Add(this.dataGrdFG);
+            this.pnlFG.Controls.Add(this.txtFGSerial);
+            this.pnlFG.Controls.Add(this.label11);
+            this.pnlFG.Controls.Add(this.label13);
+            this.pnlFG.Location = new System.Drawing.Point(987, 3);
+            this.pnlFG.Name = "pnlFG";
+            this.pnlFG.Size = new System.Drawing.Size(240, 292);
+            // 
+            // label17
+            // 
+            this.label17.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label17.Location = new System.Drawing.Point(7, 48);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(44, 20);
+            this.label17.Text = "Type:";
+            // 
+            // rdBtnFCU
+            // 
+            this.rdBtnFCU.Location = new System.Drawing.Point(151, 48);
+            this.rdBtnFCU.Name = "rdBtnFCU";
+            this.rdBtnFCU.Size = new System.Drawing.Size(59, 20);
+            this.rdBtnFCU.TabIndex = 2;
+            this.rdBtnFCU.Text = "FCU";
+            this.rdBtnFCU.Click += new System.EventHandler(this.rdBtnFCU_Click);
+            // 
+            // rdBtnAHU
+            // 
+            this.rdBtnAHU.Location = new System.Drawing.Point(79, 48);
+            this.rdBtnAHU.Name = "rdBtnAHU";
+            this.rdBtnAHU.Size = new System.Drawing.Size(66, 20);
+            this.rdBtnAHU.TabIndex = 1;
+            this.rdBtnAHU.Text = "AHU";
+            this.rdBtnAHU.Click += new System.EventHandler(this.rdBtnAHU_Click);
+            // 
+            // cmbBoxFGCountry
+            // 
+            this.cmbBoxFGCountry.Location = new System.Drawing.Point(80, 135);
+            this.cmbBoxFGCountry.Name = "cmbBoxFGCountry";
+            this.cmbBoxFGCountry.Size = new System.Drawing.Size(152, 23);
+            this.cmbBoxFGCountry.TabIndex = 7;
+            // 
+            // label15
+            // 
+            this.label15.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label15.Location = new System.Drawing.Point(7, 138);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(74, 20);
+            this.label15.Text = "Country:";
+            // 
+            // btnFGClear
+            // 
+            this.btnFGClear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnFGClear.Location = new System.Drawing.Point(96, 256);
+            this.btnFGClear.Name = "btnFGClear";
+            this.btnFGClear.Size = new System.Drawing.Size(65, 24);
+            this.btnFGClear.TabIndex = 8;
+            this.btnFGClear.Text = "Clear";
+            this.btnFGClear.Click += new System.EventHandler(this.btnFGClear_Click);
+            // 
+            // btnFGShip
+            // 
+            this.btnFGShip.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnFGShip.Location = new System.Drawing.Point(167, 256);
+            this.btnFGShip.Name = "btnFGShip";
+            this.btnFGShip.Size = new System.Drawing.Size(65, 24);
+            this.btnFGShip.TabIndex = 9;
+            this.btnFGShip.Text = "Ship";
+            this.btnFGShip.Click += new System.EventHandler(this.btnFGShip_Click);
+            // 
+            // btnFGHome
+            // 
+            this.btnFGHome.Image = ((System.Drawing.Image)(resources.GetObject("btnFGHome.Image")));
+            this.btnFGHome.Location = new System.Drawing.Point(11, 248);
+            this.btnFGHome.Name = "btnFGHome";
+            this.btnFGHome.Size = new System.Drawing.Size(40, 37);
+            this.btnFGHome.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnFGHome.Click += new System.EventHandler(this.btnFGHome_Click);
+            // 
+            // btFGAddQty
+            // 
+            this.btFGAddQty.Location = new System.Drawing.Point(210, 104);
+            this.btFGAddQty.Name = "btFGAddQty";
+            this.btFGAddQty.Size = new System.Drawing.Size(23, 23);
+            this.btFGAddQty.TabIndex = 6;
+            this.btFGAddQty.Text = "+";
+            this.btFGAddQty.Click += new System.EventHandler(this.btFGAddQty_Click);
+            // 
+            // btFGMinusQty
+            // 
+            this.btFGMinusQty.Location = new System.Drawing.Point(81, 104);
+            this.btFGMinusQty.Name = "btFGMinusQty";
+            this.btFGMinusQty.Size = new System.Drawing.Size(23, 23);
+            this.btFGMinusQty.TabIndex = 4;
+            this.btFGMinusQty.Text = "-";
+            this.btFGMinusQty.Click += new System.EventHandler(this.btFGMinusQty_Click);
+            // 
+            // txtFGQty
+            // 
+            this.txtFGQty.Location = new System.Drawing.Point(103, 104);
+            this.txtFGQty.MaxLength = 6;
+            this.txtFGQty.Name = "txtFGQty";
+            this.txtFGQty.Size = new System.Drawing.Size(107, 23);
+            this.txtFGQty.TabIndex = 5;
+            this.txtFGQty.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumeric_KeyPress);
+            // 
+            // label14
+            // 
+            this.label14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label14.Location = new System.Drawing.Point(7, 108);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(100, 20);
+            this.label14.Text = "Quantity:";
+            // 
+            // dataGrdFG
+            // 
+            this.dataGrdFG.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.dataGrdFG.Location = new System.Drawing.Point(7, 167);
+            this.dataGrdFG.Name = "dataGrdFG";
+            this.dataGrdFG.Size = new System.Drawing.Size(226, 72);
+            this.dataGrdFG.TabIndex = 40;
+            // 
+            // txtFGSerial
+            // 
+            this.txtFGSerial.Location = new System.Drawing.Point(81, 74);
+            this.txtFGSerial.Name = "txtFGSerial";
+            this.txtFGSerial.Size = new System.Drawing.Size(152, 23);
+            this.txtFGSerial.TabIndex = 3;
+            this.txtFGSerial.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtFGSerial_KeyDown);
+            // 
+            // label11
+            // 
+            this.label11.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label11.Location = new System.Drawing.Point(7, 77);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(90, 20);
+            this.label11.Text = "Serial No:";
+            // 
+            // label13
+            // 
+            this.label13.BackColor = System.Drawing.Color.Transparent;
+            this.label13.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Bold);
+            this.label13.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.label13.Location = new System.Drawing.Point(3, 12);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(236, 28);
+            this.label13.Text = "Outbound Delivery";
+            this.label13.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // pnlGdReceiptCont
+            // 
+            this.pnlGdReceiptCont.BackColor = System.Drawing.SystemColors.HighlightText;
+            this.pnlGdReceiptCont.Controls.Add(this.btnGRContClear);
+            this.pnlGdReceiptCont.Controls.Add(this.txtGRBillLading);
+            this.pnlGdReceiptCont.Controls.Add(this.btnGRBack);
+            this.pnlGdReceiptCont.Controls.Add(this.btnGRSubmit);
+            this.pnlGdReceiptCont.Controls.Add(this.txtGRDelNote);
+            this.pnlGdReceiptCont.Controls.Add(this.label21);
+            this.pnlGdReceiptCont.Controls.Add(this.btnGRHomeCont);
+            this.pnlGdReceiptCont.Controls.Add(this.label22);
+            this.pnlGdReceiptCont.Controls.Add(this.label23);
+            this.pnlGdReceiptCont.Location = new System.Drawing.Point(495, 299);
+            this.pnlGdReceiptCont.Name = "pnlGdReceiptCont";
+            this.pnlGdReceiptCont.Size = new System.Drawing.Size(240, 292);
+            this.pnlGdReceiptCont.Visible = false;
+            // 
+            // btnGRContClear
+            // 
+            this.btnGRContClear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnGRContClear.Location = new System.Drawing.Point(72, 256);
+            this.btnGRContClear.Name = "btnGRContClear";
+            this.btnGRContClear.Size = new System.Drawing.Size(50, 24);
+            this.btnGRContClear.TabIndex = 3;
+            this.btnGRContClear.Text = "Clear";
+            this.btnGRContClear.Click += new System.EventHandler(this.btnGRContClear_Click);
+            // 
+            // txtGRBillLading
+            // 
+            this.txtGRBillLading.Location = new System.Drawing.Point(117, 72);
+            this.txtGRBillLading.Name = "txtGRBillLading";
+            this.txtGRBillLading.Size = new System.Drawing.Size(115, 23);
+            this.txtGRBillLading.TabIndex = 2;
+            // 
+            // btnGRBack
+            // 
+            this.btnGRBack.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnGRBack.Location = new System.Drawing.Point(128, 256);
+            this.btnGRBack.Name = "btnGRBack";
+            this.btnGRBack.Size = new System.Drawing.Size(50, 24);
+            this.btnGRBack.TabIndex = 4;
+            this.btnGRBack.Text = "Back";
+            this.btnGRBack.Click += new System.EventHandler(this.btnGRBack_Click);
+            // 
+            // btnGRSubmit
+            // 
+            this.btnGRSubmit.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnGRSubmit.Location = new System.Drawing.Point(184, 256);
+            this.btnGRSubmit.Name = "btnGRSubmit";
+            this.btnGRSubmit.Size = new System.Drawing.Size(50, 24);
+            this.btnGRSubmit.TabIndex = 5;
+            this.btnGRSubmit.Text = "Post";
+            this.btnGRSubmit.Click += new System.EventHandler(this.btnGRSubmit_Click);
+            // 
+            // txtGRDelNote
+            // 
+            this.txtGRDelNote.Location = new System.Drawing.Point(117, 39);
+            this.txtGRDelNote.Name = "txtGRDelNote";
+            this.txtGRDelNote.Size = new System.Drawing.Size(115, 23);
+            this.txtGRDelNote.TabIndex = 1;
+            // 
+            // label21
+            // 
+            this.label21.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label21.Location = new System.Drawing.Point(7, 42);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(104, 20);
+            this.label21.Text = "Delivery Note:";
+            // 
+            // btnGRHomeCont
+            // 
+            this.btnGRHomeCont.Image = ((System.Drawing.Image)(resources.GetObject("btnGRHomeCont.Image")));
+            this.btnGRHomeCont.Location = new System.Drawing.Point(11, 248);
+            this.btnGRHomeCont.Name = "btnGRHomeCont";
+            this.btnGRHomeCont.Size = new System.Drawing.Size(40, 37);
+            this.btnGRHomeCont.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnGRHomeCont.Click += new System.EventHandler(this.btnGRHomeCont_Click);
+            // 
+            // label22
+            // 
+            this.label22.BackColor = System.Drawing.Color.Transparent;
+            this.label22.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Bold);
+            this.label22.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.label22.Location = new System.Drawing.Point(3, 3);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(236, 28);
+            this.label22.Text = "Good Receive";
+            this.label22.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label23
+            // 
+            this.label23.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label23.Location = new System.Drawing.Point(8, 72);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(124, 20);
+            this.label23.Text = "Bill of Lading:";
             // 
             // frmMain
             // 
@@ -864,6 +1149,8 @@
             this.BackColor = System.Drawing.Color.MintCream;
             this.ClientSize = new System.Drawing.Size(1247, 610);
             this.ControlBox = false;
+            this.Controls.Add(this.pnlGdReceiptCont);
+            this.Controls.Add(this.pnlFG);
             this.Controls.Add(this.pnlGdIssueSubmit);
             this.Controls.Add(this.pnlGdIssue);
             this.Controls.Add(this.pnlGdReceipt);
@@ -877,6 +1164,8 @@
             this.pnlGdReceipt.ResumeLayout(false);
             this.pnlGdIssue.ResumeLayout(false);
             this.pnlGdIssueSubmit.ResumeLayout(false);
+            this.pnlFG.ResumeLayout(false);
+            this.pnlGdReceiptCont.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -904,7 +1193,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Panel pnlGdIssue;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button btnGRSubmit;
+        private System.Windows.Forms.Button btnGRNext;
         private System.Windows.Forms.TextBox txtGRSAPNo;
         private System.Windows.Forms.Label lblGRSAPNo;
         private System.Windows.Forms.Label labelGRQty;
@@ -957,6 +1246,33 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.DateTimePicker dtPickerGRPostingDate;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Panel pnlFG;
+        private System.Windows.Forms.TextBox txtFGSerial;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button btFGAddQty;
+        private System.Windows.Forms.Button btFGMinusQty;
+        private System.Windows.Forms.TextBox txtFGQty;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.DataGrid dataGrdFG;
+        private System.Windows.Forms.Button btnFGClear;
+        private System.Windows.Forms.Button btnFGShip;
+        private System.Windows.Forms.PictureBox btnFGHome;
+        private System.Windows.Forms.Panel pnlGdReceiptCont;
+        private System.Windows.Forms.Button btnGRBack;
+        private System.Windows.Forms.Button btnGRSubmit;
+        private System.Windows.Forms.TextBox txtGRDelNote;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.PictureBox btnGRHomeCont;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Button btnGRContClear;
+        private System.Windows.Forms.TextBox txtGRBillLading;
+        private System.Windows.Forms.ComboBox cmbBoxFGCountry;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.RadioButton rdBtnFCU;
+        private System.Windows.Forms.RadioButton rdBtnAHU;
+        private System.Windows.Forms.Label label17;
     }
 }
 

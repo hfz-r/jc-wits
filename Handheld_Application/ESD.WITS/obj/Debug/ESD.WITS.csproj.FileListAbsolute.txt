@@ -20,9 +20,9 @@ C:\Users\yennyenn\Desktop\RAS\3. Johnson Control Project 2\Handheld_Application\
 C:\Users\yennyenn\Desktop\RAS\3. Johnson Control Project 2\Handheld_Application\ESD.WITS\obj\Debug\Warehouse Inventory Tracking System.pdb
 C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\bin\Debug\Warehouse Inventory Tracking System.exe
 C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\bin\Debug\Warehouse Inventory Tracking System.pdb
+C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Core.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Data.SqlClient.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Xml.Linq.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Core.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Core.xml
 C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Xml.Linq.xml
 C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\obj\Debug\ResolveAssemblyReference.cache

@@ -22,7 +22,21 @@ namespace ESD.WITS
             public int ID { get; set; }     
             public string SAPNo { get; set; }
             public string Qty { get; set; }
-            public string ENDesc { get; set; }         
+            public string ENDesc { get; set; }
+        }
+
+        private class AHUFCU
+        {
+            public int ID { get; set; }
+            public string Project { get; set; }
+            public string UnitTag { get; set; }
+            public string PartNo { get; set; }
+            public string Model { get; set; }
+            public string Item { get; set; }
+            public int Section { get; set; }
+            public int Qty { get; set; }
+            public int QtyRcvd { get; set; }
+            public string Country { get; set; }
         }
 
         private class Location
@@ -48,7 +62,8 @@ namespace ESD.WITS
         private string gStrDBName = string.Empty;
         private string gStrSQLUser = string.Empty;
         private string gStrSQLPwd = string.Empty;
-        private string connectionString = "Data Source=192.168.56.1,5050;Initial Catalog=INVENTORY;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";        
+        private string connectionString = "Data Source=192.168.56.1,5050;Initial Catalog=ESD_WITS;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";
+        //private string connectionString = @"Data Source=172.20.31.218,1433;Initial Catalog=ESD_WITS;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";
         private int GRID = 0;
         private bool isPartialTxn = false;
         private List<GI> GIList = new List<GI>();
@@ -58,6 +73,8 @@ namespace ESD.WITS
         private TransferType transferType = new TransferType();
         private string SLoc = string.Empty;
         private string ENMatShortText = string.Empty;
+        private int FGQtyBal = 0;
+        private AHUFCU AHUFCURec = new AHUFCU();
         #endregion
 
         #region Initialization
@@ -69,6 +86,8 @@ namespace ESD.WITS
             pnlLogin.Visible = true;
             pnlLogin.Dock = DockStyle.Fill;
             lblVersion.Text = "Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            txtUserID.Focus();
+            txtUserID.SelectAll();
         }
 
         #endregion
@@ -272,6 +291,7 @@ namespace ESD.WITS
                 sSQL = "SELECT ID ";
                 sSQL += "FROM Users ";
                 sSQL += "WHERE Username = '" + username + "' AND Password = '" + pass + "';";
+
                 using (connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
@@ -285,6 +305,7 @@ namespace ESD.WITS
                             userID = reader[0].ToString();
                         }
                     }
+                    connection.Close();
                 }
 
                 if (isPass)
@@ -368,20 +389,19 @@ namespace ESD.WITS
             txtGISAPNo.SelectAll();
             btnGINext.Enabled = false;
             btnGIDelete.Enabled = false;
-            LoadLocation();
             rdBtnGITfrtoProd.Checked = true;
             rdBtnGITfrPosting.Checked = false;
         }
 
         #endregion
 
-        #region Goods Receipt Page
+        #region Good Receive Page
 
         /// <summary>
         /// Validate respective field before submitting to DB
         /// </summary>
         /// <returns></returns>
-        private bool ValidationGR()
+        private bool ValidateGR()
         {
             if (string.IsNullOrEmpty(txtGRSAPNo.Text) || txtGRSAPNo.Text == placeHolder)
             {
@@ -466,7 +486,6 @@ namespace ESD.WITS
                     cmbBoxGRReason.DisplayMember = "ReasonDesc";
                     cmbBoxGRReason.ValueMember = "ID";
                     cmbBoxGRReason.SelectedIndex = -1;
-                    connection.Close();
                 }
                 
                 connection.Close();
@@ -478,6 +497,7 @@ namespace ESD.WITS
         /// </summary>
         private void GetGoodsReceipt()
         {
+            Cursor.Current = Cursors.WaitCursor; // set the wait cursor
             string[] temp = null;
             if (!string.IsNullOrEmpty(txtGRSAPNo.Text))
             {
@@ -490,18 +510,21 @@ namespace ESD.WITS
             string sSQL = string.Empty;
             byte? isTxnCompleted = null;
             string qtyRcvd = string.Empty;
+            string qtyOrd = string.Empty; 
 
-            sSQL = "SELECT GR.[ID]";
-            sSQL += " ,GR.[MaterialShortText]";
-            sSQL += " ,ISNULL(GR.[Ok],0)";
-            sSQL += " ,GR.[Quantity]";
-            sSQL += " ,GR.[Eun]";
-            sSQL += " ,ISNULL(SUM(GRT.Quantity),0) AS QtyOrdered ";
-            sSQL += "FROM [INVENTORY].[dbo].[GoodsReceive] GR ";
-            sSQL += "LEFT OUTER JOIN [dbo].[GRTransaction] GRT  ";
-            sSQL += " ON GR.ID = GRT.GRID ";
-            sSQL += "WHERE GR.[Material] = '" + txtGRSAPNo.Text + "' ";
-            sSQL += "GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Ok], GR.[Quantity], GR.[Eun] ";
+            sSQL = "SELECT GR.[ID] ";
+            sSQL += ", GR.[MaterialShortText]";
+            sSQL += ", ISNULL(GR.[Ok],0)";
+            sSQL += ", GR.[Quantity]";
+            sSQL += ", GR.[Eun]";
+            sSQL += ", ISNULL(SUM(GRT.Quantity),0) AS QtyOrdered";
+            sSQL += ", GR.[DeliveryNote]";
+            sSQL += ", GR.[BillOfLading]";
+            sSQL += " FROM [dbo].[GoodsReceive] GR";
+            sSQL += " LEFT OUTER JOIN [dbo].[GRTransaction] GRT";
+            sSQL += " ON GR.ID = GRT.GRID";
+            sSQL += " WHERE GR.[Material] = '" + txtGRSAPNo.Text + "'";
+            sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Ok], GR.[Quantity], GR.[Eun], GR.[DeliveryNote], GR.[BillOfLading]";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -515,13 +538,17 @@ namespace ESD.WITS
                         GRID = Convert.ToInt32(reader[0]);
                         txtGRMSDesc.Text = reader[1].ToString();
                         isTxnCompleted = Convert.ToByte(reader[2]); //var
-                        txtGRQtyOrdered.Text = reader[3].ToString();
                         txtGREun.Text = reader[4].ToString();
+                        qtyOrd = reader[3].ToString() == "0.00" ? "0" : reader[3].ToString();
+                        txtGRQtyOrdered.Text = txtGROrderedEun.Text != "KG" ?
+                            (Convert.ToInt64(Math.Floor(Convert.ToDouble(qtyOrd)))).ToString() : qtyOrd.ToString();
                         txtGROrderedEun.Text = reader[4].ToString();
                         txtGRRcvdEun.Text = txtGROrderedEun.Text;
                         qtyRcvd = reader[5].ToString() == "0.00" ? "0" : reader[5].ToString();
                         txtGRQtyRcvd.Text = txtGRRcvdEun.Text != "KG" ? 
                             (Convert.ToInt64(Math.Floor(Convert.ToDouble(qtyRcvd)))).ToString() : qtyRcvd.ToString();
+                        txtGRDelNote.Text = reader[6].ToString();
+                        txtGRBillLading.Text = reader[7].ToString();
                         txtGRMSDesc.BackColor = Color.Black;
                         txtGRQtyOrdered.BackColor = Color.Black;
                         txtGROrderedEun.BackColor = Color.Black;
@@ -531,7 +558,7 @@ namespace ESD.WITS
 
                         if (isTxnCompleted != null && Convert.ToBoolean(isTxnCompleted)) //complete
                         {
-                            btnGRSubmit.Enabled = false;
+                            btnGRNext.Enabled = false;
                             labelGRQty.Visible = false;
                             btnGRMinusQty.Visible = false;
                             txtGRQty.Visible = false;
@@ -549,7 +576,7 @@ namespace ESD.WITS
                             if (!string.IsNullOrEmpty(qtyRcvd) && Convert.ToDouble(qtyRcvd) == 0)
                             {
                                 isPartialTxn = true;
-                                btnGRSubmit.Enabled = true;
+                                btnGRNext.Enabled = true;
                                 labelGRQty.Visible = true;
                                 btnGRMinusQty.Visible = true;
                                 txtGRQty.Visible = true;
@@ -571,7 +598,7 @@ namespace ESD.WITS
                             else if (!string.IsNullOrEmpty(qtyRcvd) && Convert.ToDouble(qtyRcvd) < Convert.ToDouble(txtGRQtyOrdered.Text))
                             {
                                 isPartialTxn = true;
-                                btnGRSubmit.Enabled = true;
+                                btnGRNext.Enabled = true;
                                 labelGRQty.Visible = true;
                                 btnGRMinusQty.Visible = true;
                                 txtGRQty.Visible = true;
@@ -590,16 +617,17 @@ namespace ESD.WITS
                                 labelGRReason.Location = new Point(8, 219);
                                 cmbBoxGRReason.Location = new Point(103, 216);
                             }
-
                         }
 
                         if (temp.Length > 1)
                         {
                             txtGRQty.Text = temp[1];
                         }
+                        Cursor.Current = Cursors.Default;
                     }
                     else
                     {
+                        Cursor.Current = Cursors.Default;
                         //if new record
                         ClearCache(false);
                         ResetNewRecord();
@@ -616,7 +644,7 @@ namespace ESD.WITS
         private void ResetNewRecord()
         {
             txtGRQty.Text = "0";
-            btnGRSubmit.Enabled = true;
+            btnGRNext.Enabled = true;
             labelGRQty.Visible = true;
             labelGRQty.Location = new Point(7, 161);
             btnGRMinusQty.Visible = true;
@@ -645,6 +673,7 @@ namespace ESD.WITS
         {
             txtGRQty.Text = string.Empty;
             txtGREun.Text = string.Empty;
+            cmbBoxGRReason.SelectedValue = 0;
             cmbBoxGRReason.SelectedValue = -1;
             txtGRQtyRcvd.Text = string.Empty;
             txtGRRcvdEun.Text = string.Empty;
@@ -654,6 +683,8 @@ namespace ESD.WITS
             txtGRMSDesc.Text = string.Empty;
             txtGRQtyOrdered.Text = string.Empty;
             txtGROrderedEun.Text = string.Empty;
+            txtGRDelNote.Text = string.Empty;
+            txtGRBillLading.Text = string.Empty;
         }
 
         /// <summary>
@@ -821,7 +852,7 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void btnGRSubmit_Click(object sender, EventArgs e)
         {
-            if (ValidationGR())
+            if (ValidateGR())
             {
                 if (string.IsNullOrEmpty(txtGRQtyOrdered.Text))
                 {
@@ -833,6 +864,7 @@ namespace ESD.WITS
                     string ReasonID = Convert.ToDouble(txtGRQty.Text) == Convert.ToDouble(txtGRQtyOrdered.Text) ? null : cmbBoxGRReason.Text;
                     if (MessageBox.Show("Confirm to post?", "Goods Receipt", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
                     {
+                        Cursor.Current = Cursors.WaitCursor; // set the wait cursor
                         string sSQL = string.Empty;
                         sSQL += "DECLARE";
                         sSQL += "    @GRID BIGINT = " + GRID;
@@ -852,14 +884,16 @@ namespace ESD.WITS
 
                         sSQL += " UPDATE [dbo].[GoodsReceive]";
                         sSQL += " SET [DocumentDate] = '" + DateTime.Now + "', ";
-                        sSQL += " [PostingDate] = '" + dtPickerGRPostingDate.Value + "'";
+                        sSQL += " [PostingDate] = '" + dtPickerGRPostingDate.Value + "',";
+                        sSQL += " [DeliveryNote] = '" + txtGRDelNote.Text + "', ";
+                        sSQL += " [BillOfLading] = '" + txtGRBillLading.Text + "' ";
                         sSQL += " WHERE ID = @GRID";
 
                         sSQL += " UPDATE [dbo].[GoodsReceive]";
                         sSQL += " SET Ok = 1";
                         sSQL += " WHERE Quantity = (";
                         sSQL += " SELECT SUM([Quantity]) AS TotalQty";
-                        sSQL += " FROM [INVENTORY].[dbo].[GRTransaction]";
+                        sSQL += " FROM [dbo].[GRTransaction]";
                         sSQL += " WHERE GRID = @GRID)";
 
                         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -867,11 +901,15 @@ namespace ESD.WITS
                             connection.Open();
                             SqlCommand command = new SqlCommand(sSQL, connection);
                             command.ExecuteReader();
+                            Cursor.Current = Cursors.Default;
                             MessageBox.Show("GR Posted");
                             connection.Close();
                         }
                         ResetNewRecord();
                         ClearCache(true);
+                        pnlGdReceiptCont.Visible = false;
+                        pnlGdReceipt.Visible = true;
+                        pnlGdReceipt.Dock = DockStyle.Fill;
                     }
                 }
             }
@@ -887,6 +925,35 @@ namespace ESD.WITS
             txtGRSAPNo.Text = string.Empty;
             txtGRQty.Text = "0";
             pnlGdReceipt.Visible = false;
+            pnlSelection.Visible = true;
+            pnlSelection.Dock = DockStyle.Fill;
+        }
+
+        private void btnGRContClear_Click(object sender, EventArgs e)
+        {
+            ClearCache(true);
+        }
+
+        private void btnGRBack_Click(object sender, EventArgs e)
+        {
+            pnlGdReceiptCont.Visible = false;
+            pnlGdReceipt.Visible = true;
+            pnlGdReceipt.Dock = DockStyle.Fill;
+        }
+
+        private void btnGRNext_Click(object sender, EventArgs e)
+        {
+            pnlGdReceipt.Visible = false;
+            pnlGdReceiptCont.Visible = true;
+            pnlGdReceiptCont.Dock = DockStyle.Fill;
+            txtGRDelNote.Focus();
+            txtGRDelNote.SelectAll();
+        }
+
+        private void btnGRHomeCont_Click(object sender, EventArgs e)
+        {
+            ClearCache(true);
+            pnlGdReceiptCont.Visible = false;
             pnlSelection.Visible = true;
             pnlSelection.Dock = DockStyle.Fill;
         }
@@ -909,55 +976,76 @@ namespace ESD.WITS
         /// </summary>
         private void GetGoodsIssueForGI()
         {
-            string sSQL = string.Empty;
-            txtGIQtyAvbl.Text = string.Empty;
-            txtGIQtyAvblEun.Text = string.Empty;
-            txtGIQtyEun.Text = string.Empty;
-
-            sSQL = " SELECT GR.[ID], GR.[MaterialShortText], GR.[Quantity], GR.[Eun], GR.[StorageLoc],";
-            sSQL += " ISNULL(SUM(GRT.Quantity),0) AS QtyAvailable, ISNULL(SUM(GRT.Quantity),0) -";
-            sSQL += " (SELECT ISNULL(SUM(GIT.Quantity),0) AS QtyAvailableGI";
-            sSQL += " FROM [INVENTORY].[dbo].[GoodsReceive] GR ";
-            sSQL += " INNER JOIN [dbo].[GITransaction] GIT   ON GR.ID = GIT.GRID ";
-            sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "') AS QtyRemaining, GR.[ENMaterialShortText]";
-            sSQL += " FROM [INVENTORY].[dbo].[GoodsReceive] GR ";
-            sSQL += " LEFT OUTER JOIN [dbo].[GRTransaction] GRT   ON GR.ID = GRT.GRID ";
-            sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "' ";
-            sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Quantity], GR.[Eun], GR.[StorageLoc], GR.[ENMaterialShortText]";
-            sSQL += " HAVING SUM(GRT.Quantity) > 0 ";
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand(sSQL, connection);
-
-                using (SqlDataReader reader = command.ExecuteReader())
+                Cursor.Current = Cursors.WaitCursor;
+                if (!string.IsNullOrEmpty(txtGISAPNo.Text))
                 {
-                    if (reader != null && reader.Read())
+                    int ind = txtGISAPNo.Text.IndexOf(";");
+                    if (ind != -1)
                     {
-                        GRID = Convert.ToInt32(reader[0]);
-                        txtGIQtyAvblEun.Text = reader[3].ToString();
-                        txtGIQtyEun.Text = reader[3].ToString();
-                        txtGIQty.Text = "0";
-                        SLoc = reader[4].ToString();
-                        txtGIQtyAvbl.Text = Convert.ToDouble(reader[6]).ToString();
-                        ENMatShortText = reader[7].ToString();
-                    }
-                    else
-                    {
-                        txtGIQtyAvbl.Text = string.Empty;
-                        txtGIQtyAvblEun.Text = string.Empty;
-                        txtGIQtyEun.Text = string.Empty;
-                        dataGrdGI.DataSource = null;
-                        GIList = new List<GI>();
-                        MessageBox.Show("Invalid SAP No/GR not complete");
+                        txtGISAPNo.Text = txtGISAPNo.Text.Substring(0, txtGISAPNo.Text.IndexOf(";"));
                     }
                 }
-            }
 
-            if (!string.IsNullOrEmpty(txtGIQtyAvbl.Text) && Convert.ToDouble(txtGIQtyAvbl.Text) == 0)
+                txtGISAPNo.SelectAll();
+                string sSQL = string.Empty;
+                txtGIQtyAvbl.Text = string.Empty;
+                txtGIQtyAvblEun.Text = string.Empty;
+                txtGIQtyEun.Text = string.Empty;
+
+                sSQL = " SELECT GR.[ID], GR.[MaterialShortText], GR.[Quantity], GR.[Eun], GR.[StorageLoc],";
+                sSQL += " ISNULL(SUM(GRT.Quantity),0) AS QtyAvailable, ISNULL(SUM(GRT.Quantity),0) -";
+                sSQL += " (SELECT ISNULL(SUM(GIT.Quantity),0) AS QtyAvailableGI";
+                sSQL += " FROM [dbo].[GoodsReceive] GR ";
+                sSQL += " INNER JOIN [dbo].[GITransaction] GIT   ON GR.ID = GIT.GRID ";
+                sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "') AS QtyRemaining, GR.[ENMaterialShortText]";
+                sSQL += " FROM [dbo].[GoodsReceive] GR ";
+                sSQL += " LEFT OUTER JOIN [dbo].[GRTransaction] GRT   ON GR.ID = GRT.GRID ";
+                sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "' ";
+                sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Quantity], GR.[Eun], GR.[StorageLoc], GR.[ENMaterialShortText]";
+                sSQL += " HAVING SUM(GRT.Quantity) > 0 ";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(sSQL, connection);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        Cursor.Current = Cursors.Default;
+                        if (reader != null && reader.Read())
+                        {
+                            GRID = Convert.ToInt32(reader[0]);
+                            txtGIQtyAvblEun.Text = reader[3].ToString();
+                            txtGIQtyEun.Text = reader[3].ToString();
+                            txtGIQty.Text = "0";
+                            SLoc = reader[4].ToString();
+                            txtGIQtyAvbl.Text = Convert.ToDouble(reader[6]).ToString();
+                            ENMatShortText = reader[7].ToString();
+                        }
+                        else
+                        {
+                            txtGIQtyAvbl.Text = string.Empty;
+                            txtGIQtyAvblEun.Text = string.Empty;
+                            txtGIQtyEun.Text = string.Empty;
+                            dataGrdGI.DataSource = null;
+                            GIList = new List<GI>();
+                            MessageBox.Show("Invalid SAP No/GR not complete");
+                        }
+                    }
+                    connection.Close();
+                }
+
+                if (!string.IsNullOrEmpty(txtGIQtyAvbl.Text) && Convert.ToDouble(txtGIQtyAvbl.Text) == 0)
+                {
+                    MessageBox.Show("No Qty available");
+                }
+            }
+            catch(Exception ex)
             {
-                MessageBox.Show("No Qty available");
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -965,7 +1053,7 @@ namespace ESD.WITS
         /// validate submit page
         /// </summary>
         /// <returns></returns>
-        private bool ValidateGISubmit()
+        private bool ValidateGI()
         {
             if (string.IsNullOrEmpty(txtText.Text))
             {
@@ -1002,7 +1090,7 @@ namespace ESD.WITS
             string sSQL = string.Empty;
             sSQL = "SELECT [ID] ";
             sSQL += " ,[Location] ";
-            sSQL += "FROM [INVENTORY].[dbo].[Location] ";
+            sSQL += "FROM [dbo].[Location] ";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -1317,6 +1405,8 @@ namespace ESD.WITS
                         txtGIQtyAvblEun.Text = string.Empty;
                         txtGIQtyEun.Text = string.Empty;
                         txtGIQty.Text = string.Empty;
+                        txtGISAPNo.Focus();
+                        txtGISAPNo.SelectAll();
                     }
                     else
                     {
@@ -1381,12 +1471,13 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void btnGISubmit_Click(object sender, EventArgs e)
         {
-            if (ValidateGISubmit())
+            if (ValidateGI())
             {
                 if (GIList != null && GIList.Count > 0)
                 {
-                    if (MessageBox.Show("Confirm to submit?", "Goods Receipt", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+                    if (MessageBox.Show("Confirm to submit?", "Good Receive", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
                     {
+                        Cursor.Current = Cursors.WaitCursor;
                         string sSQL = string.Empty;
 
                         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1420,6 +1511,7 @@ namespace ESD.WITS
                             connection.Close();
                         }
 
+                        Cursor.Current = Cursors.Default;
                         MessageBox.Show(txtText.Text + " Submitted");
                     }
 
@@ -1427,6 +1519,8 @@ namespace ESD.WITS
                     pnlGdIssueSubmit.Visible = false;
                     pnlGdIssue.Visible = true;
                     pnlGdIssue.Dock = DockStyle.Fill;
+                    txtGISAPNo.Focus();
+                    txtGISAPNo.SelectAll();
                 }
                 else
                 {
@@ -1459,15 +1553,485 @@ namespace ESD.WITS
                 pnlGdIssue.Visible = false;
                 pnlGdIssueSubmit.Visible = true;
                 pnlGdIssueSubmit.Dock = DockStyle.Fill;
+                LoadLocation();
+                txtText.Focus();
+                txtText.SelectAll();
             }
         }
 
         #endregion
 
+        #region Outbound Delivery
+
+        /// <summary>
+        /// Load country list
+        /// </summary>
+        private void LoadCountry()
+        {
+            string sSQL = string.Empty;
+            sSQL = "SELECT [ID] ";
+            sSQL += " ,[CountryDesc] ";
+            sSQL += "FROM [dbo].[Country] ";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(sSQL, connection);
+
+                using (SqlDataAdapter sda = new SqlDataAdapter(command))
+                {
+                    DataTable dtCountry = new DataTable();
+                    sda.Fill(dtCountry);
+                    cmbBoxFGCountry.DataSource = dtCountry;
+                    cmbBoxFGCountry.DisplayMember = "CountryDesc";
+                    cmbBoxFGCountry.ValueMember = "ID";
+                    cmbBoxFGCountry.SelectedIndex = -1;
+                    connection.Close();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Clear FG text
+        /// </summary>
+        private void ClearFGCache(bool isClear)
+        {
+            btFGMinusQty.Enabled = true;
+            btFGAddQty.Enabled = true;
+            txtFGQty.Enabled = true;
+            cmbBoxFGCountry.Enabled = true;
+            txtFGSerial.Text = string.Empty;
+            txtFGQty.Text = string.Empty;
+            cmbBoxFGCountry.SelectedIndex = 0;
+            cmbBoxFGCountry.SelectedIndex = -1;
+            dataGrdFG.DataSource = null;
+            rdBtnAHU.Enabled = true;
+            rdBtnFCU.Enabled = true;
+            btnFGShip.Enabled = true;
+            FGQtyBal = 0;
+            txtFGSerial.Focus();
+            if (isClear)
+            {
+                rdBtnAHU.Checked = true;
+                rdBtnFCU.Checked = false;
+            }
+        }
+
+        /// <summary>
+        /// Get FG based on Serial No
+        /// </summary>
+        private void GetFG()
+        {
+            Cursor.Current = Cursors.WaitCursor; // set the wait cursor           
+            string sSQL = string.Empty;
+
+            if (rdBtnAHU.Checked)
+            {
+                sSQL = "SELECT AHU.[ID]";
+                sSQL += ", AHU.[Project]";
+                sSQL += ", AHU.[UnitTag]";
+                sSQL += ", AHU.[PartNo]";
+                sSQL += ", AHU.[Model]";
+                sSQL += ", AHU.[Item]";
+                sSQL += ", AHU.[Section]";
+                sSQL += ", ISNULL(SUM(AHUT.Quantity),0) AS QtyReceived";
+                sSQL += ", AHUT.[Country]";
+                sSQL += " FROM [dbo].[AHU] AHU";
+                sSQL += " LEFT OUTER JOIN [dbo].[AHUTransaction] AHUT ON AHU.ID = AHUT.AHUID";
+                sSQL += " WHERE [SerialNo] = '" + txtFGSerial.Text + "'";
+                sSQL += " GROUP BY AHU.[ID], AHU.[Project], AHU.[UnitTag], AHU.[PartNo], AHU.[Model], AHU.[Item], AHU.[Section], AHUT.[Country]";
+            }
+            else if (rdBtnFCU.Checked)
+            {
+                sSQL = "SELECT FCU.[ID]";
+                sSQL += ", FCU.[Project]";
+                sSQL += ", FCU.[UnitTag]";
+                sSQL += ", FCU.[PartNo]";
+                sSQL += ", FCU.[Model]";
+                sSQL += ", FCU.[Item]";
+                sSQL += ", FCU.[Qty]";
+                sSQL += ", ISNULL(SUM(FCUT.Quantity),0) AS QtyReceived";
+                sSQL += ", FCUT.[Country]";
+                sSQL += " FROM [dbo].[FCU] FCU";
+                sSQL += " LEFT OUTER JOIN [dbo].[FCUTransaction] FCUT ON FCU.ID = FCUT.FCUID";
+                sSQL += " WHERE [SerialNo] = '" + txtFGSerial.Text + "'";
+                sSQL += " GROUP BY FCU.[ID], FCU.[Project], FCU.[UnitTag], FCU.[PartNo], FCU.[Model], FCU.[Item], FCU.[Qty], FCUT.[Country]";
+            }
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(sSQL, connection);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader != null && reader.Read())
+                    {
+                        AHUFCURec.ID = Convert.ToInt32(reader[0]);
+                        AHUFCURec.Project = reader[1].ToString();
+                        AHUFCURec.UnitTag = reader[2].ToString();
+                        AHUFCURec.PartNo = reader[3].ToString();
+                        AHUFCURec.Model = reader[4].ToString();
+                        AHUFCURec.Item = reader[5].ToString();
+                        AHUFCURec.QtyRcvd = Convert.ToInt32(reader[7]);
+                        AHUFCURec.Country = reader[8].ToString();
+
+                        btFGMinusQty.Enabled = true;
+                        btFGAddQty.Enabled = true;
+                        txtFGQty.Enabled = true;
+                        cmbBoxFGCountry.Enabled = true;
+                        rdBtnFCU.Enabled = true;
+                        rdBtnAHU.Enabled = true;
+
+                        if (rdBtnAHU.Checked)
+                        {
+                            AHUFCURec.Section = Convert.ToInt32(reader[6]);
+                            FGQtyBal = AHUFCURec.Section - AHUFCURec.QtyRcvd;
+                        }
+                        else if (rdBtnFCU.Checked)
+                        {
+                            AHUFCURec.Qty = Convert.ToInt32(reader[6]);
+                            FGQtyBal = AHUFCURec.Qty - AHUFCURec.QtyRcvd;
+                        }
+
+                        DataTable t = new DataTable("FG");
+                        DataColumn dc1 = new DataColumn("ID", typeof(string));
+                        DataColumn dc2 = new DataColumn("Project", typeof(string));
+                        DataColumn dc3 = new DataColumn("UnitTag", typeof(string));
+                        DataColumn dc4 = new DataColumn("PartNo", typeof(string));
+                        DataColumn dc5 = new DataColumn("Model", typeof(string));
+                        DataColumn dc6 = new DataColumn("Item", typeof(string));
+                        DataColumn dc7 = rdBtnAHU.Checked ? new DataColumn("Section", typeof(string)) : new DataColumn("Qty", typeof(string));
+                        DataColumn dc8 = new DataColumn("QtyRcvd", typeof(string));
+
+                        t.Columns.Add(dc1);
+                        t.Columns.Add(dc2);
+                        t.Columns.Add(dc3);
+                        t.Columns.Add(dc4);
+                        t.Columns.Add(dc5);
+                        t.Columns.Add(dc6);
+                        t.Columns.Add(dc7);
+                        t.Columns.Add(dc8);
+
+                        DataRow newRow = t.NewRow();
+                        newRow["ID"] = AHUFCURec.ID;
+                        newRow["Project"] = AHUFCURec.Project;
+                        newRow["UnitTag"] = AHUFCURec.UnitTag;
+                        newRow["PartNo"] = AHUFCURec.PartNo;
+                        newRow["Model"] = AHUFCURec.Model;
+                        newRow["Item"] = AHUFCURec.Item;
+                        newRow["QtyRcvd"] = AHUFCURec.QtyRcvd;
+
+                        if (rdBtnAHU.Checked)
+                        {
+                            newRow["Section"] = AHUFCURec.Section;
+                        }
+                        else if (rdBtnFCU.Checked)
+                        {
+                            newRow["Qty"] = AHUFCURec.Qty;
+                        }
+                        t.Rows.Add(newRow);
+
+                        DataGridTableStyle tableStyle = new DataGridTableStyle();
+                        tableStyle.MappingName = "FG";
+
+                        DataGridTextBoxColumn gridColumn1 = new DataGridTextBoxColumn();
+                        gridColumn1.Width = 0;
+                        gridColumn1.MappingName = "ID";
+                        gridColumn1.HeaderText = "ID";
+                        tableStyle.GridColumnStyles.Add(gridColumn1);
+
+                        DataGridTextBoxColumn gridColumn2 = new DataGridTextBoxColumn();
+                        gridColumn2.Width = 200;
+                        gridColumn2.MappingName = "Project";
+                        gridColumn2.HeaderText = "Project";
+                        tableStyle.GridColumnStyles.Add(gridColumn2);
+
+                        DataGridTextBoxColumn gridColumn3 = new DataGridTextBoxColumn();
+                        gridColumn3.Width = 150;
+                        gridColumn3.MappingName = "UnitTag";
+                        gridColumn3.HeaderText = "Unit Tag";
+                        tableStyle.GridColumnStyles.Add(gridColumn3);
+
+                        DataGridTextBoxColumn gridColumn4 = new DataGridTextBoxColumn();
+                        gridColumn4.Width = 60;
+                        gridColumn4.MappingName = "PartNo";
+                        gridColumn4.HeaderText = "Part No";
+                        tableStyle.GridColumnStyles.Add(gridColumn4);
+
+                        DataGridTextBoxColumn gridColumn5 = new DataGridTextBoxColumn();
+                        gridColumn5.Width = 100;
+                        gridColumn5.MappingName = "Model";
+                        gridColumn5.HeaderText = "Model";
+                        tableStyle.GridColumnStyles.Add(gridColumn5);
+
+                        DataGridTextBoxColumn gridColumn6 = new DataGridTextBoxColumn();
+                        gridColumn6.Width = 40;
+                        gridColumn6.MappingName = "Item";
+                        gridColumn6.HeaderText = "Item";
+                        tableStyle.GridColumnStyles.Add(gridColumn6);
+
+                        DataGridTextBoxColumn gridColumn7 = new DataGridTextBoxColumn();
+                        gridColumn7.Width = 50;
+
+                        if (rdBtnAHU.Checked)
+                        {
+                            gridColumn7.MappingName = "Section";
+                            gridColumn7.HeaderText = "Section";
+                        }
+                        else
+                        {
+                            gridColumn7.MappingName = "Qty";
+                            gridColumn7.HeaderText = "Qty";
+                        }
+                        tableStyle.GridColumnStyles.Add(gridColumn7);
+
+                        DataGridTextBoxColumn gridColumn8 = new DataGridTextBoxColumn();
+                        gridColumn8.Width = 80;
+                        gridColumn8.MappingName = "QtyRcvd";
+                        gridColumn8.HeaderText = "Qty Received";
+                        tableStyle.GridColumnStyles.Add(gridColumn8);
+
+                        dataGrdFG.TableStyles.Clear();
+                        dataGrdFG.TableStyles.Add(tableStyle);
+                        dataGrdFG.DataSource = t;
+                        Cursor.Current = Cursors.Default;
+
+                        if ((rdBtnAHU.Checked && AHUFCURec.QtyRcvd == AHUFCURec.Section) || 
+                            (rdBtnFCU.Checked && AHUFCURec.QtyRcvd == AHUFCURec.Qty))
+                        {
+                            btFGMinusQty.Enabled = false;
+                            btFGAddQty.Enabled = false;
+                            txtFGQty.Text = AHUFCURec.QtyRcvd.ToString();
+                            txtFGQty.Enabled = false;
+                            cmbBoxFGCountry.Enabled = false;
+                            cmbBoxFGCountry.Text = AHUFCURec.Country;
+                            rdBtnFCU.Enabled = false;
+                            rdBtnAHU.Enabled = false;
+                            btnFGShip.Enabled = false;
+                            MessageBox.Show("All package has been shipped.");
+                        }
+                    }
+                    else
+                    {
+                        Cursor.Current = Cursors.Default;
+                        ClearFGCache(false);
+                        MessageBox.Show("Serial No does not exist.");
+                    }
+                }
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Text field validation upon submission
+        /// </summary>
+        /// <returns></returns>
+        private bool ValidateFG()
+        {
+            if (string.IsNullOrEmpty(txtFGSerial.Text))
+            {
+                MessageBox.Show("Enter Serial No");
+                txtFGSerial.Focus();
+                return false;
+            }
+            else if (string.IsNullOrEmpty(txtFGQty.Text) && FGQtyBal > 0)
+            {
+                MessageBox.Show("Enter Qty");
+                txtFGQty.Focus();
+                return false;
+            }
+            else if (!string.IsNullOrEmpty(txtFGQty.Text) && FGQtyBal > 0)
+            {
+                if (Convert.ToDouble(txtFGQty.Text) > FGQtyBal)
+                {
+                    MessageBox.Show("Qty exceeded.\nQuantity available: " + FGQtyBal);
+                    txtFGQty.Focus();
+                    return false;
+                }
+            }
+            if (string.IsNullOrEmpty(cmbBoxFGCountry.Text))
+            {
+                MessageBox.Show("Select Country");
+                cmbBoxFGCountry.Focus();
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Navigate from Main menu to Outbound Delivery page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnOutbound_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("In progress.");
+            LoadCountry();
+            pnlSelection.Visible = false;
+            pnlFG.Visible = true;
+            pnlFG.Dock = DockStyle.Fill;
+            rdBtnAHU.Checked = true;
+            rdBtnFCU.Checked = false;
         }
+
+        /// <summary>
+        /// Clear Click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnFGClear_Click(object sender, EventArgs e)
+        {
+            ClearFGCache(true);
+        }
+
+        /// <summary>
+        /// Ship FG
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnFGShip_Click(object sender, EventArgs e)
+        {
+            if (ValidateFG())
+            {
+                if (MessageBox.Show("Confirm to submit?", "Outbound Delivery", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+                {
+                    Cursor.Current = Cursors.WaitCursor;
+                    string sSQL = string.Empty;
+
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        if (rdBtnAHU.Checked)
+                        {
+                            sSQL = " INSERT INTO [dbo].[AHUTransaction]";
+                        }
+                        else if (rdBtnFCU.Checked)
+                        {
+                            sSQL = " INSERT INTO [dbo].[FCUTransaction]";
+                        }
+
+                        sSQL += " ([Country]";
+                        sSQL += " ,[Quantity]";
+                        sSQL += " ,[AHUID]";
+                        sSQL += " ,[CreatedOn]";
+                        sSQL += " ,[CreatedBy])";
+                        sSQL += " VALUES";
+                        sSQL += " ('" + cmbBoxFGCountry.Text + "'";
+                        sSQL += " ," + txtFGQty.Text;
+                        sSQL += " ," + AHUFCURec.ID;
+                        sSQL += " ,'" + DateTime.Now + "'";
+                        sSQL += " ,'" + userID + "')";
+
+                        connection.Open();
+                        SqlCommand command = new SqlCommand(sSQL, connection);
+                        command.ExecuteReader();
+                        connection.Close();
+                    }
+
+                    Cursor.Current = Cursors.Default;
+                    MessageBox.Show(txtFGSerial.Text + " Shipped");
+                }
+
+                ClearFGCache(false);
+                txtFGSerial.Focus();
+                txtFGSerial.SelectAll();
+            }
+        }
+
+        /// <summary>
+        /// Return to Main Menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnFGHome_Click(object sender, EventArgs e)
+        {
+            pnlFG.Visible = false;
+            pnlSelection.Visible = true;
+            pnlSelection.Dock = DockStyle.Fill;
+            ClearFGCache(true);
+        }
+
+        /// <summary>
+        /// Search for Serial in DB
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtFGSerial_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e != null && e.KeyCode == Keys.Enter)
+            {
+                GetFG();
+            }
+        }
+
+        /// <summary>
+        /// Is AHU Txn
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdBtnAHU_Click(object sender, EventArgs e)
+        {
+            rdBtnAHU.Checked = true;
+            rdBtnFCU.Checked = false;
+        }
+
+        /// <summary>
+        /// Is FCU Txn
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdBtnFCU_Click(object sender, EventArgs e)
+        {
+            rdBtnAHU.Checked = false;
+            rdBtnFCU.Checked = true;
+        }
+
+        /// <summary>
+        /// Minus quantity
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btFGMinusQty_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtFGQty.Text))
+            {
+                txtFGQty.Text = "0";
+            }
+
+            if (FGQtyBal > 0)
+            {
+                int decreasedVal = int.Parse(txtFGQty.Text) - 1;
+
+                if (decreasedVal >= 0)
+                {
+                    txtFGQty.Text = decreasedVal.ToString();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Add quantity
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btFGAddQty_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtFGQty.Text))
+            {
+                txtFGQty.Text = "0";
+            }
+
+            if (FGQtyBal > 0)
+            {
+                int increasedVal = int.Parse(txtFGQty.Text) + 1;
+
+                if (increasedVal <= FGQtyBal)
+                {
+                    txtFGQty.Text = increasedVal.ToString();
+                }
+            }
+        }
+
+        #endregion
 
         #endregion
     }
