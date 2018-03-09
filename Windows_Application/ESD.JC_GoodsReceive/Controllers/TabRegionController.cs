@@ -24,7 +24,7 @@ namespace ESD.JC_GoodsReceive.Controllers
             this.regionManager = regionManager;
             this.grTransServices = grTransServices;
             this.eventAggregator = eventAggregator;
-            this.eventAggregator.GetEvent<UserSelectedEvent>().Subscribe(InitTabRegion, true);
+            this.eventAggregator.GetEvent<GRUserSelectedEvent>().Subscribe(InitTabRegion, true);
         }
 
         private void InitTabRegion(long GRID)
@@ -37,7 +37,7 @@ namespace ESD.JC_GoodsReceive.Controllers
                 lst.Add(obj);
             }
 
-            IRegion tabRegion = regionManager.Regions[RegionNames.TabRegion];
+            IRegion tabRegion = regionManager.Regions[RegionNames.TabRegionGR];
             if (tabRegion == null) return;
 
             GRDetailsSummaryView summryView = tabRegion.GetView("GRDetailsSummaryView") as GRDetailsSummaryView;

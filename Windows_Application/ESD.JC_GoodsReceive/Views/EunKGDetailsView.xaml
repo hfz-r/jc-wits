@@ -9,7 +9,7 @@
             xmlns:prism="http://prismlibrary.com/"
             prism:ViewModelLocator.AutoWireViewModel="True"
             xmlns:local="clr-namespace:ESD.JC_GoodsReceive.Views"
-            xmlns:conv="clr-namespace:ESD.JC_GoodsReceive.ModelsExt"
+            xmlns:conv="clr-namespace:ESD.JC_GoodsReceive.Converters"
             xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure" 
             d:DesignWidth="800" d:DesignHeight="600">
     <UserControl.Resources>
@@ -306,7 +306,7 @@
                                     IsReadOnly="False" 
                                     Foreground="Black"
                                     EditingElementStyle="{StaticResource errorStyle}"
-                                    Binding="{Binding Qty, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToDecimalConverter}, ValidatesOnExceptions=True}" />
+                                    Binding="{Binding Qty, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToDecimalConverter}, ValidatesOnExceptions=True}"/>
                 <DataGridTextColumn Header="Last Modified Date: " MinWidth="200" Binding="{Binding ModifiedOn, StringFormat=g}" IsReadOnly="True" Foreground="Black"/>
                 <DataGridTextColumn Header="Last Modified By: " MinWidth="200" Binding="{Binding ModifiedBy}" IsReadOnly="True" Foreground="Black"/>
             </DataGrid.Columns>

@@ -15,6 +15,7 @@
             d:DesignWidth="800" d:DesignHeight="600">
     <UserControl.Resources>
         <inf:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+        <inf:StringToDecimalConverter x:Key="StringToDecimalConverter"/>
         <inf:IgnoreNewItemPlaceHolderConverter x:Key="ignoreNewItemPlaceHolderConverter"/>
     </UserControl.Resources>
 
@@ -67,6 +68,13 @@
                                 </StackPanel>
                             </Button>
                             <Separator />
+                            <Button ToolTipService.ToolTip="Click to reset textbox!" Click="Button_Click" Margin="6,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/Resources/btn_reset.png" Height="40" Width="40" Margin="4">
+                                    </Image>
+                                </StackPanel>
+                            </Button>
+                            <Separator />
                             <Button ToolTipService.ToolTip="Click to print the label!" Command="{Binding PrintLblCommand}">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
@@ -89,7 +97,7 @@
                 <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
 
                 <StackPanel Grid.Row="1" Margin="5,10,5,5">
-                    <Grid Margin="10">
+                    <Grid Name="GridLP" Margin="10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
                             <RowDefinition Height="30"/>
@@ -155,7 +163,7 @@
                         </TextBox>
 
                         <Label Grid.Row="6" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Qty:</Label>
-                        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding QTY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" 
+                        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding QTY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToDecimalConverter}}" Margin="0,5,0,0" 
                                  AutomationProperties.AutomationId="QtyData">
                             <ei:Interaction.Behaviors>
                                 <local:TextBoxOnEscapeBehavior />

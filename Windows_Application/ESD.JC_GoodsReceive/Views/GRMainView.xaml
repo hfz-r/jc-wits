@@ -8,13 +8,15 @@
             xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
             xmlns:prism="http://prismlibrary.com/"
             xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
+            xmlns:conv="clr-namespace:ESD.JC_GoodsReceive.Converters"
             d:DesignWidth="800" d:DesignHeight="600">
     <UserControl.Resources>
         <infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
         <infrastructure:BrushColorConverter x:Key="BooleanToBrushConverter"/>
         <infrastructure:TooltipsConverter x:Key="TooltipsToString"/>
-        <infrastructure:CollectionToBooleanConverter x:Key="CollectionToBooleanConverter"/>
         <infrastructure:ObservableCommand x:Key="OpenGRDetailsCommand" Value="{Binding OpenGRDetailsCommand}"/>
+        <conv:CollectionToBooleanConverter x:Key="CollectionToBooleanConverter"/>
+
         <DataTemplate x:Key="GRTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>

@@ -5,6 +5,50 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="InventoryModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AHU">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Project" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="UnitTag" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PartNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Model" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="PowerSupply" Type="nvarchar" MaxLength="200" />
+          <Property Name="FanType" Type="nvarchar" MaxLength="100" />
+          <Property Name="MotorPole" Type="nvarchar" MaxLength="50" />
+          <Property Name="FanMotor" Type="nvarchar" MaxLength="50" />
+          <Property Name="FanRPM" Type="nvarchar" MaxLength="20" />
+          <Property Name="FanPulley" Type="nvarchar" MaxLength="50" />
+          <Property Name="MotorPulley" Type="nvarchar" MaxLength="50" />
+          <Property Name="Belt" Type="nvarchar" MaxLength="50" />
+          <Property Name="Section" Type="int" />
+          <Property Name="CoolingCoil1" Type="nvarchar" MaxLength="100" />
+          <Property Name="CoolingCoil2" Type="nvarchar" MaxLength="100" />
+          <Property Name="HeatingCoil1" Type="nvarchar" MaxLength="100" />
+          <Property Name="HeatingCoil2" Type="nvarchar" MaxLength="100" />
+          <Property Name="Heater" Type="nvarchar" MaxLength="50" />
+          <Property Name="SalesOrder" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Item" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="SerialNo" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ShipStatus" Type="bit" />
+          <Property Name="SectionReceived" Type="int" />
+        </EntityType>
+        <EntityType Name="AHUTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Country" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="AHUID" Type="bigint" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
         <EntityType Name="EunKG">
           <Key>
             <PropertyRef Name="ID" />
@@ -18,6 +62,43 @@
           <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FCU">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Project" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="UnitTag" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PartNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Model" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="PowerSupply" Type="nvarchar" MaxLength="200" />
+          <Property Name="FanMotor1" Type="nvarchar" MaxLength="100" />
+          <Property Name="FanMotor2" Type="nvarchar" MaxLength="50" />
+          <Property Name="Qty" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="CoolingCoil" Type="nvarchar" MaxLength="100" />
+          <Property Name="HeatingCoil" Type="nvarchar" MaxLength="100" />
+          <Property Name="Heater" Type="nvarchar" MaxLength="50" />
+          <Property Name="SalesOrder" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Item" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="SerialNo" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ShipStatus" Type="bit" />
+          <Property Name="QtyReceived" Type="numeric" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="FCUTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Country" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="FCUID" Type="bigint" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="GITransaction">
           <Key>
@@ -45,6 +126,7 @@
           <Property Name="BillOfLading" Type="varchar" MaxLength="20" />
           <Property Name="HeaderText" Type="varchar" MaxLength="50" />
           <Property Name="Material" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ENMaterialShortText" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="MaterialShortText" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="Ok" Type="bit" />
           <Property Name="Quantity" Type="numeric" Precision="18" Scale="0" Nullable="false" />
@@ -71,6 +153,15 @@
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="GRID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Location" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="Reason">
           <Key>
@@ -113,6 +204,18 @@
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <Association Name="FK_AHU_AHUID">
+          <End Role="AHU" Type="Self.AHU" Multiplicity="1" />
+          <End Role="AHUTransaction" Type="Self.AHUTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AHU">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AHUTransaction">
+              <PropertyRef Name="AHUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_EunKG_GoodsReceive">
           <End Role="GoodsReceive" Type="Self.GoodsReceive" Multiplicity="1" />
           <End Role="EunKG" Type="Self.EunKG" Multiplicity="*" />
@@ -122,6 +225,18 @@
             </Principal>
             <Dependent Role="EunKG">
               <PropertyRef Name="GRID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FCU_FCUID">
+          <End Role="FCU" Type="Self.FCU" Multiplicity="1" />
+          <End Role="FCUTransaction" Type="Self.FCUTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FCU">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FCUTransaction">
+              <PropertyRef Name="FCUID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -174,16 +289,29 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="InventoryModelStoreContainer">
+          <EntitySet Name="AHU" EntityType="Self.AHU" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AHUTransaction" EntityType="Self.AHUTransaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EunKG" EntityType="Self.EunKG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FCU" EntityType="Self.FCU" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FCUTransaction" EntityType="Self.FCUTransaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GITransaction" EntityType="Self.GITransaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoodsReceive" EntityType="Self.GoodsReceive" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GRTransaction" EntityType="Self.GRTransaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Reason" EntityType="Self.Reason" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AHU_AHUID" Association="Self.FK_AHU_AHUID">
+            <End Role="AHU" EntitySet="AHU" />
+            <End Role="AHUTransaction" EntitySet="AHUTransaction" />
+          </AssociationSet>
           <AssociationSet Name="FK_EunKG_GoodsReceive" Association="Self.FK_EunKG_GoodsReceive">
             <End Role="GoodsReceive" EntitySet="GoodsReceive" />
             <End Role="EunKG" EntitySet="EunKG" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FCU_FCUID" Association="Self.FK_FCU_FCUID">
+            <End Role="FCU" EntitySet="FCU" />
+            <End Role="FCUTransaction" EntitySet="FCUTransaction" />
           </AssociationSet>
           <AssociationSet Name="FK_GoodsIssue_GRID" Association="Self.FK_GoodsIssue_GRID">
             <End Role="GoodsReceive" EntitySet="GoodsReceive" />
@@ -234,6 +362,19 @@
             <End Role="Reason" EntitySet="Reasons" />
             <End Role="GRTransaction" EntitySet="GRTransactions" />
           </AssociationSet>
+          <EntitySet Name="Locations" EntityType="InventoryModel.Location" />
+          <EntitySet Name="AHUTransactions" EntityType="InventoryModel.AHUTransaction" />
+          <EntitySet Name="FCUTransactions" EntityType="InventoryModel.FCUTransaction" />
+          <EntitySet Name="FCUs" EntityType="InventoryModel.FCU" />
+          <AssociationSet Name="FK_FCU_FCUID" Association="InventoryModel.FK_FCU_FCUID">
+            <End Role="FCU" EntitySet="FCUs" />
+            <End Role="FCUTransaction" EntitySet="FCUTransactions" />
+          </AssociationSet>
+          <EntitySet Name="AHUs" EntityType="InventoryModel.AHU" />
+          <AssociationSet Name="FK_AHU_AHUID" Association="InventoryModel.FK_AHU_AHUID">
+            <End Role="AHU" EntitySet="AHUs" />
+            <End Role="AHUTransaction" EntitySet="AHUTransactions" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="GoodsReceive">
           <Key>
@@ -264,6 +405,7 @@
           <NavigationProperty Name="EunKGs" Relationship="InventoryModel.FK_EunKG_GoodsReceive" FromRole="GoodsReceive" ToRole="EunKG" />
           <NavigationProperty Name="GITransactions" Relationship="InventoryModel.FK_GoodsIssue_GRID" FromRole="GoodsReceive" ToRole="GITransaction" />
           <NavigationProperty Name="GRTransactions" Relationship="InventoryModel.FK_GoodsReceive_GRID" FromRole="GoodsReceive" ToRole="GRTransaction" />
+          <Property Name="ENMaterialShortText" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Reason">
           <Key>
@@ -413,6 +555,124 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Location1" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="AHUTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Country" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="AHUID" Type="Int64" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AHU" Relationship="InventoryModel.FK_AHU_AHUID" FromRole="AHUTransaction" ToRole="AHU" />
+        </EntityType>
+        <EntityType Name="FCUTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Country" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="FCUID" Type="Int64" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="FCU" Relationship="InventoryModel.FK_FCU_FCUID" FromRole="FCUTransaction" ToRole="FCU" />
+        </EntityType>
+        <EntityType Name="FCU">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Project" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="UnitTag" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PartNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Model" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PowerSupply" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="FanMotor1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FanMotor2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Qty" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="CoolingCoil" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="HeatingCoil" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Heater" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SalesOrder" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Item" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="SerialNo" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ShipStatus" Type="Boolean" />
+          <Property Name="QtyReceived" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="FCUTransactions" Relationship="InventoryModel.FK_FCU_FCUID" FromRole="FCU" ToRole="FCUTransaction" />
+        </EntityType>
+        <Association Name="FK_FCU_FCUID">
+          <End Type="InventoryModel.FCU" Role="FCU" Multiplicity="1" />
+          <End Type="InventoryModel.FCUTransaction" Role="FCUTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FCU">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FCUTransaction">
+              <PropertyRef Name="FCUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AHU">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Project" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="UnitTag" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PartNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Model" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PowerSupply" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="FanType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MotorPole" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FanMotor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FanRPM" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="FanPulley" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MotorPulley" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Belt" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Section" Type="Int32" />
+          <Property Name="CoolingCoil1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CoolingCoil2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="HeatingCoil1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="HeatingCoil2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Heater" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SalesOrder" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Item" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="SerialNo" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ShipStatus" Type="Boolean" />
+          <Property Name="SectionReceived" Type="Int32" />
+          <NavigationProperty Name="AHUTransactions" Relationship="InventoryModel.FK_AHU_AHUID" FromRole="AHU" ToRole="AHUTransaction" />
+        </EntityType>
+        <Association Name="FK_AHU_AHUID">
+          <End Type="InventoryModel.AHU" Role="AHU" Multiplicity="1" />
+          <End Type="InventoryModel.AHUTransaction" Role="AHUTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AHU">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AHUTransaction">
+              <PropertyRef Name="AHUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -422,6 +682,7 @@
           <EntitySetMapping Name="GoodsReceives">
             <EntityTypeMapping TypeName="InventoryModel.GoodsReceive">
               <MappingFragment StoreEntitySet="GoodsReceive">
+                <ScalarProperty Name="ENMaterialShortText" ColumnName="ENMaterialShortText" />
                 <ScalarProperty Name="QtyReceived" ColumnName="QtyReceived" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
@@ -530,6 +791,101 @@
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="ReasonID" ColumnName="ReasonID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="InventoryModel.Location">
+              <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="Location1" ColumnName="Location" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AHUTransactions">
+            <EntityTypeMapping TypeName="InventoryModel.AHUTransaction">
+              <MappingFragment StoreEntitySet="AHUTransaction">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="AHUID" ColumnName="AHUID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FCUTransactions">
+            <EntityTypeMapping TypeName="InventoryModel.FCUTransaction">
+              <MappingFragment StoreEntitySet="FCUTransaction">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="FCUID" ColumnName="FCUID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FCUs">
+            <EntityTypeMapping TypeName="InventoryModel.FCU">
+              <MappingFragment StoreEntitySet="FCU">
+                <ScalarProperty Name="QtyReceived" ColumnName="QtyReceived" />
+                <ScalarProperty Name="ShipStatus" ColumnName="ShipStatus" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="SerialNo" ColumnName="SerialNo" />
+                <ScalarProperty Name="Item" ColumnName="Item" />
+                <ScalarProperty Name="SalesOrder" ColumnName="SalesOrder" />
+                <ScalarProperty Name="Heater" ColumnName="Heater" />
+                <ScalarProperty Name="HeatingCoil" ColumnName="HeatingCoil" />
+                <ScalarProperty Name="CoolingCoil" ColumnName="CoolingCoil" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="FanMotor2" ColumnName="FanMotor2" />
+                <ScalarProperty Name="FanMotor1" ColumnName="FanMotor1" />
+                <ScalarProperty Name="PowerSupply" ColumnName="PowerSupply" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="PartNo" ColumnName="PartNo" />
+                <ScalarProperty Name="UnitTag" ColumnName="UnitTag" />
+                <ScalarProperty Name="Project" ColumnName="Project" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AHUs">
+            <EntityTypeMapping TypeName="InventoryModel.AHU">
+              <MappingFragment StoreEntitySet="AHU">
+                <ScalarProperty Name="SectionReceived" ColumnName="SectionReceived" />
+                <ScalarProperty Name="ShipStatus" ColumnName="ShipStatus" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="SerialNo" ColumnName="SerialNo" />
+                <ScalarProperty Name="Item" ColumnName="Item" />
+                <ScalarProperty Name="SalesOrder" ColumnName="SalesOrder" />
+                <ScalarProperty Name="Heater" ColumnName="Heater" />
+                <ScalarProperty Name="HeatingCoil2" ColumnName="HeatingCoil2" />
+                <ScalarProperty Name="HeatingCoil1" ColumnName="HeatingCoil1" />
+                <ScalarProperty Name="CoolingCoil2" ColumnName="CoolingCoil2" />
+                <ScalarProperty Name="CoolingCoil1" ColumnName="CoolingCoil1" />
+                <ScalarProperty Name="Section" ColumnName="Section" />
+                <ScalarProperty Name="Belt" ColumnName="Belt" />
+                <ScalarProperty Name="MotorPulley" ColumnName="MotorPulley" />
+                <ScalarProperty Name="FanPulley" ColumnName="FanPulley" />
+                <ScalarProperty Name="FanRPM" ColumnName="FanRPM" />
+                <ScalarProperty Name="FanMotor" ColumnName="FanMotor" />
+                <ScalarProperty Name="MotorPole" ColumnName="MotorPole" />
+                <ScalarProperty Name="FanType" ColumnName="FanType" />
+                <ScalarProperty Name="PowerSupply" ColumnName="PowerSupply" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="PartNo" ColumnName="PartNo" />
+                <ScalarProperty Name="UnitTag" ColumnName="UnitTag" />
+                <ScalarProperty Name="Project" ColumnName="Project" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

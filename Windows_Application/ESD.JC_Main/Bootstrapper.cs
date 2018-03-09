@@ -14,6 +14,7 @@ using System.Windows;
 using System.Threading;
 using Microsoft.Practices.Unity;
 using ESD.JC_GoodsIssue;
+using ESD.JC_FinishGoods;
 
 namespace ESD.JC_Main
 {
@@ -52,6 +53,7 @@ namespace ESD.JC_Main
             moduleCatalog.AddModule(typeof(GRModule));
             moduleCatalog.AddModule(typeof(LabelPrintingModule));
             moduleCatalog.AddModule(typeof(GIModule));
+            moduleCatalog.AddModule(typeof(FGModule));
         }
 
         protected override void ConfigureContainer()

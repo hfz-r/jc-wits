@@ -44,6 +44,7 @@ namespace DataLayer
         public System.DateTime ModifiedOn { get; set; }
         public string ModifiedBy { get; set; }
         public Nullable<decimal> QtyReceived { get; set; }
+        public string ENMaterialShortText { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EunKG> EunKGs { get; set; }

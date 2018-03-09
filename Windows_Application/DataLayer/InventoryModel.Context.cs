@@ -32,5 +32,10 @@ namespace DataLayer
         public virtual DbSet<EunKG> EunKGs { get; set; }
         public virtual DbSet<GITransaction> GITransactions { get; set; }
         public virtual DbSet<GRTransaction> GRTransactions { get; set; }
+        public virtual DbSet<Location> Locations { get; set; }
+        public virtual DbSet<AHUTransaction> AHUTransactions { get; set; }
+        public virtual DbSet<FCUTransaction> FCUTransactions { get; set; }
+        public virtual DbSet<FCU> FCUs { get; set; }
+        public virtual DbSet<AHU> AHUs { get; set; }
     }
 }

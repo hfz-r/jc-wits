@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Threading;
 using System.Windows;
 using Prism.Interactivity.InteractionRequest;
+using System;
 
 namespace ESD.JC_Main.ViewModels
 {
@@ -79,6 +80,7 @@ namespace ESD.JC_Main.ViewModels
         {
             customPrincipal.Identity = new AnonymousIdentity();
             window.Close();
+            Environment.Exit(0);
 
             return "OK!";
         }

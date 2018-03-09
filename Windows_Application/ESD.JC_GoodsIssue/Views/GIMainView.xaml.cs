@@ -1,6 +1,9 @@
 ﻿using ESD.JC_GoodsIssue.ViewModels;
+using ESD.JC_Infrastructure.Events;
+using Prism.Events;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace ESD.JC_GoodsIssue.Views
 {
@@ -9,11 +12,16 @@ namespace ESD.JC_GoodsIssue.Views
     /// </summary>
     public partial class GIMainView : UserControl
     {
-        public GIMainView(GIMainViewModel viewModel)
+        private IEventAggregator EventAggregator;
+
+        public GIMainView(GIMainViewModel viewModel, IEventAggregator EventAggregator)
         {
             InitializeComponent();
 
             DataContext = viewModel;
+
+            this.EventAggregator = EventAggregator;
+            this.EventAggregator.GetEvent<CollectionViewSourceEvent>().Publish((CollectionViewSource)(this.Resources["TrnxEntries"]));
         }
 
         private void ToolBar_Loaded(object sender, RoutedEventArgs e)

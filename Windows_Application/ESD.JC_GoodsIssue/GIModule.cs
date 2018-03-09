@@ -27,7 +27,7 @@ namespace ESD.JC_GoodsIssue
 
             this.regionManager.RegisterViewWithRegion(RegionNames.MainNavigationRegion, () => this.container.Resolve<GINavigationItemView>());
             this.container.RegisterTypeForNavigation<GIMainView>();
-            this.container.RegisterTypeForNavigation<GIMainViewExt>();
+            this.container.RegisterTypeForNavigation<GIDetailsView>();
         }
     }
 }

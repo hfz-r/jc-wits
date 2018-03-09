@@ -16,17 +16,13 @@ namespace ESD.JC_LabelPrinting.Helpers
             object clipboardRawData = null;
             ParseFormat parseFormat = null;
 
-            // get the data and set the parsing method based on the format
-            // currently works with CSV and Text DataFormats            
             IDataObject dataObj = Clipboard.GetDataObject();
-            if ((clipboardRawData = dataObj.GetData(DataFormats.CommaSeparatedValue)) != null)
-            {
-                parseFormat = ParseCsvFormat;
-            }
-            else if ((clipboardRawData = dataObj.GetData(DataFormats.Text)) != null)
+            if ((clipboardRawData = dataObj.GetData(DataFormats.Text)) != null)
             {
                 parseFormat = ParseTextFormat;
             }
+            else
+                throw new Exception("Format error.");
 
             if (parseFormat != null)
             {
@@ -73,7 +69,7 @@ namespace ESD.JC_LabelPrinting.Helpers
         {
             List<string> outputList = new List<string>();
 
-            char separator = isCSV ? ';' : '\t';
+            char separator = isCSV ? ',' : '\t';
             int startIndex = 0;
             int endIndex = 0;
 

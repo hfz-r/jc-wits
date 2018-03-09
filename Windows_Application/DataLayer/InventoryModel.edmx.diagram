@@ -5,10 +5,10 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="9df45a4359ca4f6f921b805a21eacd57" Name="Diagram1" ZoomLevel="92">
-        <EntityTypeShape EntityType="InventoryModel.GoodsReceive" Width="1.5" PointX="0.75" PointY="5" />
+        <EntityTypeShape EntityType="InventoryModel.GoodsReceive" Width="1.5" PointX="0.75" PointY="4.875" />
         <EntityTypeShape EntityType="InventoryModel.Reason" Width="1.5" PointX="3.75" PointY="0.75" />
-        <EntityTypeShape EntityType="InventoryModel.Role" Width="1.5" PointX="8.75" PointY="2.75" />
-        <EntityTypeShape EntityType="InventoryModel.User" Width="1.5" PointX="11" PointY="2.5" />
+        <EntityTypeShape EntityType="InventoryModel.Role" Width="1.5" PointX="10.75" PointY="8.75" />
+        <EntityTypeShape EntityType="InventoryModel.User" Width="1.5" PointX="13" PointY="8.5" />
         <AssociationConnector Association="InventoryModel.FK_Role_RoleID" />
         <EntityTypeShape EntityType="InventoryModel.EunKG" Width="1.5" PointX="3" PointY="11.75" />
         <AssociationConnector Association="InventoryModel.FK_EunKG_GoodsReceive" />
@@ -17,6 +17,13 @@
         <AssociationConnector Association="InventoryModel.FK_GoodsIssue_GRID" />
         <AssociationConnector Association="InventoryModel.FK_GoodsReceive_GRID" />
         <AssociationConnector Association="InventoryModel.FK_Reason_ReasonID" />
+        <EntityTypeShape EntityType="InventoryModel.Location" Width="1.5" PointX="5.75" PointY="2.25" />
+        <EntityTypeShape EntityType="InventoryModel.AHUTransaction" Width="1.5" PointX="11" PointY="4.75" />
+        <EntityTypeShape EntityType="InventoryModel.FCUTransaction" Width="1.5" PointX="8" PointY="12.125" />
+        <EntityTypeShape EntityType="InventoryModel.FCU" Width="1.5" PointX="5.75" PointY="10.625" />
+        <AssociationConnector Association="InventoryModel.FK_FCU_FCUID" />
+        <EntityTypeShape EntityType="InventoryModel.AHU" Width="1.5" PointX="8.75" PointY="2.75" />
+        <AssociationConnector Association="InventoryModel.FK_AHU_AHUID" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

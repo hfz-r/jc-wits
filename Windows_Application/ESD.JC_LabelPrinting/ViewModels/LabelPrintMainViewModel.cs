@@ -192,27 +192,24 @@ namespace ESD.JC_LabelPrinting.ViewModels
             {
                 List<string[]> rowData = ClipboardHelper.ParseClipboardData();
 
-                if (rowData.First() != null && rowData.First().Count() == 7)
+                if (rowData.First() != null)
                 {
                     var dt = rowData.First();
-                    for (int i = 0; i < dt.Count(); i++)
+                    if (dt.All(x => string.IsNullOrEmpty(x)))
                     {
-                        if (dt.All(x => string.IsNullOrEmpty(x)))
-                        {
-                            throw new Exception("Failed to paste.");
-                        }
-                        else
-                        {
-                            BIN = dt[0];
-                            SAPNO = dt[1];
-                            LEGACYNO = dt[2];
-                            EN = dt[3];
-                            MS = dt[4];
-                            BUN = dt[5];
-                            QTY = decimal.Parse(dt[6]);
+                        throw new Exception("Nothing to be pasted.");
+                    }
+                    else
+                    {
+                        BIN = dt.Count() > 0 ? dt[0] : string.Empty;
+                        SAPNO = dt.Count() > 1 ? dt[1] : string.Empty;
+                        LEGACYNO = dt.Count() > 2 ? dt[2] : string.Empty;
+                        EN = dt.Count() > 3 ? dt[3] : string.Empty;
+                        MS = dt.Count() > 4 ? dt[4] : string.Empty;
+                        BUN = dt.Count() > 5 ? dt[5] : string.Empty;
+                        QTY = string.IsNullOrEmpty(dt[6]) ? (decimal?)null : dt.Count() > 6 ? decimal.Parse(dt[6]) : (decimal?)null;
 
-                            SendState = SavingStateKey;
-                        }
+                        SendState = SavingStateKey;
                     }
                 }
             }

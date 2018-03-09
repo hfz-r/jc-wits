@@ -1,12 +1,8 @@
 ﻿using DataLayer;
 using ESD.JC_GoodsReceive.Services;
-using ESD.JC_Infrastructure;
 using Prism.Mvvm;
 using Prism.Regions;
-using System;
 using Microsoft.Practices.Unity;
-using System.ComponentModel;
-using System.Windows.Data;
 using System.Linq;
 using System.Collections.ObjectModel;
 
