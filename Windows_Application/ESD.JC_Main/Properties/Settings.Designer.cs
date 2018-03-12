@@ -38,7 +38,7 @@ namespace ESD.JC_Main.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=ESD-HAFIZ;Initial Catalog=SPAREPART;Integrated Security=True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=DPO-DOCTEST1;Initial Catalog=ESD_WITS;Integrated Security=True")]
         public string SPAREPARTConnectionString {
             get {
                 return ((string)(this["SPAREPARTConnectionString"]));

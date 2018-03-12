@@ -43,11 +43,22 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Country" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CountryID" Type="bigint" Nullable="false" />
           <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="AHUID" Type="bigint" Nullable="false" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CountryDesc" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="EunKG">
           <Key>
@@ -94,7 +105,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Country" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CountryID" Type="bigint" Nullable="false" />
           <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="FCUID" Type="bigint" Nullable="false" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
@@ -121,12 +132,12 @@
           </Key>
           <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PurchaseOrder" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="Vendor" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="Vendor" Type="varchar" MaxLength="200" />
           <Property Name="DeliveryNote" Type="varchar" MaxLength="50" />
           <Property Name="BillOfLading" Type="varchar" MaxLength="20" />
           <Property Name="HeaderText" Type="varchar" MaxLength="50" />
           <Property Name="Material" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="ENMaterialShortText" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="ENMaterialShortText" Type="varchar" MaxLength="200" />
           <Property Name="MaterialShortText" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="Ok" Type="bit" />
           <Property Name="Quantity" Type="numeric" Precision="18" Scale="0" Nullable="false" />
@@ -135,7 +146,7 @@
           <Property Name="StorageLoc" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="Plant" Type="int" Nullable="false" />
           <Property Name="StorageBin" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="DocumentDate" Type="datetime" Nullable="false" />
+          <Property Name="DocumentDate" Type="datetime" />
           <Property Name="PostingDate" Type="datetime" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
@@ -159,9 +170,11 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Location" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="LocationDesc" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-          <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="100" Nullable="false" />
         </EntityType>
         <EntityType Name="Reason">
           <Key>
@@ -216,6 +229,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_AHU_COUNTRYID">
+          <End Role="Country" Type="Self.Country" Multiplicity="1" />
+          <End Role="AHUTransaction" Type="Self.AHUTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AHUTransaction">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_EunKG_GoodsReceive">
           <End Role="GoodsReceive" Type="Self.GoodsReceive" Multiplicity="1" />
           <End Role="EunKG" Type="Self.EunKG" Multiplicity="*" />
@@ -225,6 +250,18 @@
             </Principal>
             <Dependent Role="EunKG">
               <PropertyRef Name="GRID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FCU_COUNTRYID">
+          <End Role="Country" Type="Self.Country" Multiplicity="1" />
+          <End Role="FCUTransaction" Type="Self.FCUTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FCUTransaction">
+              <PropertyRef Name="CountryID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -291,6 +328,7 @@
         <EntityContainer Name="InventoryModelStoreContainer">
           <EntitySet Name="AHU" EntityType="Self.AHU" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AHUTransaction" EntityType="Self.AHUTransaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Country" EntityType="Self.Country" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EunKG" EntityType="Self.EunKG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FCU" EntityType="Self.FCU" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FCUTransaction" EntityType="Self.FCUTransaction" Schema="dbo" store:Type="Tables" />
@@ -305,9 +343,17 @@
             <End Role="AHU" EntitySet="AHU" />
             <End Role="AHUTransaction" EntitySet="AHUTransaction" />
           </AssociationSet>
+          <AssociationSet Name="FK_AHU_COUNTRYID" Association="Self.FK_AHU_COUNTRYID">
+            <End Role="Country" EntitySet="Country" />
+            <End Role="AHUTransaction" EntitySet="AHUTransaction" />
+          </AssociationSet>
           <AssociationSet Name="FK_EunKG_GoodsReceive" Association="Self.FK_EunKG_GoodsReceive">
             <End Role="GoodsReceive" EntitySet="GoodsReceive" />
             <End Role="EunKG" EntitySet="EunKG" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FCU_COUNTRYID" Association="Self.FK_FCU_COUNTRYID">
+            <End Role="Country" EntitySet="Country" />
+            <End Role="FCUTransaction" EntitySet="FCUTransaction" />
           </AssociationSet>
           <AssociationSet Name="FK_FCU_FCUID" Association="Self.FK_FCU_FCUID">
             <End Role="FCU" EntitySet="FCU" />
@@ -375,6 +421,15 @@
             <End Role="AHU" EntitySet="AHUs" />
             <End Role="AHUTransaction" EntitySet="AHUTransactions" />
           </AssociationSet>
+          <EntitySet Name="Countries" EntityType="InventoryModel.Country" />
+          <AssociationSet Name="FK_AHU_COUNTRYID" Association="InventoryModel.FK_AHU_COUNTRYID">
+            <End Role="Country" EntitySet="Countries" />
+            <End Role="AHUTransaction" EntitySet="AHUTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FCU_COUNTRYID" Association="InventoryModel.FK_FCU_COUNTRYID">
+            <End Role="Country" EntitySet="Countries" />
+            <End Role="FCUTransaction" EntitySet="FCUTransactions" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="GoodsReceive">
           <Key>
@@ -382,7 +437,7 @@
           </Key>
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PurchaseOrder" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="Vendor" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Vendor" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="DeliveryNote" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="BillOfLading" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="HeaderText" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -395,7 +450,7 @@
           <Property Name="StorageLoc" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Plant" Type="Int32" Nullable="false" />
           <Property Name="StorageBin" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="DocumentDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DocumentDate" Type="DateTime" Precision="3" />
           <Property Name="PostingDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
@@ -405,7 +460,7 @@
           <NavigationProperty Name="EunKGs" Relationship="InventoryModel.FK_EunKG_GoodsReceive" FromRole="GoodsReceive" ToRole="EunKG" />
           <NavigationProperty Name="GITransactions" Relationship="InventoryModel.FK_GoodsIssue_GRID" FromRole="GoodsReceive" ToRole="GITransaction" />
           <NavigationProperty Name="GRTransactions" Relationship="InventoryModel.FK_GoodsReceive_GRID" FromRole="GoodsReceive" ToRole="GRTransaction" />
-          <Property Name="ENMaterialShortText" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ENMaterialShortText" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Reason">
           <Key>
@@ -560,33 +615,37 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Location1" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LocationDesc" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="AHUTransaction">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Country" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
           <Property Name="AHUID" Type="Int64" Nullable="false" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="AHU" Relationship="InventoryModel.FK_AHU_AHUID" FromRole="AHUTransaction" ToRole="AHU" />
+          <Property Name="CountryID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Country1" Relationship="InventoryModel.FK_AHU_COUNTRYID" FromRole="AHUTransaction" ToRole="Country" />
         </EntityType>
         <EntityType Name="FCUTransaction">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Country" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
           <Property Name="FCUID" Type="Int64" Nullable="false" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="FCU" Relationship="InventoryModel.FK_FCU_FCUID" FromRole="FCUTransaction" ToRole="FCU" />
+          <Property Name="CountryID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Country1" Relationship="InventoryModel.FK_FCU_COUNTRYID" FromRole="FCUTransaction" ToRole="Country" />
         </EntityType>
         <EntityType Name="FCU">
           <Key>
@@ -670,6 +729,43 @@
             </Principal>
             <Dependent Role="AHUTransaction">
               <PropertyRef Name="AHUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CountryDesc" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="AHUTransactions" Relationship="InventoryModel.FK_AHU_COUNTRYID" FromRole="Country" ToRole="AHUTransaction" />
+          <NavigationProperty Name="FCUTransactions" Relationship="InventoryModel.FK_FCU_COUNTRYID" FromRole="Country" ToRole="FCUTransaction" />
+        </EntityType>
+        <Association Name="FK_AHU_COUNTRYID">
+          <End Type="InventoryModel.Country" Role="Country" Multiplicity="1" />
+          <End Type="InventoryModel.AHUTransaction" Role="AHUTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AHUTransaction">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FCU_COUNTRYID">
+          <End Type="InventoryModel.Country" Role="Country" Multiplicity="1" />
+          <End Type="InventoryModel.FCUTransaction" Role="FCUTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FCUTransaction">
+              <PropertyRef Name="CountryID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -798,9 +894,11 @@
           <EntitySetMapping Name="Locations">
             <EntityTypeMapping TypeName="InventoryModel.Location">
               <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="LocationDesc" ColumnName="LocationDesc" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="Location1" ColumnName="Location" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -808,11 +906,11 @@
           <EntitySetMapping Name="AHUTransactions">
             <EntityTypeMapping TypeName="InventoryModel.AHUTransaction">
               <MappingFragment StoreEntitySet="AHUTransaction">
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="AHUID" ColumnName="AHUID" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Country" ColumnName="Country" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -820,11 +918,11 @@
           <EntitySetMapping Name="FCUTransactions">
             <EntityTypeMapping TypeName="InventoryModel.FCUTransaction">
               <MappingFragment StoreEntitySet="FCUTransaction">
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="FCUID" ColumnName="FCUID" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Country" ColumnName="Country" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -886,6 +984,18 @@
                 <ScalarProperty Name="PartNo" ColumnName="PartNo" />
                 <ScalarProperty Name="UnitTag" ColumnName="UnitTag" />
                 <ScalarProperty Name="Project" ColumnName="Project" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Countries">
+            <EntityTypeMapping TypeName="InventoryModel.Country">
+              <MappingFragment StoreEntitySet="Country">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CountryDesc" ColumnName="CountryDesc" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

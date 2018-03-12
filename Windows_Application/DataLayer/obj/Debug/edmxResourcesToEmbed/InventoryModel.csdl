@@ -2,9 +2,24 @@
 <Schema Namespace="InventoryModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
   <EntityContainer Name="InventoryContext" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="GoodsReceives" EntityType="InventoryModel.GoodsReceive" />
-    <EntitySet Name="GRTransactions" EntityType="InventoryModel.GRTransaction" />
     <EntitySet Name="Reasons" EntityType="InventoryModel.Reason" />
     <EntitySet Name="Roles" EntityType="InventoryModel.Role" />
+    <EntitySet Name="Users" EntityType="InventoryModel.User" />
+    <AssociationSet Name="FK_Role_RoleID" Association="InventoryModel.FK_Role_RoleID">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+    <EntitySet Name="EunKGs" EntityType="InventoryModel.EunKG" />
+    <AssociationSet Name="FK_EunKG_GoodsReceive" Association="InventoryModel.FK_EunKG_GoodsReceive">
+      <End Role="GoodsReceive" EntitySet="GoodsReceives" />
+      <End Role="EunKG" EntitySet="EunKGs" />
+    </AssociationSet>
+    <EntitySet Name="GITransactions" EntityType="InventoryModel.GITransaction" />
+    <EntitySet Name="GRTransactions" EntityType="InventoryModel.GRTransaction" />
+    <AssociationSet Name="FK_GoodsIssue_GRID" Association="InventoryModel.FK_GoodsIssue_GRID">
+      <End Role="GoodsReceive" EntitySet="GoodsReceives" />
+      <End Role="GITransaction" EntitySet="GITransactions" />
+    </AssociationSet>
     <AssociationSet Name="FK_GoodsReceive_GRID" Association="InventoryModel.FK_GoodsReceive_GRID">
       <End Role="GoodsReceive" EntitySet="GoodsReceives" />
       <End Role="GRTransaction" EntitySet="GRTransactions" />
@@ -13,10 +28,27 @@
       <End Role="Reason" EntitySet="Reasons" />
       <End Role="GRTransaction" EntitySet="GRTransactions" />
     </AssociationSet>
-    <EntitySet Name="Users" EntityType="InventoryModel.User" />
-    <AssociationSet Name="FK_Role_RoleID" Association="InventoryModel.FK_Role_RoleID">
-      <End Role="Role" EntitySet="Roles" />
-      <End Role="User" EntitySet="Users" />
+    <EntitySet Name="Locations" EntityType="InventoryModel.Location" />
+    <EntitySet Name="AHUTransactions" EntityType="InventoryModel.AHUTransaction" />
+    <EntitySet Name="FCUTransactions" EntityType="InventoryModel.FCUTransaction" />
+    <EntitySet Name="FCUs" EntityType="InventoryModel.FCU" />
+    <AssociationSet Name="FK_FCU_FCUID" Association="InventoryModel.FK_FCU_FCUID">
+      <End Role="FCU" EntitySet="FCUs" />
+      <End Role="FCUTransaction" EntitySet="FCUTransactions" />
+    </AssociationSet>
+    <EntitySet Name="AHUs" EntityType="InventoryModel.AHU" />
+    <AssociationSet Name="FK_AHU_AHUID" Association="InventoryModel.FK_AHU_AHUID">
+      <End Role="AHU" EntitySet="AHUs" />
+      <End Role="AHUTransaction" EntitySet="AHUTransactions" />
+    </AssociationSet>
+    <EntitySet Name="Countries" EntityType="InventoryModel.Country" />
+    <AssociationSet Name="FK_AHU_COUNTRYID" Association="InventoryModel.FK_AHU_COUNTRYID">
+      <End Role="Country" EntitySet="Countries" />
+      <End Role="AHUTransaction" EntitySet="AHUTransactions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FCU_COUNTRYID" Association="InventoryModel.FK_FCU_COUNTRYID">
+      <End Role="Country" EntitySet="Countries" />
+      <End Role="FCUTransaction" EntitySet="FCUTransactions" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="GoodsReceive">
@@ -25,7 +57,7 @@
     </Key>
     <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="PurchaseOrder" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-    <Property Name="Vendor" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Vendor" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
     <Property Name="DeliveryNote" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="BillOfLading" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="HeaderText" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -38,27 +70,17 @@
     <Property Name="StorageLoc" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="Plant" Type="Int32" Nullable="false" />
     <Property Name="StorageBin" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-    <Property Name="DocumentDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="DocumentDate" Type="DateTime" Precision="3" />
     <Property Name="PostingDate" Type="DateTime" Precision="3" />
     <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="GRTransactions" Relationship="InventoryModel.FK_GoodsReceive_GRID" FromRole="GoodsReceive" ToRole="GRTransaction" />
     <Property Name="QtyReceived" Type="Decimal" Precision="18" Scale="0" />
-  </EntityType>
-  <EntityType Name="GRTransaction">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="ReasonID" Type="Int64" />
-    <Property Name="Quantity" Type="Int32" Nullable="false" />
-    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-    <Property Name="GRID" Type="Int64" Nullable="false" />
-    <NavigationProperty Name="GoodsReceive" Relationship="InventoryModel.FK_GoodsReceive_GRID" FromRole="GRTransaction" ToRole="GoodsReceive" />
-    <NavigationProperty Name="Reason" Relationship="InventoryModel.FK_Reason_ReasonID" FromRole="GRTransaction" ToRole="Reason" />
+    <NavigationProperty Name="EunKGs" Relationship="InventoryModel.FK_EunKG_GoodsReceive" FromRole="GoodsReceive" ToRole="EunKG" />
+    <NavigationProperty Name="GITransactions" Relationship="InventoryModel.FK_GoodsIssue_GRID" FromRole="GoodsReceive" ToRole="GITransaction" />
+    <NavigationProperty Name="GRTransactions" Relationship="InventoryModel.FK_GoodsReceive_GRID" FromRole="GoodsReceive" ToRole="GRTransaction" />
+    <Property Name="ENMaterialShortText" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="Reason">
     <Key>
@@ -87,30 +109,6 @@
     <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="Users" Relationship="InventoryModel.FK_Role_RoleID" FromRole="Role" ToRole="User" />
   </EntityType>
-  <Association Name="FK_GoodsReceive_GRID">
-    <End Type="InventoryModel.GoodsReceive" Role="GoodsReceive" Multiplicity="1" />
-    <End Type="InventoryModel.GRTransaction" Role="GRTransaction" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="GoodsReceive">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="GRTransaction">
-        <PropertyRef Name="GRID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Reason_ReasonID">
-    <End Type="InventoryModel.Reason" Role="Reason" Multiplicity="0..1" />
-    <End Type="InventoryModel.GRTransaction" Role="GRTransaction" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Reason">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="GRTransaction">
-        <PropertyRef Name="ReasonID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityType Name="User">
     <Key>
       <PropertyRef Name="ID" />
@@ -137,6 +135,257 @@
       </Principal>
       <Dependent Role="User">
         <PropertyRef Name="RoleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="EunKG">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="GRID" Type="Int64" Nullable="false" />
+    <Property Name="Eun" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="QtyReceived" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="GoodsReceive" Relationship="InventoryModel.FK_EunKG_GoodsReceive" FromRole="EunKG" ToRole="GoodsReceive" />
+  </EntityType>
+  <Association Name="FK_EunKG_GoodsReceive">
+    <End Type="InventoryModel.GoodsReceive" Role="GoodsReceive" Multiplicity="1" />
+    <End Type="InventoryModel.EunKG" Role="EunKG" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GoodsReceive">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="EunKG">
+        <PropertyRef Name="GRID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="GITransaction">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Text" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="GRID" Type="Int64" Nullable="false" />
+    <Property Name="TransferType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ProductionNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LocationTo" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="LocationFrom" Type="String" MaxLength="200" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="GoodsReceive" Relationship="InventoryModel.FK_GoodsIssue_GRID" FromRole="GITransaction" ToRole="GoodsReceive" />
+  </EntityType>
+  <EntityType Name="GRTransaction">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ReasonID" Type="Int64" />
+    <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="GRID" Type="Int64" Nullable="false" />
+    <NavigationProperty Name="GoodsReceive" Relationship="InventoryModel.FK_GoodsReceive_GRID" FromRole="GRTransaction" ToRole="GoodsReceive" />
+    <NavigationProperty Name="Reason" Relationship="InventoryModel.FK_Reason_ReasonID" FromRole="GRTransaction" ToRole="Reason" />
+  </EntityType>
+  <Association Name="FK_GoodsIssue_GRID">
+    <End Type="InventoryModel.GoodsReceive" Role="GoodsReceive" Multiplicity="1" />
+    <End Type="InventoryModel.GITransaction" Role="GITransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GoodsReceive">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="GITransaction">
+        <PropertyRef Name="GRID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GoodsReceive_GRID">
+    <End Type="InventoryModel.GoodsReceive" Role="GoodsReceive" Multiplicity="1" />
+    <End Type="InventoryModel.GRTransaction" Role="GRTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GoodsReceive">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="GRTransaction">
+        <PropertyRef Name="GRID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Reason_ReasonID">
+    <End Type="InventoryModel.Reason" Role="Reason" Multiplicity="0..1" />
+    <End Type="InventoryModel.GRTransaction" Role="GRTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Reason">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="GRTransaction">
+        <PropertyRef Name="ReasonID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="LocationDesc" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="AHUTransaction">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="AHUID" Type="Int64" Nullable="false" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="AHU" Relationship="InventoryModel.FK_AHU_AHUID" FromRole="AHUTransaction" ToRole="AHU" />
+    <Property Name="CountryID" Type="Int64" Nullable="false" />
+    <NavigationProperty Name="Country1" Relationship="InventoryModel.FK_AHU_COUNTRYID" FromRole="AHUTransaction" ToRole="Country" />
+  </EntityType>
+  <EntityType Name="FCUTransaction">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="FCUID" Type="Int64" Nullable="false" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="FCU" Relationship="InventoryModel.FK_FCU_FCUID" FromRole="FCUTransaction" ToRole="FCU" />
+    <Property Name="CountryID" Type="Int64" Nullable="false" />
+    <NavigationProperty Name="Country1" Relationship="InventoryModel.FK_FCU_COUNTRYID" FromRole="FCUTransaction" ToRole="Country" />
+  </EntityType>
+  <EntityType Name="FCU">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Project" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="UnitTag" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="PartNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Model" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="PowerSupply" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="FanMotor1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="FanMotor2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Qty" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="CoolingCoil" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="HeatingCoil" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Heater" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="SalesOrder" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Item" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="SerialNo" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="ShipStatus" Type="Boolean" />
+    <Property Name="QtyReceived" Type="Decimal" Precision="18" Scale="0" />
+    <NavigationProperty Name="FCUTransactions" Relationship="InventoryModel.FK_FCU_FCUID" FromRole="FCU" ToRole="FCUTransaction" />
+  </EntityType>
+  <Association Name="FK_FCU_FCUID">
+    <End Type="InventoryModel.FCU" Role="FCU" Multiplicity="1" />
+    <End Type="InventoryModel.FCUTransaction" Role="FCUTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="FCU">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FCUTransaction">
+        <PropertyRef Name="FCUID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="AHU">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Project" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="UnitTag" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="PartNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Model" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="PowerSupply" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="FanType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="MotorPole" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="FanMotor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="FanRPM" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="FanPulley" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="MotorPulley" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Belt" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Section" Type="Int32" />
+    <Property Name="CoolingCoil1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="CoolingCoil2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="HeatingCoil1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="HeatingCoil2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Heater" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="SalesOrder" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Item" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="SerialNo" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="ShipStatus" Type="Boolean" />
+    <Property Name="SectionReceived" Type="Int32" />
+    <NavigationProperty Name="AHUTransactions" Relationship="InventoryModel.FK_AHU_AHUID" FromRole="AHU" ToRole="AHUTransaction" />
+  </EntityType>
+  <Association Name="FK_AHU_AHUID">
+    <End Type="InventoryModel.AHU" Role="AHU" Multiplicity="1" />
+    <End Type="InventoryModel.AHUTransaction" Role="AHUTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AHU">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="AHUTransaction">
+        <PropertyRef Name="AHUID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Country">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CountryDesc" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="AHUTransactions" Relationship="InventoryModel.FK_AHU_COUNTRYID" FromRole="Country" ToRole="AHUTransaction" />
+    <NavigationProperty Name="FCUTransactions" Relationship="InventoryModel.FK_FCU_COUNTRYID" FromRole="Country" ToRole="FCUTransaction" />
+  </EntityType>
+  <Association Name="FK_AHU_COUNTRYID">
+    <End Type="InventoryModel.Country" Role="Country" Multiplicity="1" />
+    <End Type="InventoryModel.AHUTransaction" Role="AHUTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Country">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="AHUTransaction">
+        <PropertyRef Name="CountryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FCU_COUNTRYID">
+    <End Type="InventoryModel.Country" Role="Country" Multiplicity="1" />
+    <End Type="InventoryModel.FCUTransaction" Role="FCUTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Country">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FCUTransaction">
+        <PropertyRef Name="CountryID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

@@ -15,8 +15,10 @@ namespace DataLayer
     public partial class Location
     {
         public long ID { get; set; }
-        public string Location1 { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
+        public string LocationDesc { get; set; }
+        public System.DateTime ModifiedOn { get; set; }
+        public string ModifiedBy { get; set; }
     }
 }

@@ -724,7 +724,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
     public class ImportCLassModel
     {
         [FieldOrder(1)]
-        public DateTime DocumentDate { get; set; }
+        public DateTime? DocumentDate { get; set; }
 
         [FieldOrder(2)]
         public string PurchaseOrder { get; set; }

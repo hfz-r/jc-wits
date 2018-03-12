@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESD.JC_GoodsIssue", "ESD.JC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESD.JC_FinishGoods", "ESD.JC_FinishGoods\ESD.JC_FinishGoods.csproj", "{EEF922A3-AB67-45BE-ADC1-59CA84613199}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESD.JC_CountryMgmt", "ESD.JC_CountryMgmt\ESD.JC_CountryMgmt.csproj", "{B3A1CE47-EE61-4987-809A-808CBCA46B64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESD.JC_LocationMgmt", "ESD.JC_LocationMgmt\ESD.JC_LocationMgmt.csproj", "{99739F78-AA18-414B-91ED-E20893CE18FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{EEF922A3-AB67-45BE-ADC1-59CA84613199}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEF922A3-AB67-45BE-ADC1-59CA84613199}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEF922A3-AB67-45BE-ADC1-59CA84613199}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3A1CE47-EE61-4987-809A-808CBCA46B64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3A1CE47-EE61-4987-809A-808CBCA46B64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3A1CE47-EE61-4987-809A-808CBCA46B64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3A1CE47-EE61-4987-809A-808CBCA46B64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99739F78-AA18-414B-91ED-E20893CE18FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99739F78-AA18-414B-91ED-E20893CE18FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99739F78-AA18-414B-91ED-E20893CE18FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99739F78-AA18-414B-91ED-E20893CE18FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

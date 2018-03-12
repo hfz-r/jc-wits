@@ -37,7 +37,7 @@ namespace DataLayer
         public string StorageLoc { get; set; }
         public int Plant { get; set; }
         public string StorageBin { get; set; }
-        public System.DateTime DocumentDate { get; set; }
+        public Nullable<System.DateTime> DocumentDate { get; set; }
         public Nullable<System.DateTime> PostingDate { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }

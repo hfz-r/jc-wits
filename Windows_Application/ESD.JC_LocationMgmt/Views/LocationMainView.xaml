@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="ESD.JC_LocationMgmt.Views.LocationMainView"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d"
+            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+            xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
+            xmlns:prism="http://prismlibrary.com/"
+            xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure" 
+            d:DesignWidth="800" d:DesignHeight="600">
+    <UserControl.Resources>
+        <infrastructure:IgnoreNewItemPlaceHolderConverter x:Key="ignoreNewItemPlaceHolderConverter"/>
+    </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <wpf:InvokeCommandAction Command="{Binding OnLoadedCommand}" />
+        </i:EventTrigger>
+        <prism:InteractionRequestTrigger SourceObject="{Binding InteractionRequest, Mode=OneWay}">
+            <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
+        </prism:InteractionRequestTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 0" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
+                    <Button ToolTipService.ToolTip="Click to save reason!" Command="{Binding SaveLocationCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_save.png" Height="40" Width="40" Margin="4"/>
+                        </StackPanel>
+                    </Button>
+                    <Separator />
+                    <Button ToolTipService.ToolTip="Click to delete reason!" Command="{Binding DeleteLocationCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </StackPanel>
+                    </Button>
+                </ToolBar>
+
+                <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,10,20,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
+                            VerticalAlignment="Center" CornerRadius="5">
+                        <StackPanel Margin="5" Orientation="Horizontal">
+                            <Image Source="/Resources/btn_find.png" Height="18"/>
+                            <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
+                                     HorizontalAlignment="Stretch" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </StackPanel>
+
+        <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Bottom">
+            <TextBlock Text="Number of items: " TextWrapping="NoWrap"/>
+            <TextBlock Text="{Binding ItemCount}" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <DataGrid x:Name="LocationGrid"
+                    ItemsSource="{Binding Countries}" 
+                    SelectedItem="{Binding SelectedLocation, Converter={StaticResource ignoreNewItemPlaceHolderConverter}}" 
+                    CurrentCell="{Binding CellInfo, Mode=TwoWay}"
+                    AutoGenerateColumns="False" 
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch" 
+                    AutomationProperties.AutomationId="LocationGrid" 
+                    HorizontalScrollBarVisibility="Hidden" 
+                    VerticalScrollBarVisibility="Auto" 
+                    Grid.Row="2" 
+                    Margin="0,10,0,0"
+                    DataContextChanged="OnMainGridDataContextChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="No." Width="Auto" Binding="{Binding SequenceNumber}" CanUserSort="True" IsReadOnly="false" Foreground="Black"/>
+                <DataGridTextColumn Header="Description" Width="*" Binding="{Binding LocationDesc}" IsReadOnly="false" Foreground="Black" />
+                <DataGridTextColumn Header="Last Modified Date: " Width="Auto" Binding="{Binding ModifiedOn, StringFormat=g}" IsReadOnly="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Last Modified By: " Width="Auto" Binding="{Binding ModifiedBy}" IsReadOnly="True" Foreground="Black"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

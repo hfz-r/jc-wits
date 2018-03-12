@@ -10,10 +10,7 @@ namespace DataLayer.Repositories
         {
             using (var context = new InventoryContext())
             {
-                if (eagerLoading)
-                    return context.Reasons.Include(x => x.GRTransactions).OrderBy(x => x.ID).ToList();
-                else
-                    return context.Reasons.OrderBy(x => x.ID).ToList();
+                return context.Reasons.OrderBy(x => x.ID).ToList();
             }
         }
 
@@ -21,11 +18,7 @@ namespace DataLayer.Repositories
         {
             using (var context = new InventoryContext())
             {
-                var reason = context.Reasons.Find(ID);
-                if (reason != null)
-                {
-                    context.Entry(reason).Collection(x => x.GRTransactions).Load();
-                }
+                var reason = context.Reasons.Find(ID);                
                 return reason;
             }
         }
@@ -34,8 +27,12 @@ namespace DataLayer.Repositories
         {
             using (var context = new InventoryContext())
             {
-                context.Reasons.Add(reason);
-                context.SaveChanges();
+                var searchReason = context.Reasons.Where(x => x.ReasonDesc == reason.ReasonDesc).FirstOrDefault();
+                if (searchReason == null)
+                {
+                    context.Reasons.Add(reason);
+                    context.SaveChanges();
+                }
             }
         }
 
@@ -43,8 +40,12 @@ namespace DataLayer.Repositories
         {
             using (var context = new InventoryContext())
             {
-                context.Entry(reason).State = EntityState.Modified;
-                context.SaveChanges();
+                var searchReason = context.Reasons.Where(x => x.ReasonDesc == reason.ReasonDesc).FirstOrDefault();
+                if (searchReason == null)
+                {
+                    context.Entry(reason).State = EntityState.Modified;
+                    context.SaveChanges();
+                }
             }
         }
 
@@ -52,7 +53,7 @@ namespace DataLayer.Repositories
         {
             using (var context = new InventoryContext())
             {
-                var reasons = context.Reasons.Where(id => id.ID == ID).Include(gr => gr.GRTransactions);
+                var reasons = context.Reasons.Where(id => id.ID == ID);
                 context.Reasons.RemoveRange(reasons);
 
                 context.SaveChanges();

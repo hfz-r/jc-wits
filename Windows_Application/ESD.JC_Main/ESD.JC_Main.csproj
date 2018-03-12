@@ -263,6 +263,10 @@
       <Project>{833691bf-1faf-402e-8230-d883ba77d682}</Project>
       <Name>DataLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ESD.JC_CountryMgmt\ESD.JC_CountryMgmt.csproj">
+      <Project>{B3A1CE47-EE61-4987-809A-808CBCA46B64}</Project>
+      <Name>ESD.JC_CountryMgmt</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ESD.JC_FinishGoods\ESD.JC_FinishGoods.csproj">
       <Project>{eef922a3-ab67-45be-adc1-59ca84613199}</Project>
       <Name>ESD.JC_FinishGoods</Name>
@@ -282,6 +286,10 @@
     <ProjectReference Include="..\ESD.JC_LabelPrinting\ESD.JC_LabelPrinting.csproj">
       <Project>{db314da4-e8a5-4977-b203-83c57bfd52ad}</Project>
       <Name>ESD.JC_LabelPrinting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ESD.JC_LocationMgmt\ESD.JC_LocationMgmt.csproj">
+      <Project>{99739F78-AA18-414B-91ED-E20893CE18FD}</Project>
+      <Name>ESD.JC_LocationMgmt</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESD.JC_ReasonMgmt\ESD.JC_ReasonMgmt.csproj">
       <Project>{c32f7c1d-978a-4ac9-a64a-bfff64640c94}</Project>

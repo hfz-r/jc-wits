@@ -15,6 +15,8 @@ using System.Threading;
 using Microsoft.Practices.Unity;
 using ESD.JC_GoodsIssue;
 using ESD.JC_FinishGoods;
+using ESD.JC_CountryMgmt;
+using ESD.JC_LocationMgmt;
 
 namespace ESD.JC_Main
 {
@@ -47,6 +49,8 @@ namespace ESD.JC_Main
             base.ConfigureModuleCatalog();
 
             ModuleCatalog moduleCatalog = (ModuleCatalog)this.ModuleCatalog;
+            moduleCatalog.AddModule(typeof(CountryMgmtModule));
+            moduleCatalog.AddModule(typeof(LocationMgmtModule));
             moduleCatalog.AddModule(typeof(RoleMgmtModule));
             moduleCatalog.AddModule(typeof(UserMgmtModule));
             moduleCatalog.AddModule(typeof(ReasonMgmtModule));
