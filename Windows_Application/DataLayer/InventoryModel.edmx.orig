@@ -422,6 +422,7 @@
             <End Role="AHUTransaction" EntitySet="AHUTransactions" />
           </AssociationSet>
           <EntitySet Name="Countries" EntityType="InventoryModel.Country" />
+<<<<<<< 7a68c7cc9eb79f1c081f927c4be8a69c0ba2f079
           <AssociationSet Name="FK_AHU_COUNTRYID" Association="InventoryModel.FK_AHU_COUNTRYID">
             <End Role="Country" EntitySet="Countries" />
             <End Role="AHUTransaction" EntitySet="AHUTransactions" />
@@ -430,6 +431,8 @@
             <End Role="Country" EntitySet="Countries" />
             <End Role="FCUTransaction" EntitySet="FCUTransactions" />
           </AssociationSet>
+=======
+>>>>>>> FG - AHU & FCU Updated
         </EntityContainer>
         <EntityType Name="GoodsReceive">
           <Key>
@@ -742,7 +745,37 @@
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+<<<<<<< 7a68c7cc9eb79f1c081f927c4be8a69c0ba2f079
+          <NavigationProperty Name="AHUTransactions" Relationship="InventoryModel.FK_AHU_COUNTRYID" FromRole="Country" ToRole="AHUTransaction" />
+          <NavigationProperty Name="FCUTransactions" Relationship="InventoryModel.FK_FCU_COUNTRYID" FromRole="Country" ToRole="FCUTransaction" />
         </EntityType>
+        <Association Name="FK_AHU_COUNTRYID">
+          <End Type="InventoryModel.Country" Role="Country" Multiplicity="1" />
+          <End Type="InventoryModel.AHUTransaction" Role="AHUTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AHUTransaction">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FCU_COUNTRYID">
+          <End Type="InventoryModel.Country" Role="Country" Multiplicity="1" />
+          <End Type="InventoryModel.FCUTransaction" Role="FCUTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FCUTransaction">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+=======
+        </EntityType>
+>>>>>>> FG - AHU & FCU Updated
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -868,9 +901,11 @@
           <EntitySetMapping Name="Locations">
             <EntityTypeMapping TypeName="InventoryModel.Location">
               <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="LocationDesc" ColumnName="LocationDesc" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="Location1" ColumnName="Location" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -878,11 +913,11 @@
           <EntitySetMapping Name="AHUTransactions">
             <EntityTypeMapping TypeName="InventoryModel.AHUTransaction">
               <MappingFragment StoreEntitySet="AHUTransaction">
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="AHUID" ColumnName="AHUID" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Country" ColumnName="Country" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -890,11 +925,11 @@
           <EntitySetMapping Name="FCUTransactions">
             <EntityTypeMapping TypeName="InventoryModel.FCUTransaction">
               <MappingFragment StoreEntitySet="FCUTransaction">
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="FCUID" ColumnName="FCUID" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Country" ColumnName="Country" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

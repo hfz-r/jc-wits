@@ -6,7 +6,6 @@ using DataLayer.Repositories;
 using ESD.JC_Infrastructure;
 using ESD.JC_FinishGoods.Views;
 using ESD.JC_FinishGoods.Services;
-using ESD.JC_FinishGoods.ViewModels;
 using ESD.JC_Infrastructure.Controls;
 using ESD.JC_FinishGoods.Controllers;
 
@@ -35,6 +34,8 @@ namespace ESD.JC_FinishGoods
 
             this.regionManager.RegisterViewWithRegion(RegionNames.MainNavigationRegion, () => this.container.Resolve<FGNavigationItemView>());
             this.container.RegisterTypeForNavigation<FGMainView>();
+            this.container.RegisterTypeForNavigation<FGfcuDetailsView>();
+            this.container.RegisterTypeForNavigation<FGahuDetailsView>();
 
             this.TabRegionController = this.container.Resolve<TabRegionController>();
         }

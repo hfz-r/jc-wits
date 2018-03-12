@@ -8,7 +8,6 @@ using System.Threading;
 
 namespace ESD.JC_FinishGoods.ViewModels
 {
-    [RegionMemberLifetime(KeepAlive = false)]
     public class FGMainViewModel : BindableBase
     {
         private ICompositeCommands _applicationCommands;
