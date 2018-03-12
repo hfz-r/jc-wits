@@ -58,6 +58,9 @@
     <Compile Include="AHUTransaction.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Country.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="EunKG.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>

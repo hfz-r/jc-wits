@@ -108,6 +108,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -120,6 +122,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="TDSFramework">
+      <HintPath>..\packages\TDSFramework.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -146,11 +151,19 @@
     <Compile Include="Services\FCUServices.cs" />
     <Compile Include="Services\IAHUServices.cs" />
     <Compile Include="Services\IFCUServices.cs" />
+    <Compile Include="ViewModels\FGahuDetailsViewModel.cs" />
     <Compile Include="ViewModels\FGahuViewModel.cs" />
+    <Compile Include="ViewModels\FGfcuDetailsViewModel.cs" />
     <Compile Include="ViewModels\FGfcuViewModel.cs" />
     <Compile Include="ViewModels\FGMainViewModel.cs" />
+    <Compile Include="Views\FGahuDetailsView.xaml.cs">
+      <DependentUpon>FGahuDetailsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FGahuView.xaml.cs">
       <DependentUpon>FGahuView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FGfcuDetailsView.xaml.cs">
+      <DependentUpon>FGfcuDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FGfcuView.xaml.cs">
       <DependentUpon>FGfcuView.xaml</DependentUpon>
@@ -176,7 +189,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\FGahuDetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FGahuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FGfcuDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

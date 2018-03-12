@@ -507,7 +507,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             {
                 importObj.Add(new ImportCLassModel
                 {
-                    DocumentDate = gr.DocumentDate,
+                    DocumentDate = gr.DocumentDate.GetValueOrDefault(),
                     PurchaseOrder = gr.PurchaseOrder,
                     Vendor = gr.Vendor,
                     Material = gr.Material,

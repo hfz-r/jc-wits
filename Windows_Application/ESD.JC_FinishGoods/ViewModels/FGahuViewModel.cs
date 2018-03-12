@@ -24,6 +24,10 @@ using NPOI.XSSF.UserModel;
 using FileHelpers;
 using Microsoft.Office.Interop.Excel;
 using ESD.JC_Infrastructure;
+using System.Text;
+using System.Drawing.Printing;
+using System.Reflection;
+using TDSFramework;
 
 namespace ESD.JC_FinishGoods.ViewModels
 {
@@ -534,6 +538,8 @@ namespace ESD.JC_FinishGoods.ViewModels
 
                     //CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
                 }
+                else
+                    throw new Exception("Data not available.");
             }
             catch (Exception ex)
             {
@@ -762,6 +768,79 @@ namespace ESD.JC_FinishGoods.ViewModels
 
         private void PrintLabel()
         {
+            if (ahuCollection.Any(x => x.IsChecked == true))
+            {
+                if (MessageBox.Show("Confirm to generate the label?", "Print", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var listObj = ahuCollection.Where(x => x.IsChecked == true).ToList();
+
+                    StringBuilder strErrorPallet = new StringBuilder();
+                    System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
+                    pd.PrinterSettings = new PrinterSettings();
+                    pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
+
+                    try
+                    {
+                        string fileName = string.Empty;
+                        string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                        fileName = path + @"\JC-FG_AHU.prn";
+
+                        StreamReader txtReader = new StreamReader(fileName, Encoding.Default, false);
+                        string xTemp = txtReader.ReadToEnd();
+                        txtReader.Close();
+
+                        foreach (var item in listObj)
+                        {
+                            StringBuilder strPallet = new StringBuilder();
+                            StringBuilder strPalletTemplate = new StringBuilder();
+
+                            strPallet.Append(string.Empty);
+                            strPalletTemplate.Append(string.Empty);
+                            strPalletTemplate.Append(xTemp);
+
+                            strPallet = new StringBuilder();
+                            strPallet.Append(strPalletTemplate.ToString());
+                            strPallet.Replace("<Project>", item.Project);
+                            strPallet.Replace("<UnitTag>", item.UnitTag);
+                            strPallet.Replace("<PartNo>", item.PartNo);
+                            strPallet.Replace("<Model>", item.Model);
+                            strPallet.Replace("<PowerSupply>", item.PowerSupply);
+                            strPallet.Replace("<FanType>", item.FanType);
+                            strPallet.Replace("<MotorPole>", item.MotorPole);
+                            strPallet.Replace("<FanMotor>", item.FanMotor);
+                            strPallet.Replace("<FanRPM>", item.FanRPM);
+                            strPallet.Replace("<FanPulley>", item.FanPulley);
+                            strPallet.Replace("<MotorPulley>", item.MotorPulley);
+                            strPallet.Replace("<Belt>", item.Belt);
+                            strPallet.Replace("<CoolingCoil1>", item.CoolingCoil1);
+                            strPallet.Replace("<CoolingCoil2>", item.CoolingCoil2);
+                            strPallet.Replace("<HeatingCoil1>", item.HeatingCoil1);
+                            strPallet.Replace("<HeatingCoil2>", item.HeatingCoil2);
+                            strPallet.Replace("<Heater>", item.Heater);
+                            strPallet.Replace("<SalesOrder>", item.SalesOrder);
+                            strPallet.Replace("<Section>", item.Section.ToString());
+                            strPallet.Replace("<Item>", item.Item.ToString());
+                            strPallet.Replace("0123456789ABCDE", item.SerialNo);
+
+                            if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
+                            {
+                                strErrorPallet.Append(item.SerialNo + ", ");
+                            }
+                        }
+
+                        if (strErrorPallet.Length > 0)
+                        {
+                            strErrorPallet.Remove(strErrorPallet.Length - 2, 2);
+                        }
+
+                        OnLoaded();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
         }
 
         private void OpenAHUDetails(AHU ahu)
@@ -805,106 +884,106 @@ namespace ESD.JC_FinishGoods.ViewModels
     [DelimitedRecord("")]
     public class AHUImportCLassModel
     {
-        [FieldOrder(2)]
+        [FieldOrder(1)]
         public string Project { get; set; }
 
-        [FieldOrder(3)]
+        [FieldOrder(2)]
         public string UnitTag { get; set; }
 
-        [FieldOrder(6)]
+        [FieldOrder(3)]
         public string PartNo { get; set; }
 
-        [FieldOrder(7)]
+        [FieldOrder(4)]
         public string Model { get; set; }
 
-        [FieldOrder(12)]
+        [FieldOrder(9)]
         public string PowerSupply { get; set; }
 
-        [FieldOrder(13)]
+        [FieldOrder(10)]
         public string FanType { get; set; }
 
-        [FieldOrder(14)]
+        [FieldOrder(11)]
         public string MotorPole { get; set; }
 
-        [FieldOrder(15)]
+        [FieldOrder(12)]
         public string FanMotor { get; set; }
 
-        [FieldOrder(16)]
+        [FieldOrder(13)]
         public string FanRPM { get; set; }
 
-        [FieldOrder(17)]
+        [FieldOrder(14)]
         public string FanPulley { get; set; }
 
-        [FieldOrder(18)]
+        [FieldOrder(15)]
         public string MotorPulley { get; set; }
 
-        [FieldOrder(19)]
+        [FieldOrder(16)]
         public string Belt { get; set; }
 
-        [FieldOrder(20)]
+        [FieldOrder(5)]
         public int? Section { get; set; }
 
-        [FieldOrder(8)]
+        [FieldOrder(17)]
         public string CoolingCoil1a { get; set; }
 
-        [FieldOrder(8)]
+        [FieldOrder(18)]
         public string CoolingCoil1b { get; set; }
 
-        [FieldOrder(8)]
+        [FieldOrder(19)]
         public string CoolingCoil1c { get; set; }
 
-        [FieldOrder(8)]
+        [FieldOrder(20)]
         public string CoolingCoil1d { get; set; }
 
-        [FieldOrder(9)]
+        [FieldOrder(21)]
         public string CoolingCoil2a { get; set; }
 
-        [FieldOrder(9)]
+        [FieldOrder(22)]
         public string CoolingCoil2b { get; set; }
 
-        [FieldOrder(9)]
+        [FieldOrder(23)]
         public string CoolingCoil2c { get; set; }
 
-        [FieldOrder(9)]
+        [FieldOrder(24)]
         public string CoolingCoil2d { get; set; }
 
-        [FieldOrder(10)]
+        [FieldOrder(25)]
         public string HeatingCoil1a { get; set; }
 
-        [FieldOrder(10)]
+        [FieldOrder(26)]
         public string HeatingCoil1b { get; set; }
 
-        [FieldOrder(10)]
+        [FieldOrder(27)]
         public string HeatingCoil1c { get; set; }
 
-        [FieldOrder(10)]
+        [FieldOrder(28)]
         public string HeatingCoil1d { get; set; }
 
-        [FieldOrder(11)]
+        [FieldOrder(29)]
         public string HeatingCoil2a { get; set; }
 
-        [FieldOrder(11)]
+        [FieldOrder(30)]
         public string HeatingCoil2b { get; set; }
 
-        [FieldOrder(11)]
+        [FieldOrder(31)]
         public string HeatingCoil2c { get; set; }
 
-        [FieldOrder(11)]
+        [FieldOrder(32)]
         public string HeatingCoil2d { get; set; }
 
-        [FieldOrder(21)]
+        [FieldOrder(33)]
         public string Heater { get; set; }
 
-        [FieldOrder(4)]
+        [FieldOrder(34)]
         public string SalesOrder { get; set; }
 
-        [FieldOrder(5)]
+        [FieldOrder(6)]
         public decimal Item { get; set; }
 
-        [FieldOrder(1)]
+        [FieldOrder(7)]
         public string SerialNo { get; set; }
 
-        [FieldOrder(20)]
+        [FieldOrder(8)]
         public int? SectionReceived { get; set; }
     }
 }

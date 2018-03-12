@@ -24,6 +24,7 @@
         <AssociationConnector Association="InventoryModel.FK_FCU_FCUID" />
         <EntityTypeShape EntityType="InventoryModel.AHU" Width="1.5" PointX="8.75" PointY="2.75" />
         <AssociationConnector Association="InventoryModel.FK_AHU_AHUID" />
+        <EntityTypeShape EntityType="InventoryModel.Country" Width="1.5" PointX="10.75" PointY="13.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
