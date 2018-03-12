@@ -78,7 +78,7 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_CountryMgmt.exe" size="30720">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_FinishGoods.dll" size="102400">
       <assemblyIdentity name="ESD.JC_CountryMgmt" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
@@ -145,7 +145,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>PFiO14OVKGGNxjPFwulQ07iSNgqh8SlZ0EvSvzB+JLQ=</dsig:DigestValue>
+        <dsig:DigestValue>+XviEfl3mFnTmtK6XBhi3M2r8Cxf+RW/40K0kCWd8A0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

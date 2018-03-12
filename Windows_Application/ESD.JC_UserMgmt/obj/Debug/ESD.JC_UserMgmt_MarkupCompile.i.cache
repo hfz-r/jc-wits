@@ -16,5 +16,5 @@ DEBUG;TRACE
 79-2126811328
 Views\UserDetailsView.xaml;Views\UserMainView.xaml;Views\UserMgmtNavigationItemView.xaml;Views\UserOperationView.xaml;
 
-True
+False
 
