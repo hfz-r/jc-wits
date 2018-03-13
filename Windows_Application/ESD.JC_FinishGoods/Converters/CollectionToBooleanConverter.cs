@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Data;
 using DataLayer;
 using System.ComponentModel;
+using System.Collections;
 
 namespace ESD.JC_FinishGoods.Converters
 {
@@ -14,28 +15,51 @@ namespace ESD.JC_FinishGoods.Converters
         {
             if (value != null)
             {
-                ICollectionView FGs = value as ICollectionView;
-
-                List<FCU> FCUs = FGs.Cast<FCU>().ToList();
-                if (FCUs != null && FCUs.Count() > 0)
+                ICollectionView cv = value as ICollectionView;
+    
+                if (parameter as Type == typeof(FCU))
                 {
-                    int TotalGRs = FCUs.Count();
-                    int selectedGRs = FCUs.Where(x => x.IsChecked).Count();
-
-                    if (selectedGRs == TotalGRs)
-                        return true;
-
-                    if (selectedGRs > 0)
-                        return null;
+                    var fcus = cv.Cast<FCU>().ToList();
+                    return Validate(fcus);
+                }
+                else if(parameter as Type == typeof(AHU))
+                {
+                    var acus = cv.Cast<AHU>().ToList();
+                    return Validate(acus);
                 }
             }
-
             return false;
         }
+
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        private bool? Validate<T>(List<T> list)
+        {
+            if (list != null && list.Count() > 0)
+            {
+                var total = list.Count();
+                int ischecked = 0;
+
+                foreach (var item in list)
+                    foreach (var prop in typeof(T).GetProperties())
+                    {
+                        if (prop.Name == "IsChecked")
+                        {
+                            var getval = prop.GetValue(item);
+                            if ((bool)getval == true)
+                                ischecked++;
+                        }
+                    }
+                if (ischecked == total)
+                    return true;
+                if (ischecked > 0)
+                    return null;
+            }
+            return false;
         }
     }
 }

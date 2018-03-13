@@ -24,6 +24,10 @@ using NPOI.XSSF.UserModel;
 using FileHelpers;
 using Microsoft.Office.Interop.Excel;
 using ESD.JC_Infrastructure;
+using System.Text;
+using System.Drawing.Printing;
+using System.Reflection;
+using TDSFramework;
 
 namespace ESD.JC_FinishGoods.ViewModels
 {
@@ -606,6 +610,72 @@ namespace ESD.JC_FinishGoods.ViewModels
 
         private void PrintLabel()
         {
+            if (fcuCollection.Any(x => x.IsChecked == true))
+            {
+                if (MessageBox.Show("Confirm to generate the label?", "Print", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var listObj = fcuCollection.Where(x => x.IsChecked == true).ToList();
+
+                    StringBuilder strErrorPallet = new StringBuilder();
+                    System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
+                    pd.PrinterSettings = new PrinterSettings();
+                    pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
+
+                    try
+                    {
+                        string fileName = string.Empty;
+                        string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                        fileName = path + @"\JC-FG_FCU.prn";
+
+                        StreamReader txtReader = new StreamReader(fileName, Encoding.Default, false);
+                        string xTemp = txtReader.ReadToEnd();
+                        txtReader.Close();
+
+                        foreach (var item in listObj)
+                        {
+                            StringBuilder strPallet = new StringBuilder();
+                            StringBuilder strPalletTemplate = new StringBuilder();
+
+                            strPallet.Append(string.Empty);
+                            strPalletTemplate.Append(string.Empty);
+                            strPalletTemplate.Append(xTemp);
+
+                            strPallet = new StringBuilder();
+                            strPallet.Append(strPalletTemplate.ToString());
+                            strPallet.Replace("<Project>", item.Project);
+                            strPallet.Replace("<UnitTag>", item.UnitTag);
+                            strPallet.Replace("<PartNo>", item.PartNo);
+                            strPallet.Replace("<Model>", item.Model);
+                            strPallet.Replace("<PowerSupply>", item.PowerSupply);
+                            strPallet.Replace("<FanMotor1>", item.FanMotor1);
+                            strPallet.Replace("<FanMotor2>", item.FanMotor2);
+                            strPallet.Replace("<CoolingCoil>", item.CoolingCoil);
+                            strPallet.Replace("<HeatingCoil>", item.HeatingCoil);
+                            strPallet.Replace("<Heater>", item.Heater);
+                            strPallet.Replace("<SalesOrder>", item.SalesOrder);
+                            strPallet.Replace("<Qty>", item.Qty.ToString());
+                            strPallet.Replace("<Item>", item.Item.ToString());
+                            strPallet.Replace("0123456789ABCDE", item.SerialNo);
+
+                            if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
+                            {
+                                strErrorPallet.Append(item.SerialNo + ", ");
+                            }
+                        }
+
+                        if (strErrorPallet.Length > 0)
+                        {
+                            strErrorPallet.Remove(strErrorPallet.Length - 2, 2);
+                        }
+
+                        OnLoaded();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
         }
 
         private void OpenFCUDetails(FCU fcu)
@@ -661,7 +731,7 @@ namespace ESD.JC_FinishGoods.ViewModels
         [FieldOrder(4)]
         public string Model { get; set; }
 
-        [FieldOrder(13)]
+        [FieldOrder(14)]
         public string PowerSupply { get; set; }
 
         [FieldOrder(9)]
@@ -676,10 +746,10 @@ namespace ESD.JC_FinishGoods.ViewModels
         [FieldOrder(11)]
         public string CoolingCoil1 { get; set; }
 
-        [FieldOrder(11)]
+        [FieldOrder(12)]
         public string CoolingCoil2 { get; set; }
 
-        [FieldOrder(12)]
+        [FieldOrder(13)]
         public string SalesOrder { get; set; }
 
         [FieldOrder(6)]

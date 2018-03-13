@@ -9,6 +9,7 @@
              xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
+             xmlns:model="clr-namespace:DataLayer;assembly=DataLayer"
              xmlns:conv="clr-namespace:ESD.JC_FinishGoods.Converters"
              d:DesignWidth="800" d:DesignHeight="600">
     <UserControl.Resources>
@@ -21,7 +22,7 @@
         <CheckBox x:Key="cbHeader"
                 ToolTipService.ToolTip="Check All" 
                 IsThreeState="True"
-                IsChecked="{Binding DataContext.AHU, Source={x:Reference _userCtrl}, Converter={StaticResource CollectionToBooleanConverter}, Mode=OneWay}">
+                IsChecked="{Binding DataContext.AHU, Source={x:Reference _userCtrl}, Converter={StaticResource CollectionToBooleanConverter}, ConverterParameter={x:Type model:AHU}, Mode=OneWay}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Checked" >
                     <wpf:InvokeCommandAction Command="{Binding DataContext.CheckedAllCommand, Source={x:Reference _userCtrl}}"/>

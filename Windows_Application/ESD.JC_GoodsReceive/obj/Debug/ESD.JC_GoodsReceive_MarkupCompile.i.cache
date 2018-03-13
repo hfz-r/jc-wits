@@ -4,17 +4,17 @@
 library
 C#
 .cs
-C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\
 ESD.JC_GoodsReceive
 none
 false
 DEBUG;TRACE
 
-31099633618
+6-51183288
 
-15-951253210
-88-995218317
-Views\GRDetailsView.xaml;Views\GRMainView.xaml;Views\GRNavigationItemView.xaml;
+3691903502
+88-306752491
+Views\EunKGDetailsView.xaml;Views\GRDetailsSummaryView.xaml;Views\GRDetailsTransactionView.xaml;Views\GRDetailsView.xaml;Views\GRMainView.xaml;Views\GRNavigationItemView.xaml;
 
 False
 
