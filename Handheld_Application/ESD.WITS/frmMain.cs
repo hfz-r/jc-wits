@@ -1089,7 +1089,7 @@ namespace ESD.WITS
         {
             string sSQL = string.Empty;
             sSQL = "SELECT [ID] ";
-            sSQL += " ,[Location] ";
+            sSQL += " ,[LocationDesc] ";
             sSQL += "FROM [dbo].[Location] ";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1103,30 +1103,16 @@ namespace ESD.WITS
                     sda.Fill(dtTo);
 
                     cmbBoxGILocTo.DataSource = dtTo;
-                    cmbBoxGILocTo.DisplayMember = "Location";
+                    cmbBoxGILocTo.DisplayMember = "LocationDesc";
                     cmbBoxGILocTo.ValueMember = "ID";
                     cmbBoxGILocTo.SelectedIndex = -1;
 
                     DataTable dtFrom = new DataTable();
                     sda.Fill(dtFrom);
                     cmbBoxGILocFrom.DataSource = dtFrom;
-                    cmbBoxGILocFrom.DisplayMember = "Location";
+                    cmbBoxGILocFrom.DisplayMember = "LocationDesc";
                     cmbBoxGILocFrom.ValueMember = "ID";
                     cmbBoxGILocFrom.SelectedIndex = -1;
-
-                    /////Get ID
-                    //int? defaultID = null;
-                    //foreach (DataRow dr in dt.Rows)
-                    //{
-                    //    if ((dr["ID"] != DBNull.Value) && ((string)dr["Location"] == SLoc))
-                    //    {
-                    //        defaultID = Convert.ToInt32(dr["ID"].ToString());
-                    //    }
-                    //}
-                    //if (defaultID != null)
-                    //{
-                    //    SLocID = defaultID;
-                    //}
 
                     connection.Close();
                 }
@@ -1816,7 +1802,7 @@ namespace ESD.WITS
                     {
                         Cursor.Current = Cursors.Default;
                         ClearFGCache(false);
-                        MessageBox.Show("Serial No does not exist.");
+                        MessageBox.Show("Serial No. does not exist.");
                     }
                 }
                 connection.Close();
@@ -1900,35 +1886,42 @@ namespace ESD.WITS
 
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
-                        if (rdBtnAHU.Checked)
+                        if (AHUFCURec.ID > 0)
                         {
-                            sSQL = " INSERT INTO [dbo].[AHUTransaction]";
+                            if (rdBtnAHU.Checked)
+                            {
+                                sSQL = " INSERT INTO [dbo].[AHUTransaction]";
+                            }
+                            else if (rdBtnFCU.Checked)
+                            {
+                                sSQL = " INSERT INTO [dbo].[FCUTransaction]";
+                            }
+
+                            sSQL += " ([CountryID]";
+                            sSQL += " ,[Quantity]";
+                            sSQL += " ,[AHUID]";
+                            sSQL += " ,[CreatedOn]";
+                            sSQL += " ,[CreatedBy])";
+                            sSQL += " VALUES";
+                            sSQL += " ('" + cmbBoxFGCountry.SelectedValue + "'";
+                            sSQL += " ," + txtFGQty.Text;
+                            sSQL += " ," + AHUFCURec.ID;
+                            sSQL += " ,'" + DateTime.Now + "'";
+                            sSQL += " ,'" + userID + "')";
+
+                            connection.Open();
+                            SqlCommand command = new SqlCommand(sSQL, connection);
+                            command.ExecuteReader();
+                            connection.Close();
+                            Cursor.Current = Cursors.Default;
+                            MessageBox.Show(txtFGSerial.Text + " Shipped");
                         }
-                        else if (rdBtnFCU.Checked)
+                        else
                         {
-                            sSQL = " INSERT INTO [dbo].[FCUTransaction]";
+                            Cursor.Current = Cursors.Default;
+                            MessageBox.Show("Serial No. does not exist.");
                         }
-
-                        sSQL += " ([Country]";
-                        sSQL += " ,[Quantity]";
-                        sSQL += " ,[AHUID]";
-                        sSQL += " ,[CreatedOn]";
-                        sSQL += " ,[CreatedBy])";
-                        sSQL += " VALUES";
-                        sSQL += " ('" + cmbBoxFGCountry.Text + "'";
-                        sSQL += " ," + txtFGQty.Text;
-                        sSQL += " ," + AHUFCURec.ID;
-                        sSQL += " ,'" + DateTime.Now + "'";
-                        sSQL += " ,'" + userID + "')";
-
-                        connection.Open();
-                        SqlCommand command = new SqlCommand(sSQL, connection);
-                        command.ExecuteReader();
-                        connection.Close();
                     }
-
-                    Cursor.Current = Cursors.Default;
-                    MessageBox.Show(txtFGSerial.Text + " Shipped");
                 }
 
                 ClearFGCache(false);
