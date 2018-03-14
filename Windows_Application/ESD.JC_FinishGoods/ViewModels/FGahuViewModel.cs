@@ -68,6 +68,18 @@ namespace ESD.JC_FinishGoods.ViewModels
             set { SetProperty(ref _canPrint, value); }
         }
 
+        private string _FilterTextBox;
+        public string FilterTextBox
+        {
+            get { return _FilterTextBox; }
+            set
+            {
+                SetProperty(ref _FilterTextBox, value);
+                if (AHU != null)
+                    CollectionViewSource.GetDefaultView(AHU).Refresh();
+            }
+        }
+
         private string _AuthenticatedUser = string.Empty;
         public string AuthenticatedUser
         {
@@ -104,6 +116,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             this.ahuServices = ahuServices;
             this.eventAggregator = eventAggregator;
             this.eventAggregator.GetEvent<AuthenticatedUserEvent>().Subscribe(InitAuthenticatedUser);
+            this.eventAggregator.GetEvent<FilterTextBoxEvent>().Subscribe(InitTextBoxSearch);
 
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             OpenAHUDetailsCommand = new DelegateCommand<AHU>(OpenAHUDetails);
@@ -164,12 +177,17 @@ namespace ESD.JC_FinishGoods.ViewModels
             AHU = new ListCollectionView(ahuCollection);
             AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
-            //CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
+            CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
         }
 
         private void InitAuthenticatedUser(string user)
         {
             AuthenticatedUser = user;
+        }
+
+        private void InitTextBoxSearch(string searchString)
+        {
+            FilterTextBox = searchString;
         }
 
         private void CheckBoxIsSelected(object IsChecked)
@@ -216,7 +234,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             AHU = new ListCollectionView(tempObj);
             AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
-            //CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
+            CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
         }
 
         private void Import()
@@ -536,7 +554,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                     AHU = new ListCollectionView(tempCollection);
                     AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
-                    //CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
+                    CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
                 }
                 else
                     throw new Exception("Data not available.");
@@ -850,6 +868,18 @@ namespace ESD.JC_FinishGoods.ViewModels
             parameters.Add("ID", ahu.ID);
 
             this.regionManager.RequestNavigate(RegionNames.MainContentRegion, new Uri(ahuDetailsViewName + parameters, UriKind.Relative));
+        }
+
+        private bool Filter(object item)
+        {
+            if (string.IsNullOrEmpty(FilterTextBox))
+                return true;
+
+            var ahu = (AHU)item;
+
+            return (ahu.Project.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
+                    ahu.SerialNo.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
+
         }
 
         #region Composite Buttons

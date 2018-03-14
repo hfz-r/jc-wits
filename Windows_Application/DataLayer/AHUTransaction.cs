@@ -15,13 +15,13 @@ namespace DataLayer
     public partial class AHUTransaction
     {
         public long ID { get; set; }
+        public long CountryID { get; set; }
         public decimal Quantity { get; set; }
         public long AHUID { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
-        public long CountryID { get; set; }
     
         public virtual AHU AHU { get; set; }
-        public virtual Country Country1 { get; set; }
+        public virtual Country Country { get; set; }
     }
 }

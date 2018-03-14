@@ -118,8 +118,8 @@
     <Property Name="GRID" Type="bigint" Nullable="false" />
     <Property Name="TransferType" Type="nvarchar" MaxLength="50" />
     <Property Name="ProductionNo" Type="nvarchar" MaxLength="50" />
-    <Property Name="LocationTo" Type="nvarchar" MaxLength="200" />
-    <Property Name="LocationFrom" Type="nchar" MaxLength="200" />
+    <Property Name="LocationToID" Type="bigint" />
+    <Property Name="LocationFromID" Type="bigint" />
   </EntityType>
   <EntityType Name="GoodsReceive">
     <Key>
@@ -284,6 +284,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_GoodsIssue_LocationFromID">
+    <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
+    <End Role="GITransaction" Type="Self.GITransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Location">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="GITransaction">
+        <PropertyRef Name="LocationFromID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GoodsIssue_LocationToID">
+    <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
+    <End Role="GITransaction" Type="Self.GITransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Location">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="GITransaction">
+        <PropertyRef Name="LocationToID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_GoodsReceive_GRID">
     <End Role="GoodsReceive" Type="Self.GoodsReceive" Multiplicity="1" />
     <End Role="GRTransaction" Type="Self.GRTransaction" Multiplicity="*" />
@@ -356,6 +380,14 @@
     </AssociationSet>
     <AssociationSet Name="FK_GoodsIssue_GRID" Association="Self.FK_GoodsIssue_GRID">
       <End Role="GoodsReceive" EntitySet="GoodsReceive" />
+      <End Role="GITransaction" EntitySet="GITransaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GoodsIssue_LocationFromID" Association="Self.FK_GoodsIssue_LocationFromID">
+      <End Role="Location" EntitySet="Location" />
+      <End Role="GITransaction" EntitySet="GITransaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GoodsIssue_LocationToID" Association="Self.FK_GoodsIssue_LocationToID">
+      <End Role="Location" EntitySet="Location" />
       <End Role="GITransaction" EntitySet="GITransaction" />
     </AssociationSet>
     <AssociationSet Name="FK_GoodsReceive_GRID" Association="Self.FK_GoodsReceive_GRID">

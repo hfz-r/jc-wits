@@ -80,8 +80,12 @@
     <Compile Include="Controls\Slider.xaml.cs">
       <DependentUpon>Slider.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Events\AHUSelectedEvent.cs" />
     <Compile Include="Events\CollectionViewSourceEvent.cs" />
+    <Compile Include="Events\FCUSelectedEvent.cs" />
     <Compile Include="Events\FGUserSelectedEvent.cs" />
+    <Compile Include="Events\FilterTextBoxEvent.cs" />
+    <Compile Include="Events\GIUserSelectedEvent.cs" />
     <Compile Include="Events\ObjectEvent.cs" />
     <Compile Include="Events\ProgressDialogTextEvent.cs" />
     <Compile Include="StringToDecimalConverter.cs" />

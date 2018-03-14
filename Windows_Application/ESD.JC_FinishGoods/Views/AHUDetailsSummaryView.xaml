@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="ESD.JC_FinishGoods.Views.AHUDetailsSummaryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ESD.JC_FinishGoods.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <DataTemplate x:Key="AHUDetailTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Shipped Countries" Foreground="#FF525252"
+                           Grid.Row="0" Grid.Column="0"/>
+                <TextBlock Text="{Binding DataContext.CountCountries, ElementName=LayoutRoot}" FontWeight="Bold"
+                           Grid.Row="0" Grid.Column="1"/>
+
+                <TextBlock Text="Section Ordered" Foreground="#FF525252"
+                           Grid.Row="1" Grid.Column="0"/>
+                <TextBlock Text="{Binding AHU.Section}" FontWeight="Bold"
+                           Grid.Row="1" Grid.Column="1"/>
+
+                <TextBlock Text="Section Received" Foreground="#FF525252"
+                           Grid.Row="2" Grid.Column="0" Margin="0,0,15,0"/>
+                <TextBlock Text="{Binding AHU.SectionReceived}" FontWeight="Bold"
+                           Grid.Row="2" Grid.Column="1"/>
+
+                <TextBlock Text="Remaining Section" Foreground="#FF525252"
+                           Grid.Row="3" Grid.Column="0" Margin="0,0,15,0"/>
+                <TextBlock Text="{Binding DataContext.RemainingSect, ElementName=LayoutRoot}" FontWeight="Bold"
+                           Grid.Row="3" Grid.Column="1"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid x:Name="LayoutRoot" Background="WhiteSmoke">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ContentControl Grid.Row="1" 
+                        Width="Auto" 
+                        Height="Auto" 
+                        Margin="10,25,10,10"
+                        FontSize="14"
+                        Content="{Binding summryCollection}" 
+                        ContentTemplate="{StaticResource AHUDetailTemplate}"/>
+    </Grid>
+</UserControl>

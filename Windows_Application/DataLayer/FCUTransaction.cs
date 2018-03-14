@@ -15,13 +15,13 @@ namespace DataLayer
     public partial class FCUTransaction
     {
         public long ID { get; set; }
+        public long CountryID { get; set; }
         public decimal Quantity { get; set; }
         public long FCUID { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
-        public long CountryID { get; set; }
     
+        public virtual Country Country { get; set; }
         public virtual FCU FCU { get; set; }
-        public virtual Country Country1 { get; set; }
     }
 }

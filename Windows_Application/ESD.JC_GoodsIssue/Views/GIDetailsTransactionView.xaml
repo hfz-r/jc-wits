@@ -1,0 +1,153 @@
+﻿<UserControl x:Class="ESD.JC_GoodsIssue.Views.GIDetailsTransactionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ESD.JC_GoodsIssue.Views"
+             xmlns:ts="clr-namespace:ESD.JC_GoodsIssue.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="TrnxEntries" Source="{Binding trnxCollection}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="CreatedOn.Date" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+        <ts:DynamicTemplateSelector2 x:Key="TemplateSelector" />
+        <DataTemplate x:Key="Production">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="1" Margin="10,25,10,10">
+                    <DataGrid ItemsSource="{Binding Source={StaticResource TrnxEntries}}" 
+		                    AutoGenerateColumns="False" 
+		                    IsReadOnly="True"
+		                    HorizontalScrollBarVisibility="Auto"
+		                    VerticalScrollBarVisibility="Auto"
+		                    HorizontalAlignment="Left" 
+		                    VerticalAlignment="Stretch" 
+		                    AutomationProperties.AutomationId="TransactionsList">   
+                        <DataGrid.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Path=Name}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="{x:Type GroupItem}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                    <Expander Background="LightGray" HorizontalAlignment="Stretch" IsExpanded="True">
+                                                        <Expander.Header>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, MM/dd/yyyy}" Margin="10,0,10,0" />
+                                                                <TextBlock>(</TextBlock>
+                                                                <TextBlock Text="{Binding Path=ItemCount}" Margin="0,0,5,0"/>
+                                                                <TextBlock Text="Items"/>
+                                                                <TextBlock>)</TextBlock>
+                                                            </StackPanel>
+                                                        </Expander.Header>
+                                                        <Grid HorizontalAlignment="Stretch">
+                                                            <ItemsPresenter HorizontalAlignment="Stretch" />
+                                                        </Grid>
+                                                    </Expander>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                        </DataGrid.GroupStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Text" Width="*" Binding="{Binding Text}" CanUserSort="False"/>
+                            <DataGridTextColumn Header="Transaction Time" Width="Auto" MinWidth="200" Binding="{Binding CreatedOn, StringFormat=hh\\:mm\\:ss tt}" CanUserSort="True"/>
+                            <DataGridTextColumn Header="Quantity" Width="Auto" MinWidth="20" Binding="{Binding Quantity}" CanUserSort="False"/>
+                            <DataGridTextColumn Header="Production No." Width="Auto" Binding="{Binding ProductionNo}" CanUserSort="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="Posting">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="1" Margin="10,25,10,10">
+                    <DataGrid ItemsSource="{Binding Source={StaticResource TrnxEntries}}" 
+		                    AutoGenerateColumns="False" 
+		                    IsReadOnly="True"
+		                    HorizontalScrollBarVisibility="Auto"
+		                    VerticalScrollBarVisibility="Auto"
+		                    HorizontalAlignment="Left" 
+		                    VerticalAlignment="Stretch" 
+		                    AutomationProperties.AutomationId="TransactionsList">
+                        <DataGrid.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Path=Name}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="{x:Type GroupItem}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                    <Expander Background="LightGray" HorizontalAlignment="Stretch" IsExpanded="True">
+                                                        <Expander.Header>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, MM/dd/yyyy}" Margin="10,0,10,0" />
+                                                                <TextBlock>(</TextBlock>
+                                                                <TextBlock Text="{Binding Path=ItemCount}" Margin="0,0,5,0"/>
+                                                                <TextBlock Text="Items"/>
+                                                                <TextBlock>)</TextBlock>
+                                                            </StackPanel>
+                                                        </Expander.Header>
+                                                        <Grid HorizontalAlignment="Stretch">
+                                                            <ItemsPresenter HorizontalAlignment="Stretch" />
+                                                        </Grid>
+                                                    </Expander>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                        </DataGrid.GroupStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Text" Width="*" Binding="{Binding Text}" CanUserSort="False"/>
+                            <DataGridTextColumn Header="Transaction Time" Width="Auto" MinWidth="200" Binding="{Binding CreatedOn, StringFormat=hh\\:mm\\:ss tt}" CanUserSort="True"/>
+                            <DataGridTextColumn Header="Quantity" Width="Auto" MinWidth="20" Binding="{Binding Quantity}" CanUserSort="False"/>
+                            <DataGridTextColumn Header="Location To" Width="Auto" Binding="{Binding Location1.LocationDesc}" CanUserSort="True"/>
+                            <DataGridTextColumn Header="Location From" Width="Auto" Binding="{Binding Location.LocationDesc}" CanUserSort="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" Background="WhiteSmoke">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ContentControl Grid.Row="1" Content="{Binding Source={StaticResource TrnxEntries}}" 
+                        ContentTemplate="{StaticResource Posting}" />
+        <!--<ContentControl Grid.Row="1" Content="{Binding Source={StaticResource TrnxEntries}}" 
+                        ContentTemplateSelector="{StaticResource TemplateSelector}" />-->
+    </Grid>
+</UserControl>

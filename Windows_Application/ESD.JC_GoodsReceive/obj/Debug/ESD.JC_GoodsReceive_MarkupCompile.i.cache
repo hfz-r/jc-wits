@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 
-31099633618
+6-51183288
 
-15-951253210
+361192343419
 88-995218317
-Views\GRDetailsView.xaml;Views\GRMainView.xaml;Views\GRNavigationItemView.xaml;
+Views\EunKGDetailsView.xaml;Views\GRDetailsSummaryView.xaml;Views\GRDetailsTransactionView.xaml;Views\GRDetailsView.xaml;Views\GRMainView.xaml;Views\GRNavigationItemView.xaml;
 
-False
+True
 

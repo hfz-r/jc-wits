@@ -1,0 +1,105 @@
+﻿<UserControl x:Class="ESD.JC_GoodsIssue.Views.GIDetailsSummaryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ESD.JC_GoodsIssue.Views"
+             xmlns:ts="clr-namespace:ESD.JC_GoodsIssue.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ts:DynamicTemplateSelector x:Key="TemplateSelector" />
+        <DataTemplate x:Key="Production">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="SAP No." Foreground="#FF525252"
+                           Grid.Row="0" Grid.Column="0" Margin="0,0,15,0"/>
+                <TextBlock Text="{Binding GoodsReceive.Material}" FontWeight="Bold"
+                           Grid.Row="0" Grid.Column="1"/>
+
+                <TextBlock Text="GR`s Purchase Order" Foreground="#FF525252"
+                           Grid.Row="1" Grid.Column="0" Margin="0,0,15,0"/>
+                <TextBlock Text="{Binding GoodsReceive.PurchaseOrder}" FontWeight="Bold"
+                           Grid.Row="1" Grid.Column="1"/>
+
+                <TextBlock Text="GR's Posting Date" Foreground="#FF525252"
+                           Grid.Row="2" Grid.Column="0" Margin="0,0,15,0"/>
+                <TextBlock Text="{Binding GoodsReceive.PostingDate}" FontWeight="Bold"
+                           Grid.Row="2" Grid.Column="1"/>
+                
+                <TextBlock Text="Quantity Issued" Foreground="#FF525252"
+                           Grid.Row="3" Grid.Column="0"/>
+                <TextBlock Text="{Binding Quantity}" FontWeight="Bold"
+                           Grid.Row="3" Grid.Column="1"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="Posting">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="SAP No." Foreground="#FF525252"
+                           Grid.Row="0" Grid.Column="0" Margin="0,0,15,0"/>
+                <TextBlock Text="{Binding GoodsReceive.Material}" FontWeight="Bold"
+                           Grid.Row="0" Grid.Column="1"/>
+
+                <TextBlock Text="GR`s Purchase Order" Foreground="#FF525252"
+                           Grid.Row="1" Grid.Column="0" Margin="0,0,15,0"/>
+                <TextBlock Text="{Binding GoodsReceive.PurchaseOrder}" FontWeight="Bold"
+                           Grid.Row="1" Grid.Column="1"/>
+
+                <TextBlock Text="Quantity Issued" Foreground="#FF525252"
+                           Grid.Row="2" Grid.Column="0"/>
+                <TextBlock Text="{Binding Quantity}" FontWeight="Bold"
+                           Grid.Row="2" Grid.Column="1"/>
+
+                <TextBlock Text="Total To (Location)" Foreground="#FF525252"
+                           Grid.Row="3" Grid.Column="0"/>
+                <TextBlock Text="{Binding DataContext.TotalTo, ElementName=LayoutRoot}" FontWeight="Bold"
+                           Grid.Row="3" Grid.Column="1"/>
+
+                <TextBlock Text="Total From (Location)" Foreground="#FF525252"
+                           Grid.Row="4" Grid.Column="0"/>
+                <TextBlock Text="{Binding DataContext.TotalFrom, ElementName=LayoutRoot}" FontWeight="Bold"
+                           Grid.Row="4" Grid.Column="1"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid x:Name="LayoutRoot" Background="WhiteSmoke">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ContentControl Grid.Row="1" 
+                        Width="Auto" 
+                        Height="Auto" 
+                        Margin="10,25,10,10"
+                        FontSize="14"
+                        Content="{Binding summryCollection}" 
+                        ContentTemplateSelector="{StaticResource TemplateSelector}"/>
+    </Grid>
+</UserControl>

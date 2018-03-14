@@ -17,6 +17,8 @@ namespace ESD.JC_FinishGoods
         private readonly IRegionManager regionManager;
 
         private TabRegionController TabRegionController;
+        private FCUTabRegionController FCUTabRegionController;
+        private AHUTabRegionController AHUTabRegionController;
 
         public FGModule(IUnityContainer container, IRegionManager regionManager)
         {
@@ -29,8 +31,12 @@ namespace ESD.JC_FinishGoods
             this.container.RegisterType<ICompositeCommands, CompositeCommands>(new ContainerControlledLifetimeManager());
             this.container.RegisterType<IFCURepository, FCURepository>();
             this.container.RegisterType<IFCUServices, FCUServices>();
+            this.container.RegisterType<IFCUTransactionRepository, FCUTransactionRepository>();
+            this.container.RegisterType<IFCUTransactionServices, FCUTransactionServices>();
             this.container.RegisterType<IAHURepository, AHURepository>();
             this.container.RegisterType<IAHUServices, AHUServices>();
+            this.container.RegisterType<IAHUTransactionRepository, AHUTransactionRepository>();
+            this.container.RegisterType<IAHUTransactionServices, AHUTransactionServices>();
 
             this.regionManager.RegisterViewWithRegion(RegionNames.MainNavigationRegion, () => this.container.Resolve<FGNavigationItemView>());
             this.container.RegisterTypeForNavigation<FGMainView>();
@@ -38,6 +44,8 @@ namespace ESD.JC_FinishGoods
             this.container.RegisterTypeForNavigation<FGahuDetailsView>();
 
             this.TabRegionController = this.container.Resolve<TabRegionController>();
+            this.FCUTabRegionController = this.container.Resolve<FCUTabRegionController>();
+            this.AHUTabRegionController = this.container.Resolve<AHUTabRegionController>();
         }
     }
 }

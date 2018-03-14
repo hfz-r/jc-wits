@@ -40,7 +40,7 @@ namespace ESD.JC_FinishGoods.Controllers
                 tabRegion.Add(ahuView, "FGahuView");
                 tabRegion.Add(fcuView, "FGfcuView");
             }
-            tabRegion.Activate(ahuView);
+            //tabRegion.Activate(ahuView);
 
             #region Generic Composite Buttons
 

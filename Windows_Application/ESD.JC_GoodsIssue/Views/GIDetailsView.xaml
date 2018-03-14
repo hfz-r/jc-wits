@@ -58,12 +58,12 @@
 
                 <TextBlock Text="Location To: " FontWeight="Bold"
                            Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LocToLabel"/>
-                <TextBlock Text="{Binding LocationTo}"                           
+                <TextBlock Text="{Binding Location1.LocationDesc}"                           
                            Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="LocToData"/>
 
                 <TextBlock Text="Location From: " FontWeight="Bold"
                            Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LocFromLabel"/>
-                <TextBlock Text="{Binding LocationFrom}"                           
+                <TextBlock Text="{Binding  Location.LocationDesc}"                           
                            Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="LocFromData"/>
 
                 <TextBlock Text="Last Modified Date: " FontWeight="Bold"
@@ -77,6 +77,11 @@
                            Grid.Row="9" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
             </Grid>
         </DataTemplate>
+        <Style TargetType="{x:Type TabItem}" x:Key="HeaderStyle">
+            <Setter Property="Header"
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=Content.DataContext.ViewName}" />
+        </Style>
     </UserControl.Resources>
 
     <i:Interaction.Triggers>
@@ -88,14 +93,27 @@
     <Grid x:Name="LayoutRoot" Background="White">
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ContentControl Content="{Binding GoodsIssue}" ContentTemplate="{StaticResource GITemplate}"
+        <ContentControl Grid.Row="0" Content="{Binding GoodsIssue}" ContentTemplate="{StaticResource GITemplate}"
                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
 
-        <Grid Grid.Row="1">
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
+
+        <TabControl Grid.Row="1"
+            AutomationProperties.AutomationId="FCUDetailsTabControl"
+            Margin="8"
+            prism:RegionManager.RegionName="TabRegionGI"
+            Width="Auto"
+            Height="Auto"
+            HorizontalAlignment="Stretch"
+            ItemContainerStyle="{StaticResource HeaderStyle}">
+        </TabControl>
+        
+        <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>

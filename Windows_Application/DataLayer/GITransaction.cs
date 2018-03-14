@@ -22,9 +22,11 @@ namespace DataLayer
         public long GRID { get; set; }
         public string TransferType { get; set; }
         public string ProductionNo { get; set; }
-        public string LocationTo { get; set; }
-        public string LocationFrom { get; set; }
+        public Nullable<long> LocationToID { get; set; }
+        public Nullable<long> LocationFromID { get; set; }
     
         public virtual GoodsReceive GoodsReceive { get; set; }
+        public virtual Location Location { get; set; }
+        public virtual Location Location1 { get; set; }
     }
 }

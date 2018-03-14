@@ -6,9 +6,11 @@ using DataLayer;
 using ESD.JC_FinishGoods.Services;
 using Microsoft.Practices.Unity;
 using Prism.Events;
+using ESD.JC_Infrastructure.Events;
 
 namespace ESD.JC_FinishGoods.ViewModels
 {
+    [RegionMemberLifetime(KeepAlive = false)]
     public class FGfcuDetailsViewModel : BindableBase, INavigationAware
     {
         private FCU _FCU;
@@ -92,6 +94,8 @@ namespace ESD.JC_FinishGoods.ViewModels
             if (id.HasValue)
             {
                 this.FCU = fcuServices.GetFCU(id.Value);
+
+                this.EventAggregator.GetEvent<FCUSelectedEvent>().Publish(id.Value);
             }
 
             this.navigationJournal = navigationContext.NavigationService.Journal;

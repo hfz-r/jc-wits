@@ -18,8 +18,8 @@ namespace DataLayer
         public GoodsReceive()
         {
             this.EunKGs = new HashSet<EunKG>();
-            this.GITransactions = new HashSet<GITransaction>();
             this.GRTransactions = new HashSet<GRTransaction>();
+            this.GITransactions = new HashSet<GITransaction>();
         }
     
         public long ID { get; set; }
@@ -29,6 +29,7 @@ namespace DataLayer
         public string BillOfLading { get; set; }
         public string HeaderText { get; set; }
         public string Material { get; set; }
+        public string ENMaterialShortText { get; set; }
         public string MaterialShortText { get; set; }
         public Nullable<bool> Ok { get; set; }
         public decimal Quantity { get; set; }
@@ -44,13 +45,12 @@ namespace DataLayer
         public System.DateTime ModifiedOn { get; set; }
         public string ModifiedBy { get; set; }
         public Nullable<decimal> QtyReceived { get; set; }
-        public string ENMaterialShortText { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EunKG> EunKGs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GITransaction> GITransactions { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GRTransaction> GRTransactions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GITransaction> GITransactions { get; set; }
     }
 }

@@ -6,9 +6,11 @@ using DataLayer;
 using ESD.JC_FinishGoods.Services;
 using Microsoft.Practices.Unity;
 using Prism.Events;
+using ESD.JC_Infrastructure.Events;
 
 namespace ESD.JC_FinishGoods.ViewModels
 {
+    [RegionMemberLifetime(KeepAlive = false)]
     public class FGahuDetailsViewModel : BindableBase, INavigationAware
     {
         private AHU _AHU;
@@ -92,6 +94,8 @@ namespace ESD.JC_FinishGoods.ViewModels
             if (id.HasValue)
             {
                 this.AHU = ahuServices.GetAHU(id.Value);
+
+                this.EventAggregator.GetEvent<AHUSelectedEvent>().Publish(id.Value);
             }
 
             this.navigationJournal = navigationContext.NavigationService.Journal;

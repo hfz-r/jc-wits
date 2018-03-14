@@ -68,6 +68,18 @@ namespace ESD.JC_FinishGoods.ViewModels
             set { SetProperty(ref _canPrint, value); }
         }
 
+        private string _FilterTextBox;
+        public string FilterTextBox
+        {
+            get { return _FilterTextBox; }
+            set
+            {
+                SetProperty(ref _FilterTextBox, value);
+                if (FCU != null)
+                    CollectionViewSource.GetDefaultView(FCU).Refresh();
+            }
+        }
+
         private string _AuthenticatedUser = string.Empty;
         public string AuthenticatedUser
         {
@@ -104,6 +116,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             this.fcuServices = fcuServices;
             this.eventAggregator = eventAggregator;
             this.eventAggregator.GetEvent<AuthenticatedUserEvent>().Subscribe(InitAuthenticatedUser);
+            this.eventAggregator.GetEvent<FilterTextBoxEvent>().Subscribe(InitTextBoxSearch);
 
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             OpenFCUDetailsCommand = new DelegateCommand<FCU>(OpenFCUDetails);
@@ -164,12 +177,17 @@ namespace ESD.JC_FinishGoods.ViewModels
             FCU = new ListCollectionView(fcuCollection);
             FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
-            //CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
+            CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
         }
 
         private void InitAuthenticatedUser(string user)
         {
             AuthenticatedUser = user;
+        }
+
+        private void InitTextBoxSearch(string searchString)
+        {
+            FilterTextBox = searchString;
         }
 
         private void CheckBoxIsSelected(object IsChecked)
@@ -216,7 +234,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             FCU = new ListCollectionView(tempObj);
             FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
-            //CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
+            CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
         }
 
         private void Import()
@@ -410,7 +428,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                     FCU = new ListCollectionView(tempCollection);
                     FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
-                    //CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
+                    CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
                 }
             }
             catch (Exception ex)
@@ -625,7 +643,8 @@ namespace ESD.JC_FinishGoods.ViewModels
                     {
                         string fileName = string.Empty;
                         string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                        fileName = path + @"\JC-FG_FCU.prn";
+                        //fileName = path + @"\JC-FG_FCU.prn";
+                        fileName = path + @"\JC_test2.prn";
 
                         StreamReader txtReader = new StreamReader(fileName, Encoding.Default, false);
                         string xTemp = txtReader.ReadToEnd();
@@ -655,7 +674,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                             strPallet.Replace("<SalesOrder>", item.SalesOrder);
                             strPallet.Replace("<Qty>", item.Qty.ToString());
                             strPallet.Replace("<Item>", item.Item.ToString());
-                            strPallet.Replace("0123456789ABCDE", item.SerialNo);
+                            strPallet.Replace("<SerialNo>", item.SerialNo);
 
                             if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
                             {
@@ -685,6 +704,18 @@ namespace ESD.JC_FinishGoods.ViewModels
             parameters.Add("ID", fcu.ID);
 
             this.regionManager.RequestNavigate(RegionNames.MainContentRegion, new Uri(fcuDetailsViewName + parameters, UriKind.Relative));
+        }
+
+        private bool Filter(object item)
+        {
+            if (string.IsNullOrEmpty(FilterTextBox))
+                return true;
+
+            var fcu = (FCU)item;
+
+            return (fcu.Project.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
+                    fcu.SerialNo.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
+
         }
 
         #region Composite Buttons

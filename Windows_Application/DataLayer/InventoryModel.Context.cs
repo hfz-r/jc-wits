@@ -25,18 +25,18 @@ namespace DataLayer
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<AHU> AHUs { get; set; }
+        public virtual DbSet<AHUTransaction> AHUTransactions { get; set; }
+        public virtual DbSet<Country> Countries { get; set; }
+        public virtual DbSet<EunKG> EunKGs { get; set; }
+        public virtual DbSet<FCUTransaction> FCUTransactions { get; set; }
         public virtual DbSet<GoodsReceive> GoodsReceives { get; set; }
+        public virtual DbSet<GRTransaction> GRTransactions { get; set; }
+        public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<Reason> Reasons { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<EunKG> EunKGs { get; set; }
         public virtual DbSet<GITransaction> GITransactions { get; set; }
-        public virtual DbSet<GRTransaction> GRTransactions { get; set; }
-        public virtual DbSet<Location> Locations { get; set; }
-        public virtual DbSet<AHUTransaction> AHUTransactions { get; set; }
-        public virtual DbSet<FCUTransaction> FCUTransactions { get; set; }
         public virtual DbSet<FCU> FCUs { get; set; }
-        public virtual DbSet<AHU> AHUs { get; set; }
-        public virtual DbSet<Country> Countries { get; set; }
     }
 }

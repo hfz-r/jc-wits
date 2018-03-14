@@ -12,7 +12,10 @@ namespace DataLayer.Repositories
             using (var context = new InventoryContext())
             {
                 if (eagerLoading)
-                    return context.GITransactions.Include(gr => gr.GoodsReceive).OrderBy(x => x.ID).ToList();
+                    return context.GITransactions
+                        .Include(gr => gr.GoodsReceive)
+                        .Include(loc => loc.Location)
+                        .Include(loc1 => loc1.Location1).OrderBy(x => x.ID).ToList();
                 else
                     return context.GITransactions.OrderBy(x => x.ID).ToList();
             }

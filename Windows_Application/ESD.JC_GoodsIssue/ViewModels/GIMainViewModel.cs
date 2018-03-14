@@ -198,8 +198,8 @@ namespace ESD.JC_GoodsIssue.ViewModels
                     Quantity = gr.Quantity,
                     TransferType = gr.TransferType,
                     ProductionNo = gr.ProductionNo,
-                    LocationTo = gr.LocationTo,
-                    LocationFrom = gr.LocationFrom
+                    LocationTo = gr.Location1.LocationDesc,
+                    LocationFrom = gr.Location.LocationDesc
                 });
             }
 

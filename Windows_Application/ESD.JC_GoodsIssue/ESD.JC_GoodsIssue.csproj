@@ -126,6 +126,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\GITabRegionController.cs" />
     <Compile Include="GIModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -141,9 +142,19 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Services\GIServices.cs" />
+    <Compile Include="Services\GITransactionServices.cs" />
     <Compile Include="Services\IGIServices.cs" />
+    <Compile Include="Services\IGITransactionServices.cs" />
+    <Compile Include="ViewModels\GIDetailsSummaryViewModel.cs" />
+    <Compile Include="ViewModels\GIDetailsTransactionViewModel.cs" />
     <Compile Include="ViewModels\GIDetailsViewModel.cs" />
     <Compile Include="ViewModels\GIMainViewModel.cs" />
+    <Compile Include="Views\GIDetailsSummaryView.xaml.cs">
+      <DependentUpon>GIDetailsSummaryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GIDetailsTransactionView.xaml.cs">
+      <DependentUpon>GIDetailsTransactionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GIDetailsView.xaml.cs">
       <DependentUpon>GIDetailsView.xaml</DependentUpon>
     </Compile>
@@ -168,6 +179,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\GIDetailsSummaryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GIDetailsTransactionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\GIDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

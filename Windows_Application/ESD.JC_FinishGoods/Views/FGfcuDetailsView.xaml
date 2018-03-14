@@ -155,18 +155,36 @@
                            Grid.Row="16" Grid.Column="1" AutomationProperties.AutomationId="ModifiedBy"/>
             </Grid>
         </DataTemplate>
+        <Style TargetType="{x:Type TabItem}" x:Key="HeaderStyle">
+            <Setter Property="Header"
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=Content.DataContext.ViewName}" />
+        </Style>
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" Background="White">
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ContentControl Content="{Binding FCU}" ContentTemplate="{StaticResource FCUTemplate}"
+        <ContentControl Grid.Row="0" Content="{Binding FCU}" ContentTemplate="{StaticResource FCUTemplate}"
                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
 
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
+
+        <TabControl Grid.Row="1"
+            AutomationProperties.AutomationId="FCUDetailsTabControl"
+            Margin="8"
+            prism:RegionManager.RegionName="TabRegionFCU"
+            Width="Auto"
+            Height="Auto"
+            HorizontalAlignment="Stretch"
+            ItemContainerStyle="{StaticResource HeaderStyle}">
+        </TabControl>
+        
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

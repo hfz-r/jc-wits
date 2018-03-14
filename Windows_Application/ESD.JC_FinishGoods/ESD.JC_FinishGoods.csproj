@@ -131,6 +131,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AHUTabRegionController.cs" />
+    <Compile Include="Controllers\FCUTabRegionController.cs" />
     <Compile Include="Controllers\TabRegionController.cs" />
     <Compile Include="Converters\CollectionToBooleanConverter.cs" />
     <Compile Include="FGModule.cs" />
@@ -148,14 +150,34 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Services\AHUServices.cs" />
+    <Compile Include="Services\AHUTransactionServices.cs" />
     <Compile Include="Services\FCUServices.cs" />
+    <Compile Include="Services\FCUTransactionServices.cs" />
     <Compile Include="Services\IAHUServices.cs" />
+    <Compile Include="Services\IAHUTransactionServices.cs" />
     <Compile Include="Services\IFCUServices.cs" />
+    <Compile Include="Services\IFCUTransactionServices.cs" />
+    <Compile Include="ViewModels\AHUDetailsSummaryViewModel.cs" />
+    <Compile Include="ViewModels\AHUDetailsTransactionViewModel.cs" />
+    <Compile Include="ViewModels\FCUDetailsSummaryViewModel.cs" />
+    <Compile Include="ViewModels\FCUDetailsTransactionViewModel.cs" />
     <Compile Include="ViewModels\FGahuDetailsViewModel.cs" />
     <Compile Include="ViewModels\FGahuViewModel.cs" />
     <Compile Include="ViewModels\FGfcuDetailsViewModel.cs" />
     <Compile Include="ViewModels\FGfcuViewModel.cs" />
     <Compile Include="ViewModels\FGMainViewModel.cs" />
+    <Compile Include="Views\AHUDetailsSummaryView.xaml.cs">
+      <DependentUpon>AHUDetailsSummaryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AHUDetailsTransactionView.xaml.cs">
+      <DependentUpon>AHUDetailsTransactionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FCUDetailsSummaryView.xaml.cs">
+      <DependentUpon>FCUDetailsSummaryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FCUDetailsTransactionView.xaml.cs">
+      <DependentUpon>FCUDetailsTransactionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FGahuDetailsView.xaml.cs">
       <DependentUpon>FGahuDetailsView.xaml</DependentUpon>
     </Compile>
@@ -189,6 +211,22 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\AHUDetailsSummaryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AHUDetailsTransactionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FCUDetailsSummaryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FCUDetailsTransactionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FGahuDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

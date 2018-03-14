@@ -6,9 +6,8 @@
              xmlns:local="clr-namespace:ESD.JC_GoodsReceive.Views"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-
     <UserControl.Resources>
-        <DataTemplate x:Key="ContactDetailTemplate">
+        <DataTemplate x:Key="GRDetailTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -54,6 +53,6 @@
                         Margin="10,25,10,10"
                         FontSize="14"
                         Content="{Binding summryCollection}" 
-                        ContentTemplate="{StaticResource ContactDetailTemplate}"/>
+                        ContentTemplate="{StaticResource GRDetailTemplate}"/>
     </Grid>
 </UserControl>

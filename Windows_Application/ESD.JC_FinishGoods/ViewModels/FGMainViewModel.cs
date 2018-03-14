@@ -24,8 +24,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             set
             {
                 SetProperty(ref _FilterTextBox, value);
-                //if (GoodReceives != null)
-                //    CollectionViewSource.GetDefaultView(GoodReceives).Refresh();
+                EventAggregator.GetEvent<FilterTextBoxEvent>().Publish(_FilterTextBox);
             }
         }
 

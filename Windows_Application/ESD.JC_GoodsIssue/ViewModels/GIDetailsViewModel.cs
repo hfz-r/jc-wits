@@ -1,6 +1,8 @@
 ﻿using DataLayer;
 using ESD.JC_GoodsIssue.Services;
+using ESD.JC_Infrastructure.Events;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -8,6 +10,7 @@ using System.Windows.Input;
 
 namespace ESD.JC_GoodsIssue.ViewModels
 {
+    [RegionMemberLifetime(KeepAlive = false)]
     public class GIDetailsViewModel : BindableBase, INavigationAware
     {
         private GITransaction _GoodsIssue;
@@ -30,12 +33,14 @@ namespace ESD.JC_GoodsIssue.ViewModels
 
         private IRegionNavigationJournal navigationJournal;
         private IRegionManager RegionManager;
+        private IEventAggregator EventAggregator;
         private IGIServices GIServices;
         private InteractionRequest<Confirmation> confirmRemoveThisInteractionRequest;
 
-        public GIDetailsViewModel(IRegionManager _RegionManager, IGIServices _GIServices)
+        public GIDetailsViewModel(IRegionManager _RegionManager, IEventAggregator _EventAggregator, IGIServices _GIServices)
         {
             RegionManager = _RegionManager;
+            EventAggregator = _EventAggregator;
             GIServices = _GIServices;
 
             GoBackCommand = new DelegateCommand(GoBack);
@@ -92,6 +97,8 @@ namespace ESD.JC_GoodsIssue.ViewModels
             if (id.HasValue)
             {
                 this.GoodsIssue = GIServices.GetGoodsIssue(id.Value);
+
+                this.EventAggregator.GetEvent<GIUserSelectedEvent>().Publish(id.Value);
             }
 
             this.navigationJournal = navigationContext.NavigationService.Journal;

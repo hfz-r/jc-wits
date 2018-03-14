@@ -1,10 +1,94 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="InventoryModelStoreContainer" CdmEntityContainer="InventoryContext">
+    <EntitySetMapping Name="AHUs">
+      <EntityTypeMapping TypeName="InventoryModel.AHU">
+        <MappingFragment StoreEntitySet="AHU">
+          <ScalarProperty Name="SectionReceived" ColumnName="SectionReceived" />
+          <ScalarProperty Name="ShipStatus" ColumnName="ShipStatus" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="SerialNo" ColumnName="SerialNo" />
+          <ScalarProperty Name="Item" ColumnName="Item" />
+          <ScalarProperty Name="SalesOrder" ColumnName="SalesOrder" />
+          <ScalarProperty Name="Heater" ColumnName="Heater" />
+          <ScalarProperty Name="HeatingCoil2" ColumnName="HeatingCoil2" />
+          <ScalarProperty Name="HeatingCoil1" ColumnName="HeatingCoil1" />
+          <ScalarProperty Name="CoolingCoil2" ColumnName="CoolingCoil2" />
+          <ScalarProperty Name="CoolingCoil1" ColumnName="CoolingCoil1" />
+          <ScalarProperty Name="Section" ColumnName="Section" />
+          <ScalarProperty Name="Belt" ColumnName="Belt" />
+          <ScalarProperty Name="MotorPulley" ColumnName="MotorPulley" />
+          <ScalarProperty Name="FanPulley" ColumnName="FanPulley" />
+          <ScalarProperty Name="FanRPM" ColumnName="FanRPM" />
+          <ScalarProperty Name="FanMotor" ColumnName="FanMotor" />
+          <ScalarProperty Name="MotorPole" ColumnName="MotorPole" />
+          <ScalarProperty Name="FanType" ColumnName="FanType" />
+          <ScalarProperty Name="PowerSupply" ColumnName="PowerSupply" />
+          <ScalarProperty Name="Model" ColumnName="Model" />
+          <ScalarProperty Name="PartNo" ColumnName="PartNo" />
+          <ScalarProperty Name="UnitTag" ColumnName="UnitTag" />
+          <ScalarProperty Name="Project" ColumnName="Project" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AHUTransactions">
+      <EntityTypeMapping TypeName="InventoryModel.AHUTransaction">
+        <MappingFragment StoreEntitySet="AHUTransaction">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="AHUID" ColumnName="AHUID" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Countries">
+      <EntityTypeMapping TypeName="InventoryModel.Country">
+        <MappingFragment StoreEntitySet="Country">
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CountryDesc" ColumnName="CountryDesc" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EunKGs">
+      <EntityTypeMapping TypeName="InventoryModel.EunKG">
+        <MappingFragment StoreEntitySet="EunKG">
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="QtyReceived" ColumnName="QtyReceived" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="Eun" ColumnName="Eun" />
+          <ScalarProperty Name="GRID" ColumnName="GRID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FCUTransactions">
+      <EntityTypeMapping TypeName="InventoryModel.FCUTransaction">
+        <MappingFragment StoreEntitySet="FCUTransaction">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="FCUID" ColumnName="FCUID" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="GoodsReceives">
       <EntityTypeMapping TypeName="InventoryModel.GoodsReceive">
         <MappingFragment StoreEntitySet="GoodsReceive">
-          <ScalarProperty Name="ENMaterialShortText" ColumnName="ENMaterialShortText" />
           <ScalarProperty Name="QtyReceived" ColumnName="QtyReceived" />
           <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
           <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
@@ -20,12 +104,37 @@
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
           <ScalarProperty Name="Ok" ColumnName="Ok" />
           <ScalarProperty Name="MaterialShortText" ColumnName="MaterialShortText" />
+          <ScalarProperty Name="ENMaterialShortText" ColumnName="ENMaterialShortText" />
           <ScalarProperty Name="Material" ColumnName="Material" />
           <ScalarProperty Name="HeaderText" ColumnName="HeaderText" />
           <ScalarProperty Name="BillOfLading" ColumnName="BillOfLading" />
           <ScalarProperty Name="DeliveryNote" ColumnName="DeliveryNote" />
           <ScalarProperty Name="Vendor" ColumnName="Vendor" />
           <ScalarProperty Name="PurchaseOrder" ColumnName="PurchaseOrder" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GRTransactions">
+      <EntityTypeMapping TypeName="InventoryModel.GRTransaction">
+        <MappingFragment StoreEntitySet="GRTransaction">
+          <ScalarProperty Name="GRID" ColumnName="GRID" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="ReasonID" ColumnName="ReasonID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Locations">
+      <EntityTypeMapping TypeName="InventoryModel.Location">
+        <MappingFragment StoreEntitySet="Location">
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="LocationDesc" ColumnName="LocationDesc" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -74,26 +183,11 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="EunKGs">
-      <EntityTypeMapping TypeName="InventoryModel.EunKG">
-        <MappingFragment StoreEntitySet="EunKG">
-          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-          <ScalarProperty Name="QtyReceived" ColumnName="QtyReceived" />
-          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-          <ScalarProperty Name="Eun" ColumnName="Eun" />
-          <ScalarProperty Name="GRID" ColumnName="GRID" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="GITransactions">
       <EntityTypeMapping TypeName="InventoryModel.GITransaction">
         <MappingFragment StoreEntitySet="GITransaction">
-          <ScalarProperty Name="LocationFrom" ColumnName="LocationFrom" />
-          <ScalarProperty Name="LocationTo" ColumnName="LocationTo" />
+          <ScalarProperty Name="LocationFromID" ColumnName="LocationFromID" />
+          <ScalarProperty Name="LocationToID" ColumnName="LocationToID" />
           <ScalarProperty Name="ProductionNo" ColumnName="ProductionNo" />
           <ScalarProperty Name="TransferType" ColumnName="TransferType" />
           <ScalarProperty Name="GRID" ColumnName="GRID" />
@@ -101,54 +195,6 @@
           <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
           <ScalarProperty Name="Text" ColumnName="Text" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="GRTransactions">
-      <EntityTypeMapping TypeName="InventoryModel.GRTransaction">
-        <MappingFragment StoreEntitySet="GRTransaction">
-          <ScalarProperty Name="GRID" ColumnName="GRID" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-          <ScalarProperty Name="ReasonID" ColumnName="ReasonID" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Locations">
-      <EntityTypeMapping TypeName="InventoryModel.Location">
-        <MappingFragment StoreEntitySet="Location">
-          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-          <ScalarProperty Name="LocationDesc" ColumnName="LocationDesc" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="AHUTransactions">
-      <EntityTypeMapping TypeName="InventoryModel.AHUTransaction">
-        <MappingFragment StoreEntitySet="AHUTransaction">
-          <ScalarProperty Name="CountryID" ColumnName="CountryID" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-          <ScalarProperty Name="AHUID" ColumnName="AHUID" />
-          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="FCUTransactions">
-      <EntityTypeMapping TypeName="InventoryModel.FCUTransaction">
-        <MappingFragment StoreEntitySet="FCUTransaction">
-          <ScalarProperty Name="CountryID" ColumnName="CountryID" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-          <ScalarProperty Name="FCUID" ColumnName="FCUID" />
-          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -176,52 +222,6 @@
           <ScalarProperty Name="PartNo" ColumnName="PartNo" />
           <ScalarProperty Name="UnitTag" ColumnName="UnitTag" />
           <ScalarProperty Name="Project" ColumnName="Project" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="AHUs">
-      <EntityTypeMapping TypeName="InventoryModel.AHU">
-        <MappingFragment StoreEntitySet="AHU">
-          <ScalarProperty Name="SectionReceived" ColumnName="SectionReceived" />
-          <ScalarProperty Name="ShipStatus" ColumnName="ShipStatus" />
-          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-          <ScalarProperty Name="SerialNo" ColumnName="SerialNo" />
-          <ScalarProperty Name="Item" ColumnName="Item" />
-          <ScalarProperty Name="SalesOrder" ColumnName="SalesOrder" />
-          <ScalarProperty Name="Heater" ColumnName="Heater" />
-          <ScalarProperty Name="HeatingCoil2" ColumnName="HeatingCoil2" />
-          <ScalarProperty Name="HeatingCoil1" ColumnName="HeatingCoil1" />
-          <ScalarProperty Name="CoolingCoil2" ColumnName="CoolingCoil2" />
-          <ScalarProperty Name="CoolingCoil1" ColumnName="CoolingCoil1" />
-          <ScalarProperty Name="Section" ColumnName="Section" />
-          <ScalarProperty Name="Belt" ColumnName="Belt" />
-          <ScalarProperty Name="MotorPulley" ColumnName="MotorPulley" />
-          <ScalarProperty Name="FanPulley" ColumnName="FanPulley" />
-          <ScalarProperty Name="FanRPM" ColumnName="FanRPM" />
-          <ScalarProperty Name="FanMotor" ColumnName="FanMotor" />
-          <ScalarProperty Name="MotorPole" ColumnName="MotorPole" />
-          <ScalarProperty Name="FanType" ColumnName="FanType" />
-          <ScalarProperty Name="PowerSupply" ColumnName="PowerSupply" />
-          <ScalarProperty Name="Model" ColumnName="Model" />
-          <ScalarProperty Name="PartNo" ColumnName="PartNo" />
-          <ScalarProperty Name="UnitTag" ColumnName="UnitTag" />
-          <ScalarProperty Name="Project" ColumnName="Project" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Countries">
-      <EntityTypeMapping TypeName="InventoryModel.Country">
-        <MappingFragment StoreEntitySet="Country">
-          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-          <ScalarProperty Name="CountryDesc" ColumnName="CountryDesc" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
