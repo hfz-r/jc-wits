@@ -286,9 +286,11 @@ namespace ESD.WITS
             {
                 // Create the command 
                 string sSQL = string.Empty;
+                string RoleID = string.Empty;
+                bool? isAllowed = false;
                 string pass = HashConverter.CalculateHash(password, username);
 
-                sSQL = "SELECT ID ";
+                sSQL = "SELECT ID, RoleID ";
                 sSQL += "FROM Users ";
                 sSQL += "WHERE Username = '" + username + "' AND Password = '" + pass + "';";
 
@@ -303,6 +305,7 @@ namespace ESD.WITS
                         {
                             isPass = true;
                             userID = reader[0].ToString();
+                            RoleID = reader[1].ToString();
                         }
                     }
                     connection.Close();
@@ -310,9 +313,39 @@ namespace ESD.WITS
 
                 if (isPass)
                 {
-                    pnlLogin.Visible = false;
-                    pnlSelection.Visible = true;
-                    pnlSelection.Dock = DockStyle.Fill;
+                    sSQL = "SELECT MACT.IsAllow";
+                    sSQL += " FROM [ESD_WITS].[dbo].[ModuleAccessCtrl] MAC";
+                    sSQL += " INNER JOIN [dbo].[ModuleAccessCtrlTransaction] MACT";
+                    sSQL += " ON MAC.ID = MACT.ModuleID";
+                    sSQL += " WHERE Module LIKE '%Handheld%'";
+                    sSQL += " AND RoleID = " + RoleID;
+
+                    using (connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        SqlCommand command = new SqlCommand(sSQL, connection);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader != null && reader.Read())
+                            {
+                                isPass = true;
+                                isAllowed = (bool?)reader[0];
+                            }
+                        }
+                        connection.Close();
+                    }
+
+                    if (isAllowed ?? true)
+                    {
+                        pnlLogin.Visible = false;
+                        pnlSelection.Visible = true;
+                        pnlSelection.Dock = DockStyle.Fill;
+                    }
+                    else
+                    {
+                        MessageBox.Show("You have insufficient privilege to access this application.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);                    
+                    }
                 }
                 else
                 {
