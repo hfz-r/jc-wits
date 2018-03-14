@@ -18,12 +18,12 @@ namespace DataLayer
         public Role()
         {
             this.Users = new HashSet<User>();
+            this.ModuleAccessCtrlTransactions = new HashSet<ModuleAccessCtrlTransaction>();
         }
     
         public long ID { get; set; }
         public string RoleCode { get; set; }
         public string RoleName { get; set; }
-        public string Module { get; set; }
         public string Description { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
@@ -32,5 +32,7 @@ namespace DataLayer
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Users { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ModuleAccessCtrlTransaction> ModuleAccessCtrlTransactions { get; set; }
     }
 }

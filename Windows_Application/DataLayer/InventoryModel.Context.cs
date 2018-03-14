@@ -38,5 +38,7 @@ namespace DataLayer
         public virtual DbSet<FCU> FCUs { get; set; }
         public virtual DbSet<AHU> AHUs { get; set; }
         public virtual DbSet<Country> Countries { get; set; }
+        public virtual DbSet<ModuleAccessCtrl> ModuleAccessCtrls { get; set; }
+        public virtual DbSet<ModuleAccessCtrlTransaction> ModuleAccessCtrlTransactions { get; set; }
     }
 }

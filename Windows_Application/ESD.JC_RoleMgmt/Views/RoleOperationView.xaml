@@ -5,10 +5,11 @@
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:i="http://schemas.microsoft.com/expression/2010/interactions"
             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactivity"
+            xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
             xmlns:sys="clr-namespace:System;assembly=mscorlib"
             xmlns:prism="http://www.codeplex.com/prism" 
             mc:Ignorable="d"
-            d:DesignHeight="300" d:DesignWidth="400">
+            d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
         <DataTemplate x:Key="ConfirmExitDialogTemplate">
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding}"/>
@@ -33,6 +34,9 @@
             <prism:InteractionRequestTrigger SourceObject="{Binding ConfirmExitInteractionRequest}">
                 <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
             </prism:InteractionRequestTrigger>
+            <ei:EventTrigger EventName="Loaded">
+                <wpf:InvokeCommandAction Command="{Binding OnLoadedCommand}" />
+            </ei:EventTrigger>
         </ei:Interaction.Triggers>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="VisualStateGroup">
@@ -54,6 +58,8 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
@@ -70,6 +76,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="150"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
@@ -85,9 +92,6 @@
                         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding RoleData.RoleName}" Margin="0,5,0,0" 
                          AutomationProperties.AutomationId="RoleNameData"/>
 
-                        <Label Grid.Row="2" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Module:</Label>
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RoleData.Module}" Margin="0,5,0,0" AutomationProperties.AutomationId="ModuleData"/>
-
                         <Label Grid.Row="3" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Top">Description:</Label>
                         <TextBox Text="{Binding RoleData.Description}" AcceptsReturn="True" MinHeight="100"
                          Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalScrollBarVisibility="Auto"
@@ -95,11 +99,47 @@
                     </Grid>
                 </GroupBox>
 
-                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <GroupBox Grid.Row="2" Grid.ColumnSpan="2" Margin="5" Header="Access Control">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="79"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom" Height="26">Module:</Label>
+                        <ComboBox ItemsSource="{Binding ModuleList}"
+                                  Style="{StaticResource ComboBoxStyle}"
+                                  Width="Auto"
+                                  Margin="0,5,0,0" 
+                                  SnapsToDevicePixels="True"
+                                  OverridesDefaultStyle="True"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.CanContentScroll="True"
+                                  IsSynchronizedWithCurrentItem="True"
+                                  Grid.Column="1">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding Path=IsChecked, Mode=TwoWay}" Width="20" 
+                                                  Tag="{RelativeSource FindAncestor, AncestorType={x:Type ComboBox}}"/>
+                                        <TextBlock Text="{Binding Path=Module}" 
+                                                  Tag="{RelativeSource FindAncestor, AncestorType={x:Type ComboBox}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </Grid>
+                </GroupBox>
+
+                <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Command="{Binding SaveCommand}" Width="60" Margin="6,0">
                         Save
                     </Button>
-
                     <Button Command="{Binding CancelCommand}" Width="60">
                         Cancel
                     </Button>

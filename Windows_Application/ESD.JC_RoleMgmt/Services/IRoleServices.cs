@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DataLayer;
+using static ESD.JC_RoleMgmt.Services.RoleServices;
 
 namespace ESD.JC_RoleMgmt.Services
 {
@@ -7,7 +8,7 @@ namespace ESD.JC_RoleMgmt.Services
     {
         IEnumerable<Role> GetAll();
         Role GetRole(long ID);
-        bool Save(Role role, string state = "");
+        Response Save(Role role, string state = "");
         void Delete(long ID);
     }
 }

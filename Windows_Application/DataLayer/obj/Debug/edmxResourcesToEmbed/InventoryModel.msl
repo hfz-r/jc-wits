@@ -50,7 +50,6 @@
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="Module" ColumnName="Module" />
           <ScalarProperty Name="RoleName" ColumnName="RoleName" />
           <ScalarProperty Name="RoleCode" ColumnName="RoleCode" />
           <ScalarProperty Name="ID" ColumnName="ID" />
@@ -92,8 +91,8 @@
     <EntitySetMapping Name="GITransactions">
       <EntityTypeMapping TypeName="InventoryModel.GITransaction">
         <MappingFragment StoreEntitySet="GITransaction">
-          <ScalarProperty Name="LocationFrom" ColumnName="LocationFrom" />
-          <ScalarProperty Name="LocationTo" ColumnName="LocationTo" />
+          <ScalarProperty Name="LocationFromID" ColumnName="LocationFromID" />
+          <ScalarProperty Name="LocationToID" ColumnName="LocationToID" />
           <ScalarProperty Name="ProductionNo" ColumnName="ProductionNo" />
           <ScalarProperty Name="TransferType" ColumnName="TransferType" />
           <ScalarProperty Name="GRID" ColumnName="GRID" />
@@ -222,6 +221,24 @@
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
           <ScalarProperty Name="CountryDesc" ColumnName="CountryDesc" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ModuleAccessCtrls">
+      <EntityTypeMapping TypeName="InventoryModel.ModuleAccessCtrl">
+        <MappingFragment StoreEntitySet="ModuleAccessCtrl">
+          <ScalarProperty Name="Module" ColumnName="Module" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ModuleAccessCtrlTransactions">
+      <EntityTypeMapping TypeName="InventoryModel.ModuleAccessCtrlTransaction">
+        <MappingFragment StoreEntitySet="ModuleAccessCtrlTransaction">
+          <ScalarProperty Name="IsAllow" ColumnName="IsAllow" />
+          <ScalarProperty Name="ModuleID" ColumnName="ModuleID" />
+          <ScalarProperty Name="RoleID" ColumnName="RoleID" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>

@@ -27,6 +27,12 @@
         <EntityTypeShape EntityType="InventoryModel.Country" Width="1.5" PointX="0.75" PointY="0.75" />
         <AssociationConnector Association="InventoryModel.FK_AHU_COUNTRYID" />
         <AssociationConnector Association="InventoryModel.FK_FCU_COUNTRYID" />
+        <EntityTypeShape EntityType="InventoryModel.ModuleAccessCtrl" Width="1.5" PointX="13.75" PointY="5.5" />
+        <EntityTypeShape EntityType="InventoryModel.ModuleAccessCtrlTransaction" Width="1.5" PointX="16" PointY="9" />
+        <AssociationConnector Association="InventoryModel.FK_GoodsIssue_LocationFromID" />
+        <AssociationConnector Association="InventoryModel.FK_GoodsIssue_LocationToID" />
+        <AssociationConnector Association="InventoryModel.FK_MODULEACCESSCTRL_MODULEID" />
+        <AssociationConnector Association="InventoryModel.FK_MODULEACCESSCTRL_ROLEID" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

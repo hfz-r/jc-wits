@@ -123,8 +123,8 @@
           <Property Name="GRID" Type="bigint" Nullable="false" />
           <Property Name="TransferType" Type="nvarchar" MaxLength="50" />
           <Property Name="ProductionNo" Type="nvarchar" MaxLength="50" />
-          <Property Name="LocationTo" Type="nvarchar" MaxLength="200" />
-          <Property Name="LocationFrom" Type="nchar" MaxLength="200" />
+          <Property Name="LocationToID" Type="bigint" />
+          <Property Name="LocationFromID" Type="bigint" />
         </EntityType>
         <EntityType Name="GoodsReceive">
           <Key>
@@ -176,6 +176,22 @@
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="varchar" MaxLength="100" Nullable="false" />
         </EntityType>
+        <EntityType Name="ModuleAccessCtrl">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Module" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ModuleAccessCtrlTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleID" Type="bigint" Nullable="false" />
+          <Property Name="ModuleID" Type="bigint" Nullable="false" />
+          <Property Name="IsAllow" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="Reason">
           <Key>
             <PropertyRef Name="ID" />
@@ -194,7 +210,6 @@
           <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RoleCode" Type="varchar" MaxLength="25" Nullable="false" />
           <Property Name="RoleName" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Module" Type="varchar" MaxLength="50" />
           <Property Name="Description" Type="varchar" MaxLength="200" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="50" Nullable="false" />
@@ -289,6 +304,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GoodsIssue_LocationFromID">
+          <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
+          <End Role="GITransaction" Type="Self.GITransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GITransaction">
+              <PropertyRef Name="LocationFromID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoodsIssue_LocationToID">
+          <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
+          <End Role="GITransaction" Type="Self.GITransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GITransaction">
+              <PropertyRef Name="LocationToID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GoodsReceive_GRID">
           <End Role="GoodsReceive" Type="Self.GoodsReceive" Multiplicity="1" />
           <End Role="GRTransaction" Type="Self.GRTransaction" Multiplicity="*" />
@@ -298,6 +337,30 @@
             </Principal>
             <Dependent Role="GRTransaction">
               <PropertyRef Name="GRID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MODULEACCESSCTRL_MODULEID">
+          <End Role="ModuleAccessCtrl" Type="Self.ModuleAccessCtrl" Multiplicity="1" />
+          <End Role="ModuleAccessCtrlTransaction" Type="Self.ModuleAccessCtrlTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ModuleAccessCtrl">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAccessCtrlTransaction">
+              <PropertyRef Name="ModuleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MODULEACCESSCTRL_ROLEID">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="ModuleAccessCtrlTransaction" Type="Self.ModuleAccessCtrlTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAccessCtrlTransaction">
+              <PropertyRef Name="RoleID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -336,6 +399,8 @@
           <EntitySet Name="GoodsReceive" EntityType="Self.GoodsReceive" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GRTransaction" EntityType="Self.GRTransaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ModuleAccessCtrl" EntityType="Self.ModuleAccessCtrl" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ModuleAccessCtrlTransaction" EntityType="Self.ModuleAccessCtrlTransaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Reason" EntityType="Self.Reason" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
@@ -363,9 +428,25 @@
             <End Role="GoodsReceive" EntitySet="GoodsReceive" />
             <End Role="GITransaction" EntitySet="GITransaction" />
           </AssociationSet>
+          <AssociationSet Name="FK_GoodsIssue_LocationFromID" Association="Self.FK_GoodsIssue_LocationFromID">
+            <End Role="Location" EntitySet="Location" />
+            <End Role="GITransaction" EntitySet="GITransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoodsIssue_LocationToID" Association="Self.FK_GoodsIssue_LocationToID">
+            <End Role="Location" EntitySet="Location" />
+            <End Role="GITransaction" EntitySet="GITransaction" />
+          </AssociationSet>
           <AssociationSet Name="FK_GoodsReceive_GRID" Association="Self.FK_GoodsReceive_GRID">
             <End Role="GoodsReceive" EntitySet="GoodsReceive" />
             <End Role="GRTransaction" EntitySet="GRTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MODULEACCESSCTRL_MODULEID" Association="Self.FK_MODULEACCESSCTRL_MODULEID">
+            <End Role="ModuleAccessCtrl" EntitySet="ModuleAccessCtrl" />
+            <End Role="ModuleAccessCtrlTransaction" EntitySet="ModuleAccessCtrlTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MODULEACCESSCTRL_ROLEID" Association="Self.FK_MODULEACCESSCTRL_ROLEID">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="ModuleAccessCtrlTransaction" EntitySet="ModuleAccessCtrlTransaction" />
           </AssociationSet>
           <AssociationSet Name="FK_Reason_ReasonID" Association="Self.FK_Reason_ReasonID">
             <End Role="Reason" EntitySet="Reason" />
@@ -430,6 +511,24 @@
             <End Role="Country" EntitySet="Countries" />
             <End Role="FCUTransaction" EntitySet="FCUTransactions" />
           </AssociationSet>
+          <EntitySet Name="ModuleAccessCtrls" EntityType="InventoryModel.ModuleAccessCtrl" />
+          <EntitySet Name="ModuleAccessCtrlTransactions" EntityType="InventoryModel.ModuleAccessCtrlTransaction" />
+          <AssociationSet Name="FK_GoodsIssue_LocationFromID" Association="InventoryModel.FK_GoodsIssue_LocationFromID">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="GITransaction" EntitySet="GITransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GoodsIssue_LocationToID" Association="InventoryModel.FK_GoodsIssue_LocationToID">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="GITransaction" EntitySet="GITransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MODULEACCESSCTRL_MODULEID" Association="InventoryModel.FK_MODULEACCESSCTRL_MODULEID">
+            <End Role="ModuleAccessCtrl" EntitySet="ModuleAccessCtrls" />
+            <End Role="ModuleAccessCtrlTransaction" EntitySet="ModuleAccessCtrlTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MODULEACCESSCTRL_ROLEID" Association="InventoryModel.FK_MODULEACCESSCTRL_ROLEID">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="ModuleAccessCtrlTransaction" EntitySet="ModuleAccessCtrlTransactions" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="GoodsReceive">
           <Key>
@@ -481,13 +580,13 @@
           <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RoleCode" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="RoleName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Module" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Users" Relationship="InventoryModel.FK_Role_RoleID" FromRole="Role" ToRole="User" />
+          <NavigationProperty Name="ModuleAccessCtrlTransactions" Relationship="InventoryModel.FK_MODULEACCESSCTRL_ROLEID" FromRole="Role" ToRole="ModuleAccessCtrlTransaction" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -557,9 +656,11 @@
           <Property Name="GRID" Type="Int64" Nullable="false" />
           <Property Name="TransferType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ProductionNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="LocationTo" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="LocationFrom" Type="String" MaxLength="200" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="GoodsReceive" Relationship="InventoryModel.FK_GoodsIssue_GRID" FromRole="GITransaction" ToRole="GoodsReceive" />
+          <Property Name="LocationToID" Type="Int64" />
+          <Property Name="LocationFromID" Type="Int64" />
+          <NavigationProperty Name="Location" Relationship="InventoryModel.FK_GoodsIssue_LocationFromID" FromRole="GITransaction" ToRole="Location" />
+          <NavigationProperty Name="Location1" Relationship="InventoryModel.FK_GoodsIssue_LocationToID" FromRole="GITransaction" ToRole="Location" />
         </EntityType>
         <EntityType Name="GRTransaction">
           <Key>
@@ -620,6 +721,8 @@
           <Property Name="LocationDesc" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="GITransactions" Relationship="InventoryModel.FK_GoodsIssue_LocationFromID" FromRole="Location" ToRole="GITransaction" />
+          <NavigationProperty Name="GITransactions1" Relationship="InventoryModel.FK_GoodsIssue_LocationToID" FromRole="Location" ToRole="GITransaction" />
         </EntityType>
         <EntityType Name="AHUTransaction">
           <Key>
@@ -769,6 +872,73 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ModuleAccessCtrl">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Module" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ModuleAccessCtrlTransactions" Relationship="InventoryModel.FK_MODULEACCESSCTRL_MODULEID" FromRole="ModuleAccessCtrl" ToRole="ModuleAccessCtrlTransaction" />
+        </EntityType>
+        <EntityType Name="ModuleAccessCtrlTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleID" Type="Int64" Nullable="false" />
+          <Property Name="ModuleID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="ModuleAccessCtrl" Relationship="InventoryModel.FK_MODULEACCESSCTRL_MODULEID" FromRole="ModuleAccessCtrlTransaction" ToRole="ModuleAccessCtrl" />
+          <NavigationProperty Name="Role" Relationship="InventoryModel.FK_MODULEACCESSCTRL_ROLEID" FromRole="ModuleAccessCtrlTransaction" ToRole="Role" />
+          <Property Name="IsAllow" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_GoodsIssue_LocationFromID">
+          <End Type="InventoryModel.Location" Role="Location" Multiplicity="0..1" />
+          <End Type="InventoryModel.GITransaction" Role="GITransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GITransaction">
+              <PropertyRef Name="LocationFromID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GoodsIssue_LocationToID">
+          <End Type="InventoryModel.Location" Role="Location" Multiplicity="0..1" />
+          <End Type="InventoryModel.GITransaction" Role="GITransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GITransaction">
+              <PropertyRef Name="LocationToID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MODULEACCESSCTRL_MODULEID">
+          <End Type="InventoryModel.ModuleAccessCtrl" Role="ModuleAccessCtrl" Multiplicity="1" />
+          <End Type="InventoryModel.ModuleAccessCtrlTransaction" Role="ModuleAccessCtrlTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ModuleAccessCtrl">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAccessCtrlTransaction">
+              <PropertyRef Name="ModuleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MODULEACCESSCTRL_ROLEID">
+          <End Type="InventoryModel.Role" Role="Role" Multiplicity="1" />
+          <End Type="InventoryModel.ModuleAccessCtrlTransaction" Role="ModuleAccessCtrlTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAccessCtrlTransaction">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -824,7 +994,6 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Module" ColumnName="Module" />
                 <ScalarProperty Name="RoleName" ColumnName="RoleName" />
                 <ScalarProperty Name="RoleCode" ColumnName="RoleCode" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -866,8 +1035,8 @@
           <EntitySetMapping Name="GITransactions">
             <EntityTypeMapping TypeName="InventoryModel.GITransaction">
               <MappingFragment StoreEntitySet="GITransaction">
-                <ScalarProperty Name="LocationFrom" ColumnName="LocationFrom" />
-                <ScalarProperty Name="LocationTo" ColumnName="LocationTo" />
+                <ScalarProperty Name="LocationFromID" ColumnName="LocationFromID" />
+                <ScalarProperty Name="LocationToID" ColumnName="LocationToID" />
                 <ScalarProperty Name="ProductionNo" ColumnName="ProductionNo" />
                 <ScalarProperty Name="TransferType" ColumnName="TransferType" />
                 <ScalarProperty Name="GRID" ColumnName="GRID" />
@@ -996,6 +1165,24 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="CountryDesc" ColumnName="CountryDesc" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ModuleAccessCtrls">
+            <EntityTypeMapping TypeName="InventoryModel.ModuleAccessCtrl">
+              <MappingFragment StoreEntitySet="ModuleAccessCtrl">
+                <ScalarProperty Name="Module" ColumnName="Module" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ModuleAccessCtrlTransactions">
+            <EntityTypeMapping TypeName="InventoryModel.ModuleAccessCtrlTransaction">
+              <MappingFragment StoreEntitySet="ModuleAccessCtrlTransaction">
+                <ScalarProperty Name="IsAllow" ColumnName="IsAllow" />
+                <ScalarProperty Name="ModuleID" ColumnName="ModuleID" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

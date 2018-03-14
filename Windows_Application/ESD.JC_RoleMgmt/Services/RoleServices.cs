@@ -27,13 +27,21 @@ namespace ESD.JC_RoleMgmt.Services
             return roleRepository.GetRole(ID);
         }
 
-        public bool Save(Role role, string state = "")
+        public class Response
         {
+            public bool state { get; set; }
+            public long id { get; set; }
+        }
+
+        public Response Save(Role role, string state = "")
+        {
+            long ID = 0;
+
             try
             {
                 if (!string.IsNullOrEmpty(state) && state == "Save")
                 {
-                    roleRepository.Add(role);
+                    ID = roleRepository.Add(role);
                 }
                 else if (!string.IsNullOrEmpty(state) && state == "Update")
                 {
@@ -59,7 +67,7 @@ namespace ESD.JC_RoleMgmt.Services
                 throw new Exception(ex.Message);
             }
 
-            return true;
+            return new Response() { id = ID, state = true };
         }
 
         public void Delete(long ID)

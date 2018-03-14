@@ -97,6 +97,12 @@
     <Compile Include="Location.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ModuleAccessCtrl.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModuleAccessCtrlTransaction.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="PartialModel\AHUPartial.cs" />
     <Compile Include="PartialModel\FCUPartial.cs" />
     <Compile Include="PartialModel\GoodsReceivePartial.cs" />
@@ -119,10 +125,14 @@
     <Compile Include="Repositories\IGoodsReceiveRepository.cs" />
     <Compile Include="Repositories\IGRTransactionRepository.cs" />
     <Compile Include="Repositories\ILocationRepository.cs" />
+    <Compile Include="Repositories\IModuleAccessCtrlRepository.cs" />
+    <Compile Include="Repositories\IModuleAccessCtrlTransactionRepository.cs" />
     <Compile Include="Repositories\IReasonRepository.cs" />
     <Compile Include="Repositories\IRoleRepository.cs" />
     <Compile Include="Repositories\IUserRepository.cs" />
     <Compile Include="Repositories\LocationRepository.cs" />
+    <Compile Include="Repositories\ModuleAccessCtrlRepository.cs" />
+    <Compile Include="Repositories\ModuleAccessCtrlTransactionRepository.cs" />
     <Compile Include="Repositories\ReasonRepository.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />

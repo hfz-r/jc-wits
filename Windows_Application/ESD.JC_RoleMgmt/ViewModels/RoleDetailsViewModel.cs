@@ -1,11 +1,15 @@
 ﻿using DataLayer;
 using ESD.JC_Infrastructure;
+using ESD.JC_RoleMgmt.ModelsExt;
 using ESD.JC_RoleMgmt.Services;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -42,17 +46,35 @@ namespace ESD.JC_RoleMgmt.ViewModels
             }
         }
 
+        private ObservableCollection<ModuleAccessCtrlExt> _ModuleList;
+        public ObservableCollection<ModuleAccessCtrlExt> ModuleList
+        {
+            get { return _ModuleList; }
+            set { SetProperty(ref _ModuleList, value); }
+        }
+
+        private List<ModuleAccessCtrlTransaction> _ModuleTransactionList;
+        public List<ModuleAccessCtrlTransaction> ModuleTransactionList
+        {
+            get { return _ModuleTransactionList; }
+            set { SetProperty(ref _ModuleTransactionList, value); }
+        }
+
         private const string roleOperationViewName = "RoleOperationView";
 
         private IRegionNavigationJournal navigationJournal;
         private IRegionManager RegionManager;
         private IRoleServices RoleServices;
+        private IModuleAccessCtrlServices ModuleAccessCtrlServices;
+        private IModuleAccessCtrlTransactionServices ModuleAccessCtrlTransactionServices;
         private InteractionRequest<Confirmation> confirmRemoveThisInteractionRequest;
 
-        public RoleDetailsViewModel(IRegionManager _RegionManager, IRoleServices _RoleServices)
+        public RoleDetailsViewModel(IRegionManager _RegionManager, IRoleServices _RoleServices, IModuleAccessCtrlServices _ModuleAccessCtrlServices, IModuleAccessCtrlTransactionServices _ModuleAccessCtrlTransactionServices)
         {
             RegionManager = _RegionManager;
             RoleServices = _RoleServices;
+            ModuleAccessCtrlServices = _ModuleAccessCtrlServices;
+            ModuleAccessCtrlTransactionServices = _ModuleAccessCtrlTransactionServices;
 
             EditThisCommand = new DelegateCommand(EditThis);
             RemoveThisCommand = new DelegateCommand(RemoveThis, CanRemove);
@@ -168,6 +190,42 @@ namespace ESD.JC_RoleMgmt.ViewModels
             if (id.HasValue)
             {
                 this.Role = RoleServices.GetRole(id.Value);
+
+                ModuleList = new ObservableCollection<ModuleAccessCtrlExt>();
+                var module = ModuleAccessCtrlServices.GetAll();
+                if (module.Count() > 0)
+                {
+                    var tempObj = new List<ModuleAccessCtrl>();
+                    tempObj = ModuleAccessCtrlServices.GetAll().ToList();
+
+                    foreach (var item in tempObj)
+                    {
+                        ModuleList.Add(new ModuleAccessCtrlExt
+                        {
+                            ID = item.ID,
+                            Module = item.Module,
+                            IsChecked = false
+                        });
+                    }
+                }
+
+                if (this.Role.ID != 0)
+                {
+                    ModuleTransactionList = ModuleAccessCtrlTransactionServices.GetModuleAccessCtrlTransaction(this.Role.ID);
+                    if (ModuleTransactionList != null && ModuleTransactionList.Count > 0)
+                    {
+                        foreach (var item in ModuleTransactionList)
+                        {
+                            foreach (var tempModule in ModuleList)
+                            {
+                                if (tempModule.ID == item.ModuleID)
+                                {
+                                    tempModule.IsChecked = item.IsAllow;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             this.navigationJournal = navigationContext.NavigationService.Journal;
