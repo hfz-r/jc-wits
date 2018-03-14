@@ -8,44 +8,36 @@ using System.Linq;
 
 namespace ESD.JC_RoleMgmt.Services
 {
-    public class RoleServices : IRoleServices
+    public class ModuleAccessCtrlTransactionServices : IModuleAccessCtrlTransactionServices
     {
-        private IRoleRepository roleRepository;
+        private IModuleAccessCtrlTransactionRepository moduleAccessCtrlTransactionRepository;
 
-        public RoleServices(IRoleRepository _roleRepository)
+        public ModuleAccessCtrlTransactionServices(IModuleAccessCtrlTransactionRepository _moduleAccessCtrlTransactionRepository)
         {
-            roleRepository = _roleRepository;
+            moduleAccessCtrlTransactionRepository = _moduleAccessCtrlTransactionRepository;
         }
 
-        public IEnumerable<Role> GetAll()
+        public IEnumerable<ModuleAccessCtrlTransaction> GetAll()
         {
-            return roleRepository.GetAll(false);
+            return moduleAccessCtrlTransactionRepository.GetAll();
         }
 
-        public Role GetRole(long ID)
+        public List<ModuleAccessCtrlTransaction> GetModuleAccessCtrlTransaction(long ID)
         {
-            return roleRepository.GetRole(ID);
+            return moduleAccessCtrlTransactionRepository.GetModuleAccessCtrlTransaction(ID);
         }
 
-        public class Response
+        public bool Save(ModuleAccessCtrlTransaction module, string state = "")
         {
-            public bool state { get; set; }
-            public long id { get; set; }
-        }
-
-        public Response Save(Role role, string state = "")
-        {
-            long ID = 0;
-
             try
             {
                 if (!string.IsNullOrEmpty(state) && state == "Save")
                 {
-                    ID = roleRepository.Add(role);
+                    moduleAccessCtrlTransactionRepository.Add(module);
                 }
                 else if (!string.IsNullOrEmpty(state) && state == "Update")
                 {
-                    roleRepository.Update(role);
+                    moduleAccessCtrlTransactionRepository.Update(module);
                 }
             }
             catch (DbEntityValidationException e)
@@ -67,27 +59,7 @@ namespace ESD.JC_RoleMgmt.Services
                 throw new Exception(ex.Message);
             }
 
-            return new Response() { id = ID, state = true };
-        }
-
-        public void Delete(long ID)
-        {
-            try
-            {
-                var roleObj = GetRole(ID);
-                if (roleObj != null)
-                {
-                    roleRepository.Delete(ID);
-                }
-                else
-                {
-                    throw new Exception("Role Not Found.");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return true;
         }
     }
 }

@@ -1,12 +1,18 @@
 ﻿using DataLayer;
+using ESD.JC_RoleMgmt.ModelsExt;
 using ESD.JC_RoleMgmt.Services;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using static ESD.JC_RoleMgmt.Services.RoleServices;
 
 namespace ESD.JC_RoleMgmt.ViewModels
 {
@@ -14,6 +20,20 @@ namespace ESD.JC_RoleMgmt.ViewModels
     public class RoleOperationViewModel : BindableBase, IConfirmNavigationRequest
     {
         #region Properties
+
+        private ObservableCollection<ModuleAccessCtrlExt> _ModuleList;
+        public ObservableCollection<ModuleAccessCtrlExt> ModuleList
+        {
+            get { return _ModuleList; }
+            set { SetProperty(ref _ModuleList, value); }
+        }
+
+        private List<ModuleAccessCtrlTransaction> _ModuleTransactionList;
+        public List<ModuleAccessCtrlTransaction> ModuleTransactionList
+        {
+            get { return _ModuleTransactionList; }
+            set { SetProperty(ref _ModuleTransactionList, value); }
+        }
 
         private Role _RoleData;
         public Role RoleData
@@ -70,19 +90,25 @@ namespace ESD.JC_RoleMgmt.ViewModels
 
         private IRegionNavigationJournal navigationJournal;
         private IRoleServices RoleServices;
+        private IModuleAccessCtrlServices ModuleAccessCtrlServices;
+        private IModuleAccessCtrlTransactionServices ModuleAccessCtrlTransactionServices;
         private InteractionRequest<Confirmation> confirmExitInteractionRequest;
         private DelegateCommand<object> _saveCommand;
 
-        public RoleOperationViewModel(IRoleServices _RoleServices)
+        public RoleOperationViewModel(IRoleServices _RoleServices, IModuleAccessCtrlServices _ModuleAccessCtrlServices, IModuleAccessCtrlTransactionServices _ModuleAccessCtrlTransactionServices)
         {
             RoleServices = _RoleServices;
-            SendState = NormalStateKey;
+            ModuleAccessCtrlServices = _ModuleAccessCtrlServices;
+            ModuleAccessCtrlTransactionServices = _ModuleAccessCtrlTransactionServices; 
+             SendState = NormalStateKey;
 
+            OnLoadedCommand = new DelegateCommand(OnLoaded);
             CancelCommand = new DelegateCommand(Cancel);
             _saveCommand = new DelegateCommand<object>(Save, CanSave);
             confirmExitInteractionRequest = new InteractionRequest<Confirmation>();
         }
 
+        public DelegateCommand OnLoadedCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
         public ICommand SaveCommand
         {
@@ -92,7 +118,47 @@ namespace ESD.JC_RoleMgmt.ViewModels
         {
             get { return this.confirmExitInteractionRequest; }
         }
-       
+
+        private void OnLoaded()
+        {
+            ModuleList = new ObservableCollection<ModuleAccessCtrlExt>();
+            var module = ModuleAccessCtrlServices.GetAll();
+            if (module.Count() > 0)
+            {
+                var tempObj = new List<ModuleAccessCtrl>();
+                tempObj = ModuleAccessCtrlServices.GetAll().ToList();
+
+                foreach (var item in tempObj)
+                {
+                    ModuleList.Add(new ModuleAccessCtrlExt
+                    {
+                        ID = item.ID,
+                        Module = item.Module,
+                        IsChecked = false
+                    });
+                }
+            }
+
+            var data = this.RoleData;
+            if (data.ID != 0)
+            {
+                ModuleTransactionList = ModuleAccessCtrlTransactionServices.GetModuleAccessCtrlTransaction(data.ID);
+                if (ModuleTransactionList != null && ModuleTransactionList.Count > 0)
+                {
+                    foreach (var item in ModuleTransactionList)
+                    {
+                        foreach (var tempModule in ModuleList)
+                        {
+                            if (tempModule.ID == item.ModuleID)
+                            {
+                                tempModule.IsChecked = item.IsAllow;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private void Save(object ignored)
         {
             SendState = SavingStateKey;
@@ -106,29 +172,36 @@ namespace ESD.JC_RoleMgmt.ViewModels
                 MessageBox.Show("Role Name is required.", "Notification", MessageBoxButton.OK);
                 return;
             }
-            else if (string.IsNullOrEmpty(data.Module))
-            {
-                this.SendState = NormalStateKey;
-
-                MessageBox.Show("Module is required.", "Notification", MessageBoxButton.OK);
-                return;
-            }
 
             try
             {
-                bool ok = false;
+                Response ok = new Response();
                 if (data.ID != 0)
                 {
                     var updateObj = Update(data);
                     ok = RoleServices.Save(updateObj, "Update");
+
+                    //Update module access control  
+                    var updateModuleObj = UpdateModule();
+                    foreach (var module in updateModuleObj)
+                    {
+                        ModuleAccessCtrlTransactionServices.Save(module, "Update");
+                    }
                 }
                 else
                 {
                     var newObj = Add(data);
                     ok = RoleServices.Save(newObj, "Save");
-                }
 
-                if (ok)
+                    //Update module access control with newly added role(by ID)
+                    var newModuleObj = AddModule(ok.id);
+                    foreach (var module in newModuleObj)
+                    {
+                        ModuleAccessCtrlTransactionServices.Save(module, "Save");
+                    }
+                }
+                       
+                if (ok.state)
                 {
                     this.SendState = SavedStateKey;
                     if (this.navigationJournal != null)
@@ -151,13 +224,27 @@ namespace ESD.JC_RoleMgmt.ViewModels
             {
                 RoleCode = RoleCodeAlias,
                 RoleName = data.RoleName,
-                Module = data.Module,
                 Description = data.Description,
                 CreatedOn = DateTime.Now,
                 CreatedBy = AuthenticatedUser,
                 ModifiedOn = DateTime.Now,
                 ModifiedBy = AuthenticatedUser
             };
+        }
+
+        private List<ModuleAccessCtrlTransaction> AddModule(long id)
+        {
+            List<ModuleAccessCtrlTransaction> newObj = new List<ModuleAccessCtrlTransaction>();
+            foreach (var item in ModuleList)
+            {
+                newObj.Add(new ModuleAccessCtrlTransaction
+                {
+                    ModuleID = item.ID,
+                    RoleID = id,
+                    IsAllow = item.IsChecked
+                });
+            }
+            return newObj;
         }
 
         private Role Update(Role data)
@@ -167,13 +254,30 @@ namespace ESD.JC_RoleMgmt.ViewModels
             {
                 roleUpdate.RoleCode = RoleCodeAlias;
                 roleUpdate.RoleName = data.RoleName;
-                roleUpdate.Module = data.Module;
                 roleUpdate.Description = !string.IsNullOrEmpty(data.Description) ? data.Description : string.Empty;
                 roleUpdate.ModifiedOn = DateTime.Now;
                 roleUpdate.ModifiedBy = AuthenticatedUser;
             }
             return roleUpdate;
         }
+
+        private List<ModuleAccessCtrlTransaction> UpdateModule()
+        {
+            if (ModuleTransactionList != null && ModuleTransactionList.Count > 0)
+            {
+                foreach(var item in ModuleTransactionList)
+                {
+                    foreach (var tempModule in ModuleList)
+                    {
+                        if (tempModule.ID == item.ModuleID)
+                        {
+                            item.IsAllow = tempModule.IsChecked;
+                        }
+                    }
+                }
+            }
+            return ModuleTransactionList;
+        }        
 
         private bool CanSave(object ignored)
         {
@@ -248,7 +352,6 @@ namespace ESD.JC_RoleMgmt.ViewModels
                     roledata.ID = role.ID;
                     roledata.RoleCode = role.RoleCode;
                     roledata.RoleName = role.RoleName;
-                    roledata.Module = role.Module;
                     roledata.Description = role.Description;
                     roledata.ModifiedOn = role.ModifiedOn;
                     roledata.ModifiedBy = role.ModifiedBy;

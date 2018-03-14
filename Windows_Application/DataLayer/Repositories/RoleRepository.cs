@@ -31,13 +31,14 @@ namespace DataLayer.Repositories
             }
         }
 
-        public void Add(Role role)
+        public long Add(Role role)
         {
             using (var context = new InventoryContext())
             {
                 context.Roles.Add(role);
                 context.SaveChanges();
             }
+            return role.ID;
         }
 
         public void Update(Role role)

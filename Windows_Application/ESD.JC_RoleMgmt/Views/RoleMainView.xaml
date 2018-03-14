@@ -124,7 +124,6 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Module" MinWidth="150" Binding="{Binding Module}" CanUserSort="False" Foreground="Black"/>
             </DataGrid.Columns>
 
         </DataGrid>

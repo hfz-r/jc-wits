@@ -4,17 +4,17 @@
 library
 C#
 .cs
-C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\
 ESD.JC_Infrastructure
 none
 false
 DEBUG;TRACE
 
-1-1530451833
+2-520971354
 
-16-354254585
-68-2019586818
-UserControls\SearchBoxView.xaml;
+28-1314131680
+69904117710
+Controls\ProgressDialog.xaml;Controls\Slider.xaml;
 
 False
 

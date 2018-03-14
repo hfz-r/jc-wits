@@ -36,7 +36,7 @@ namespace ESD.WITS
             public int Section { get; set; }
             public int Qty { get; set; }
             public int QtyRcvd { get; set; }
-            public string Country { get; set; }
+            public int? Country { get; set; }
         }
 
         private class Location
@@ -286,9 +286,11 @@ namespace ESD.WITS
             {
                 // Create the command 
                 string sSQL = string.Empty;
+                string RoleID = string.Empty;
+                bool? isAllowed = false;
                 string pass = HashConverter.CalculateHash(password, username);
 
-                sSQL = "SELECT ID ";
+                sSQL = "SELECT ID, RoleID ";
                 sSQL += "FROM Users ";
                 sSQL += "WHERE Username = '" + username + "' AND Password = '" + pass + "';";
 
@@ -303,6 +305,7 @@ namespace ESD.WITS
                         {
                             isPass = true;
                             userID = reader[0].ToString();
+                            RoleID = reader[1].ToString();
                         }
                     }
                     connection.Close();
@@ -310,9 +313,39 @@ namespace ESD.WITS
 
                 if (isPass)
                 {
-                    pnlLogin.Visible = false;
-                    pnlSelection.Visible = true;
-                    pnlSelection.Dock = DockStyle.Fill;
+                    sSQL = "SELECT MACT.IsAllow";
+                    sSQL += " FROM [ESD_WITS].[dbo].[ModuleAccessCtrl] MAC";
+                    sSQL += " INNER JOIN [dbo].[ModuleAccessCtrlTransaction] MACT";
+                    sSQL += " ON MAC.ID = MACT.ModuleID";
+                    sSQL += " WHERE Module LIKE '%Handheld%'";
+                    sSQL += " AND RoleID = " + RoleID;
+
+                    using (connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        SqlCommand command = new SqlCommand(sSQL, connection);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader != null && reader.Read())
+                            {
+                                isPass = true;
+                                isAllowed = (bool?)reader[0];
+                            }
+                        }
+                        connection.Close();
+                    }
+
+                    if (isAllowed ?? true)
+                    {
+                        pnlLogin.Visible = false;
+                        pnlSelection.Visible = true;
+                        pnlSelection.Dock = DockStyle.Fill;
+                    }
+                    else
+                    {
+                        MessageBox.Show("You have insufficient privilege to access this application.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);                    
+                    }
                 }
                 else
                 {
@@ -1089,7 +1122,7 @@ namespace ESD.WITS
         {
             string sSQL = string.Empty;
             sSQL = "SELECT [ID] ";
-            sSQL += " ,[Location] ";
+            sSQL += " ,[LocationDesc] ";
             sSQL += "FROM [dbo].[Location] ";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1103,30 +1136,16 @@ namespace ESD.WITS
                     sda.Fill(dtTo);
 
                     cmbBoxGILocTo.DataSource = dtTo;
-                    cmbBoxGILocTo.DisplayMember = "Location";
+                    cmbBoxGILocTo.DisplayMember = "LocationDesc";
                     cmbBoxGILocTo.ValueMember = "ID";
                     cmbBoxGILocTo.SelectedIndex = -1;
 
                     DataTable dtFrom = new DataTable();
                     sda.Fill(dtFrom);
                     cmbBoxGILocFrom.DataSource = dtFrom;
-                    cmbBoxGILocFrom.DisplayMember = "Location";
+                    cmbBoxGILocFrom.DisplayMember = "LocationDesc";
                     cmbBoxGILocFrom.ValueMember = "ID";
                     cmbBoxGILocFrom.SelectedIndex = -1;
-
-                    /////Get ID
-                    //int? defaultID = null;
-                    //foreach (DataRow dr in dt.Rows)
-                    //{
-                    //    if ((dr["ID"] != DBNull.Value) && ((string)dr["Location"] == SLoc))
-                    //    {
-                    //        defaultID = Convert.ToInt32(dr["ID"].ToString());
-                    //    }
-                    //}
-                    //if (defaultID != null)
-                    //{
-                    //    SLocID = defaultID;
-                    //}
 
                     connection.Close();
                 }
@@ -1502,8 +1521,8 @@ namespace ESD.WITS
                                 sSQL += " ,'" + item.ID + "'";
                                 sSQL += " ,'" + transferType + "'";
                                 sSQL += !string.IsNullOrEmpty(txtGIProdNo.Text) ? " ,'" + txtGIProdNo.Text + "'" : " ,NULL";
-                                sSQL += !string.IsNullOrEmpty(cmbBoxGILocTo.Text) ? " ,'" + cmbBoxGILocTo.Text + "'" : " ,NULL";
-                                sSQL += !string.IsNullOrEmpty(cmbBoxGILocFrom.Text) ? " ,'" + cmbBoxGILocFrom.Text + "')" : " ,NULL)";
+                                sSQL += !string.IsNullOrEmpty(cmbBoxGILocTo.Text) ? " ,'" + cmbBoxGILocTo.SelectedValue + "'" : " ,NULL";
+                                sSQL += !string.IsNullOrEmpty(cmbBoxGILocFrom.Text) ? " ,'" + cmbBoxGILocFrom.SelectedValue + "')" : " ,NULL)";
                             }
                             connection.Open();
                             SqlCommand command = new SqlCommand(sSQL, connection);
@@ -1635,11 +1654,11 @@ namespace ESD.WITS
                 sSQL += ", AHU.[Item]";
                 sSQL += ", AHU.[Section]";
                 sSQL += ", ISNULL(SUM(AHUT.Quantity),0) AS QtyReceived";
-                sSQL += ", AHUT.[Country]";
+                sSQL += ", AHUT.[CountryID]";
                 sSQL += " FROM [dbo].[AHU] AHU";
                 sSQL += " LEFT OUTER JOIN [dbo].[AHUTransaction] AHUT ON AHU.ID = AHUT.AHUID";
                 sSQL += " WHERE [SerialNo] = '" + txtFGSerial.Text + "'";
-                sSQL += " GROUP BY AHU.[ID], AHU.[Project], AHU.[UnitTag], AHU.[PartNo], AHU.[Model], AHU.[Item], AHU.[Section], AHUT.[Country]";
+                sSQL += " GROUP BY AHU.[ID], AHU.[Project], AHU.[UnitTag], AHU.[PartNo], AHU.[Model], AHU.[Item], AHU.[Section], AHUT.[CountryID]";
             }
             else if (rdBtnFCU.Checked)
             {
@@ -1651,11 +1670,11 @@ namespace ESD.WITS
                 sSQL += ", FCU.[Item]";
                 sSQL += ", FCU.[Qty]";
                 sSQL += ", ISNULL(SUM(FCUT.Quantity),0) AS QtyReceived";
-                sSQL += ", FCUT.[Country]";
+                sSQL += ", FCUT.[CountryID]";
                 sSQL += " FROM [dbo].[FCU] FCU";
                 sSQL += " LEFT OUTER JOIN [dbo].[FCUTransaction] FCUT ON FCU.ID = FCUT.FCUID";
                 sSQL += " WHERE [SerialNo] = '" + txtFGSerial.Text + "'";
-                sSQL += " GROUP BY FCU.[ID], FCU.[Project], FCU.[UnitTag], FCU.[PartNo], FCU.[Model], FCU.[Item], FCU.[Qty], FCUT.[Country]";
+                sSQL += " GROUP BY FCU.[ID], FCU.[Project], FCU.[UnitTag], FCU.[PartNo], FCU.[Model], FCU.[Item], FCU.[Qty], FCUT.[CountryID]";
             }
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1674,7 +1693,7 @@ namespace ESD.WITS
                         AHUFCURec.Model = reader[4].ToString();
                         AHUFCURec.Item = reader[5].ToString();
                         AHUFCURec.QtyRcvd = Convert.ToInt32(reader[7]);
-                        AHUFCURec.Country = reader[8].ToString();
+                        AHUFCURec.Country = (reader[8] == System.DBNull.Value) ? (int?)null : (int)reader[8];
 
                         btFGMinusQty.Enabled = true;
                         btFGAddQty.Enabled = true;
@@ -1805,7 +1824,7 @@ namespace ESD.WITS
                             txtFGQty.Text = AHUFCURec.QtyRcvd.ToString();
                             txtFGQty.Enabled = false;
                             cmbBoxFGCountry.Enabled = false;
-                            cmbBoxFGCountry.Text = AHUFCURec.Country;
+                            cmbBoxFGCountry.SelectedValue = AHUFCURec.Country;
                             rdBtnFCU.Enabled = false;
                             rdBtnAHU.Enabled = false;
                             btnFGShip.Enabled = false;
@@ -1816,7 +1835,7 @@ namespace ESD.WITS
                     {
                         Cursor.Current = Cursors.Default;
                         ClearFGCache(false);
-                        MessageBox.Show("Serial No does not exist.");
+                        MessageBox.Show("Serial No. does not exist.");
                     }
                 }
                 connection.Close();
@@ -1900,40 +1919,48 @@ namespace ESD.WITS
 
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
-                        if (rdBtnAHU.Checked)
+                        if (AHUFCURec.ID > 0)
                         {
-                            sSQL = " INSERT INTO [dbo].[AHUTransaction]";
+                            if (rdBtnAHU.Checked)
+                            {
+                                sSQL = " INSERT INTO [dbo].[AHUTransaction]";
+                                sSQL += " ([AHUID]";
+                            }
+                            else if (rdBtnFCU.Checked)
+                            {
+                                sSQL = " INSERT INTO [dbo].[FCUTransaction]";
+                                sSQL += " ([FCUID]";
+                            }
+
+                            sSQL += " ,[Quantity]";
+                            sSQL += " ,[CountryID]";
+                            sSQL += " ,[CreatedOn]";
+                            sSQL += " ,[CreatedBy])";
+                            sSQL += " VALUES";
+                            sSQL += " (" + AHUFCURec.ID;
+                            sSQL += " ," + txtFGQty.Text;
+                            sSQL += " ," + cmbBoxFGCountry.SelectedValue;
+                            sSQL += " ,'" + DateTime.Now + "'";
+                            sSQL += " ,'" + userID + "')";
+
+                            connection.Open();
+                            SqlCommand command = new SqlCommand(sSQL, connection);
+                            command.ExecuteReader();
+                            connection.Close();
+                            Cursor.Current = Cursors.Default;
+                            MessageBox.Show(txtFGSerial.Text + " Shipped");
                         }
-                        else if (rdBtnFCU.Checked)
+                        else
                         {
-                            sSQL = " INSERT INTO [dbo].[FCUTransaction]";
+                            Cursor.Current = Cursors.Default;
+                            MessageBox.Show("Serial No. does not exist.");
                         }
-
-                        sSQL += " ([Country]";
-                        sSQL += " ,[Quantity]";
-                        sSQL += " ,[AHUID]";
-                        sSQL += " ,[CreatedOn]";
-                        sSQL += " ,[CreatedBy])";
-                        sSQL += " VALUES";
-                        sSQL += " ('" + cmbBoxFGCountry.Text + "'";
-                        sSQL += " ," + txtFGQty.Text;
-                        sSQL += " ," + AHUFCURec.ID;
-                        sSQL += " ,'" + DateTime.Now + "'";
-                        sSQL += " ,'" + userID + "')";
-
-                        connection.Open();
-                        SqlCommand command = new SqlCommand(sSQL, connection);
-                        command.ExecuteReader();
-                        connection.Close();
                     }
 
-                    Cursor.Current = Cursors.Default;
-                    MessageBox.Show(txtFGSerial.Text + " Shipped");
+                    ClearFGCache(false);
+                    txtFGSerial.Focus();
+                    txtFGSerial.SelectAll();
                 }
-
-                ClearFGCache(false);
-                txtFGSerial.Focus();
-                txtFGSerial.SelectAll();
             }
         }
 

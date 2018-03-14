@@ -121,6 +121,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ModelsExt\ModuleAccessCtrlExt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -135,8 +136,14 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="RoleMgmtModule.cs" />
+    <Compile Include="Services\IModuleAccessCtrlServices.cs" />
+    <Compile Include="Services\IModuleAccessCtrlTransactionServices.cs" />
     <Compile Include="Services\IRoleServices.cs" />
+    <Compile Include="Services\ModuleAccessCtrlServices.cs" />
+    <Compile Include="Services\ModuleAccessCtrlTransactionServices.cs" />
     <Compile Include="Services\RoleServices.cs" />
+    <Compile Include="Utilities\ISequencedObject.cs" />
+    <Compile Include="Utilities\ObservableObject.cs" />
     <Compile Include="ViewModels\RoleMainViewViewModel.cs" />
     <Compile Include="ViewModels\RoleDetailsViewModel.cs" />
     <Compile Include="ViewModels\RoleOperationViewModel.cs" />

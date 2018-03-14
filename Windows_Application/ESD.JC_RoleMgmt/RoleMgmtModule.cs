@@ -24,6 +24,10 @@ namespace ESD.JC_RoleMgmt
         {
             this.container.RegisterType<IRoleRepository, RoleRepository>();
             this.container.RegisterType<IRoleServices, RoleServices>();
+            this.container.RegisterType<IModuleAccessCtrlRepository, ModuleAccessCtrlRepository>();
+            this.container.RegisterType<IModuleAccessCtrlServices, ModuleAccessCtrlServices>();
+            this.container.RegisterType<IModuleAccessCtrlTransactionRepository, ModuleAccessCtrlTransactionRepository>();
+            this.container.RegisterType<IModuleAccessCtrlTransactionServices, ModuleAccessCtrlTransactionServices>();
 
             this.regionManager.RegisterViewWithRegion(RegionNames.MainNavigationRegion, () => this.container.Resolve<RoleMgmtNavigationItemView>());
             this.regionManager.RegisterViewWithRegion(RegionNames.MainContentRegion, () => this.container.Resolve<RoleMainView>());

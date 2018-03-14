@@ -6,7 +6,7 @@ namespace DataLayer.Repositories
     {
         IEnumerable<Role> GetAll(bool eagerLoading);
         Role GetRole(long ID);
-        void Add(Role user);
+        long Add(Role user);
         void Update(Role user);
         void Delete(long ID);
     }
