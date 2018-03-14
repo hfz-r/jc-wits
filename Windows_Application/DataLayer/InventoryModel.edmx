@@ -470,6 +470,7 @@
             <End Role="FCU" EntitySet="FCUs" />
             <End Role="FCUTransaction" EntitySet="FCUTransactions" />
           </AssociationSet>
+          <EntitySet Name="Countries" EntityType="InventoryModel.Country" />
           </EntityContainer>
         <EntityType Name="AHU">
           <Key>
@@ -837,6 +838,17 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CountryDesc" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1068,6 +1080,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Countries">
+            <EntityTypeMapping TypeName="InventoryModel.Country">
+              <MappingFragment StoreEntitySet="Country">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CountryDesc" ColumnName="CountryDesc" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

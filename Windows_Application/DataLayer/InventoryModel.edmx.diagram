@@ -29,6 +29,7 @@
         <AssociationConnector Association="InventoryModel.FK_GoodsIssue_LocationToID" />
         <EntityTypeShape EntityType="InventoryModel.FCU" Width="1.5" PointX="11.75" PointY="8.875" />
         <AssociationConnector Association="InventoryModel.FK_FCU_FCUID" />
+        <EntityTypeShape EntityType="InventoryModel.Country" Width="1.5" PointX="10.75" PointY="13.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

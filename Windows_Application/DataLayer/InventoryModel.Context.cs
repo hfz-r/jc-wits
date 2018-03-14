@@ -38,5 +38,6 @@ namespace DataLayer
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<GITransaction> GITransactions { get; set; }
         public virtual DbSet<FCU> FCUs { get; set; }
+        public virtual DbSet<Country> Countries { get; set; }
     }
 }
