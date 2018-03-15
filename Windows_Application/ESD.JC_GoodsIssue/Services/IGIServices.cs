@@ -7,5 +7,6 @@ namespace ESD.JC_GoodsIssue.Services
     {
         IEnumerable<GITransaction> GetAll(bool eagerLoading);
         GITransaction GetGoodsIssue(long ID);
+        GITransaction GetGI(long ID);
     }
 }

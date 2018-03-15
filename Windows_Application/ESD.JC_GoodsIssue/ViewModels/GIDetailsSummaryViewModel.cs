@@ -5,8 +5,6 @@ using Prism.Regions;
 using Microsoft.Practices.Unity;
 using System.Linq;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
-using System.Windows;
 
 namespace ESD.JC_GoodsIssue.ViewModels
 {
@@ -58,24 +56,6 @@ namespace ESD.JC_GoodsIssue.ViewModels
             Container = _Container;
             RegionManager = _RegionManager;
             GITransactionServices = _GITransactionServices;
-        }
-    }
-
-    public class DynamicTemplateSelector : DataTemplateSelector
-    {
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
-        {
-            DataTemplate dt = null;
-            FrameworkElement elem = container as FrameworkElement;
-
-            foreach (var gi in item as ObservableCollection<GITransaction>)
-            {
-                if (gi.TransferType == "Production")
-                    dt = elem.FindResource("Production") as DataTemplate;
-                if (gi.TransferType == "Posting")
-                    dt = elem.FindResource("Posting") as DataTemplate;
-            }
-            return dt;
         }
     }
 }

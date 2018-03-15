@@ -6,5 +6,6 @@ namespace DataLayer.Repositories
     {
         IEnumerable<GITransaction> GetAll(bool eagerLoading);
         GITransaction GetGoodsIssue(long ID);
+        GITransaction GetGI(long ID);
     }
 }

@@ -115,6 +115,7 @@
     <Compile Include="UserMgmtModule.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserMainViewViewModel.cs" />
+    <Compile Include="ViewModels\UserNavViewModel.cs" />
     <Compile Include="ViewModels\UserOperationViewModel.cs" />
     <Compile Include="Views\UserDetailsView.xaml.cs">
       <DependentUpon>UserDetailsView.xaml</DependentUpon>
