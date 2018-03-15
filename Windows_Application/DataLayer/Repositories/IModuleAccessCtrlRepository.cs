@@ -6,5 +6,6 @@ namespace DataLayer.Repositories
     {
         IEnumerable<ModuleAccessCtrl> GetAll();
         ModuleAccessCtrl GetModuleAccessCtrl(long ID);
+        ModuleAccessCtrl GetModuleByModuleName(string ModuleName);
     }
 }

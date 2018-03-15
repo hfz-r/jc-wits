@@ -4,7 +4,22 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             mc:Ignorable="d" 
-            d:DesignHeight="300" d:DesignWidth="400">
+            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+            xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
+            xmlns:prism="http://prismlibrary.com/"
+            xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
+            prism:ViewModelLocator.AutoWireViewModel="True"
+            d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <infrastructure:AuthorizedToVisibilityConverter x:Key="Authorizer"/>
+    </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <wpf:InvokeCommandAction Command="{Binding OnLoadedCommand}"
+                                     CommandParameter="{Binding Content, ElementName=NavigateToCountryMgmtRadioButton}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <Grid x:Name="LayoutRoot">
         <Grid.ColumnDefinitions>
@@ -12,6 +27,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <RadioButton x:Name="NavigateToCountryMgmtRadioButton" 
+                     Visibility="{Binding Visibility, Converter={StaticResource Authorizer}}"
                      GroupName="MainNavigation" 
                      Click="NavigateToCountryMgmtRadioButton_Click" 
                      Style="{StaticResource MainViewRadioButtonStyle}" 

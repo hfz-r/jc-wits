@@ -9,7 +9,7 @@ namespace ESD.JC_ReasonMgmt.Views
     /// <summary>
     /// Interaction logic for ReasonMgmtNavigationItemView.xaml
     /// </summary>
-    [ViewSortHint("03")]
+    [ViewSortHint("05")]
     public partial class ReasonMgmtNavigationItemView : UserControl
     {
         private static Uri mainViewUri = new Uri("ReasonMainView", UriKind.Relative);

@@ -18,8 +18,8 @@ namespace DataLayer
         public GoodsReceive()
         {
             this.EunKGs = new HashSet<EunKG>();
-            this.GRTransactions = new HashSet<GRTransaction>();
             this.GITransactions = new HashSet<GITransaction>();
+            this.GRTransactions = new HashSet<GRTransaction>();
         }
     
         public long ID { get; set; }
@@ -49,8 +49,8 @@ namespace DataLayer
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EunKG> EunKGs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GRTransaction> GRTransactions { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GITransaction> GITransactions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GRTransaction> GRTransactions { get; set; }
     }
 }

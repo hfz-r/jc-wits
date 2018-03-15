@@ -12,7 +12,7 @@ namespace ESD.JC_FinishGoods.Views
     /// <summary>
     /// Interaction logic for FGNavigationItemView.xaml
     /// </summary>
-    [ViewSortHint("07")]
+    [ViewSortHint("09")]
     public partial class FGNavigationItemView : UserControl
     {
         private static Uri mainViewUri = new Uri("FGMainView", UriKind.Relative);

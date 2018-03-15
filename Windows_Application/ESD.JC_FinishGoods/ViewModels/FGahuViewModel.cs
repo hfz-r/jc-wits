@@ -838,7 +838,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                             strPallet.Replace("<SalesOrder>", item.SalesOrder);
                             strPallet.Replace("<Section>", item.Section.ToString());
                             strPallet.Replace("<Item>", item.Item.ToString());
-                            strPallet.Replace("0123456789ABCDE", item.SerialNo);
+                            strPallet.Replace("<SerialNo>", item.SerialNo);
 
                             if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
                             {
