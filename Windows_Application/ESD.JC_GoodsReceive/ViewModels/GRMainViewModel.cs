@@ -570,7 +570,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                     {
                         string fileName = string.Empty;
                         string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                        fileName = path + @"\JC-WITS_GR_Label.prn";
+                        fileName = path + @"\JC-WITS_Label.prn";
 
                         StreamReader txtReader = new StreamReader(fileName, false);
                         string xTemp = txtReader.ReadToEnd();

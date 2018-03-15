@@ -547,7 +547,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                 }
                 #endregion Cells Comparison
 
-                if (tempCollection.Count() > 0)
+                if (tempCollection != null && tempCollection.Count() > 0)
                 {
                     this.eventAggregator.GetEvent<ObjectEvent>().Publish(true);
 

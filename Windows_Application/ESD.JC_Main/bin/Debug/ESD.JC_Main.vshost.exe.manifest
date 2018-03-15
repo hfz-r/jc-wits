@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DataLayer.dll" size="120832">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DataLayer.dll" size="122368">
       <assemblyIdentity name="DataLayer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>ghlbLvmvzOWqi9JjeLdFXgt5R26etHQYLt+AgUKJoM0=</dsig:DigestValue>
+        <dsig:DigestValue>u8xMuVoS9EYgissmwAjHlsJAVH1nEsCCY1NLbZMwnuY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -78,134 +78,134 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_CountryMgmt.exe" size="30720">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_CountryMgmt.dll" size="31232">
       <assemblyIdentity name="ESD.JC_CountryMgmt" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>646tbMxuG6q/FagGlly/tJjKh5KYauPinN7iwHhdZnU=</dsig:DigestValue>
+        <dsig:DigestValue>i9hzj4qLoe8NK4i48vPm+JklORmNHJBiJer/jOCUDUM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_FinishGoods.dll" size="124928">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_FinishGoods.dll" size="126976">
       <assemblyIdentity name="ESD.JC_FinishGoods" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>xEJqH0JYRemMqzogXMCRznequmJlRJ0OjfFF5SJV8ic=</dsig:DigestValue>
+        <dsig:DigestValue>XHnVCGDkenKL3XQtv9isfpbZMzrkCLWtI1cLtcuoGuk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_GoodsIssue.dll" size="54272">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_GoodsIssue.dll" size="55296">
       <assemblyIdentity name="ESD.JC_GoodsIssue" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>DJPNXJuXL+ziZjE9bqKKO08kG8fLCyqQwIDgcIYX/Jg=</dsig:DigestValue>
+        <dsig:DigestValue>5BCW81vLowtUUH1wI/HB5WJTfQkGoq24h/WjMC0OBUs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_GoodsReceive.dll" size="110592">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_GoodsReceive.dll" size="113152">
       <assemblyIdentity name="ESD.JC_GoodsReceive" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>rva0pzqhhUMsECBlscw4W9ruyYsZnIoKpPQG0BGIzfk=</dsig:DigestValue>
+        <dsig:DigestValue>NlUwYOimVF9Ox4+ZHj15fLrt3B7DHy159t5AUPqUAgM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_Infrastructure.dll" size="18944">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_Infrastructure.dll" size="21504">
       <assemblyIdentity name="ESD.JC_Infrastructure" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>7Mh/JVOlbgPxdmjhW8FCG23i3tWCkfUhbcaOxsxP36c=</dsig:DigestValue>
+        <dsig:DigestValue>KuQbibWp8DDaqedUsY5sFCfrUoxJU5PpxSov3+4b7b8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_LabelPrinting.dll" size="40448">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_LabelPrinting.dll" size="41984">
       <assemblyIdentity name="ESD.JC_LabelPrinting" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>8dLICETw4B9wH9xpXgqLPk9q+CBzwpmEHPa6gqJQBg8=</dsig:DigestValue>
+        <dsig:DigestValue>Mh0yH1QUKbc9VMbgV9qYvejCp1YcHSRKFhEvMeOTblM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_LocationMgmt.exe" size="30720">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_LocationMgmt.dll" size="31232">
       <assemblyIdentity name="ESD.JC_LocationMgmt" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>vcDkIBZyBb2cNtpFNG+F3Jn5gOaHPwaDli40b6YSWbg=</dsig:DigestValue>
+        <dsig:DigestValue>Qm0uWsdro9aCTVEcVntlis65JUxMKBznGVrEvUekpOc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_Main.exe" size="914368">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_Main.exe" size="915904">
       <assemblyIdentity name="ESD.JC_Main" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>PQV+N/o8TgvVkxm+Lxo6Ezi7bx53+bgyyPX94Fhtg+k=</dsig:DigestValue>
+        <dsig:DigestValue>WzW6LaJqcA8q4IZVzuELh9/L3P3RgNjy+0xJx/ww1lA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_ReasonMgmt.dll" size="29696">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_ReasonMgmt.dll" size="30720">
       <assemblyIdentity name="ESD.JC_ReasonMgmt" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>VrrNjmqodNlKGiAHDtQCfcbBzzw9xEhIToA6goLeJsU=</dsig:DigestValue>
+        <dsig:DigestValue>/hpz1Rh1wUwlk1SGOesAj6338H0v2V1a8rnv0TFhXN8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_RoleMgmt.dll" size="53248">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_RoleMgmt.dll" size="54784">
       <assemblyIdentity name="ESD.JC_RoleMgmt" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>qfOWvErLGmBURwmbfLLicPHV7msm19TwApPqOcJ5NfQ=</dsig:DigestValue>
+        <dsig:DigestValue>qlX36yAN/3RYFSanPM6lCATzG2957YKuKTKqLE11J/A=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_UserMgmt.dll" size="104448">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_UserMgmt.dll" size="105984">
       <assemblyIdentity name="ESD.JC_UserMgmt" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>GIIrG4cGBXQawyyNGNDwUgESwC8B0zaV1nKmPz47wgQ=</dsig:DigestValue>
+        <dsig:DigestValue>zWzGEd6KHoN++rwo6hZwCQfwLXl3khORgP79aWN/ABI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
