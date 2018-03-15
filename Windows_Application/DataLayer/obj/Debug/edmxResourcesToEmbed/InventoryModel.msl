@@ -159,7 +159,6 @@
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="Module" ColumnName="Module" />
           <ScalarProperty Name="RoleName" ColumnName="RoleName" />
           <ScalarProperty Name="RoleCode" ColumnName="RoleCode" />
           <ScalarProperty Name="ID" ColumnName="ID" />
@@ -222,6 +221,24 @@
           <ScalarProperty Name="PartNo" ColumnName="PartNo" />
           <ScalarProperty Name="UnitTag" ColumnName="UnitTag" />
           <ScalarProperty Name="Project" ColumnName="Project" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ModuleAccessCtrls">
+      <EntityTypeMapping TypeName="InventoryModel.ModuleAccessCtrl">
+        <MappingFragment StoreEntitySet="ModuleAccessCtrl">
+          <ScalarProperty Name="Module" ColumnName="Module" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ModuleAccessCtrlTransactions">
+      <EntityTypeMapping TypeName="InventoryModel.ModuleAccessCtrlTransaction">
+        <MappingFragment StoreEntitySet="ModuleAccessCtrlTransaction">
+          <ScalarProperty Name="IsAllow" ColumnName="IsAllow" />
+          <ScalarProperty Name="ModuleID" ColumnName="ModuleID" />
+          <ScalarProperty Name="RoleID" ColumnName="RoleID" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>

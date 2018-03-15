@@ -58,6 +58,16 @@
       <End Role="FCU" EntitySet="FCUs" />
       <End Role="FCUTransaction" EntitySet="FCUTransactions" />
     </AssociationSet>
+    <EntitySet Name="ModuleAccessCtrls" EntityType="InventoryModel.ModuleAccessCtrl" />
+    <EntitySet Name="ModuleAccessCtrlTransactions" EntityType="InventoryModel.ModuleAccessCtrlTransaction" />
+    <AssociationSet Name="FK_MODULEACCESSCTRL_MODULEID" Association="InventoryModel.FK_MODULEACCESSCTRL_MODULEID">
+      <End Role="ModuleAccessCtrl" EntitySet="ModuleAccessCtrls" />
+      <End Role="ModuleAccessCtrlTransaction" EntitySet="ModuleAccessCtrlTransactions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MODULEACCESSCTRL_ROLEID" Association="InventoryModel.FK_MODULEACCESSCTRL_ROLEID">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="ModuleAccessCtrlTransaction" EntitySet="ModuleAccessCtrlTransactions" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="AHU">
     <Key>
@@ -223,13 +233,13 @@
     <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="RoleCode" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
     <Property Name="RoleName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="Module" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
     <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="Users" Relationship="InventoryModel.FK_Role_RoleID" FromRole="Role" ToRole="User" />
+    <NavigationProperty Name="ModuleAccessCtrlTransactions" Relationship="InventoryModel.FK_MODULEACCESSCTRL_ROLEID" FromRole="Role" ToRole="ModuleAccessCtrlTransaction" />
   </EntityType>
   <EntityType Name="User">
     <Key>
@@ -422,6 +432,49 @@
       </Principal>
       <Dependent Role="FCUTransaction">
         <PropertyRef Name="FCUID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="ModuleAccessCtrl">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Module" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="ModuleAccessCtrlTransactions" Relationship="InventoryModel.FK_MODULEACCESSCTRL_MODULEID" FromRole="ModuleAccessCtrl" ToRole="ModuleAccessCtrlTransaction" />
+  </EntityType>
+  <EntityType Name="ModuleAccessCtrlTransaction">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleID" Type="Int64" Nullable="false" />
+    <Property Name="ModuleID" Type="Int64" Nullable="false" />
+    <Property Name="IsAllow" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="ModuleAccessCtrl" Relationship="InventoryModel.FK_MODULEACCESSCTRL_MODULEID" FromRole="ModuleAccessCtrlTransaction" ToRole="ModuleAccessCtrl" />
+    <NavigationProperty Name="Role" Relationship="InventoryModel.FK_MODULEACCESSCTRL_ROLEID" FromRole="ModuleAccessCtrlTransaction" ToRole="Role" />
+  </EntityType>
+  <Association Name="FK_MODULEACCESSCTRL_MODULEID">
+    <End Type="InventoryModel.ModuleAccessCtrl" Role="ModuleAccessCtrl" Multiplicity="1" />
+    <End Type="InventoryModel.ModuleAccessCtrlTransaction" Role="ModuleAccessCtrlTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ModuleAccessCtrl">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ModuleAccessCtrlTransaction">
+        <PropertyRef Name="ModuleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MODULEACCESSCTRL_ROLEID">
+    <End Type="InventoryModel.Role" Role="Role" Multiplicity="1" />
+    <End Type="InventoryModel.ModuleAccessCtrlTransaction" Role="ModuleAccessCtrlTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ModuleAccessCtrlTransaction">
+        <PropertyRef Name="RoleID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
