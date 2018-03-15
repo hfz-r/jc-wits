@@ -9,7 +9,7 @@ namespace ESD.JC_LabelPrinting.Views
     /// <summary>
     /// Interaction logic for LabelPrintNavigationItemView.xaml
     /// </summary>
-    [ViewSortHint("04")]
+    [ViewSortHint("06")]
     public partial class LabelPrintNavigationItemView : UserControl
     {
         private static Uri mainViewUri = new Uri("LabelPrintMainView", UriKind.Relative);

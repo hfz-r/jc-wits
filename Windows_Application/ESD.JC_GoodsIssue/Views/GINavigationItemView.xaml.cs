@@ -9,7 +9,7 @@ namespace ESD.JC_GoodsIssue.Views
     /// <summary>
     /// Interaction logic for GINavigationItemView.xaml
     /// </summary>
-    [ViewSortHint("06")]
+    [ViewSortHint("08")]
     public partial class GINavigationItemView : UserControl
     {
         private static Uri mainViewUri = new Uri("GIMainView", UriKind.Relative);

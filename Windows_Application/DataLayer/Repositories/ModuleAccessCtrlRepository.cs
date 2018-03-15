@@ -22,5 +22,18 @@ namespace DataLayer.Repositories
                 return module;
             }
         }
+
+        public ModuleAccessCtrl GetModuleByModuleName(string ModuleName)
+        {
+            using (var context = new InventoryContext())
+            {
+                var module = context.ModuleAccessCtrls.Where(m => m.Module == ModuleName).FirstOrDefault();
+                if (module != null)
+                {
+                    context.Entry(module).Collection(m => m.ModuleAccessCtrlTransactions).Load();
+                }
+                return module;
+            }
+        }
     }
 }

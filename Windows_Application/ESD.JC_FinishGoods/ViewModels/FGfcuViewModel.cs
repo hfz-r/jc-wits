@@ -643,8 +643,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                     {
                         string fileName = string.Empty;
                         string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                        //fileName = path + @"\JC-FG_FCU.prn";
-                        fileName = path + @"\JC_test2.prn";
+                        fileName = path + @"\JC-FG_FCU.prn";
 
                         StreamReader txtReader = new StreamReader(fileName, Encoding.Default, false);
                         string xTemp = txtReader.ReadToEnd();

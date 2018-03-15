@@ -9,7 +9,7 @@ namespace ESD.JC_CountryMgmt.Views
     /// <summary>
     /// Interaction logic for CountryMgmtNavigationItemView.xaml
     /// </summary>
-    [ViewSortHint("03")]
+    [ViewSortHint("04")]
     public partial class CountryMgmtNavigationItemView : UserControl
     {
         private static Uri mainViewUri = new Uri("CountryMainView", UriKind.Relative);

@@ -14,6 +14,17 @@ namespace DataLayer.Repositories
             }
         }
 
+        public IEnumerable<ModuleAccessCtrlTransaction> GetAll(bool eagerLoading)
+        {
+            using (var context = new InventoryContext())
+            {
+                if (eagerLoading)
+                    return context.ModuleAccessCtrlTransactions.Include(m => m.ModuleAccessCtrl).Include(r => r.Role).ToList();
+                else
+                    return GetAll();
+            }
+        }
+
         public List<ModuleAccessCtrlTransaction> GetModuleAccessCtrlTransaction(long RoleID)
         {
             using (var context = new InventoryContext())

@@ -71,6 +71,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessControl\AuthorizationViewModel.cs" />
+    <Compile Include="AccessControl\ModuleAccessServices.cs" />
+    <Compile Include="AuthorizedToVisibilityConverter.cs" />
     <Compile Include="Controls\CompositeCommands.cs" />
     <Compile Include="Controls\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
