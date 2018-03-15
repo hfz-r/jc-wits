@@ -57,6 +57,12 @@ C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\obj\De
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.g.resources
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.Properties.Resources.resources
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.csproj.GenerateResource.Cache
+C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRNavigationItemView.baml
+C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRDetailsSummaryView.g.cs
+C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRDetailsTransactionView.g.cs
+C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRNavigationItemView.g.cs
+C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive_MarkupCompile.cache
+C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive_MarkupCompile.lref
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\ESD.JC_GoodsReceive.dll.config
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\ESD.JC_GoodsReceive.dll
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\ESD.JC_GoodsReceive.pdb
@@ -95,17 +101,10 @@ C:\WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\NPOI.xml
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\Prism.xml
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\Prism.Unity.Wpf.xml
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\Prism.Wpf.xml
-C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.csprojResolveAssemblyReference.cache
-C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRNavigationItemView.baml
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\EunKGDetailsView.g.cs
-C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRDetailsSummaryView.g.cs
-C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRDetailsTransactionView.g.cs
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRDetailsView.g.cs
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRMainView.g.cs
-C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRNavigationItemView.g.cs
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\GeneratedInternalTypeHelper.g.cs
-C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive_MarkupCompile.cache
-C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive_MarkupCompile.lref
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\EunKGDetailsView.baml
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRDetailsSummaryView.baml
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\Views\GRDetailsTransactionView.baml
@@ -116,3 +115,4 @@ C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.Pr
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.csproj.GenerateResource.Cache
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.dll
 C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.pdb
+C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.csprojResolveAssemblyReference.cache

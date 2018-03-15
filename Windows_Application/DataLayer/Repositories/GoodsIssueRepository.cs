@@ -33,5 +33,14 @@ namespace DataLayer.Repositories
                 return gi;
             }
         }
+
+        public GITransaction GetGI(long ID)
+        {
+            using (var context = new InventoryContext())
+            {
+                var getAll = GetAll(true);
+                return getAll.Where(x => x.ID == ID).FirstOrDefault();
+            }
+        }
     }
 }

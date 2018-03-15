@@ -127,6 +127,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\GITabRegionController.cs" />
+    <Compile Include="Controls\DataGridDynamicTemplateSelector.cs" />
+    <Compile Include="Controls\DynamicTemplateSelector.cs" />
     <Compile Include="GIModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

@@ -29,5 +29,10 @@ namespace ESD.JC_GoodsIssue.Services
         {
             return giRepository.GetGoodsIssue(ID);
         }
+
+        public GITransaction GetGI(long ID)
+        {
+            return giRepository.GetGI(ID);
+        }
     }
 }

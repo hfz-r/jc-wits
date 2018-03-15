@@ -44,6 +44,19 @@ namespace DataLayer.Repositories
             }
         }
 
+        public User GetUserByUserName(string Username)
+        {
+            using (var context = new InventoryContext())
+            {
+                var user = context.Users.Where(x => x.Username == Username).FirstOrDefault();
+                if (user != null)
+                {
+                    context.Entry(user).Reference(x => x.Role).Load();
+                }
+                return user;
+            }
+        }
+
         public void Add(User user)
         {
             using (var context = new InventoryContext())

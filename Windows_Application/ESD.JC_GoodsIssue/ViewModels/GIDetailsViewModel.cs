@@ -96,7 +96,7 @@ namespace ESD.JC_GoodsIssue.ViewModels
             var id = GetRequestedGIID(navigationContext);
             if (id.HasValue)
             {
-                this.GoodsIssue = GIServices.GetGoodsIssue(id.Value);
+                this.GoodsIssue = GIServices.GetGI(id.Value);
 
                 this.EventAggregator.GetEvent<GIUserSelectedEvent>().Publish(id.Value);
             }

@@ -8,6 +8,7 @@ namespace DataLayer.Repositories
         User Login(string username, string password);
         IEnumerable<User> GetAll(bool eagerLoading);
         User GetUser(long ID);
+        User GetUserByUserName(string Username);
         void Add(User user);
         void Update(User user);
         void Delete(long ID);
