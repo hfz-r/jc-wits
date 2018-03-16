@@ -1511,8 +1511,8 @@ namespace ESD.WITS
                                 sSQL += " ,[GRID]";
                                 sSQL += " ,[TransferType]";
                                 sSQL += " ,[ProductionNo]";
-                                sSQL += " ,[LocationTo]";
-                                sSQL += " ,[LocationFrom])";
+                                sSQL += " ,[LocationToID]";
+                                sSQL += " ,[LocationFromID])";
                                 sSQL += " VALUES";
                                 sSQL += " ('" + txtText.Text + "'";
                                 sSQL += " ,'" + item.Qty + "'";
@@ -1891,6 +1891,7 @@ namespace ESD.WITS
             pnlFG.Dock = DockStyle.Fill;
             rdBtnAHU.Checked = true;
             rdBtnFCU.Checked = false;
+            txtFGSerial.Focus();
         }
 
         /// <summary>
