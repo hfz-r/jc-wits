@@ -575,7 +575,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         private void PopulateRecords(ImportCLassModel rec, ObservableCollection<GoodsReceive> temp)
         {
-            if (grCollection.Where(sap => sap.Material != rec.Material).Count() > 0)
+            if (grCollection.Where(sap => sap.Material != rec.Material).Count() >= 0)
             {
                 temp.Add(new GoodsReceive
                 {
@@ -768,23 +768,28 @@ namespace ESD.JC_GoodsReceive.ViewModels
                                         break;
                                 }
 
-                                string[] words = input.Split(' ');
+                                string[] words = string.IsNullOrEmpty(input) ? null : input.Split(' ');
 
                                 string part = string.Empty;
                                 int partCounter = 0;
-                                foreach (var word in words)
+
+                                if (words != null)
                                 {
-                                    if (part.Length + word.Length < 33)
+                                    foreach (var word in words)
                                     {
-                                        part += string.IsNullOrEmpty(part) ? word : " " + word;
-                                    }
-                                    else
-                                    {
-                                        parts[x].Add(partCounter, part);
-                                        part = word;
-                                        partCounter++;
+                                        if (part.Length + word.Length < 33)
+                                        {
+                                            part += string.IsNullOrEmpty(part) ? word : " " + word;
+                                        }
+                                        else
+                                        {
+                                            parts[x].Add(partCounter, part);
+                                            part = word;
+                                            partCounter++;
+                                        }
                                     }
                                 }
+                            
                                 parts[x].Add(partCounter, part);
 
                                 if (partCounter == 0)
