@@ -19,7 +19,6 @@ C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ESD.
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\DataLayer.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\EntityFramework.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\EntityFramework.SqlServer.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ESD.JC_CountryMgmt.exe
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ESD.JC_FinishGoods.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ESD.JC_GoodsIssue.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ESD.JC_GoodsReceive.dll
@@ -100,7 +99,6 @@ C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\obj\Debug\ESD.
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.csproj.GenerateResource.Cache
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.exe.manifest
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.application
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ESD.JC_LocationMgmt.exe
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ESD.JC_LocationMgmt.pdb
 C:\WITS\Windows_Application\ESD.JC_Main\bin\Debug\ESD.JC_Main.exe.config
 C:\WITS\Windows_Application\ESD.JC_Main\bin\Debug\ESD.JC_Main.exe.manifest
@@ -205,3 +203,5 @@ C:\WITS\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.exe.manifest
 C:\WITS\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.application
 C:\WITS\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.exe
 C:\WITS\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.pdb
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ESD.JC_CountryMgmt.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ESD.JC_LocationMgmt.dll

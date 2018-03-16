@@ -28,7 +28,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Image Source="C:\WITS\Windows_Application\ESD.JC_UserMgmt\Avatars\MC900433938.PNG"  Width="50" Height="50" />
+                <Image Source="/Avatars/MC900433938.PNG"  Width="50" Height="50" />
                 
                 <TextBlock Text="{Binding Name}" Grid.Row="1" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="13" Margin="7" AutomationProperties.AutomationId="NameData"/>
 

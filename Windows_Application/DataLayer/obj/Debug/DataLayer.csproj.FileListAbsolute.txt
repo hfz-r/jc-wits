@@ -5,7 +5,6 @@ C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\DataLayer\bin\Debug\Entity
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\DataLayer\bin\Debug\EntityFramework.SqlServer.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\DataLayer\bin\Debug\EntityFramework.xml
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\DataLayer\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\DataLayer\obj\Debug\DataLayer.csprojResolveAssemblyReference.cache
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\DataLayer\obj\Debug\DataLayer.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\DataLayer\obj\Debug\DataLayer.pdb
 C:\WITS\Windows_Application\DataLayer\bin\Debug\DataLayer.dll.config
@@ -18,3 +17,4 @@ C:\WITS\Windows_Application\DataLayer\bin\Debug\EntityFramework.SqlServer.xml
 C:\WITS\Windows_Application\DataLayer\obj\Debug\DataLayer.dll
 C:\WITS\Windows_Application\DataLayer\obj\Debug\DataLayer.pdb
 C:\WITS\Windows_Application\DataLayer\obj\Debug\DataLayer.csprojResolveAssemblyReference.cache
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\DataLayer\obj\Debug\DataLayer.csprojResolveAssemblyReference.cache
