@@ -808,41 +808,85 @@ namespace ESD.JC_FinishGoods.ViewModels
                         txtReader.Close();
 
                         foreach (var item in listObj)
-                        {
-                            StringBuilder strPallet = new StringBuilder();
-                            StringBuilder strPalletTemplate = new StringBuilder();
-
-                            strPallet.Append(string.Empty);
-                            strPalletTemplate.Append(string.Empty);
-                            strPalletTemplate.Append(xTemp);
-
-                            strPallet = new StringBuilder();
-                            strPallet.Append(strPalletTemplate.ToString());
-                            strPallet.Replace("<Project>", item.Project);
-                            strPallet.Replace("<UnitTag>", item.UnitTag);
-                            strPallet.Replace("<PartNo>", item.PartNo);
-                            strPallet.Replace("<Model>", item.Model);
-                            strPallet.Replace("<PowerSupply>", item.PowerSupply);
-                            strPallet.Replace("<FanType>", item.FanType);
-                            strPallet.Replace("<MotorPole>", item.MotorPole);
-                            strPallet.Replace("<FanMotor>", item.FanMotor);
-                            strPallet.Replace("<FanRPM>", item.FanRPM);
-                            strPallet.Replace("<FanPulley>", item.FanPulley);
-                            strPallet.Replace("<MotorPulley>", item.MotorPulley);
-                            strPallet.Replace("<Belt>", item.Belt);
-                            strPallet.Replace("<CoolingCoil1>", item.CoolingCoil1);
-                            strPallet.Replace("<CoolingCoil2>", item.CoolingCoil2);
-                            strPallet.Replace("<HeatingCoil1>", item.HeatingCoil1);
-                            strPallet.Replace("<HeatingCoil2>", item.HeatingCoil2);
-                            strPallet.Replace("<Heater>", item.Heater);
-                            strPallet.Replace("<SalesOrder>", item.SalesOrder);
-                            strPallet.Replace("<Section>", item.Section.ToString());
-                            strPallet.Replace("<Item>", item.Item.ToString());
-                            strPallet.Replace("<SerialNo>", item.SerialNo);
-
-                            if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
+                        {                           
+                            if (item.Section >= 1)
                             {
-                                strErrorPallet.Append(item.SerialNo + ", ");
+                                for (int i = 1; i <= item.Section; i++)
+                                {
+                                    StringBuilder strPallet = new StringBuilder();
+                                    StringBuilder strPalletTemplate = new StringBuilder();
+
+                                    strPallet.Append(string.Empty);
+                                    strPalletTemplate.Append(string.Empty);
+                                    strPalletTemplate.Append(xTemp);
+
+                                    strPallet = new StringBuilder();
+                                    strPallet.Append(strPalletTemplate.ToString());
+                                    strPallet.Replace("<Project>", item.Project);
+                                    strPallet.Replace("<UnitTag>", item.UnitTag);
+                                    strPallet.Replace("<PartNo>", item.PartNo);
+                                    strPallet.Replace("<Model>", item.Model);
+                                    strPallet.Replace("<PowerSupply>", item.PowerSupply);
+                                    strPallet.Replace("<FanType>", item.FanType);
+                                    strPallet.Replace("<MotorPole>", item.MotorPole);
+                                    strPallet.Replace("<FanMotor>", item.FanMotor);
+                                    strPallet.Replace("<FanRPM>", item.FanRPM);
+                                    strPallet.Replace("<FanPulley>", item.FanPulley);
+                                    strPallet.Replace("<MotorPulley>", item.MotorPulley);
+                                    strPallet.Replace("<Belt>", item.Belt);
+                                    strPallet.Replace("<CoolingCoil1>", item.CoolingCoil1);
+                                    strPallet.Replace("<CoolingCoil2>", item.CoolingCoil2);
+                                    strPallet.Replace("<HeatingCoil1>", item.HeatingCoil1);
+                                    strPallet.Replace("<HeatingCoil2>", item.HeatingCoil2);
+                                    strPallet.Replace("<Heater>", item.Heater);
+                                    strPallet.Replace("<SalesOrder>", item.SalesOrder);
+                                    strPallet.Replace("<Section>", i + "/" + item.Section.ToString());
+                                    strPallet.Replace("<Item>", item.Item.ToString());
+                                    strPallet.Replace("<SerialNo>", item.SerialNo);
+
+                                    if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
+                                    {
+                                        strErrorPallet.Append(item.SerialNo + ", ");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                StringBuilder strPallet = new StringBuilder();
+                                StringBuilder strPalletTemplate = new StringBuilder();
+
+                                strPallet.Append(string.Empty);
+                                strPalletTemplate.Append(string.Empty);
+                                strPalletTemplate.Append(xTemp);
+
+                                strPallet = new StringBuilder();
+                                strPallet.Append(strPalletTemplate.ToString());
+                                strPallet.Replace("<Project>", item.Project);
+                                strPallet.Replace("<UnitTag>", item.UnitTag);
+                                strPallet.Replace("<PartNo>", item.PartNo);
+                                strPallet.Replace("<Model>", item.Model);
+                                strPallet.Replace("<PowerSupply>", item.PowerSupply);
+                                strPallet.Replace("<FanType>", item.FanType);
+                                strPallet.Replace("<MotorPole>", item.MotorPole);
+                                strPallet.Replace("<FanMotor>", item.FanMotor);
+                                strPallet.Replace("<FanRPM>", item.FanRPM);
+                                strPallet.Replace("<FanPulley>", item.FanPulley);
+                                strPallet.Replace("<MotorPulley>", item.MotorPulley);
+                                strPallet.Replace("<Belt>", item.Belt);
+                                strPallet.Replace("<CoolingCoil1>", item.CoolingCoil1);
+                                strPallet.Replace("<CoolingCoil2>", item.CoolingCoil2);
+                                strPallet.Replace("<HeatingCoil1>", item.HeatingCoil1);
+                                strPallet.Replace("<HeatingCoil2>", item.HeatingCoil2);
+                                strPallet.Replace("<Heater>", item.Heater);
+                                strPallet.Replace("<SalesOrder>", item.SalesOrder);
+                                strPallet.Replace("<Section>", item.Section.ToString());
+                                strPallet.Replace("<Item>", item.Item.ToString());
+                                strPallet.Replace("<SerialNo>", item.SerialNo);
+
+                                if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
+                                {
+                                    strErrorPallet.Append(item.SerialNo + ", ");
+                                }
                             }
                         }
 
