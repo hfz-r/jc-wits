@@ -71,6 +71,18 @@
                                 <Hyperlink Command="{Binding DataContext.OpenAHUDetailsCommand, ElementName=LayoutRoot}" CommandParameter="{Binding}"
                                            AutomationProperties.AutomationId="OpenDetailHyperLink">
                                     <TextBlock Text="{Binding Project}" />
+                                    <Hyperlink.Style>
+                                        <Style TargetType="Hyperlink">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ID}" Value="0">
+			                                        <Setter Property="Foreground" Value="Black" />
+			                                        <Setter Property="Cursor" Value="Arrow" />
+                                                    <Setter Property="IsEnabled" Value="False"/>
+			                                        <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
+		                                        </DataTrigger>                  
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Hyperlink.Style>
                                 </Hyperlink>
                             </TextBlock>
                         </DataTemplate>
