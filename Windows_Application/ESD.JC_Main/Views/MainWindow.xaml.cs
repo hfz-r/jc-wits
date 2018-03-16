@@ -24,16 +24,13 @@ namespace ESD.JC_Main.Views
             ModuleManager = _ModuleManager;
             RegionManager = _RegionManager;
 
-            this.ModuleManager.LoadModuleCompleted +=
-                (s, e) =>
+            this.ModuleManager.LoadModuleCompleted += (s, e) =>
+            {
+                if (e.ModuleInfo.ModuleName == roleMgmtModuleName)
                 {
-                    if (e.ModuleInfo.ModuleName == roleMgmtModuleName)
-                    {
-                        this.RegionManager.RequestNavigate(RegionNames.MainContentRegion, mainViewUri);
-                    }
-                };
+                    this.RegionManager.RequestNavigate(RegionNames.MainContentRegion, mainViewUri);
+                }
+            };
         }
-
-
     }
 }

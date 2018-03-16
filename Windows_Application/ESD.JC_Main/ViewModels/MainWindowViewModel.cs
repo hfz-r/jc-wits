@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows;
 using Prism.Interactivity.InteractionRequest;
 using System;
+using ESD.JC_Main.Views;
 
 namespace ESD.JC_Main.ViewModels
 {
@@ -20,17 +21,6 @@ namespace ESD.JC_Main.ViewModels
         {
             get { return _AuthenticatedUser; }
             set { SetProperty(ref _AuthenticatedUser, value); }
-        }
-
-        private string _InteractionResultMessage;
-        public string InteractionResultMessage
-        {
-            get { return _InteractionResultMessage; }
-            set
-            {
-                SetProperty(ref _InteractionResultMessage, value);
-                this.RaisePropertyChanged("InteractionResultMessage");
-            }
         }
 
         private IEventAggregator _EventAggregator;
@@ -69,20 +59,26 @@ namespace ESD.JC_Main.ViewModels
                         Content = "Due to security concerned, you will be casting out from this application. Is that ok?",
                         Title = "Logout"
                     },
-                    returned => 
+                    c =>
                     {
-                        InteractionResultMessage = returned.Confirmed ? Confirmed(window, customPrincipal) : "NOT OK!";
+                        if (c.Confirmed)
+                            Confirmed(window, customPrincipal);
                     });
             }
         }
 
-        private string Confirmed(Window window, CustomPrincipal customPrincipal)
+        private void Confirmed(Window window, CustomPrincipal customPrincipal)
         {
             customPrincipal.Identity = new AnonymousIdentity();
             window.Close();
-            Environment.Exit(0);
-
-            return "OK!";
+            try
+            {
+                new Bootstrapper().Run();
+            }
+            catch (ApplicationException ex)
+            {
+                throw ex;
+            }
         }
     }
 }

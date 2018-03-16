@@ -27,6 +27,8 @@ using Microsoft.Office.Interop.Excel;
 using ESD.JC_Infrastructure;
 using FileHelpers.Events;
 using System.Threading;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace ESD.JC_GoodsReceive.ViewModels
 {
@@ -114,6 +116,8 @@ namespace ESD.JC_GoodsReceive.ViewModels
         #endregion
 
         private const string grDetailsViewName = "GRDetailsView";
+
+        XSSFWorkbook grWorkbook;
 
         private IRegionManager regionManager;
         private IEventAggregator eventAggregator;
@@ -263,33 +267,158 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 }
                 else
                 {
-                    ReadExcelFile(file.FullName);
+                    if (!string.IsNullOrEmpty(file.Extension))
+                    {
+                        using (FileStream fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
+                        {
+                            grWorkbook = new XSSFWorkbook(fs);
+                        }
+
+                        ReadExcelFile();
+                    }
                 }
             }
         }
 
-        private void ReadExcelFile(string fullName)
+        private void ReadExcelFile()
         {
             try
             {
-                ExcelNPOIStorage storage = new ExcelNPOIStorage(typeof(ImportCLassModel), 1, 0);
-                storage.FileName = fullName;
+                ISheet sheet = grWorkbook.GetSheet("GR");
+                System.Collections.IEnumerator rows = sheet.GetRowEnumerator();
 
-                var records = storage.ExtractRecords();
-                foreach (ImportCLassModel rec in records)
+                #region Cells Comparison
+                while (rows.MoveNext())
                 {
-                    if (string.IsNullOrEmpty(rec.PurchaseOrder) ||
-                        string.IsNullOrEmpty(rec.Vendor) ||
-                        string.IsNullOrEmpty(rec.Material) ||
-                        string.IsNullOrEmpty(rec.MaterialShortText) ||
-                        string.IsNullOrEmpty(rec.StorageBin) ||
-                        rec.DocumentDate == null)
-                    {
-                        throw new Exception("Null Or Empty Value Found.");
-                    }
+                    IRow row = (XSSFRow)rows.Current;
+                    if (row.RowNum == 0)
+                        continue;
+                    if (row.Cells.Any(d => d.CellType == CellType.Error))
+                        continue;
 
-                    PopulateRecords(rec, tempCollection);
+                    ImportCLassModel obj = new ImportCLassModel();
+                    for (int i = 0; i < row.LastCellNum; i++)
+                    {
+                        ICell cell = row.GetCell(i);
+
+                        switch (i)
+                        {
+                            case 0:
+                                if (cell == null)
+                                    obj.DocumentDate = null;
+                                else
+                                    obj.DocumentDate = cell.DateCellValue;
+                                break;
+
+                            case 1:
+                                if (cell == null)
+                                    obj.DocumentDate = null;
+                                else
+                                    obj.PostingDate = cell.DateCellValue;
+                                break;
+
+                            case 2:
+                                if (cell == null)
+                                    continue;
+                                else
+                                    obj.PurchaseOrder = SetCellValue(cell);
+                                break;
+
+                            case 3:
+                                if (cell == null)
+                                    obj.Vendor = null;
+                                else
+                                    obj.Vendor = SetCellValue(cell);
+                                break;
+
+                            case 4:
+                                if (cell == null)
+                                    obj.DeliveryNote = null;
+                                else
+                                    obj.DeliveryNote = SetCellValue(cell);
+                                break;
+
+                            case 5:
+                                if (cell == null)
+                                    obj.BillOfLading = null;
+                                else
+                                    obj.BillOfLading = SetCellValue(cell);
+                                break;
+
+                            case 6:
+                                if (cell == null)
+                                    obj.HeaderText = null;
+                                else
+                                    obj.HeaderText = SetCellValue(cell);
+                                break;
+
+                            case 7:
+                                if (cell == null)
+                                    continue;
+                                else
+                                    obj.Material = SetCellValue(cell);
+                                break;
+
+                            case 8:
+                                if (cell == null)
+                                    continue;
+                                else
+                                    obj.MaterialShortText = SetCellValue(cell);
+                                break;
+
+                            case 9:
+                                if (cell == null)
+                                    obj.Ok = null;
+                                else
+                                    obj.Ok = cell.BooleanCellValue;
+                                break;
+
+                            case 10:
+                                if (cell == null)
+                                    continue;
+                                else
+                                    obj.Quantity = Convert.ToDecimal(cell.NumericCellValue);
+                                break;
+
+                            case 11:
+                                if (cell == null)
+                                    continue;
+                                else
+                                    obj.Eun = SetCellValue(cell);
+                                break;
+
+                            case 12:
+                                if (cell == null)
+                                    obj.MvmtType = null;
+                                else
+                                    obj.MvmtType = SetCellValue(cell);
+                                break;
+
+                            case 13:
+                                if (cell == null)
+                                    continue;
+                                else
+                                    obj.StorageLoc = SetCellValue(cell);
+                                break;
+
+                            case 14:
+                                if (cell == null)
+                                    continue;
+                                else
+                                    obj.Plant = Convert.ToInt32(cell.NumericCellValue);
+                                break;
+
+                            case 15:
+                                if (cell == null)
+                                    continue;
+                                else
+                                    obj.StorageBin = SetCellValue(cell);
+                                break;
+                        }
+                    }
+                    PopulateRecords(obj, tempCollection);
                 }
+                #endregion Cells Comparison
 
                 if (tempCollection.Count() > 0)
                 {
@@ -305,6 +434,11 @@ namespace ESD.JC_GoodsReceive.ViewModels
             {
                 MessageBox.Show("Unable to read contents:\n\n" + ex.Message, "Error");
             }
+        }
+
+        public string SetCellValue(ICell cell)
+        {
+            return (cell.CellType.ToString() == "String" ? cell.StringCellValue : cell.NumericCellValue.ToString());
         }
 
         private void OKImport()
@@ -336,15 +470,18 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 var records = engine.ReadFile(fullName);
                 foreach (ImportCLassModel rec in records)
                 {
-                    if (string.IsNullOrEmpty(rec.PurchaseOrder) ||
-                       string.IsNullOrEmpty(rec.Vendor) ||
-                       string.IsNullOrEmpty(rec.Material) ||
-                       string.IsNullOrEmpty(rec.MaterialShortText) ||
-                       string.IsNullOrEmpty(rec.StorageBin) ||
-                       rec.DocumentDate == null)
-                    {
-                        throw new Exception("Null Or Empty Value Found.");
-                    }
+                    if (string.IsNullOrEmpty(rec.PurchaseOrder))
+                        throw new Exception("Some of Purchase Order is null/empty.");
+                    if (string.IsNullOrEmpty(rec.Material))
+                        throw new Exception("Some of  Material is null/empty.");
+                    if (string.IsNullOrEmpty(rec.MaterialShortText))
+                        throw new Exception("Some of Material Short Text is null/empty.");
+                    if (string.IsNullOrEmpty(rec.Eun))
+                        throw new Exception("Some of Eun Order is null/empty.");
+                    if (string.IsNullOrEmpty(rec.StorageLoc))
+                        throw new Exception("Some of Storage Loc is null/empty.");
+                    if (string.IsNullOrEmpty(rec.StorageBin))
+                        throw new Exception("Some of Storage Bin is null/empty.");
 
                     PopulateRecords(rec, tempCollection);
                 }
@@ -438,23 +575,26 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         private void PopulateRecords(ImportCLassModel rec, ObservableCollection<GoodsReceive> temp)
         {
-            if (grCollection.Any(x => x.PurchaseOrder == rec.PurchaseOrder) == false)
+            if (grCollection.Where(sap => sap.Material != rec.Material).Count() > 0)
             {
                 temp.Add(new GoodsReceive
                 {
+                    DocumentDate = rec.DocumentDate,
+                    PostingDate = DateTime.Now,
                     PurchaseOrder = rec.PurchaseOrder,
-                    Vendor = rec.Vendor,
+                    Vendor = rec.Vendor ?? string.Empty,
+                    DeliveryNote = rec.DeliveryNote ?? string.Empty,
+                    BillOfLading = rec.BillOfLading ?? string.Empty,
+                    HeaderText = rec.HeaderText ?? string.Empty,
                     Material = rec.Material,
                     MaterialShortText = rec.MaterialShortText,
-                    Ok = rec.Ok,
+                    Ok = rec.Ok.GetValueOrDefault(),
                     Quantity = rec.Quantity,
                     Eun = rec.Eun,
-                    MvmtType = rec.MvmtType,
+                    MvmtType = rec.MvmtType ?? string.Empty,
                     StorageLoc = rec.StorageLoc,
                     Plant = rec.Plant,
                     StorageBin = rec.StorageBin,
-                    DocumentDate = rec.DocumentDate,
-                    PostingDate = DateTime.Now,
                     CreatedOn = DateTime.Now,
                     CreatedBy = AuthenticatedUser,
                     ModifiedOn = DateTime.Now,
@@ -492,33 +632,43 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 ".xlsx";
 
             storage.ColumnsHeaders.Add("Document Date");
-            storage.ColumnsHeaders.Add("PO Number");
+            storage.ColumnsHeaders.Add("Posting Date");
+            storage.ColumnsHeaders.Add("Purchase Order");
             storage.ColumnsHeaders.Add("Vendor");
+            storage.ColumnsHeaders.Add("Delivery Note");
+            storage.ColumnsHeaders.Add("Bill Of Lading");
+            storage.ColumnsHeaders.Add("Header Text");
             storage.ColumnsHeaders.Add("Material");
             storage.ColumnsHeaders.Add("Material Short Text");
             storage.ColumnsHeaders.Add("OK");
             storage.ColumnsHeaders.Add("Quantity");
+            storage.ColumnsHeaders.Add("Eun");
+            storage.ColumnsHeaders.Add("Mvmt Type");
             storage.ColumnsHeaders.Add("Storage Loc");
             storage.ColumnsHeaders.Add("Plant");
             storage.ColumnsHeaders.Add("Storage Bin");
 
             ObservableCollection<ImportCLassModel> importObj = new ObservableCollection<ImportCLassModel>();
-            foreach (var gr in grCollection)
+            foreach (var rec in grCollection)
             {
                 importObj.Add(new ImportCLassModel
                 {
-                    DocumentDate = gr.DocumentDate.GetValueOrDefault(),
-                    PurchaseOrder = gr.PurchaseOrder,
-                    Vendor = gr.Vendor,
-                    Material = gr.Material,
-                    MaterialShortText = gr.MaterialShortText,
-                    Ok = gr.Ok,
-                    Quantity = gr.Quantity,
-                    Eun = gr.Eun,
-                    MvmtType = gr.MvmtType,
-                    StorageLoc = gr.StorageLoc,
-                    Plant = gr.Plant,
-                    StorageBin = gr.StorageBin
+                    DocumentDate = rec.DocumentDate,
+                    PostingDate = DateTime.Now,
+                    PurchaseOrder = rec.PurchaseOrder,
+                    Vendor = rec.Vendor ?? string.Empty,
+                    DeliveryNote = rec.DeliveryNote ?? string.Empty,
+                    BillOfLading = rec.BillOfLading ?? string.Empty,
+                    HeaderText = rec.HeaderText ?? string.Empty,
+                    Material = rec.Material,
+                    MaterialShortText = rec.MaterialShortText,
+                    Ok = rec.Ok.GetValueOrDefault(),
+                    Quantity = rec.Quantity,
+                    Eun = rec.Eun,
+                    MvmtType = rec.MvmtType ?? string.Empty,
+                    StorageLoc = rec.StorageLoc,
+                    Plant = rec.Plant,
+                    StorageBin = rec.StorageBin
                 });
             }
 
@@ -609,7 +759,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                                 switch (x)
                                 {
                                     case 0:
-                                        input = item.MaterialShortText;
+                                        input = item.ENMaterialShortText;
                                         lbl = "<EN";
                                         break;
                                     case 1:
@@ -727,37 +877,49 @@ namespace ESD.JC_GoodsReceive.ViewModels
         public DateTime? DocumentDate { get; set; }
 
         [FieldOrder(2)]
-        public string PurchaseOrder { get; set; }
+        public DateTime? PostingDate { get; set; }
 
         [FieldOrder(3)]
-        public string Vendor { get; set; }
+        public string PurchaseOrder { get; set; }
 
         [FieldOrder(4)]
-        public string Material { get; set; }
+        public string Vendor { get; set; }
 
         [FieldOrder(5)]
-        public string MaterialShortText { get; set; }
+        public string DeliveryNote { get; set; }
 
         [FieldOrder(6)]
-        public bool? Ok { get; set; }
+        public string BillOfLading { get; set; }
 
         [FieldOrder(7)]
+        public string HeaderText { get; set; }
+
+        [FieldOrder(8)]
+        public string Material { get; set; }
+
+        [FieldOrder(9)]
+        public string MaterialShortText { get; set; }
+
+        [FieldOrder(10)]
+        public bool? Ok { get; set; }
+
+        [FieldOrder(11)]
         [FieldConverter(ConverterKind.Decimal, ".")]
         public decimal Quantity { get; set; }
 
-        [FieldOrder(8)]
+        [FieldOrder(12)]
         public string Eun { get; set; }
 
-        [FieldOrder(9)]
+        [FieldOrder(13)]
         public string MvmtType { get; set; }
 
-        [FieldOrder(10)]
+        [FieldOrder(14)]
         public string StorageLoc { get; set; }
 
-        [FieldOrder(11)]
+        [FieldOrder(15)]
         public int Plant { get; set; }
 
-        [FieldOrder(12)]
+        [FieldOrder(16)]
         public string StorageBin { get; set; }
     }
 }
