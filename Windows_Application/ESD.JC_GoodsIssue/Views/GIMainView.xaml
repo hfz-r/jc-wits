@@ -130,19 +130,19 @@
                         </Style>
                     </DataGridTemplateColumn.HeaderStyle>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="ID" Width="Auto">
+                <DataGridTemplateColumn Header="SAP No." Width="Auto" MinWidth="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch">
                                 <Hyperlink Command="{Binding DataContext.OpenGIDetailsCommand, ElementName=LayoutRoot}" CommandParameter="{Binding}"
                                            AutomationProperties.AutomationId="OpenDetailHyperLink">
-                                    <TextBlock Text="{Binding ID}" />
+                                    <TextBlock Text="{Binding GoodsReceive.Material}" />
                                 </Hyperlink>
                             </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="SAP No." MinWidth="150" Binding="{Binding GoodsReceive.Material}" CanUserSort="True" Foreground="Black"/>
+                <!--<DataGridTextColumn Header="SAP No." MinWidth="150" Binding="{Binding GoodsReceive.Material}" CanUserSort="True" Foreground="Black"/>-->
                 <DataGridTextColumn Header="Text" Width="*" MinWidth="250" Binding="{Binding Text}" CanUserSort="False" Foreground="Black"/>
                 <DataGridTextColumn Header="Quantity" MinWidth="30" Binding="{Binding Quantity}" CanUserSort="True" Foreground="Black"/>
                 <DataGridTextColumn Header="Production No." MinWidth="150" Binding="{Binding ProductionNo}" CanUserSort="True" Foreground="Black"/>

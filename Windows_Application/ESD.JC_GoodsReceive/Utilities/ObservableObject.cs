@@ -24,7 +24,7 @@ namespace ESD.JC_GoodsReceive.Utilities
                 PropertyChanged(this, e);
             }
         }
-
+       
         #endregion
     }
 }

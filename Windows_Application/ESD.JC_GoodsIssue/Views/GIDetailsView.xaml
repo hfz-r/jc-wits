@@ -21,7 +21,6 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -29,52 +28,47 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="{Binding ID}" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="13" Margin="5" AutomationProperties.AutomationId="IDData"/>
-
-                <TextBlock Text="SAP No.: " FontWeight="Bold"
-                           Grid.Row="1" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="SAPNoLabel"/>
-                <TextBlock Text="{Binding GoodsReceive.Material}"                           
-                           Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="SAPNoData"/>
+                <TextBlock Text="{Binding GoodsReceive.Material}" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="13" Margin="5" AutomationProperties.AutomationId="SAPNoData"/>
 
                 <TextBlock Text="Text: " FontWeight="Bold"
-                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="TextLabel"/>
+                           Grid.Row="1" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="TextLabel"/>
                 <TextBlock Text="{Binding Text}"                           
-                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="TextData"/>
+                           Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="TextData"/>
 
                 <TextBlock Text="Quantity: " FontWeight="Bold"
-                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QuantityLabel"/>
+                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QuantityLabel"/>
                 <TextBlock Text="{Binding Quantity}"                           
-                           Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="QuantityData"/>
+                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="QuantityData"/>
 
                 <TextBlock Text="Transfer Type: " FontWeight="Bold"
-                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="TransTypeLabel"/>
+                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="TransTypeLabel"/>
                 <TextBlock Text="{Binding TransferType}"                           
-                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="TransTypeData"/>
+                           Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="TransTypeData"/>
 
                 <TextBlock Text="Production No.: " FontWeight="Bold"
-                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ProdNoLabel"/>
+                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ProdNoLabel"/>
                 <TextBlock Text="{Binding ProductionNo}"                           
-                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="ProdNoData"/>
+                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="ProdNoData"/>
 
                 <TextBlock Text="Location To: " FontWeight="Bold"
-                           Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LocToLabel"/>
+                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LocToLabel"/>
                 <TextBlock Text="{Binding Location1.LocationDesc}"                           
-                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="LocToData"/>
+                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="LocToData"/>
 
                 <TextBlock Text="Location From: " FontWeight="Bold"
-                           Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LocFromLabel"/>
+                           Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LocFromLabel"/>
                 <TextBlock Text="{Binding  Location.LocationDesc}"                           
-                           Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="LocFromData"/>
+                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="LocFromData"/>
 
                 <TextBlock Text="Last Modified Date: " FontWeight="Bold"
-                           Grid.Row="8" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
+                           Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
                 <TextBlock Text="{Binding CreatedOn, StringFormat=g}"                           
-                           Grid.Row="8" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOnData"/>
+                           Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOnData"/>
 
                 <TextBlock Text="Last Modified By: " FontWeight="Bold"
-                           Grid.Row="9" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedByLabel"/>
+                           Grid.Row="8" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedByLabel"/>
                 <TextBlock Text="{Binding CreatedBy}"                           
-                           Grid.Row="9" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
+                           Grid.Row="8" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
             </Grid>
         </DataTemplate>
         <Style TargetType="{x:Type TabItem}" x:Key="HeaderStyle">

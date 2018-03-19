@@ -11,6 +11,7 @@ using System.Linq;
 using ESD.JC_GoodsReceive.Notifications;
 using Prism.Interactivity.InteractionRequest;
 using System.Windows;
+using ESD.JC_Infrastructure;
 
 namespace ESD.JC_GoodsReceive.ViewModels
 {
@@ -110,6 +111,16 @@ namespace ESD.JC_GoodsReceive.ViewModels
             {
                 this.GoodReceive = GRServices.GetGR(grid.Value);
 
+                if (GoodReceive.QtyReceived == null)
+                    GoodReceive.Ok = false;
+                else
+                {
+                    if (GoodReceive.QtyReceived == GoodReceive.Quantity)
+                        GoodReceive.Ok = true;
+                    else if (GoodReceive.QtyReceived < GoodReceive.Quantity)
+                        GoodReceive.Ok = null;
+                }
+
                 this.EventAggregator.GetEvent<GRUserSelectedEvent>().Publish(grid.Value);
             }
 
@@ -134,14 +145,11 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 notification,
                 returned =>
                 {
-                    //if (returned != null && returned.Confirmed && returned.SelectedItem != null)
-                    //{
-                    //    if (Save())
-                    //        OnLoaded();
-                    //}
+                    StringToDecimalConverter.user_string = null;
+
                     if (returned != null && returned.Confirmed)
                     {
-                        MessageBox.Show("Child details successfully been added.", "Success", MessageBoxButton.OK);
+                        //MessageBox.Show("Child details successfully been added.", "Success", MessageBoxButton.OK);
                     }
                 });
         }

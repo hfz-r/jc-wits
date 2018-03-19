@@ -80,6 +80,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 if (_cellInfo != null)
                 {
                     _deleteCommand.RaiseCanExecuteChanged();
+                    _saveCommand.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -154,7 +155,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             worker.WorkerSupportsCancellation = true;
 
             _onloadedCommand = new DelegateCommand(OnLoaded);
-            _saveCommand = new DelegateCommand<object>(SaveCommand);
+            _saveCommand = new DelegateCommand<object>(SaveCommand, CanSave);
             _deleteCommand = new DelegateCommand<object>(DeleteCommand, CanDelete);
             _IsSelected = new DelegateCommand<object>(CheckBoxIsSelected);
             _PrintLblCommand = new DelegateCommand<object>(PrintLabel, CanPrint);
@@ -211,7 +212,11 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         private void OnLoaded()
         {
-            MaximumValue = notification.ParentItem.Quantity;
+            if (notification.ParentItem != null)
+            {
+                var obj = notification.ParentItem;
+                MaximumValue = obj.Quantity - obj.QtyReceived.GetValueOrDefault();
+            }
 
             EunKGs = new ObservableCollection<EunKGExt>();
             EunKGs.CollectionChanged += EunKGs_CollectionChanged;
@@ -287,6 +292,11 @@ namespace ESD.JC_GoodsReceive.ViewModels
             RaisePropertyChanged("CollectionView");
         }
 
+        private bool CanSave(object ignored)
+        {
+            return EunKGs != null && (EunKGs.Sum(x => x.Qty) > MaximumValue) == false;
+        }
+
         private void SaveCommand(object obj)
         {
             this.interactionRequest.Raise(
@@ -299,6 +309,12 @@ namespace ESD.JC_GoodsReceive.ViewModels
                     {
                         if (c.Confirmed)
                         {
+                            if (EunKGs.Sum(x => x.Qty) > MaximumValue)
+                            {
+                                MessageBox.Show("Quantity Should Not More Than " + MaximumValue + "!", "Failed To Save", MessageBoxButton.OK);
+                                return;
+                            }
+
                             if (InitSave())
                             {
                                 State = "RefreshGrid";

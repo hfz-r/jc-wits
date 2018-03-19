@@ -5,8 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ESD.JC_GoodsReceive.Views"
              mc:Ignorable="d" 
+            xmlns:inf="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
+        <inf:UnitKGsConverter x:Key="UnitKGs"/>
+        
         <DataTemplate x:Key="GRDetailTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -23,21 +26,47 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Quantity Ordered" Foreground="#FF525252"
-                           Grid.Row="0" Grid.Column="0"/>
-                <TextBlock Text="{Binding GoodsReceive.Quantity}" FontWeight="Bold"
-                           Grid.Row="0" Grid.Column="1"/>
+                <TextBlock Text="Quantity Ordered" Foreground="#FF525252" Grid.Row="0" Grid.Column="0"/>
+                <TextBlock FontWeight="Bold" Grid.Row="0" Grid.Column="1">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Text" Value="{Binding GoodsReceive.Quantity}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding GoodsReceive.Eun, Converter={StaticResource UnitKGs}}" Value="true">
+                                    <Setter Property="Text" Value="{Binding GoodsReceive.Quantity, StringFormat=N2}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
 
-                <TextBlock Text="Quantity Received" Foreground="#FF525252"
-                           Grid.Row="1" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding GoodsReceive.QtyReceived}" FontWeight="Bold"
-                           Grid.Row="1" Grid.Column="1"/>
+                <TextBlock Text="Quantity Received" Foreground="#FF525252" Grid.Row="1" Grid.Column="0" Margin="0,0,15,0"/>
+                <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="1">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Text" Value="{Binding GoodsReceive.QtyReceived}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding GoodsReceive.Eun, Converter={StaticResource UnitKGs}}" Value="true">
+                                    <Setter Property="Text" Value="{Binding  GoodsReceive.QtyReceived, StringFormat=N2}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
 
-                <TextBlock Text="Remaining Quantity" Foreground="#FF525252"
-                           Grid.Row="2" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding DataContext.RemainingQty, ElementName=LayoutRoot}" FontWeight="Bold"
-                           Grid.Row="2" Grid.Column="1"/>
-
+                <TextBlock Text="Remaining Quantity" Foreground="#FF525252" Grid.Row="2" Grid.Column="0" Margin="0,0,15,0"/>
+                <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="1">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Text" Value="{Binding DataContext.RemainingQty, ElementName=LayoutRoot}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding GoodsReceive.Eun, Converter={StaticResource UnitKGs}}" Value="true">
+                                    <Setter Property="Text" Value="{Binding DataContext.RemainingQty, ElementName=LayoutRoot, StringFormat=N2}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>

@@ -1,5 +1,4 @@
 ﻿using ESD.JC_GoodsReceive.Utilities;
-using System;
 
 namespace ESD.JC_GoodsReceive.ModelsExt
 {
