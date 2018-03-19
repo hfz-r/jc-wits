@@ -575,7 +575,11 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         private void PopulateRecords(ImportCLassModel rec, ObservableCollection<GoodsReceive> temp)
         {
-            if (grCollection.Any(sap => sap.Material != rec.Material).Count() >= 0)
+<<<<<<< HEAD
+            if (grCollection.Where(sap => sap.Material != rec.Material).Count() >= 0)
+=======
+            if (grCollection.Any(sap => sap.Material == rec.Material) == false)
+>>>>>>> origin/dev
             {
                 temp.Add(new GoodsReceive
                 {

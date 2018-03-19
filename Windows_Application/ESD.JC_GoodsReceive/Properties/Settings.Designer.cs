@@ -25,7 +25,7 @@ namespace ESD.JC_GoodsReceive.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("TEC B-SA4T (300 dpi)")]
+        [global::System.Configuration.DefaultSettingValueAttribute("TEC B-SA4T (300 dpi) (Copy 1)")]
         public string PrinterPort {
             get {
                 return ((string)(this["PrinterPort"]));
