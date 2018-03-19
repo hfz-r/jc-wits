@@ -17,9 +17,9 @@ namespace ESD.JC_GoodsIssue.Controls
             {
                 var gi = item as ObservableCollection<GITransaction>;
 
-                if (gi.First().TransferType == "Production")
+                if (gi.First().TransferType == "TRANSFER_PROD")
                     dt = element.FindResource("Production") as DataTemplate;
-                if (gi.First().TransferType == "Posting")
+                if (gi.First().TransferType == "TRANSFER_POST")
                     dt = element.FindResource("Posting") as DataTemplate;
             }
             return dt;

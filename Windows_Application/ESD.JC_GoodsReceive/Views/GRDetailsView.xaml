@@ -113,8 +113,18 @@
 
                 <TextBlock Text="Quantity: " FontWeight="Bold"
                            Grid.Row="8" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QuantityLabel"/>
-                <TextBlock Text="{Binding Quantity}"                           
-                           Grid.Row="8" Grid.Column="1" AutomationProperties.AutomationId="QuantityData"/>
+                <TextBlock Grid.Row="8" Grid.Column="1" AutomationProperties.AutomationId="QuantityData">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Text" Value="{Binding Quantity}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Eun, Converter={StaticResource UnitKGs}}" Value="true">
+                                    <Setter Property="Text" Value="{Binding Quantity, StringFormat=N2}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
 
                 <TextBlock Text="Eun: " FontWeight="Bold"
                            Grid.Row="9" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="EunLabel"/>

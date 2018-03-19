@@ -35,7 +35,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
         private decimal _RemainingQty;
         public decimal RemainingQty
         {
-            get { return _RemainingQty; }
+            get { return System.Math.Round(_RemainingQty, 2); }
             set
             {
                 SetProperty(ref _RemainingQty, value);

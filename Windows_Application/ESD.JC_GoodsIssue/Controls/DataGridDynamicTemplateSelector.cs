@@ -16,9 +16,9 @@ namespace ESD.JC_GoodsIssue.Controls
             if (element != null && item != null)
             {
                 var gi = item as GITransaction;
-                if (gi.TransferType == "Production")
+                if (gi.TransferType == "TRANSFER_PROD")
                     dt = element.FindResource("Production") as DataTemplate;
-                if (gi.TransferType == "Posting")
+                if (gi.TransferType == "TRANSFER_POST")
                     dt = element.FindResource("Posting") as DataTemplate;
             }
             return dt;

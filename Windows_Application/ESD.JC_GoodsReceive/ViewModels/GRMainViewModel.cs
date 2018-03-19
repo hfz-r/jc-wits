@@ -253,8 +253,8 @@ namespace ESD.JC_GoodsReceive.ViewModels
         private void ImportGR(object ignored)
         {
             var dlg = new OpenFileDialog();
-            dlg.DefaultExt = ".csv|.xls|.xlsx";
-            dlg.Filter = "CSV files (*.csv)|*.csv|Excel documents (*.xls, *.xlsx)|*.xls;*.xlsx";
+            dlg.DefaultExt = ".xls|.xlsx|.csv";
+            dlg.Filter = "Excel documents (*.xls, *.xlsx)|*.xls;*.xlsx|CSV files (*.csv)|*.csv";
 
             tempCollection = new ObservableCollection<GoodsReceive>();
 
@@ -575,7 +575,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         private void PopulateRecords(ImportCLassModel rec, ObservableCollection<GoodsReceive> temp)
         {
-            if (grCollection.Where(sap => sap.Material != rec.Material).Count() > 0)
+            if (grCollection.Any(sap => sap.Material == rec.Material) == false)
             {
                 temp.Add(new GoodsReceive
                 {

@@ -21,28 +21,22 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="SAP No." Foreground="#FF525252"
+                <TextBlock Text="GR`s Purchase Order" Foreground="#FF525252"
                            Grid.Row="0" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding GoodsReceive.Material}" FontWeight="Bold"
+                <TextBlock Text="{Binding GoodsReceive.PurchaseOrder}" FontWeight="Bold"
                            Grid.Row="0" Grid.Column="1"/>
 
-                <TextBlock Text="GR`s Purchase Order" Foreground="#FF525252"
-                           Grid.Row="1" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding GoodsReceive.PurchaseOrder}" FontWeight="Bold"
-                           Grid.Row="1" Grid.Column="1"/>
-
                 <TextBlock Text="GR's Posting Date" Foreground="#FF525252"
-                           Grid.Row="2" Grid.Column="0" Margin="0,0,15,0"/>
+                           Grid.Row="1" Grid.Column="0" Margin="0,0,15,0"/>
                 <TextBlock Text="{Binding GoodsReceive.PostingDate}" FontWeight="Bold"
-                           Grid.Row="2" Grid.Column="1"/>
+                           Grid.Row="1" Grid.Column="1"/>
                 
                 <TextBlock Text="Quantity Issued" Foreground="#FF525252"
-                           Grid.Row="3" Grid.Column="0"/>
+                           Grid.Row="2" Grid.Column="0"/>
                 <TextBlock Text="{Binding Quantity}" FontWeight="Bold"
-                           Grid.Row="3" Grid.Column="1"/>
+                           Grid.Row="2" Grid.Column="1"/>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="Posting">
@@ -58,33 +52,27 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="SAP No." Foreground="#FF525252"
+                <TextBlock Text="GR`s Purchase Order" Foreground="#FF525252"
                            Grid.Row="0" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding GoodsReceive.Material}" FontWeight="Bold"
+                <TextBlock Text="{Binding GoodsReceive.PurchaseOrder}" FontWeight="Bold"
                            Grid.Row="0" Grid.Column="1"/>
 
-                <TextBlock Text="GR`s Purchase Order" Foreground="#FF525252"
-                           Grid.Row="1" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding GoodsReceive.PurchaseOrder}" FontWeight="Bold"
+                <TextBlock Text="Quantity Issued" Foreground="#FF525252"
+                           Grid.Row="1" Grid.Column="0"/>
+                <TextBlock Text="{Binding Quantity}" FontWeight="Bold"
                            Grid.Row="1" Grid.Column="1"/>
 
-                <TextBlock Text="Quantity Issued" Foreground="#FF525252"
+                <TextBlock Text="Total To (Location)" Foreground="#FF525252"
                            Grid.Row="2" Grid.Column="0"/>
-                <TextBlock Text="{Binding Quantity}" FontWeight="Bold"
+                <TextBlock Text="{Binding DataContext.TotalTo, ElementName=LayoutRoot}" FontWeight="Bold"
                            Grid.Row="2" Grid.Column="1"/>
 
-                <TextBlock Text="Total To (Location)" Foreground="#FF525252"
-                           Grid.Row="3" Grid.Column="0"/>
-                <TextBlock Text="{Binding DataContext.TotalTo, ElementName=LayoutRoot}" FontWeight="Bold"
-                           Grid.Row="3" Grid.Column="1"/>
-
                 <TextBlock Text="Total From (Location)" Foreground="#FF525252"
-                           Grid.Row="4" Grid.Column="0"/>
+                           Grid.Row="3" Grid.Column="0"/>
                 <TextBlock Text="{Binding DataContext.TotalFrom, ElementName=LayoutRoot}" FontWeight="Bold"
-                           Grid.Row="4" Grid.Column="1"/>
+                           Grid.Row="3" Grid.Column="1"/>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
