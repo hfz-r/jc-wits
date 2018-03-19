@@ -37,6 +37,7 @@ namespace ESD.WITS
             public int Qty { get; set; }
             public int QtyRcvd { get; set; }
             public int? Country { get; set; }
+            public int? Location { get; set; }
         }
 
         private class Location
@@ -75,6 +76,7 @@ namespace ESD.WITS
         private string ENMatShortText = string.Empty;
         private int FGQtyBal = 0;
         private AHUFCU AHUFCURec = new AHUFCU();
+        private bool isShip = false;
         #endregion
 
         #region Initialization
@@ -395,6 +397,7 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void btnGR_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             GetReason();
             pnlSelection.Visible = false;
             pnlGdReceipt.Visible = true;
@@ -404,6 +407,7 @@ namespace ESD.WITS
             txtGRSAPNo.SelectAll();
             txtGRQty.Text = "0";
             ResetNewRecord();//if new record
+            Cursor.Current = Cursors.Default;
         }
 
         /// <summary>
@@ -413,6 +417,7 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void btnGI_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             GetReason();
             pnlSelection.Visible = false;
             pnlGdIssue.Visible = true;
@@ -424,6 +429,7 @@ namespace ESD.WITS
             btnGIDelete.Enabled = false;
             rdBtnGITfrtoProd.Checked = true;
             rdBtnGITfrPosting.Checked = false;
+            Cursor.Current = Cursors.Default;
         }
 
         #endregion
@@ -441,6 +447,13 @@ namespace ESD.WITS
                 MessageBox.Show("SAP No. cannot be empty.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                 txtGRSAPNo.Focus();
                 txtGRSAPNo.SelectAll();
+                return false;
+            }
+            else if(string.IsNullOrEmpty(txtGRQty.Text))
+            {
+                MessageBox.Show("Enter Qty", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                txtGRQty.Focus();
+                txtGRQty.SelectAll();
                 return false;
             }
             else if (isPartialTxn && Convert.ToDouble(txtGRQtyRcvd.Text) < Convert.ToDouble(txtGRQtyOrdered.Text))
@@ -897,6 +910,9 @@ namespace ESD.WITS
                     string ReasonID = Convert.ToDouble(txtGRQty.Text) == Convert.ToDouble(txtGRQtyOrdered.Text) ? null : cmbBoxGRReason.Text;
                     if (MessageBox.Show("Confirm to post?", "Goods Receipt", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
                     {
+                        txtGRDelNote.Text = txtGRDelNote.Text.Replace("'", "''");
+                        txtGRBillLading.Text = txtGRBillLading.Text.Replace("'", "''"); 
+
                         Cursor.Current = Cursors.WaitCursor; // set the wait cursor
                         string sSQL = string.Empty;
                         sSQL += "DECLARE";
@@ -976,11 +992,16 @@ namespace ESD.WITS
 
         private void btnGRNext_Click(object sender, EventArgs e)
         {
-            pnlGdReceipt.Visible = false;
-            pnlGdReceiptCont.Visible = true;
-            pnlGdReceiptCont.Dock = DockStyle.Fill;
-            txtGRDelNote.Focus();
-            txtGRDelNote.SelectAll();
+            if (ValidateGR())
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                pnlGdReceipt.Visible = false;
+                pnlGdReceiptCont.Visible = true;
+                pnlGdReceiptCont.Dock = DockStyle.Fill;
+                txtGRDelNote.Focus();
+                txtGRDelNote.SelectAll();
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         private void btnGRHomeCont_Click(object sender, EventArgs e)
@@ -1118,8 +1139,9 @@ namespace ESD.WITS
         /// <summary>
         /// load location to
         /// </summary>
-        private void LoadLocation()
+        private DataTable LoadLocation()
         {
+            DataTable dtTo = new DataTable();
             string sSQL = string.Empty;
             sSQL = "SELECT [ID] ";
             sSQL += " ,[LocationDesc] ";
@@ -1129,27 +1151,54 @@ namespace ESD.WITS
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(sSQL, connection);
-
+            
                 using (SqlDataAdapter sda = new SqlDataAdapter(command))
                 {
-                    DataTable dtTo = new DataTable();
                     sda.Fill(dtTo);
 
-                    cmbBoxGILocTo.DataSource = dtTo;
-                    cmbBoxGILocTo.DisplayMember = "LocationDesc";
-                    cmbBoxGILocTo.ValueMember = "ID";
-                    cmbBoxGILocTo.SelectedIndex = -1;
+                    //cmbBoxGILocTo.DataSource = dtTo;
+                    //cmbBoxGILocTo.DisplayMember = "LocationDesc";
+                    //cmbBoxGILocTo.ValueMember = "ID";
+                    //cmbBoxGILocTo.SelectedIndex = -1;
 
-                    DataTable dtFrom = new DataTable();
-                    sda.Fill(dtFrom);
-                    cmbBoxGILocFrom.DataSource = dtFrom;
-                    cmbBoxGILocFrom.DisplayMember = "LocationDesc";
-                    cmbBoxGILocFrom.ValueMember = "ID";
-                    cmbBoxGILocFrom.SelectedIndex = -1;
+                    //DataTable dtFrom = new DataTable();
+                    //sda.Fill(dtFrom);
+                    //cmbBoxGILocFrom.DataSource = dtFrom;
+                    //cmbBoxGILocFrom.DisplayMember = "LocationDesc";
+                    //cmbBoxGILocFrom.ValueMember = "ID";
+                    //cmbBoxGILocFrom.SelectedIndex = -1;
 
                     connection.Close();
                 }
             }
+            return dtTo;
+        }
+
+        private void LoadLocationGITo()
+        {
+            DataTable dt = LoadLocation();
+            cmbBoxGILocTo.DataSource = dt;
+            cmbBoxGILocTo.DisplayMember = "LocationDesc";
+            cmbBoxGILocTo.ValueMember = "ID";
+            cmbBoxGILocTo.SelectedIndex = -1;
+        }
+
+        private void LoadLocationGIFrom()
+        {
+            DataTable dt = LoadLocation();
+            cmbBoxGILocFrom.DataSource = dt;
+            cmbBoxGILocFrom.DisplayMember = "LocationDesc";
+            cmbBoxGILocFrom.ValueMember = "ID";
+            cmbBoxGILocFrom.SelectedIndex = -1;
+        }
+
+        private void LoadLocationFG()
+        {
+            DataTable dt = LoadLocation();
+            cmbBoxFGLocation.DataSource = dt;
+            cmbBoxFGLocation.DisplayMember = "LocationDesc";
+            cmbBoxFGLocation.ValueMember = "ID";
+            cmbBoxFGLocation.SelectedIndex = -1;
         }
 
         /// <summary>
@@ -1496,6 +1545,8 @@ namespace ESD.WITS
                 {
                     if (MessageBox.Show("Confirm to submit?", "Good Receive", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
                     {
+                        txtGIProdNo.Text = txtGIProdNo.Text.Replace("'", "''");
+                        txtText.Text = txtText.Text.Replace("'", "''"); 
                         Cursor.Current = Cursors.WaitCursor;
                         string sSQL = string.Empty;
 
@@ -1569,12 +1620,45 @@ namespace ESD.WITS
         {
             if (GIList != null && GIList.Count > 0)
             {
-                pnlGdIssue.Visible = false;
-                pnlGdIssueSubmit.Visible = true;
-                pnlGdIssueSubmit.Dock = DockStyle.Fill;
-                LoadLocation();
-                txtText.Focus();
-                txtText.SelectAll();
+                if (!string.IsNullOrEmpty(txtGIQty.Text) && Convert.ToInt32(txtGIQty.Text) > 0)
+                {
+                    Cursor.Current = Cursors.WaitCursor;
+                    pnlGdIssue.Visible = false;
+                    pnlGdIssueSubmit.Visible = true;
+                    pnlGdIssueSubmit.Dock = DockStyle.Fill;
+                    LoadLocationGITo();
+                    LoadLocationGIFrom();
+                    txtText.Focus();
+                    txtText.SelectAll();
+                    Cursor.Current = Cursors.Default;
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(txtGIQty.Text))
+                    {
+                        MessageBox.Show("Enter Qty");
+                        txtGIQty.Focus();
+                    }
+                    else if (!string.IsNullOrEmpty(txtGIQty.Text) && Convert.ToInt32(txtGIQty.Text) == 0)
+                    {
+                        MessageBox.Show("Qty must be more than 0");
+                        txtGIQty.Focus();
+                    }
+                    else if (!string.IsNullOrEmpty(txtGIQty.Text) && !string.IsNullOrEmpty(txtGIQtyAvbl.Text)
+                        && Convert.ToInt32(txtGIQty.Text) > Convert.ToInt32(txtGIQtyAvbl.Text))
+                    {
+                        MessageBox.Show("Qty exceeded.\nQuantity available: " + Convert.ToInt32(txtGIQtyAvbl.Text));
+                        txtGIQty.Focus();
+                    }
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(txtGISAPNo.Text))
+                {
+                    MessageBox.Show("Enter SAP No");
+                    txtGISAPNo.Focus();
+                }
             }
         }
 
@@ -1618,15 +1702,29 @@ namespace ESD.WITS
             btFGMinusQty.Enabled = true;
             btFGAddQty.Enabled = true;
             txtFGQty.Enabled = true;
-            cmbBoxFGCountry.Enabled = true;
+            cmbBoxFGLocation.Enabled = true;
             txtFGSerial.Text = string.Empty;
             txtFGQty.Text = string.Empty;
-            cmbBoxFGCountry.SelectedIndex = 0;
-            cmbBoxFGCountry.SelectedIndex = -1;
+            if (cmbBoxFGCountry.SelectedItem != null)
+            {
+                cmbBoxFGCountry.SelectedIndex = 0;
+                cmbBoxFGCountry.SelectedIndex = -1;
+            }
+            if (cmbBoxFGLocation.SelectedItem != null)
+            {
+                cmbBoxFGLocation.SelectedIndex = 0;
+                cmbBoxFGLocation.SelectedIndex = -1;
+            }
             dataGrdFG.DataSource = null;
             rdBtnAHU.Enabled = true;
             rdBtnFCU.Enabled = true;
-            btnFGShip.Enabled = true;
+            btnFGNext.Enabled = true;
+            rdBtnFGTfrtoWarehse.Checked = true;
+            rdBtnFGTfrtoWarehse.Enabled = true;
+            lblFGLocation.Enabled = true;
+            rdBtnFGTfrtoCustomer.Checked = false;
+            rdBtnFGTfrtoCustomer.Enabled = false;
+            lblFGCountry.Enabled = false;
             FGQtyBal = 0;
             txtFGSerial.Focus();
             if (isClear)
@@ -1643,6 +1741,20 @@ namespace ESD.WITS
         {
             Cursor.Current = Cursors.WaitCursor; // set the wait cursor           
             string sSQL = string.Empty;
+            txtFGQty.Text = string.Empty;
+            if (cmbBoxFGCountry.SelectedItem != null)
+            {
+                cmbBoxFGCountry.SelectedIndex = 0;
+                cmbBoxFGCountry.SelectedIndex = -1;
+            }
+            if (cmbBoxFGLocation.SelectedItem != null)
+            {
+                cmbBoxFGLocation.SelectedIndex = 0;
+                cmbBoxFGLocation.SelectedIndex = -1;
+            }
+            cmbBoxFGCountry.Enabled = false;
+            lblFGCountry.Enabled = false;
+            dataGrdFG.DataSource = null;            
 
             if (rdBtnAHU.Checked)
             {
@@ -1655,10 +1767,11 @@ namespace ESD.WITS
                 sSQL += ", AHU.[Section]";
                 sSQL += ", ISNULL(SUM(AHUT.Quantity),0) AS QtyReceived";
                 sSQL += ", AHUT.[CountryID]";
+                sSQL += ", AHUT.[LocationID]";
                 sSQL += " FROM [dbo].[AHU] AHU";
                 sSQL += " LEFT OUTER JOIN [dbo].[AHUTransaction] AHUT ON AHU.ID = AHUT.AHUID";
                 sSQL += " WHERE [SerialNo] = '" + txtFGSerial.Text + "'";
-                sSQL += " GROUP BY AHU.[ID], AHU.[Project], AHU.[UnitTag], AHU.[PartNo], AHU.[Model], AHU.[Item], AHU.[Section], AHUT.[CountryID]";
+                sSQL += " GROUP BY AHU.[ID], AHU.[Project], AHU.[UnitTag], AHU.[PartNo], AHU.[Model], AHU.[Item], AHU.[Section], AHUT.[CountryID], AHUT.[LocationID]";
             }
             else if (rdBtnFCU.Checked)
             {
@@ -1671,10 +1784,11 @@ namespace ESD.WITS
                 sSQL += ", FCU.[Qty]";
                 sSQL += ", ISNULL(SUM(FCUT.Quantity),0) AS QtyReceived";
                 sSQL += ", FCUT.[CountryID]";
+                sSQL += ", FCUT.[LocationID]";
                 sSQL += " FROM [dbo].[FCU] FCU";
                 sSQL += " LEFT OUTER JOIN [dbo].[FCUTransaction] FCUT ON FCU.ID = FCUT.FCUID";
                 sSQL += " WHERE [SerialNo] = '" + txtFGSerial.Text + "'";
-                sSQL += " GROUP BY FCU.[ID], FCU.[Project], FCU.[UnitTag], FCU.[PartNo], FCU.[Model], FCU.[Item], FCU.[Qty], FCUT.[CountryID]";
+                sSQL += " GROUP BY FCU.[ID], FCU.[Project], FCU.[UnitTag], FCU.[PartNo], FCU.[Model], FCU.[Item], FCU.[Qty], FCUT.[CountryID], FCUT.[LocationID]";
             }
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1693,7 +1807,8 @@ namespace ESD.WITS
                         AHUFCURec.Model = reader[4].ToString();
                         AHUFCURec.Item = reader[5].ToString();
                         AHUFCURec.QtyRcvd = Convert.ToInt32(reader[7]);
-                        AHUFCURec.Country = (reader[8] == System.DBNull.Value) ? (int?)null : (int)reader[8];
+                        AHUFCURec.Country = (reader[8] == System.DBNull.Value) ? (int?)null : int.Parse(reader[8].ToString());
+                        AHUFCURec.Location = (reader[9] == System.DBNull.Value) ? (int?)null : int.Parse(reader[9].ToString());
 
                         btFGMinusQty.Enabled = true;
                         btFGAddQty.Enabled = true;
@@ -1816,19 +1931,46 @@ namespace ESD.WITS
                         dataGrdFG.DataSource = t;
                         Cursor.Current = Cursors.Default;
 
-                        if ((rdBtnAHU.Checked && AHUFCURec.QtyRcvd == AHUFCURec.Section) || 
+                        if ((rdBtnAHU.Checked && AHUFCURec.QtyRcvd == AHUFCURec.Section) ||
                             (rdBtnFCU.Checked && AHUFCURec.QtyRcvd == AHUFCURec.Qty))
                         {
+                            LoadLocationFG();
+                            LoadCountry();
                             btFGMinusQty.Enabled = false;
                             btFGAddQty.Enabled = false;
                             txtFGQty.Text = AHUFCURec.QtyRcvd.ToString();
                             txtFGQty.Enabled = false;
+                            rdBtnFGTfrtoCustomer.Checked = AHUFCURec.Country == null ? false : true;
+                            rdBtnFGTfrtoWarehse.Checked = AHUFCURec.Location == null ? false : true;
+                            cmbBoxFGCountry.SelectedValue = AHUFCURec.Country == null ? -1 : AHUFCURec.Country;
+                            cmbBoxFGLocation.SelectedValue = AHUFCURec.Location == null ? -1 : AHUFCURec.Location;
+                            cmbBoxFGLocation.Enabled = false;
                             cmbBoxFGCountry.Enabled = false;
-                            cmbBoxFGCountry.SelectedValue = AHUFCURec.Country;
-                            rdBtnFCU.Enabled = false;
-                            rdBtnAHU.Enabled = false;
+                            rdBtnFGTfrtoCustomer.Enabled = false;
+                            rdBtnFGTfrtoWarehse.Enabled = false;
                             btnFGShip.Enabled = false;
+                            lblFGQty.Enabled = false;
+                            lblFGLocation.Enabled = false;
+                            lblFGCountry.Enabled = false;
                             MessageBox.Show("All package has been shipped.");
+                            isShip = true;
+                        }
+                        else
+                        {
+                            btFGMinusQty.Enabled = true;
+                            btFGAddQty.Enabled = true;
+                            txtFGQty.Enabled = true;
+                            rdBtnFGTfrtoWarehse.Checked = true;
+                            cmbBoxFGLocation.Enabled = true;
+                            rdBtnFGTfrtoWarehse.Enabled = true;
+                            rdBtnFGTfrtoCustomer.Checked = false;
+                            rdBtnFGTfrtoCustomer.Enabled = true;
+                            cmbBoxFGCountry.Enabled = false;
+                            btnFGShip.Enabled = true;
+                            lblFGQty.Enabled = true;
+                            lblFGLocation.Enabled = true;
+                            lblFGCountry.Enabled = false;
+                            isShip = false;
                         }
                     }
                     else
@@ -1836,6 +1978,7 @@ namespace ESD.WITS
                         Cursor.Current = Cursors.Default;
                         ClearFGCache(false);
                         MessageBox.Show("Serial No. does not exist.");
+                        isShip = false;
                     }
                 }
                 connection.Close();
@@ -1848,28 +1991,13 @@ namespace ESD.WITS
         /// <returns></returns>
         private bool ValidateFG()
         {
-            if (string.IsNullOrEmpty(txtFGSerial.Text))
+            if (rdBtnFGTfrtoWarehse.Checked && cmbBoxFGLocation.SelectedIndex == -1)
             {
-                MessageBox.Show("Enter Serial No");
-                txtFGSerial.Focus();
+                MessageBox.Show("Select Location");
+                cmbBoxFGLocation.Focus();
                 return false;
             }
-            else if (string.IsNullOrEmpty(txtFGQty.Text) && FGQtyBal > 0)
-            {
-                MessageBox.Show("Enter Qty");
-                txtFGQty.Focus();
-                return false;
-            }
-            else if (!string.IsNullOrEmpty(txtFGQty.Text) && FGQtyBal > 0)
-            {
-                if (Convert.ToDouble(txtFGQty.Text) > FGQtyBal)
-                {
-                    MessageBox.Show("Qty exceeded.\nQuantity available: " + FGQtyBal);
-                    txtFGQty.Focus();
-                    return false;
-                }
-            }
-            if (string.IsNullOrEmpty(cmbBoxFGCountry.Text))
+            else if (rdBtnFGTfrtoCustomer.Checked && cmbBoxFGCountry.SelectedIndex == -1)
             {
                 MessageBox.Show("Select Country");
                 cmbBoxFGCountry.Focus();
@@ -1885,13 +2013,14 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void btnOutbound_Click(object sender, EventArgs e)
         {
-            LoadCountry();
+            Cursor.Current = Cursors.WaitCursor;
             pnlSelection.Visible = false;
             pnlFG.Visible = true;
             pnlFG.Dock = DockStyle.Fill;
+            txtFGSerial.Focus();
             rdBtnAHU.Checked = true;
             rdBtnFCU.Checked = false;
-            txtFGSerial.Focus();
+            Cursor.Current = Cursors.Default;
         }
 
         /// <summary>
@@ -1935,12 +2064,14 @@ namespace ESD.WITS
 
                             sSQL += " ,[Quantity]";
                             sSQL += " ,[CountryID]";
+                            sSQL += " ,[LocationID]";
                             sSQL += " ,[CreatedOn]";
                             sSQL += " ,[CreatedBy])";
                             sSQL += " VALUES";
                             sSQL += " (" + AHUFCURec.ID;
                             sSQL += " ," + txtFGQty.Text;
-                            sSQL += " ," + cmbBoxFGCountry.SelectedValue;
+                            sSQL += cmbBoxFGCountry.SelectedValue != null ? " ," + cmbBoxFGCountry.SelectedValue + "" : " ,NULL";
+                            sSQL += cmbBoxFGLocation.SelectedValue != null ? " ," + cmbBoxFGLocation.SelectedValue + "" : " ,NULL";
                             sSQL += " ,'" + DateTime.Now + "'";
                             sSQL += " ,'" + userID + "')";
 
@@ -1961,6 +2092,10 @@ namespace ESD.WITS
                     ClearFGCache(false);
                     txtFGSerial.Focus();
                     txtFGSerial.SelectAll();
+                    ResetNewRecord();
+                    pnlFGSubmit.Visible = false;
+                    pnlFG.Visible = true;
+                    pnlFG.Dock = DockStyle.Fill;
                 }
             }
         }
@@ -2057,6 +2192,112 @@ namespace ESD.WITS
                     txtFGQty.Text = increasedVal.ToString();
                 }
             }
+        }
+
+        /// <summary>
+        /// Navigate to next page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnFGNext_Click(object sender, EventArgs e)
+        {
+            if (!isShip)
+            {
+                if (dataGrdFG != null && dataGrdFG.DataSource != null)
+                {
+                    if (!string.IsNullOrEmpty(txtFGQty.Text) && Convert.ToInt32(txtFGQty.Text) > 0)
+                    {
+                        Cursor.Current = Cursors.WaitCursor;
+                        LoadLocationFG();
+                        LoadCountry();
+                        pnlFG.Visible = false;
+                        pnlFGSubmit.Visible = true;
+                        pnlFGSubmit.Dock = DockStyle.Fill;
+                        txtText.Focus();
+                        txtText.SelectAll();
+                        rdBtnFGTfrtoCustomer.Checked = false;
+                        lblFGCountry.Enabled = false;
+                        cmbBoxFGCountry.Enabled = false;
+                        rdBtnFGTfrtoWarehse.Checked = true;
+                        lblFGLocation.Enabled = true;
+                        cmbBoxFGLocation.Enabled = true;
+                        Cursor.Current = Cursors.Default;
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(txtFGQty.Text))
+                        {
+                            MessageBox.Show("Enter Qty");
+                            txtFGQty.Focus();
+                        }
+                        else if (!string.IsNullOrEmpty(txtFGQty.Text) && Convert.ToInt32(txtFGQty.Text) == 0)
+                        {
+                            MessageBox.Show("Qty must be more than 0");
+                            txtFGQty.Focus();
+                        }
+                        else if (!string.IsNullOrEmpty(txtFGQty.Text) && FGQtyBal > 0)
+                        {
+                            if (Convert.ToDouble(txtFGQty.Text) > FGQtyBal)
+                            {
+                                MessageBox.Show("Qty exceeded.\nQuantity available: " + FGQtyBal);
+                                txtFGQty.Focus();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(txtFGSerial.Text))
+                    {
+                        MessageBox.Show("Enter Serial No");
+                        txtFGSerial.Focus();
+                    }
+                }
+            }
+            else
+            {
+                pnlFG.Visible = false;
+                pnlFGSubmit.Visible = true;
+                pnlFGSubmit.Dock = DockStyle.Fill;
+            }
+        }
+
+        /// <summary>
+        /// Display field visibility
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdBtnFGTfrtoWarehse_CheckedChanged(object sender, EventArgs e)
+        {
+            lblFGLocation.Enabled = true;
+            cmbBoxFGLocation.Enabled = true;
+            lblFGCountry.Enabled = false;
+            cmbBoxFGCountry.Enabled = false;
+        }
+
+        /// <summary>
+        /// Display field visibility
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rdBtnFGTfrtoCustomer_CheckedChanged(object sender, EventArgs e)
+        {
+            lblFGLocation.Enabled = false;
+            cmbBoxFGLocation.Enabled = false;
+            lblFGCountry.Enabled = true;
+            cmbBoxFGCountry.Enabled = true;
+        }
+
+        /// <summary>
+        /// Return to FG Main page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnFGBack_Click(object sender, EventArgs e)
+        {
+            pnlFGSubmit.Visible = false;
+            pnlFG.Visible = true;
+            pnlFG.Dock = DockStyle.Fill;
         }
 
         #endregion

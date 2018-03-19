@@ -107,15 +107,13 @@
             this.label17 = new System.Windows.Forms.Label();
             this.rdBtnFCU = new System.Windows.Forms.RadioButton();
             this.rdBtnAHU = new System.Windows.Forms.RadioButton();
-            this.cmbBoxFGCountry = new System.Windows.Forms.ComboBox();
-            this.label15 = new System.Windows.Forms.Label();
             this.btnFGClear = new System.Windows.Forms.Button();
-            this.btnFGShip = new System.Windows.Forms.Button();
+            this.btnFGNext = new System.Windows.Forms.Button();
             this.btnFGHome = new System.Windows.Forms.PictureBox();
             this.btFGAddQty = new System.Windows.Forms.Button();
             this.btFGMinusQty = new System.Windows.Forms.Button();
             this.txtFGQty = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
+            this.lblFGQty = new System.Windows.Forms.Label();
             this.dataGrdFG = new System.Windows.Forms.DataGrid();
             this.txtFGSerial = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -130,6 +128,18 @@
             this.btnGRHomeCont = new System.Windows.Forms.PictureBox();
             this.label22 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
+            this.pnlFGSubmit = new System.Windows.Forms.Panel();
+            this.cmbBoxFGLocation = new System.Windows.Forms.ComboBox();
+            this.lblFGLocation = new System.Windows.Forms.Label();
+            this.rdBtnFGTfrtoCustomer = new System.Windows.Forms.RadioButton();
+            this.rdBtnFGTfrtoWarehse = new System.Windows.Forms.RadioButton();
+            this.cmbBoxFGCountry = new System.Windows.Forms.ComboBox();
+            this.lblFGCountry = new System.Windows.Forms.Label();
+            this.btnFGBack = new System.Windows.Forms.Button();
+            this.btnFGShip = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.btnFGClearSubmit = new System.Windows.Forms.Button();
             this.pnlLogin.SuspendLayout();
             this.pnlSelection.SuspendLayout();
             this.pnlGdReceipt.SuspendLayout();
@@ -137,6 +147,7 @@
             this.pnlGdIssueSubmit.SuspendLayout();
             this.pnlFG.SuspendLayout();
             this.pnlGdReceiptCont.SuspendLayout();
+            this.pnlFGSubmit.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSignIn
@@ -887,15 +898,13 @@
             this.pnlFG.Controls.Add(this.label17);
             this.pnlFG.Controls.Add(this.rdBtnFCU);
             this.pnlFG.Controls.Add(this.rdBtnAHU);
-            this.pnlFG.Controls.Add(this.cmbBoxFGCountry);
-            this.pnlFG.Controls.Add(this.label15);
             this.pnlFG.Controls.Add(this.btnFGClear);
-            this.pnlFG.Controls.Add(this.btnFGShip);
+            this.pnlFG.Controls.Add(this.btnFGNext);
             this.pnlFG.Controls.Add(this.btnFGHome);
             this.pnlFG.Controls.Add(this.btFGAddQty);
             this.pnlFG.Controls.Add(this.btFGMinusQty);
             this.pnlFG.Controls.Add(this.txtFGQty);
-            this.pnlFG.Controls.Add(this.label14);
+            this.pnlFG.Controls.Add(this.lblFGQty);
             this.pnlFG.Controls.Add(this.dataGrdFG);
             this.pnlFG.Controls.Add(this.txtFGSerial);
             this.pnlFG.Controls.Add(this.label11);
@@ -930,40 +939,25 @@
             this.rdBtnAHU.Text = "AHU";
             this.rdBtnAHU.Click += new System.EventHandler(this.rdBtnAHU_Click);
             // 
-            // cmbBoxFGCountry
-            // 
-            this.cmbBoxFGCountry.Location = new System.Drawing.Point(80, 135);
-            this.cmbBoxFGCountry.Name = "cmbBoxFGCountry";
-            this.cmbBoxFGCountry.Size = new System.Drawing.Size(152, 23);
-            this.cmbBoxFGCountry.TabIndex = 7;
-            // 
-            // label15
-            // 
-            this.label15.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label15.Location = new System.Drawing.Point(7, 138);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(74, 20);
-            this.label15.Text = "Country:";
-            // 
             // btnFGClear
             // 
             this.btnFGClear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.btnFGClear.Location = new System.Drawing.Point(96, 256);
             this.btnFGClear.Name = "btnFGClear";
             this.btnFGClear.Size = new System.Drawing.Size(65, 24);
-            this.btnFGClear.TabIndex = 8;
+            this.btnFGClear.TabIndex = 7;
             this.btnFGClear.Text = "Clear";
             this.btnFGClear.Click += new System.EventHandler(this.btnFGClear_Click);
             // 
-            // btnFGShip
+            // btnFGNext
             // 
-            this.btnFGShip.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.btnFGShip.Location = new System.Drawing.Point(167, 256);
-            this.btnFGShip.Name = "btnFGShip";
-            this.btnFGShip.Size = new System.Drawing.Size(65, 24);
-            this.btnFGShip.TabIndex = 9;
-            this.btnFGShip.Text = "Ship";
-            this.btnFGShip.Click += new System.EventHandler(this.btnFGShip_Click);
+            this.btnFGNext.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnFGNext.Location = new System.Drawing.Point(167, 256);
+            this.btnFGNext.Name = "btnFGNext";
+            this.btnFGNext.Size = new System.Drawing.Size(65, 24);
+            this.btnFGNext.TabIndex = 8;
+            this.btnFGNext.Text = "Next";
+            this.btnFGNext.Click += new System.EventHandler(this.btnFGNext_Click);
             // 
             // btnFGHome
             // 
@@ -1001,20 +995,20 @@
             this.txtFGQty.TabIndex = 5;
             this.txtFGQty.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumeric_KeyPress);
             // 
-            // label14
+            // lblFGQty
             // 
-            this.label14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label14.Location = new System.Drawing.Point(7, 108);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(100, 20);
-            this.label14.Text = "Quantity:";
+            this.lblFGQty.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.lblFGQty.Location = new System.Drawing.Point(7, 108);
+            this.lblFGQty.Name = "lblFGQty";
+            this.lblFGQty.Size = new System.Drawing.Size(100, 20);
+            this.lblFGQty.Text = "Quantity:";
             // 
             // dataGrdFG
             // 
             this.dataGrdFG.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.dataGrdFG.Location = new System.Drawing.Point(7, 167);
+            this.dataGrdFG.Location = new System.Drawing.Point(7, 133);
             this.dataGrdFG.Name = "dataGrdFG";
-            this.dataGrdFG.Size = new System.Drawing.Size(226, 72);
+            this.dataGrdFG.Size = new System.Drawing.Size(226, 106);
             this.dataGrdFG.TabIndex = 40;
             // 
             // txtFGSerial
@@ -1141,6 +1135,122 @@
             this.label23.Size = new System.Drawing.Size(124, 20);
             this.label23.Text = "Bill of Lading:";
             // 
+            // pnlFGSubmit
+            // 
+            this.pnlFGSubmit.BackColor = System.Drawing.SystemColors.Window;
+            this.pnlFGSubmit.Controls.Add(this.btnFGClearSubmit);
+            this.pnlFGSubmit.Controls.Add(this.cmbBoxFGLocation);
+            this.pnlFGSubmit.Controls.Add(this.lblFGLocation);
+            this.pnlFGSubmit.Controls.Add(this.rdBtnFGTfrtoCustomer);
+            this.pnlFGSubmit.Controls.Add(this.rdBtnFGTfrtoWarehse);
+            this.pnlFGSubmit.Controls.Add(this.cmbBoxFGCountry);
+            this.pnlFGSubmit.Controls.Add(this.lblFGCountry);
+            this.pnlFGSubmit.Controls.Add(this.btnFGBack);
+            this.pnlFGSubmit.Controls.Add(this.btnFGShip);
+            this.pnlFGSubmit.Controls.Add(this.pictureBox1);
+            this.pnlFGSubmit.Controls.Add(this.label25);
+            this.pnlFGSubmit.Location = new System.Drawing.Point(987, 299);
+            this.pnlFGSubmit.Name = "pnlFGSubmit";
+            this.pnlFGSubmit.Size = new System.Drawing.Size(240, 292);
+            // 
+            // cmbBoxFGLocation
+            // 
+            this.cmbBoxFGLocation.Location = new System.Drawing.Point(103, 73);
+            this.cmbBoxFGLocation.Name = "cmbBoxFGLocation";
+            this.cmbBoxFGLocation.Size = new System.Drawing.Size(118, 23);
+            this.cmbBoxFGLocation.TabIndex = 2;
+            // 
+            // lblFGLocation
+            // 
+            this.lblFGLocation.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.lblFGLocation.Location = new System.Drawing.Point(33, 76);
+            this.lblFGLocation.Name = "lblFGLocation";
+            this.lblFGLocation.Size = new System.Drawing.Size(74, 20);
+            this.lblFGLocation.Text = "Location:";
+            // 
+            // rdBtnFGTfrtoCustomer
+            // 
+            this.rdBtnFGTfrtoCustomer.Location = new System.Drawing.Point(17, 110);
+            this.rdBtnFGTfrtoCustomer.Name = "rdBtnFGTfrtoCustomer";
+            this.rdBtnFGTfrtoCustomer.Size = new System.Drawing.Size(155, 20);
+            this.rdBtnFGTfrtoCustomer.TabIndex = 3;
+            this.rdBtnFGTfrtoCustomer.Text = "Transfer to Customer";
+            this.rdBtnFGTfrtoCustomer.CheckedChanged += new System.EventHandler(this.rdBtnFGTfrtoCustomer_CheckedChanged);
+            // 
+            // rdBtnFGTfrtoWarehse
+            // 
+            this.rdBtnFGTfrtoWarehse.Location = new System.Drawing.Point(17, 48);
+            this.rdBtnFGTfrtoWarehse.Name = "rdBtnFGTfrtoWarehse";
+            this.rdBtnFGTfrtoWarehse.Size = new System.Drawing.Size(193, 20);
+            this.rdBtnFGTfrtoWarehse.TabIndex = 1;
+            this.rdBtnFGTfrtoWarehse.Text = "Transfer to Warehouse";
+            this.rdBtnFGTfrtoWarehse.CheckedChanged += new System.EventHandler(this.rdBtnFGTfrtoWarehse_CheckedChanged);
+            // 
+            // cmbBoxFGCountry
+            // 
+            this.cmbBoxFGCountry.Location = new System.Drawing.Point(103, 135);
+            this.cmbBoxFGCountry.Name = "cmbBoxFGCountry";
+            this.cmbBoxFGCountry.Size = new System.Drawing.Size(118, 23);
+            this.cmbBoxFGCountry.TabIndex = 4;
+            // 
+            // lblFGCountry
+            // 
+            this.lblFGCountry.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.lblFGCountry.Location = new System.Drawing.Point(33, 138);
+            this.lblFGCountry.Name = "lblFGCountry";
+            this.lblFGCountry.Size = new System.Drawing.Size(74, 20);
+            this.lblFGCountry.Text = "Country:";
+            // 
+            // btnFGBack
+            // 
+            this.btnFGBack.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnFGBack.Location = new System.Drawing.Point(72, 256);
+            this.btnFGBack.Name = "btnFGBack";
+            this.btnFGBack.Size = new System.Drawing.Size(50, 24);
+            this.btnFGBack.TabIndex = 5;
+            this.btnFGBack.Text = "Back";
+            this.btnFGBack.Click += new System.EventHandler(this.btnFGBack_Click);
+            // 
+            // btnFGShip
+            // 
+            this.btnFGShip.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnFGShip.Location = new System.Drawing.Point(184, 256);
+            this.btnFGShip.Name = "btnFGShip";
+            this.btnFGShip.Size = new System.Drawing.Size(50, 24);
+            this.btnFGShip.TabIndex = 6;
+            this.btnFGShip.Text = "Ship";
+            this.btnFGShip.Click += new System.EventHandler(this.btnFGShip_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(11, 248);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(40, 37);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.Click += new System.EventHandler(this.btnFGHome_Click);
+            // 
+            // label25
+            // 
+            this.label25.BackColor = System.Drawing.Color.Transparent;
+            this.label25.Font = new System.Drawing.Font("Tahoma", 16F, System.Drawing.FontStyle.Bold);
+            this.label25.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.label25.Location = new System.Drawing.Point(3, 12);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(236, 28);
+            this.label25.Text = "Outbound Delivery";
+            this.label25.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // btnFGClearSubmit
+            // 
+            this.btnFGClearSubmit.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnFGClearSubmit.Location = new System.Drawing.Point(128, 256);
+            this.btnFGClearSubmit.Name = "btnFGClearSubmit";
+            this.btnFGClearSubmit.Size = new System.Drawing.Size(50, 24);
+            this.btnFGClearSubmit.TabIndex = 51;
+            this.btnFGClearSubmit.Text = "Clear";
+            this.btnFGClearSubmit.Click += new System.EventHandler(this.btnFGClear_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1149,6 +1259,7 @@
             this.BackColor = System.Drawing.Color.MintCream;
             this.ClientSize = new System.Drawing.Size(1247, 610);
             this.ControlBox = false;
+            this.Controls.Add(this.pnlFGSubmit);
             this.Controls.Add(this.pnlGdReceiptCont);
             this.Controls.Add(this.pnlFG);
             this.Controls.Add(this.pnlGdIssueSubmit);
@@ -1166,6 +1277,7 @@
             this.pnlGdIssueSubmit.ResumeLayout(false);
             this.pnlFG.ResumeLayout(false);
             this.pnlGdReceiptCont.ResumeLayout(false);
+            this.pnlFGSubmit.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1253,10 +1365,10 @@
         private System.Windows.Forms.Button btFGAddQty;
         private System.Windows.Forms.Button btFGMinusQty;
         private System.Windows.Forms.TextBox txtFGQty;
-        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label lblFGQty;
         private System.Windows.Forms.DataGrid dataGrdFG;
         private System.Windows.Forms.Button btnFGClear;
-        private System.Windows.Forms.Button btnFGShip;
+        private System.Windows.Forms.Button btnFGNext;
         private System.Windows.Forms.PictureBox btnFGHome;
         private System.Windows.Forms.Panel pnlGdReceiptCont;
         private System.Windows.Forms.Button btnGRBack;
@@ -1268,11 +1380,21 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Button btnGRContClear;
         private System.Windows.Forms.TextBox txtGRBillLading;
-        private System.Windows.Forms.ComboBox cmbBoxFGCountry;
-        private System.Windows.Forms.Label label15;
         private System.Windows.Forms.RadioButton rdBtnFCU;
         private System.Windows.Forms.RadioButton rdBtnAHU;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Panel pnlFGSubmit;
+        private System.Windows.Forms.ComboBox cmbBoxFGCountry;
+        private System.Windows.Forms.Label lblFGCountry;
+        private System.Windows.Forms.Button btnFGBack;
+        private System.Windows.Forms.Button btnFGShip;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.RadioButton rdBtnFGTfrtoCustomer;
+        private System.Windows.Forms.RadioButton rdBtnFGTfrtoWarehse;
+        private System.Windows.Forms.ComboBox cmbBoxFGLocation;
+        private System.Windows.Forms.Label lblFGLocation;
+        private System.Windows.Forms.Button btnFGClearSubmit;
     }
 }
 
