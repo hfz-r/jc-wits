@@ -456,6 +456,13 @@ namespace ESD.WITS
                 txtGRQty.SelectAll();
                 return false;
             }
+            else if (!string.IsNullOrEmpty(txtGRQty.Text) && Convert.ToDouble(txtGRQty.Text) == 0)
+            {
+                MessageBox.Show("Qty must be more than 0", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                txtGRQty.Focus();
+                txtGRQty.SelectAll();
+                return false;
+            }
             else if (isPartialTxn && Convert.ToDouble(txtGRQtyRcvd.Text) < Convert.ToDouble(txtGRQtyOrdered.Text))
             {
                 double remaining = Convert.ToDouble(txtGRQtyOrdered.Text) - Convert.ToDouble(txtGRQtyRcvd.Text);
@@ -566,11 +573,12 @@ namespace ESD.WITS
             sSQL += ", ISNULL(SUM(GRT.Quantity),0) AS QtyOrdered";
             sSQL += ", GR.[DeliveryNote]";
             sSQL += ", GR.[BillOfLading]";
+            sSQL += ", GR.[PurchaseOrder]";
             sSQL += " FROM [dbo].[GoodsReceive] GR";
             sSQL += " LEFT OUTER JOIN [dbo].[GRTransaction] GRT";
             sSQL += " ON GR.ID = GRT.GRID";
             sSQL += " WHERE GR.[Material] = '" + txtGRSAPNo.Text + "'";
-            sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Ok], GR.[Quantity], GR.[Eun], GR.[DeliveryNote], GR.[BillOfLading]";
+            sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Ok], GR.[Quantity], GR.[Eun], GR.[DeliveryNote], GR.[BillOfLading], GR.[PurchaseOrder]";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -595,6 +603,7 @@ namespace ESD.WITS
                             (Convert.ToInt64(Math.Floor(Convert.ToDouble(qtyRcvd)))).ToString() : qtyRcvd.ToString();
                         txtGRDelNote.Text = reader[6].ToString();
                         txtGRBillLading.Text = reader[7].ToString();
+                        txtGRPurchaseOrder.Text = reader[8].ToString();
                         txtGRMSDesc.BackColor = Color.Black;
                         txtGRQtyOrdered.BackColor = Color.Black;
                         txtGROrderedEun.BackColor = Color.Black;

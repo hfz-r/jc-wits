@@ -129,6 +129,7 @@
             this.label22 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.pnlFGSubmit = new System.Windows.Forms.Panel();
+            this.btnFGClearSubmit = new System.Windows.Forms.Button();
             this.cmbBoxFGLocation = new System.Windows.Forms.ComboBox();
             this.lblFGLocation = new System.Windows.Forms.Label();
             this.rdBtnFGTfrtoCustomer = new System.Windows.Forms.RadioButton();
@@ -139,7 +140,8 @@
             this.btnFGShip = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label25 = new System.Windows.Forms.Label();
-            this.btnFGClearSubmit = new System.Windows.Forms.Button();
+            this.txtGRPurchaseOrder = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.pnlLogin.SuspendLayout();
             this.pnlSelection.SuspendLayout();
             this.pnlGdReceipt.SuspendLayout();
@@ -1041,6 +1043,8 @@
             // pnlGdReceiptCont
             // 
             this.pnlGdReceiptCont.BackColor = System.Drawing.SystemColors.HighlightText;
+            this.pnlGdReceiptCont.Controls.Add(this.txtGRPurchaseOrder);
+            this.pnlGdReceiptCont.Controls.Add(this.label14);
             this.pnlGdReceiptCont.Controls.Add(this.btnGRContClear);
             this.pnlGdReceiptCont.Controls.Add(this.txtGRBillLading);
             this.pnlGdReceiptCont.Controls.Add(this.btnGRBack);
@@ -1067,9 +1071,9 @@
             // 
             // txtGRBillLading
             // 
-            this.txtGRBillLading.Location = new System.Drawing.Point(117, 72);
+            this.txtGRBillLading.Location = new System.Drawing.Point(112, 68);
             this.txtGRBillLading.Name = "txtGRBillLading";
-            this.txtGRBillLading.Size = new System.Drawing.Size(115, 23);
+            this.txtGRBillLading.Size = new System.Drawing.Size(120, 23);
             this.txtGRBillLading.TabIndex = 2;
             // 
             // btnGRBack
@@ -1094,9 +1098,9 @@
             // 
             // txtGRDelNote
             // 
-            this.txtGRDelNote.Location = new System.Drawing.Point(117, 39);
+            this.txtGRDelNote.Location = new System.Drawing.Point(112, 39);
             this.txtGRDelNote.Name = "txtGRDelNote";
-            this.txtGRDelNote.Size = new System.Drawing.Size(115, 23);
+            this.txtGRDelNote.Size = new System.Drawing.Size(120, 23);
             this.txtGRDelNote.TabIndex = 1;
             // 
             // label21
@@ -1130,7 +1134,7 @@
             // label23
             // 
             this.label23.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label23.Location = new System.Drawing.Point(8, 72);
+            this.label23.Location = new System.Drawing.Point(7, 72);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(124, 20);
             this.label23.Text = "Bill of Lading:";
@@ -1152,6 +1156,16 @@
             this.pnlFGSubmit.Location = new System.Drawing.Point(987, 299);
             this.pnlFGSubmit.Name = "pnlFGSubmit";
             this.pnlFGSubmit.Size = new System.Drawing.Size(240, 292);
+            // 
+            // btnFGClearSubmit
+            // 
+            this.btnFGClearSubmit.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.btnFGClearSubmit.Location = new System.Drawing.Point(128, 256);
+            this.btnFGClearSubmit.Name = "btnFGClearSubmit";
+            this.btnFGClearSubmit.Size = new System.Drawing.Size(50, 24);
+            this.btnFGClearSubmit.TabIndex = 51;
+            this.btnFGClearSubmit.Text = "Clear";
+            this.btnFGClearSubmit.Click += new System.EventHandler(this.btnFGClear_Click);
             // 
             // cmbBoxFGLocation
             // 
@@ -1241,15 +1255,21 @@
             this.label25.Text = "Outbound Delivery";
             this.label25.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // btnFGClearSubmit
+            // txtGRPurchaseOrder
             // 
-            this.btnFGClearSubmit.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.btnFGClearSubmit.Location = new System.Drawing.Point(128, 256);
-            this.btnFGClearSubmit.Name = "btnFGClearSubmit";
-            this.btnFGClearSubmit.Size = new System.Drawing.Size(50, 24);
-            this.btnFGClearSubmit.TabIndex = 51;
-            this.btnFGClearSubmit.Text = "Clear";
-            this.btnFGClearSubmit.Click += new System.EventHandler(this.btnFGClear_Click);
+            this.txtGRPurchaseOrder.Location = new System.Drawing.Point(112, 98);
+            this.txtGRPurchaseOrder.Name = "txtGRPurchaseOrder";
+            this.txtGRPurchaseOrder.ReadOnly = true;
+            this.txtGRPurchaseOrder.Size = new System.Drawing.Size(120, 23);
+            this.txtGRPurchaseOrder.TabIndex = 11;
+            // 
+            // label14
+            // 
+            this.label14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label14.Location = new System.Drawing.Point(7, 102);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(115, 20);
+            this.label14.Text = "PO:";
             // 
             // frmMain
             // 
@@ -1395,6 +1415,8 @@
         private System.Windows.Forms.ComboBox cmbBoxFGLocation;
         private System.Windows.Forms.Label lblFGLocation;
         private System.Windows.Forms.Button btnFGClearSubmit;
+        private System.Windows.Forms.TextBox txtGRPurchaseOrder;
+        private System.Windows.Forms.Label label14;
     }
 }
 
