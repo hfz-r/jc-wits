@@ -119,6 +119,8 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.pnlGdReceiptCont = new System.Windows.Forms.Panel();
+            this.txtGRPurchaseOrder = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.btnGRContClear = new System.Windows.Forms.Button();
             this.txtGRBillLading = new System.Windows.Forms.TextBox();
             this.btnGRBack = new System.Windows.Forms.Button();
@@ -140,8 +142,6 @@
             this.btnFGShip = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label25 = new System.Windows.Forms.Label();
-            this.txtGRPurchaseOrder = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
             this.pnlLogin.SuspendLayout();
             this.pnlSelection.SuspendLayout();
             this.pnlGdReceipt.SuspendLayout();
@@ -266,7 +266,7 @@
             this.label9.Location = new System.Drawing.Point(126, 140);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(100, 19);
-            this.label9.Text = "Good Issue";
+            this.label9.Text = "Goods Issue";
             this.label9.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label4
@@ -275,7 +275,7 @@
             this.label4.Location = new System.Drawing.Point(6, 141);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(114, 18);
-            this.label4.Text = "Good Receive";
+            this.label4.Text = "Goods Receive";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // btnGdIssue
@@ -578,7 +578,7 @@
             this.label5.Location = new System.Drawing.Point(3, 3);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(236, 28);
-            this.label5.Text = "Good Receive";
+            this.label5.Text = "Goods Receive";
             this.label5.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label12
@@ -757,7 +757,7 @@
             this.label6.Location = new System.Drawing.Point(1, 12);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(236, 28);
-            this.label6.Text = "Good Issue";
+            this.label6.Text = "Goods Issue";
             this.label6.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // btnGISubmit
@@ -891,7 +891,7 @@
             this.label7.Location = new System.Drawing.Point(3, 10);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(236, 28);
-            this.label7.Text = "Good Issue";
+            this.label7.Text = "Goods Issue";
             this.label7.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // pnlFG
@@ -1059,6 +1059,22 @@
             this.pnlGdReceiptCont.Size = new System.Drawing.Size(240, 292);
             this.pnlGdReceiptCont.Visible = false;
             // 
+            // txtGRPurchaseOrder
+            // 
+            this.txtGRPurchaseOrder.Location = new System.Drawing.Point(112, 98);
+            this.txtGRPurchaseOrder.Name = "txtGRPurchaseOrder";
+            this.txtGRPurchaseOrder.ReadOnly = true;
+            this.txtGRPurchaseOrder.Size = new System.Drawing.Size(120, 23);
+            this.txtGRPurchaseOrder.TabIndex = 11;
+            // 
+            // label14
+            // 
+            this.label14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label14.Location = new System.Drawing.Point(7, 102);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(115, 20);
+            this.label14.Text = "PO:";
+            // 
             // btnGRContClear
             // 
             this.btnGRContClear.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -1128,7 +1144,7 @@
             this.label22.Location = new System.Drawing.Point(3, 3);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(236, 28);
-            this.label22.Text = "Good Receive";
+            this.label22.Text = "Goods Receive";
             this.label22.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label23
@@ -1254,22 +1270,6 @@
             this.label25.Size = new System.Drawing.Size(236, 28);
             this.label25.Text = "Outbound Delivery";
             this.label25.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // txtGRPurchaseOrder
-            // 
-            this.txtGRPurchaseOrder.Location = new System.Drawing.Point(112, 98);
-            this.txtGRPurchaseOrder.Name = "txtGRPurchaseOrder";
-            this.txtGRPurchaseOrder.ReadOnly = true;
-            this.txtGRPurchaseOrder.Size = new System.Drawing.Size(120, 23);
-            this.txtGRPurchaseOrder.TabIndex = 11;
-            // 
-            // label14
-            // 
-            this.label14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label14.Location = new System.Drawing.Point(7, 102);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(115, 20);
-            this.label14.Text = "PO:";
             // 
             // frmMain
             // 
