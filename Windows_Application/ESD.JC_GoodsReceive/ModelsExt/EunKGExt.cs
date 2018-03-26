@@ -1,8 +1,10 @@
 ﻿using ESD.JC_GoodsReceive.Utilities;
+using System.ComponentModel;
+using System.Text;
 
 namespace ESD.JC_GoodsReceive.ModelsExt
 {
-    public class EunKGExt : ObservableObject, ISequencedObject
+    public class EunKGExt : ObservableObject, IDataErrorInfo, ISequencedObject
     {
         private int _SequenceNumber;
         public int SequenceNumber
@@ -146,7 +148,6 @@ namespace ESD.JC_GoodsReceive.ModelsExt
         {
         }
 
-
         public EunKGExt(long id, long grid, string po, string sapno, string endesc, decimal qy, string bin, System.DateTime mo, string mb)
         {
             _ID = id;
@@ -172,6 +173,50 @@ namespace ESD.JC_GoodsReceive.ModelsExt
             _BIN = bin;
             _ModifiedOn = mo;
             _ModifiedBy = mb;
+        }
+
+        #endregion
+
+        #region IDataErrorInfo Members
+
+        public string Error
+        {
+            get
+            {
+                StringBuilder error = new StringBuilder();
+
+                PropertyDescriptorCollection props = TypeDescriptor.GetProperties(this);
+                foreach (PropertyDescriptor prop in props)
+                {
+                    string propertyError = this[prop.Name];
+                    if (propertyError != string.Empty)
+                    {
+                        error.Append((error.Length != 0 ? ", " : "") + propertyError);
+                    }
+                }
+               
+                return error.ToString();
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (columnName == "PO")
+                {
+                    if (PO == null || PO == string.Empty)
+                        return "PO cannot be null or empty";
+                }
+
+                if (columnName == "Qty")
+                {
+                    if (Qty < 0)
+                        return "Quantity must be positive";
+                }
+
+                return "";
+            }
         }
 
         #endregion

@@ -872,7 +872,7 @@
         <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="FontSize" Value="10.5" />
+        <Setter Property="FontSize" Value="13" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="SeparatorBrush" Value="#FFDFE3E6" />
         <Setter Property="Padding" Value="4,4,5,4" />
@@ -1073,7 +1073,7 @@
         <Setter Property="DragIndicatorStyle">
             <Setter.Value>
                 <Style TargetType="ContentControl">
-                    <Setter Property="FontSize" Value="10.5" />
+                    <Setter Property="FontSize" Value="13" />
                     <Setter Property="FontWeight" Value="Bold" />
                     <Setter Property="Foreground" Value="#7FFFFFFF" />
                     <Setter Property="Template">

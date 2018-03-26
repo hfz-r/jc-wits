@@ -25,5 +25,10 @@ namespace ESD.JC_FinishGoods.Services
         {
             return fcuTrnxRepository.GetFCUTransactionByFCUID(FCUID);
         }
+
+        public Location GetLocationFromFCUTransaction(long ID)
+        {
+            return fcuTrnxRepository.GetLocationFromFCUTransaction(ID);
+        }
     }
 }

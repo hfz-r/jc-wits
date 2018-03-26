@@ -21,6 +21,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="Shipped Countries" Foreground="#FF525252"
@@ -28,20 +29,25 @@
                 <TextBlock Text="{Binding DataContext.CountCountries, ElementName=LayoutRoot}" FontWeight="Bold"
                            Grid.Row="0" Grid.Column="1"/>
 
-                <TextBlock Text="Quantity Ordered" Foreground="#FF525252"
+                <TextBlock Text="Shipped Locations" Foreground="#FF525252"
                            Grid.Row="1" Grid.Column="0"/>
-                <TextBlock Text="{Binding FCU.Qty}" FontWeight="Bold"
+                <TextBlock Text="{Binding DataContext.CountLocations, ElementName=LayoutRoot}" FontWeight="Bold"
                            Grid.Row="1" Grid.Column="1"/>
-
-                <TextBlock Text="Quantity Received" Foreground="#FF525252"
-                           Grid.Row="2" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding FCU.QtyReceived}" FontWeight="Bold"
+                
+                <TextBlock Text="Quantity Ordered" Foreground="#FF525252"
+                           Grid.Row="2" Grid.Column="0"/>
+                <TextBlock Text="{Binding FCU.Qty}" FontWeight="Bold"
                            Grid.Row="2" Grid.Column="1"/>
 
-                <TextBlock Text="Remaining Quantity" Foreground="#FF525252"
+                <TextBlock Text="Quantity Received" Foreground="#FF525252"
                            Grid.Row="3" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding DataContext.RemainingQty, ElementName=LayoutRoot}" FontWeight="Bold"
+                <TextBlock Text="{Binding FCU.QtyReceived}" FontWeight="Bold"
                            Grid.Row="3" Grid.Column="1"/>
+
+                <TextBlock Text="Remaining Quantity" Foreground="#FF525252"
+                           Grid.Row="4" Grid.Column="0" Margin="0,0,15,0"/>
+                <TextBlock Text="{Binding DataContext.RemainingQty, ElementName=LayoutRoot}" FontWeight="Bold"
+                           Grid.Row="4" Grid.Column="1"/>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>

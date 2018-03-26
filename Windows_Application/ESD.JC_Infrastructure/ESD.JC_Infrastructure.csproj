@@ -80,18 +80,26 @@
     </Compile>
     <Compile Include="Controls\ProgressDialogHelper.cs" />
     <Compile Include="Controls\ProgressDialogViewModel.cs" />
+    <Compile Include="Controls\SidePanelTab.xaml.cs">
+      <DependentUpon>SidePanelTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Slider.xaml.cs">
       <DependentUpon>Slider.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StringToDecimalConverter.cs" />
     <Compile Include="Events\AHUSelectedEvent.cs" />
+    <Compile Include="Events\AHU_ItemMessageEvent.cs" />
     <Compile Include="Events\CollectionViewSourceEvent.cs" />
     <Compile Include="Events\FCUSelectedEvent.cs" />
+    <Compile Include="Events\FCU_ItemMessageEvent.cs" />
     <Compile Include="Events\FGUserSelectedEvent.cs" />
     <Compile Include="Events\FilterTextBoxEvent.cs" />
     <Compile Include="Events\GIUserSelectedEvent.cs" />
+    <Compile Include="Events\GR_ItemMessageEvent.cs" />
     <Compile Include="Events\ObjectEvent.cs" />
     <Compile Include="Events\ProgressDialogTextEvent.cs" />
+    <Compile Include="OKcolumnColorConverter.cs" />
+    <Compile Include="PanelDimensionsConverter.cs" />
+    <Compile Include="PanelMarginConverter.cs" />
     <Compile Include="TooltipsConverter.cs" />
     <Compile Include="BrushColorConverter.cs" />
     <Compile Include="Events\AuthenticatedUserEvent.cs" />
@@ -137,6 +145,10 @@
     <Page Include="Controls\ProgressDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SidePanelTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Slider.xaml">
       <Generator>MSBuild:Compile</Generator>

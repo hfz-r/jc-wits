@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESD.JC_CountryMgmt", "ESD.J
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESD.JC_LocationMgmt", "ESD.JC_LocationMgmt\ESD.JC_LocationMgmt.csproj", "{99739F78-AA18-414B-91ED-E20893CE18FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timer", "Timer\Timer.csproj", "{AE133BFC-D008-4452-8D54-70EBA42D584E}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ESD.JC_Installer", "ESD.JC_Installer\ESD.JC_Installer.vdproj", "{EEF4431A-A86F-44CB-B7C1-4FFF1AA3EF99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +85,12 @@ Global
 		{99739F78-AA18-414B-91ED-E20893CE18FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99739F78-AA18-414B-91ED-E20893CE18FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99739F78-AA18-414B-91ED-E20893CE18FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE133BFC-D008-4452-8D54-70EBA42D584E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE133BFC-D008-4452-8D54-70EBA42D584E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE133BFC-D008-4452-8D54-70EBA42D584E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE133BFC-D008-4452-8D54-70EBA42D584E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEF4431A-A86F-44CB-B7C1-4FFF1AA3EF99}.Debug|Any CPU.ActiveCfg = Debug
+		{EEF4431A-A86F-44CB-B7C1-4FFF1AA3EF99}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

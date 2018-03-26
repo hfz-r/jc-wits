@@ -5,13 +5,14 @@ using System.Linq;
 
 namespace ESD.JC_GoodsReceive.Notifications
 {
-    public class ObjectSelectionNotification : Confirmation
+    public class ObjectSelectionNotification : Confirmation, IObjectSelectionNotification
     {
         public ObjectSelectionNotification()
         {
             this.Items = new List<EunKG>();
             this.SelectedItem = new EunKG();
             this.ParentItem = new GoodsReceive();
+            this.ReturnItem = null;
 
             this.AuthenticatedUser = string.Empty;
         }
@@ -44,5 +45,7 @@ namespace ESD.JC_GoodsReceive.Notifications
         public GoodsReceive ParentItem { get; set; }
 
         public string AuthenticatedUser { get; set; }
+
+        public string ReturnItem { get; set; }
     } 
 }

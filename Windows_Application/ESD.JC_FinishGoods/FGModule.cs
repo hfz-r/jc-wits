@@ -37,6 +37,8 @@ namespace ESD.JC_FinishGoods
             this.container.RegisterType<IAHUServices, AHUServices>();
             this.container.RegisterType<IAHUTransactionRepository, AHUTransactionRepository>();
             this.container.RegisterType<IAHUTransactionServices, AHUTransactionServices>();
+            this.container.RegisterType<IFCUTimerSevices, FCUTimerServices>();
+            this.container.RegisterType<IAHUTimerSevices, AHUTimerServices>();
 
             this.regionManager.RegisterViewWithRegion(RegionNames.MainNavigationRegion, () => this.container.Resolve<FGNavigationItemView>());
             this.container.RegisterTypeForNavigation<FGMainView>();

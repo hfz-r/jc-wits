@@ -44,7 +44,8 @@
                 <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
                     <Button ToolTipService.ToolTip="Click to export!" Command="{Binding ExportCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/img_btn_export.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/img_btn_export.png" Height="40" Width="40" Margin="4">
                             </Image>
                         </StackPanel>
                     </Button>
@@ -62,7 +63,8 @@
                     <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
                             VerticalAlignment="Center" CornerRadius="5">
                         <StackPanel Margin="5" Orientation="Horizontal">
-                            <Image Source="/Resources/btn_find.png" Height="18"/>
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_find.png" Height="18"/>
                             <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
                                      HorizontalAlignment="Stretch" />
                         </StackPanel>
@@ -122,14 +124,6 @@
                 </GroupStyle>
             </DataGrid.GroupStyle>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Width="Auto">
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}">
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="Width" Value="30"/>
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-                </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="SAP No." Width="Auto" MinWidth="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

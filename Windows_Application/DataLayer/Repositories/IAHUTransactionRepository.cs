@@ -6,5 +6,6 @@ namespace DataLayer.Repositories
     {
         IEnumerable<AHUTransaction> GetAHUTransactionByAHUID(long AHUID);
         IEnumerable<AHUTransaction> GetAll(bool eagerLoading);
+        Location GetLocationFromAHUTransaction(long ID);
     }
 }

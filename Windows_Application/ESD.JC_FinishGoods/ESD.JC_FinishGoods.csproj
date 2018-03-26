@@ -126,6 +126,10 @@
     <Reference Include="TDSFramework">
       <HintPath>..\packages\TDSFramework.dll</HintPath>
     </Reference>
+    <Reference Include="ToggleSwitch, Version=1.1.2.0, Culture=neutral, PublicKeyToken=8637099990568f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\ToggleSwitch.1.1.2\lib\net40-client\ToggleSwitch.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -150,6 +154,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Services\AHUServices.cs" />
+    <Compile Include="Services\AHUTimerServices.cs" />
     <Compile Include="Services\AHUTransactionServices.cs" />
     <Compile Include="Services\FCUServices.cs" />
     <Compile Include="Services\FCUTransactionServices.cs" />
@@ -157,6 +162,7 @@
     <Compile Include="Services\IAHUTransactionServices.cs" />
     <Compile Include="Services\IFCUServices.cs" />
     <Compile Include="Services\IFCUTransactionServices.cs" />
+    <Compile Include="Services\FCUTimerServices.cs" />
     <Compile Include="ViewModels\AHUDetailsSummaryViewModel.cs" />
     <Compile Include="ViewModels\AHUDetailsTransactionViewModel.cs" />
     <Compile Include="ViewModels\FCUDetailsSummaryViewModel.cs" />
@@ -261,6 +267,10 @@
     <ProjectReference Include="..\ESD.JC_Infrastructure\ESD.JC_Infrastructure.csproj">
       <Project>{3ffe8ec2-5990-4664-9f45-14c469255859}</Project>
       <Name>ESD.JC_Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Timer\Timer.csproj">
+      <Project>{ae133bfc-d008-4452-8d54-70eba42d584e}</Project>
+      <Name>Timer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

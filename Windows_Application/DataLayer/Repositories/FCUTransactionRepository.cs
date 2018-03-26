@@ -25,5 +25,14 @@ namespace DataLayer.Repositories
                 return getAll.Where(x => x.FCUID == FCUID);
             }
         }
+
+        public Location GetLocationFromFCUTransaction(long ID)
+        {
+            using (var context = new InventoryContext())
+            {
+                var loc = context.Locations.Find(ID);
+                return loc;
+            }
+        }
     }
 }

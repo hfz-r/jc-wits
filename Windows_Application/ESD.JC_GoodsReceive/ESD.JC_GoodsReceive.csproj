@@ -111,10 +111,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -127,6 +124,10 @@
     <Reference Include="TDSFramework">
       <HintPath>..\packages\TDSFramework.dll</HintPath>
     </Reference>
+    <Reference Include="ToggleSwitch, Version=1.1.2.0, Culture=neutral, PublicKeyToken=8637099990568f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\ToggleSwitch.1.1.2\lib\net40-client\ToggleSwitch.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -137,6 +138,7 @@
     <Compile Include="GRModule.cs" />
     <Compile Include="Converters\CollectionEUnKGToBooleanConverter.cs" />
     <Compile Include="ModelsExt\EunKGExt.cs" />
+    <Compile Include="Notifications\IObjectSelectionNotification.cs" />
     <Compile Include="Notifications\ObjectSelectionNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -158,6 +160,7 @@
     <Compile Include="Services\IGRServices.cs" />
     <Compile Include="Services\IGRTransactionServices.cs" />
     <Compile Include="Services\SequencingService.cs" />
+    <Compile Include="Services\GRTimerServices.cs" />
     <Compile Include="Utilities\ISequencedObject.cs" />
     <Compile Include="Utilities\ObservableObject.cs" />
     <Compile Include="ViewModels\EunKGDetailsViewModel.cs" />
@@ -185,7 +188,7 @@
     <Compile Include="Views\GRNavigationItemView.xaml.cs">
       <DependentUpon>GRNavigationItemView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\QuantityValidationRules.cs" />
+    <Compile Include="Views\ValidationRules.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -208,6 +211,10 @@
     <ProjectReference Include="..\ESD.JC_Infrastructure\ESD.JC_Infrastructure.csproj">
       <Project>{3ffe8ec2-5990-4664-9f45-14c469255859}</Project>
       <Name>ESD.JC_Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Timer\Timer.csproj">
+      <Project>{ae133bfc-d008-4452-8d54-70eba42d584e}</Project>
+      <Name>Timer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

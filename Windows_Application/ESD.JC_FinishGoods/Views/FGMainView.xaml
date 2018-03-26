@@ -41,19 +41,22 @@
                 <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
                     <Button ToolTipService.ToolTip="OK?" Command="{Binding ApplicationCommands.OKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_ok.png" Height="40" Width="40" Margin="4"/>
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_ok.png" Height="40" Width="40" Margin="4"/>
                         </StackPanel>
                     </Button>
                     <Separator Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}" />
                     <Button ToolTipService.ToolTip="NOT OK?" Command="{Binding ApplicationCommands.XOKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_xok.png" Height="40" Width="40" Margin="4"/>
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_xok.png" Height="40" Width="40" Margin="4"/>
                         </StackPanel>
                     </Button>
                     <Separator Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}" />
                     <Button ToolTipService.ToolTip="Click to print the label!" Command="{Binding ApplicationCommands.PrintLblCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
                                 <Image.Style>
                                     <Style TargetType="Image">
                                         <Style.Triggers>
@@ -69,14 +72,16 @@
                     <StackPanel Width="20"/>
                     <Button ToolTipService.ToolTip="Click to import goods!" Command="{Binding ApplicationCommands.ImportFGCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/img_btn_import.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/img_btn_import.png" Height="40" Width="40" Margin="4">
                             </Image>
                         </StackPanel>
                     </Button>
                     <Separator />
                     <Button ToolTipService.ToolTip="Click to export goods!" Command="{Binding ApplicationCommands.ExportFGCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/img_btn_export.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/img_btn_export.png" Height="40" Width="40" Margin="4">
                             </Image>
                         </StackPanel>
                     </Button>
@@ -94,7 +99,8 @@
                     <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
                             VerticalAlignment="Center" CornerRadius="5">
                         <StackPanel Margin="5" Orientation="Horizontal">
-                            <Image Source="/Resources/btn_find.png" Height="18"/>
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_find.png" Height="18"/>
                             <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
                                      HorizontalAlignment="Stretch" />
                         </StackPanel>

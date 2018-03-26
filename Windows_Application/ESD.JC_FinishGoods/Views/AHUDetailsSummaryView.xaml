@@ -21,6 +21,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="Shipped Countries" Foreground="#FF525252"
@@ -28,20 +29,25 @@
                 <TextBlock Text="{Binding DataContext.CountCountries, ElementName=LayoutRoot}" FontWeight="Bold"
                            Grid.Row="0" Grid.Column="1"/>
 
-                <TextBlock Text="Section Ordered" Foreground="#FF525252"
+                <TextBlock Text="Shipped Locations" Foreground="#FF525252"
                            Grid.Row="1" Grid.Column="0"/>
-                <TextBlock Text="{Binding AHU.Section}" FontWeight="Bold"
+                <TextBlock Text="{Binding DataContext.CountLocations, ElementName=LayoutRoot}" FontWeight="Bold"
                            Grid.Row="1" Grid.Column="1"/>
-
-                <TextBlock Text="Section Received" Foreground="#FF525252"
-                           Grid.Row="2" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding AHU.SectionReceived}" FontWeight="Bold"
+                
+                <TextBlock Text="Section Ordered" Foreground="#FF525252"
+                           Grid.Row="2" Grid.Column="0"/>
+                <TextBlock Text="{Binding AHU.Section}" FontWeight="Bold"
                            Grid.Row="2" Grid.Column="1"/>
 
-                <TextBlock Text="Remaining Section" Foreground="#FF525252"
+                <TextBlock Text="Section Received" Foreground="#FF525252"
                            Grid.Row="3" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding DataContext.RemainingSect, ElementName=LayoutRoot}" FontWeight="Bold"
+                <TextBlock Text="{Binding AHU.SectionReceived}" FontWeight="Bold"
                            Grid.Row="3" Grid.Column="1"/>
+
+                <TextBlock Text="Remaining Section" Foreground="#FF525252"
+                           Grid.Row="4" Grid.Column="0" Margin="0,0,15,0"/>
+                <TextBlock Text="{Binding DataContext.RemainingSect, ElementName=LayoutRoot}" FontWeight="Bold"
+                           Grid.Row="4" Grid.Column="1"/>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>

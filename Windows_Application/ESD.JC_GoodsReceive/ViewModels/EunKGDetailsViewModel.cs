@@ -6,7 +6,6 @@ using ESD.JC_GoodsReceive.ModelsExt;
 using Prism.Commands;
 using System.Windows.Input;
 using Prism.Events;
-using Prism.Regions;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,7 +22,6 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Reflection;
 using TDSFramework;
-using System.Threading;
 
 namespace ESD.JC_GoodsReceive.ViewModels
 {
@@ -67,7 +65,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
         public EunKGExt SelectedItem
         {
             get { return _SelectedItem; }
-            set { SetProperty(ref _SelectedItem, value); }
+            set { SetProperty(ref _SelectedItem, value);}
         }
 
         private DataGridCellInfo _cellInfo;
@@ -130,7 +128,6 @@ namespace ESD.JC_GoodsReceive.ViewModels
         BackgroundWorker worker;
 
         private IEventAggregator EventAggregator;
-        private IRegionManager RegionManager;
         private IEunKGServices EunKGServices;
 
         private DelegateCommand _onloadedCommand;
@@ -142,9 +139,8 @@ namespace ESD.JC_GoodsReceive.ViewModels
         private DelegateCommand _unCheckedAllCommand;
         private InteractionRequest<Confirmation> interactionRequest;
 
-        public EunKGDetailsViewModel(IEventAggregator EventAggregator, IRegionManager RegionManager, IEunKGServices EunKGServices)
+        public EunKGDetailsViewModel(IEventAggregator EventAggregator, IEunKGServices EunKGServices)
         {
-            this.RegionManager = RegionManager;
             this.EunKGServices = EunKGServices;
             this.EventAggregator = EventAggregator;
 
@@ -294,7 +290,14 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         private bool CanSave(object ignored)
         {
-            return EunKGs != null && (EunKGs.Sum(x => x.Qty) > MaximumValue) == false;
+            if (SelectedItem != null && SelectedItem.Qty > MaximumValue)
+                return false;
+            if (EunKGs != null && EunKGs.Sum(x => x.Qty) > MaximumValue)
+                return false;
+            if (EunKGs != null && EunKGs.Any(x => !string.IsNullOrEmpty(x.Error)))
+                return false;
+
+            return true;
         }
 
         private void SaveCommand(object obj)
@@ -309,14 +312,10 @@ namespace ESD.JC_GoodsReceive.ViewModels
                     {
                         if (c.Confirmed)
                         {
-                            if (EunKGs.Sum(x => x.Qty) > MaximumValue)
-                            {
-                                MessageBox.Show("Quantity Should Not More Than " + MaximumValue + "!", "Failed To Save", MessageBoxButton.OK);
-                                return;
-                            }
-
                             if (InitSave())
                             {
+                                this.notification.ReturnItem = "Child details successfully been added";
+
                                 State = "RefreshGrid";
                                 OnLoaded();
                             }
@@ -364,20 +363,18 @@ namespace ESD.JC_GoodsReceive.ViewModels
             else
             {
                 EunKGs.Remove(SelectedItem);
+                
+                _PrintLblCommand.RaiseCanExecuteChanged();
+
+                CollectionView = new ListCollectionView(EunKGs);
+                CollectionViewSource.GetDefaultView(CollectionView).Filter = EunKGFilter;
             }
         }
 
         private void BackCommand()
         {
-            if (this.notification != null)
-            {
-                if (!string.IsNullOrEmpty(State) && State == "RefreshGrid")
-                    this.notification.Confirmed = true;
-                else
-                    this.notification.Confirmed = false;
-            }
-
-            this.FinishInteraction();
+            this.notification.Confirmed = true;
+            this.FinishInteraction?.Invoke();
         }
 
         private bool InitSave()
@@ -495,6 +492,10 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         private bool CanPrint(object ignored)
         {
+            if (SelectedItem != null && SelectedItem.Qty > MaximumValue)
+                return false;
+            if (SelectedItem != null && !string.IsNullOrEmpty(SelectedItem.Error))
+                return false;
             if (EunKGs != null && EunKGs.Any(w => w.IsChecked == true && w.ID == 0))
                 return false;
 

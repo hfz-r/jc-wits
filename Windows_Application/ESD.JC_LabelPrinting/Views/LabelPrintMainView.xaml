@@ -3,7 +3,6 @@
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:i="http://schemas.microsoft.com/expression/2010/interactions"
             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactivity"
             xmlns:sys="clr-namespace:System;assembly=mscorlib"
             xmlns:prism="http://www.codeplex.com/prism"
@@ -15,37 +14,11 @@
             d:DesignWidth="800" d:DesignHeight="600">
     <UserControl.Resources>
         <inf:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
-        <inf:StringToDecimalConverter x:Key="StringToDecimalConverter"/>
         <inf:IgnoreNewItemPlaceHolderConverter x:Key="ignoreNewItemPlaceHolderConverter"/>
     </UserControl.Resources>
 
-    <ei:Interaction.Behaviors>
-        <i:DataStateBehavior Binding="{Binding SendState}" Value="Saving" TrueState="Saving" FalseState="Normal"/>
-    </ei:Interaction.Behaviors>
-    <ei:Interaction.Triggers>
-        <prism:InteractionRequestTrigger SourceObject="{Binding ConfirmExitInteractionRequest}">
-            <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
-        </prism:InteractionRequestTrigger>
-    </ei:Interaction.Triggers>
-    <VisualStateManager.VisualStateGroups>
-        <VisualStateGroup x:Name="VisualStateGroup">
-            <VisualState x:Name="Normal"/>
-            <VisualState x:Name="Saving">
-                <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Control.IsEnabled)" Storyboard.TargetName="MainControl">
-                        <DiscreteObjectKeyFrame KeyTime="0">
-                            <DiscreteObjectKeyFrame.Value>
-                                <sys:Boolean>False</sys:Boolean>
-                            </DiscreteObjectKeyFrame.Value>
-                        </DiscreteObjectKeyFrame>
-                    </ObjectAnimationUsingKeyFrames>
-                </Storyboard>
-            </VisualState>
-        </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
-
     <Grid x:Name="LayoutRoot" Background="White">
-        <ContentControl x:Name="MainControl" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="5">
+        <ContentControl x:Name="MainControl" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -53,31 +26,28 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Margin="0, 5, 0, 0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
+                <StackPanel Grid.Row="0">
+                    <ToolBar Background="Transparent" HorizontalAlignment="Left" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
                             <Button ToolTipService.ToolTip="Click to paste!" Command="ApplicationCommands.Paste"  Margin="6,0">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="/Resources/btn_paste.png" Height="40" Width="40" Margin="4">
+                                <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                       Source="/Resources/btn_paste.png" Height="40" Width="40" Margin="4">
                                     </Image>
                                 </StackPanel>
                             </Button>
                             <Separator />
                             <Button ToolTipService.ToolTip="Click to reset textbox!" Click="Button_Click" Margin="6,0">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="/Resources/btn_reset.png" Height="40" Width="40" Margin="4">
+                                    <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                           Source="/Resources/btn_reset.png" Height="40" Width="40" Margin="4">
                                     </Image>
                                 </StackPanel>
                             </Button>
                             <Separator />
                             <Button ToolTipService.ToolTip="Click to print the label!" Command="{Binding PrintLblCommand}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
+                                <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                       Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
                                         <Image.Style>
                                             <Style TargetType="Image">
                                                 <Style.Triggers>
@@ -91,13 +61,12 @@
                                 </StackPanel>
                             </Button>
                         </ToolBar>
-                    </Grid>
                 </StackPanel>
 
                 <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
 
                 <StackPanel Grid.Row="1" Margin="5,10,5,5">
-                    <Grid Name="GridLP" Margin="10">
+                    <Grid Name="GridLP" Margin="5,10,5,5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
                             <RowDefinition Height="30"/>
@@ -163,7 +132,7 @@
                         </TextBox>
 
                         <Label Grid.Row="6" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Qty:</Label>
-                        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding QTY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToDecimalConverter}}" Margin="0,5,0,0" 
+                        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding QTY, StringFormat=N2, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Margin="0,5,0,0" 
                                  AutomationProperties.AutomationId="QtyData">
                             <ei:Interaction.Behaviors>
                                 <local:TextBoxOnEscapeBehavior />
