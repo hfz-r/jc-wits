@@ -25,5 +25,10 @@ namespace ESD.JC_FinishGoods.Services
         {
             return ahuTrnxRepository.GetAHUTransactionByAHUID(AHUID);
         }
+
+        public Location GetLocationFromAHUTransaction(long ID)
+        {
+            return ahuTrnxRepository.GetLocationFromAHUTransaction(ID);
+        }
     }
 }

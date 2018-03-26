@@ -54,7 +54,7 @@ namespace ESD.JC_FinishGoods.Controllers
 
             FCUDetailsSummaryViewModel summryVM = summryView.DataContext as FCUDetailsSummaryViewModel;
             FCUDetailsTransactionViewModel trnxVM = trnxView.DataContext as FCUDetailsTransactionViewModel;
-            if (summryVM != null )
+            if (summryVM != null && trnxVM != null)
             {
                 summryVM.summryCollection = lst;
                 trnxVM.trnxCollection = lst;

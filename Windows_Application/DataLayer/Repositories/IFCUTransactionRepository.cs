@@ -6,5 +6,6 @@ namespace DataLayer.Repositories
     {
         IEnumerable<FCUTransaction> GetAll(bool eagerLoading);
         IEnumerable<FCUTransaction> GetFCUTransactionByFCUID(long FCUID);
+        Location GetLocationFromFCUTransaction(long ID);
     }
 }

@@ -27,11 +27,13 @@ namespace ESD.JC_FinishGoods.ViewModels
                     var ahuObj = summryCollection.Select(x => x.AHU).FirstOrDefault();
                     RemainingSect = ahuObj.Section.GetValueOrDefault() - ahuObj.SectionReceived.GetValueOrDefault();
 
-                    CountCountries = summryCollection.GroupBy(c => c.Country.ID).Count();
+                    CountCountries = summryCollection.Where(c => c.CountryID.HasValue).Count();
+                    CountLocations = summryCollection.Where(l => l.LocationID.HasValue).Count();
                 }
 
                 RaisePropertyChanged("RemainingSect");
                 RaisePropertyChanged("CountCountries");
+                RaisePropertyChanged("CountLocations");
             }
         }
 
@@ -42,11 +44,18 @@ namespace ESD.JC_FinishGoods.ViewModels
             set { SetProperty(ref _RemainingSect, value); }
         }
 
-        private int _CountCountries;
+        private int _CountCountries = 0;
         public int CountCountries
         {
             get { return _CountCountries; }
             set { SetProperty(ref _CountCountries, value); }
+        }
+
+        private int _CountLocations = 0;
+        public int CountLocations
+        {
+            get { return _CountLocations; }
+            set { SetProperty(ref _CountLocations, value); }
         }
 
         private IUnityContainer Container;

@@ -43,6 +43,14 @@ namespace ESD.JC_GoodsReceive.ViewModels
             set { SetProperty(ref _GoodReceives, value); }
         }
 
+        private ListCollectionView _okColumnFilterList;
+        public ListCollectionView OKColumnFilterList
+        {
+            get { return _okColumnFilterList; }
+            set { SetProperty(ref _okColumnFilterList, value);
+                RaisePropertyChanged("OKColumnFilterList"); }
+        }
+
         private string _InteractionResultMessage;
         public string InteractionResultMessage
         {
@@ -94,6 +102,39 @@ namespace ESD.JC_GoodsReceive.ViewModels
             }
         }
 
+        private bool _isEnableAutoRefresh;
+        public bool IsEnableAutoRefresh
+        {
+            get { return _isEnableAutoRefresh; }
+            set
+            {
+                SetProperty(ref _isEnableAutoRefresh, value);
+                RaisePropertyChanged("IsEnableAutoRefresh");
+
+                if (_isEnableAutoRefresh)
+                    ExecuteTimer();
+                else
+                    StopTimer();
+            }
+        }
+
+        private double _ProgressValue;
+        public double ProgressValue
+        {
+            get
+            {
+                return _ProgressValue;
+            }
+            set
+            {
+                if (_ProgressValue == value)
+                    return;
+                _ProgressValue = value;
+
+                RaisePropertyChanged("ProgressValue");
+            }
+        }
+
         public string AuthenticatedUser
         {
             get
@@ -113,6 +154,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             }
         }
 
+       
         #endregion
 
         private const string grDetailsViewName = "GRDetailsView";
@@ -122,6 +164,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
         private IRegionManager regionManager;
         private IEventAggregator eventAggregator;
         private IGRServices grServices;
+        private IGRTimerSevices timerServices;
 
         public ObservableCollection<GoodsReceive> grCollection { get; private set; }
         public ObservableCollection<GoodsReceive> tempCollection { get; private set; }
@@ -134,11 +177,13 @@ namespace ESD.JC_GoodsReceive.ViewModels
         private DelegateCommand _unCheckedAllCommand;
         private InteractionRequest<Confirmation> confirmDeleteInteractionRequest;
 
-        public GRMainViewModel(IRegionManager regionManager, IEventAggregator eventAggregator, IGRServices grServices)
+        public GRMainViewModel(IRegionManager regionManager, IEventAggregator eventAggregator, IGRServices grServices, IGRTimerSevices timerServices)
         {
             this.regionManager = regionManager;
             this.grServices = grServices;
+            this.timerServices = timerServices;
             this.eventAggregator = eventAggregator;
+            this.eventAggregator.GetEvent<GR_ItemMessageEvent>().Subscribe(ConsumeItemMessage);
 
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             OpenGRDetailsCommand = new DelegateCommand<GoodsReceive>(OpenGRDetails);
@@ -216,10 +261,64 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 grCollection.Add(obj);
             }
 
+            BindComboBox(grCollection);
+
             GoodReceives = new ListCollectionView(grCollection);
             GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
 
             CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
+        }
+
+        private void BindComboBox(ObservableCollection<GoodsReceive> grCollection)
+        {
+            var ComboList = new List<FilterComboItem>();
+            ComboList.Add(new FilterComboItem
+            {
+                BoolOk = null,
+                TextOk = " - All",
+                GroupedList = null
+            });
+
+            foreach (var obj in grCollection.GroupBy(ok => ok.Ok).Select(x => new { Key = x.Key, List = x.ToList() }))
+            {
+                ComboList.Add(new FilterComboItem
+                {
+                    BoolOk = obj.Key,
+                    TextOk = obj.Key == null ? " - Partial" : (obj.Key.ToString() == "False") ? " - NOT OK" : " - OK",
+                    GroupedList = obj.List
+                });
+            }
+
+            OKColumnFilterList = new ListCollectionView(ComboList);
+            //OKColumnFilterList.GroupDescriptions.Add(new PropertyGroupDescription("BoolOk"));
+            OKColumnFilterList.CurrentChanged += OKColumnFilterList_CurrentChanged;
+        }
+
+        private void OKColumnFilterList_CurrentChanged(object sender, EventArgs e)
+        {
+            var currItem = ((ListCollectionView)sender).CurrentItem as FilterComboItem;
+            if (currItem != null)
+            {
+                var FilteredCollection = new ObservableCollection<GoodsReceive>();
+                if (currItem.TextOk.Contains("All"))
+                {
+                    foreach (var gr in grCollection)
+                    {
+                        FilteredCollection.Add(gr);
+                    }
+                }
+                else
+                {
+                    foreach (var gr in grCollection.Where(ok => ok.Ok == currItem.BoolOk))
+                    {
+                        FilteredCollection.Add(gr);
+                    }
+                }
+                GoodReceives = new ListCollectionView(FilteredCollection);
+                GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
+
+                CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
+            }
         }
 
         private bool Filter(object item)
@@ -575,7 +674,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         private void PopulateRecords(ImportCLassModel rec, ObservableCollection<GoodsReceive> temp)
         {
-            if (grCollection.Where(sap => sap.Material != rec.Material).Count() >= 0)
+            if (grCollection.Any(sap => sap.Material == rec.Material) == false)
             {
                 temp.Add(new GoodsReceive
                 {
@@ -768,28 +867,23 @@ namespace ESD.JC_GoodsReceive.ViewModels
                                         break;
                                 }
 
-                                string[] words = string.IsNullOrEmpty(input) ? null : input.Split(' ');
+                                string[] words = input.Split(' ');
 
                                 string part = string.Empty;
                                 int partCounter = 0;
-
-                                if (words != null)
+                                foreach (var word in words)
                                 {
-                                    foreach (var word in words)
+                                    if (part.Length + word.Length < 33)
                                     {
-                                        if (part.Length + word.Length < 33)
-                                        {
-                                            part += string.IsNullOrEmpty(part) ? word : " " + word;
-                                        }
-                                        else
-                                        {
-                                            parts[x].Add(partCounter, part);
-                                            part = word;
-                                            partCounter++;
-                                        }
+                                        part += string.IsNullOrEmpty(part) ? word : " " + word;
+                                    }
+                                    else
+                                    {
+                                        parts[x].Add(partCounter, part);
+                                        part = word;
+                                        partCounter++;
                                     }
                                 }
-                            
                                 parts[x].Add(partCounter, part);
 
                                 if (partCounter == 0)
@@ -873,6 +967,40 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
             CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
         }
+
+        private void ExecuteTimer()
+        {
+            timerServices.StartTimerExecute();
+        }
+
+        private void StopTimer()
+        {
+            timerServices.StopTimerExecute();
+        }
+
+        private void ConsumeItemMessage(GRItemMessage msg)
+        {
+            if (msg == null)
+                return;
+
+            if (msg.HasValue)
+            {
+                ProgressValue = msg.PercentageValue;
+
+                if (msg.State == "Completed")
+                {
+                    #region refresh grid
+                    GoodReceives = new ListCollectionView(grCollection);
+                    GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
+
+                    CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
+                    #endregion refresh grid
+
+                    StopTimer();
+                    ExecuteTimer();
+                }
+            }
+        }
     }
 
     [DelimitedRecord("")]
@@ -926,5 +1054,12 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         [FieldOrder(16)]
         public string StorageBin { get; set; }
+    }
+
+    public class FilterComboItem
+    {
+        public bool? BoolOk { get; set; }
+        public string TextOk { get; set; }
+        public List<GoodsReceive> GroupedList { get; set; }
     }
 }

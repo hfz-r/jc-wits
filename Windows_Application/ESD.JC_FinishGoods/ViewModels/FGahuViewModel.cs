@@ -47,6 +47,17 @@ namespace ESD.JC_FinishGoods.ViewModels
             set { SetProperty(ref _AHU, value); }
         }
 
+        private ListCollectionView _okColumnFilterList;
+        public ListCollectionView OKColumnFilterList
+        {
+            get { return _okColumnFilterList; }
+            set
+            {
+                SetProperty(ref _okColumnFilterList, value);
+                RaisePropertyChanged("OKColumnFilterList");
+            }
+        }
+
         private DataGridCellInfo _cellInfo;
         public DataGridCellInfo CellInfo
         {
@@ -61,13 +72,6 @@ namespace ESD.JC_FinishGoods.ViewModels
             set { SetProperty(ref _CountChecked, value); }
         }
 
-        private bool _canPrint = true;
-        public bool CanPrint
-        {
-            get { return _canPrint; }
-            set { SetProperty(ref _canPrint, value); }
-        }
-
         private string _FilterTextBox;
         public string FilterTextBox
         {
@@ -80,12 +84,47 @@ namespace ESD.JC_FinishGoods.ViewModels
             }
         }
 
+        private bool _isEnableAutoRefresh;
+        public bool IsEnableAutoRefresh
+        {
+            get { return _isEnableAutoRefresh; }
+            set
+            {
+                SetProperty(ref _isEnableAutoRefresh, value);
+                RaisePropertyChanged("IsEnableAutoRefresh");
+
+                if (_isEnableAutoRefresh)
+                    ExecuteTimer();
+                else
+                    StopTimer();
+            }
+        }
+
+        private double _ProgressValue;
+        public double ProgressValue
+        {
+            get
+            {
+                return _ProgressValue;
+            }
+            set
+            {
+                if (_ProgressValue == value)
+                    return;
+                _ProgressValue = value;
+
+                RaisePropertyChanged("ProgressValue");
+            }
+        }
+
         private string _AuthenticatedUser = string.Empty;
         public string AuthenticatedUser
         {
             get { return _AuthenticatedUser; }
             set { SetProperty(ref _AuthenticatedUser, value); }
         }
+
+        public bool? IsImportBtnEnabled { get; private set; }
 
         #endregion Properties
 
@@ -96,6 +135,7 @@ namespace ESD.JC_FinishGoods.ViewModels
         private IRegionManager regionManager;
         private IEventAggregator eventAggregator;
         private IAHUServices ahuServices;
+        private IAHUTimerSevices timerServices;
 
         public ObservableCollection<AHU> ahuCollection { get; private set; }
         public ObservableCollection<AHU> tempCollection { get; private set; }
@@ -110,13 +150,15 @@ namespace ESD.JC_FinishGoods.ViewModels
         private DelegateCommand _checkedAllCommand;
         private DelegateCommand _unCheckedAllCommand;
 
-        public FGahuViewModel(ICompositeCommands applicationCommands, IRegionManager regionManager, IEventAggregator eventAggregator, IAHUServices ahuServices)
+        public FGahuViewModel(ICompositeCommands applicationCommands, IRegionManager regionManager, IEventAggregator eventAggregator, IAHUServices ahuServices, IAHUTimerSevices timerServices)
         {
             this.regionManager = regionManager;
             this.ahuServices = ahuServices;
+            this.timerServices = timerServices;
             this.eventAggregator = eventAggregator;
             this.eventAggregator.GetEvent<AuthenticatedUserEvent>().Subscribe(InitAuthenticatedUser);
             this.eventAggregator.GetEvent<FilterTextBoxEvent>().Subscribe(InitTextBoxSearch);
+            this.eventAggregator.GetEvent<AHU_ItemMessageEvent>().Subscribe(ConsumeItemMessage);
 
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             OpenAHUDetailsCommand = new DelegateCommand<AHU>(OpenAHUDetails);
@@ -132,7 +174,7 @@ namespace ESD.JC_FinishGoods.ViewModels
 
             ImportFGCommand = new DelegateCommand(Import);
             ExportFGCommand = new DelegateCommand(Export);
-            PrintLblCommand = new DelegateCommand(PrintLabel).ObservesCanExecute(() => CanPrint);
+            PrintLblCommand = new DelegateCommand(PrintLabel, CanPrint);
             OKCommand = new DelegateCommand(OKImport);
             XOKCommand = new DelegateCommand(OnLoaded);
         }
@@ -154,7 +196,8 @@ namespace ESD.JC_FinishGoods.ViewModels
 
         private void OnLoaded()
         {
-            this.eventAggregator.GetEvent<ObjectEvent>().Publish(null);
+            IsImportBtnEnabled = null;
+            this.eventAggregator.GetEvent<ObjectEvent>().Publish(IsImportBtnEnabled);
 
             tempCollection = new ObservableCollection<AHU>();
             ahuCollection = new ObservableCollection<AHU>();
@@ -174,10 +217,64 @@ namespace ESD.JC_FinishGoods.ViewModels
                 ahuCollection.Add(obj);
             }
 
+            BindComboBox(ahuCollection);
+
             AHU = new ListCollectionView(ahuCollection);
             AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
             CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
+        }
+
+        private void BindComboBox(ObservableCollection<AHU> ahuCollection)
+        {
+            var ComboList = new List<AHUFilterComboItem>();
+            ComboList.Add(new AHUFilterComboItem
+            {
+                BoolShipStatus = null,
+                TexShipStatus = " - All",
+                GroupedList = null
+            });
+
+            foreach (var obj in ahuCollection.GroupBy(ss => ss.ShipStatus).Select(x => new { Key = x.Key, List = x.ToList() }))
+            {
+                ComboList.Add(new AHUFilterComboItem
+                {
+                    BoolShipStatus = obj.Key,
+                    TexShipStatus = obj.Key == null ? " - Partial" : (obj.Key.ToString() == "False") ? " - NOT OK" : " - OK",
+                    GroupedList = obj.List
+                });
+            }
+
+            OKColumnFilterList = new ListCollectionView(ComboList);
+            //OKColumnFilterList.GroupDescriptions.Add(new PropertyGroupDescription("BoolShipStatus"));
+            OKColumnFilterList.CurrentChanged += OKColumnFilterList_CurrentChanged;
+        }
+
+        private void OKColumnFilterList_CurrentChanged(object sender, EventArgs e)
+        {
+            var currItem = ((ListCollectionView)sender).CurrentItem as AHUFilterComboItem;
+            if (currItem != null)
+            {
+                var FilteredCollection = new ObservableCollection<AHU>();
+                if (currItem.TexShipStatus.Contains("All"))
+                {
+                    foreach (var ahu in ahuCollection)
+                    {
+                        FilteredCollection.Add(ahu);
+                    }
+                }
+                else
+                {
+                    foreach (var ahu in ahuCollection.Where(ok => ok.ShipStatus == currItem.BoolShipStatus))
+                    {
+                        FilteredCollection.Add(ahu);
+                    }
+                }
+                AHU = new ListCollectionView(FilteredCollection);
+                AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
+
+                CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
+            }
         }
 
         private void InitAuthenticatedUser(string user)
@@ -541,15 +638,15 @@ namespace ESD.JC_FinishGoods.ViewModels
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(obj.SerialNo) ||
-                        !string.IsNullOrEmpty(obj.Project))
+                    if (!string.IsNullOrEmpty(obj.SerialNo) && obj.SerialNo != "0")
                         PopulateRecords(obj, tempCollection);
                 }
                 #endregion Cells Comparison
 
                 if (tempCollection != null && tempCollection.Count() > 0)
                 {
-                    this.eventAggregator.GetEvent<ObjectEvent>().Publish(true);
+                    IsImportBtnEnabled = true;
+                    this.eventAggregator.GetEvent<ObjectEvent>().Publish(IsImportBtnEnabled);
 
                     AHU = new ListCollectionView(tempCollection);
                     AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
@@ -557,7 +654,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                     CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
                 }
                 else
-                    throw new Exception("Data not available.");
+                    throw new Exception("There was no matched data detected.");
             }
             catch (Exception ex)
             {
@@ -784,6 +881,16 @@ namespace ESD.JC_FinishGoods.ViewModels
             obj.ModifiedBy = AuthenticatedUser;
         }
 
+        private bool CanPrint()
+        {
+            if (IsImportBtnEnabled != null)
+            {
+                return false;
+            }
+
+            return (CountChecked == null && CountChecked.Count.Equals(0)) ? false : (CountChecked.Where(x => x == true).Count() > 0);
+        }
+
         private void PrintLabel()
         {
             if (ahuCollection.Any(x => x.IsChecked == true))
@@ -808,85 +915,41 @@ namespace ESD.JC_FinishGoods.ViewModels
                         txtReader.Close();
 
                         foreach (var item in listObj)
-                        {                           
-                            if (item.Section >= 1)
+                        {
+                            StringBuilder strPallet = new StringBuilder();
+                            StringBuilder strPalletTemplate = new StringBuilder();
+
+                            strPallet.Append(string.Empty);
+                            strPalletTemplate.Append(string.Empty);
+                            strPalletTemplate.Append(xTemp);
+
+                            strPallet = new StringBuilder();
+                            strPallet.Append(strPalletTemplate.ToString());
+                            strPallet.Replace("<Project>", item.Project);
+                            strPallet.Replace("<UnitTag>", item.UnitTag);
+                            strPallet.Replace("<PartNo>", item.PartNo);
+                            strPallet.Replace("<Model>", item.Model);
+                            strPallet.Replace("<PowerSupply>", item.PowerSupply);
+                            strPallet.Replace("<FanType>", item.FanType);
+                            strPallet.Replace("<MotorPole>", item.MotorPole);
+                            strPallet.Replace("<FanMotor>", item.FanMotor);
+                            strPallet.Replace("<FanRPM>", item.FanRPM);
+                            strPallet.Replace("<FanPulley>", item.FanPulley);
+                            strPallet.Replace("<MotorPulley>", item.MotorPulley);
+                            strPallet.Replace("<Belt>", item.Belt);
+                            strPallet.Replace("<CoolingCoil1>", item.CoolingCoil1);
+                            strPallet.Replace("<CoolingCoil2>", item.CoolingCoil2);
+                            strPallet.Replace("<HeatingCoil1>", item.HeatingCoil1);
+                            strPallet.Replace("<HeatingCoil2>", item.HeatingCoil2);
+                            strPallet.Replace("<Heater>", item.Heater);
+                            strPallet.Replace("<SalesOrder>", item.SalesOrder);
+                            strPallet.Replace("<Section>", item.Section.ToString());
+                            strPallet.Replace("<Item>", item.Item.ToString());
+                            strPallet.Replace("<SerialNo>", item.SerialNo);
+
+                            if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
                             {
-                                for (int i = 1; i <= item.Section; i++)
-                                {
-                                    StringBuilder strPallet = new StringBuilder();
-                                    StringBuilder strPalletTemplate = new StringBuilder();
-
-                                    strPallet.Append(string.Empty);
-                                    strPalletTemplate.Append(string.Empty);
-                                    strPalletTemplate.Append(xTemp);
-
-                                    strPallet = new StringBuilder();
-                                    strPallet.Append(strPalletTemplate.ToString());
-                                    strPallet.Replace("<Project>", item.Project);
-                                    strPallet.Replace("<UnitTag>", item.UnitTag);
-                                    strPallet.Replace("<PartNo>", item.PartNo);
-                                    strPallet.Replace("<Model>", item.Model);
-                                    strPallet.Replace("<PowerSupply>", item.PowerSupply);
-                                    strPallet.Replace("<FanType>", item.FanType);
-                                    strPallet.Replace("<MotorPole>", item.MotorPole);
-                                    strPallet.Replace("<FanMotor>", item.FanMotor);
-                                    strPallet.Replace("<FanRPM>", item.FanRPM);
-                                    strPallet.Replace("<FanPulley>", item.FanPulley);
-                                    strPallet.Replace("<MotorPulley>", item.MotorPulley);
-                                    strPallet.Replace("<Belt>", item.Belt);
-                                    strPallet.Replace("<CoolingCoil1>", item.CoolingCoil1);
-                                    strPallet.Replace("<CoolingCoil2>", item.CoolingCoil2);
-                                    strPallet.Replace("<HeatingCoil1>", item.HeatingCoil1);
-                                    strPallet.Replace("<HeatingCoil2>", item.HeatingCoil2);
-                                    strPallet.Replace("<Heater>", item.Heater);
-                                    strPallet.Replace("<SalesOrder>", item.SalesOrder);
-                                    strPallet.Replace("<Section>", i + "/" + item.Section.ToString());
-                                    strPallet.Replace("<Item>", item.Item.ToString());
-                                    strPallet.Replace("<SerialNo>", item.SerialNo);
-
-                                    if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
-                                    {
-                                        strErrorPallet.Append(item.SerialNo + ", ");
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                StringBuilder strPallet = new StringBuilder();
-                                StringBuilder strPalletTemplate = new StringBuilder();
-
-                                strPallet.Append(string.Empty);
-                                strPalletTemplate.Append(string.Empty);
-                                strPalletTemplate.Append(xTemp);
-
-                                strPallet = new StringBuilder();
-                                strPallet.Append(strPalletTemplate.ToString());
-                                strPallet.Replace("<Project>", item.Project);
-                                strPallet.Replace("<UnitTag>", item.UnitTag);
-                                strPallet.Replace("<PartNo>", item.PartNo);
-                                strPallet.Replace("<Model>", item.Model);
-                                strPallet.Replace("<PowerSupply>", item.PowerSupply);
-                                strPallet.Replace("<FanType>", item.FanType);
-                                strPallet.Replace("<MotorPole>", item.MotorPole);
-                                strPallet.Replace("<FanMotor>", item.FanMotor);
-                                strPallet.Replace("<FanRPM>", item.FanRPM);
-                                strPallet.Replace("<FanPulley>", item.FanPulley);
-                                strPallet.Replace("<MotorPulley>", item.MotorPulley);
-                                strPallet.Replace("<Belt>", item.Belt);
-                                strPallet.Replace("<CoolingCoil1>", item.CoolingCoil1);
-                                strPallet.Replace("<CoolingCoil2>", item.CoolingCoil2);
-                                strPallet.Replace("<HeatingCoil1>", item.HeatingCoil1);
-                                strPallet.Replace("<HeatingCoil2>", item.HeatingCoil2);
-                                strPallet.Replace("<Heater>", item.Heater);
-                                strPallet.Replace("<SalesOrder>", item.SalesOrder);
-                                strPallet.Replace("<Section>", item.Section.ToString());
-                                strPallet.Replace("<Item>", item.Item.ToString());
-                                strPallet.Replace("<SerialNo>", item.SerialNo);
-
-                                if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
-                                {
-                                    strErrorPallet.Append(item.SerialNo + ", ");
-                                }
+                                strErrorPallet.Append(item.SerialNo + ", ");
                             }
                         }
 
@@ -953,6 +1016,44 @@ namespace ESD.JC_FinishGoods.ViewModels
         public event EventHandler IsActiveChanged;
 
         #endregion Composite Buttons
+
+        #region Timer
+
+        private void ExecuteTimer()
+        {
+            timerServices.StartTimerExecute();
+        }
+
+        private void StopTimer()
+        {
+            timerServices.StopTimerExecute();
+        }
+
+        private void ConsumeItemMessage(AHUItemMessage msg)
+        {
+            if (msg == null)
+                return;
+
+            if (msg.HasValue)
+            {
+                ProgressValue = msg.PercentageValue;
+
+                if (msg.State == "Completed")
+                {
+                    #region refresh grid
+                    AHU = new ListCollectionView(ahuCollection);
+                    AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
+
+                    CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
+                    #endregion refresh grid
+
+                    StopTimer();
+                    ExecuteTimer();
+                }
+            }
+        }
+
+        #endregion Timer
     }
 
     [DelimitedRecord("")]
@@ -1059,5 +1160,12 @@ namespace ESD.JC_FinishGoods.ViewModels
 
         [FieldOrder(8)]
         public int? SectionReceived { get; set; }
+    }
+
+    public class AHUFilterComboItem
+    {
+        public bool? BoolShipStatus { get; set; }
+        public string TexShipStatus { get; set; }
+        public List<AHU> GroupedList { get; set; }
     }
 }

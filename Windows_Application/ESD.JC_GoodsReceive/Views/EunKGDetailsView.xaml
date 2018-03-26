@@ -15,7 +15,6 @@
     <UserControl.Resources>
         <infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
         <infrastructure:IgnoreNewItemPlaceHolderConverter x:Key="ignoreNewItemPlaceHolderConverter"/>
-        <infrastructure:StringToDecimalConverter x:Key="StringToDecimalConverter"/>
         <conv:CollectionEUnKGToBooleanConverter x:Key="CollectionEUnKGConverter"/>
         
         <DataTemplate x:Key="EunKGTemplate">
@@ -178,16 +177,14 @@
                 <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
                     <Button ToolTipService.ToolTip="Click to save!" Command="{Binding SaveEunKGCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_save.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_save.png" Height="40" Width="40" Margin="4">
                                 <Image.Style>
                                     <Style TargetType="Image">
                                         <Style.Triggers>
                                             <Trigger Property="IsEnabled" Value="False">
                                                 <Setter Property="Opacity" Value="0.5" />
                                             </Trigger>
-                                            <!--<DataTrigger Binding="{Binding IsValid}" Value="False">
-                                                <Setter Property="Opacity" Value="0.5" />
-                                            </DataTrigger>-->
                                         </Style.Triggers>
                                     </Style>
                                 </Image.Style>
@@ -197,7 +194,8 @@
                     <Separator />
                     <Button ToolTipService.ToolTip="Click to delete!" Command="{Binding DeleteEunKGCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
                                 <Image.Style>
                                     <Style TargetType="Image">
                                         <Style.Triggers>
@@ -213,7 +211,8 @@
                     <Separator />
                     <Button ToolTipService.ToolTip="Click to print the label!" Command="{Binding PrintLblCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
                                 <Image.Style>
                                     <Style TargetType="Image">
                                         <Style.Triggers>
@@ -229,7 +228,8 @@
                     <Separator />
                     <Button ToolTipService.ToolTip="GO Back!" Command="{Binding _backCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_back.png" Height="40" Width="40" Margin="4"/>
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_back.png" Height="40" Width="40" Margin="4"/>
                         </StackPanel>
                     </Button>
                 </ToolBar>
@@ -246,7 +246,8 @@
                     <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
                             VerticalAlignment="Center" CornerRadius="5">
                         <StackPanel Margin="5" Orientation="Horizontal">
-                            <Image Source="/Resources/btn_find.png" Height="18"/>
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_find.png" Height="18"/>
                             <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
                                      HorizontalAlignment="Stretch" />
                         </StackPanel>
@@ -313,21 +314,28 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="No." Width="Auto" Binding="{Binding SequenceNumber}" CanUserSort="True" IsReadOnly="false" Foreground="Black"/>
-                <DataGridTextColumn Header="Purchase Order" Width="*" Binding="{Binding PO}" IsReadOnly="False" Foreground="Black" />
+                <DataGridTextColumn Header="Purchase Order" 
+                                    Width="*" 
+                                    CanUserSort="True" 
+                                    IsReadOnly="False" 
+                                    Foreground="Black" 
+                                    EditingElementStyle="{StaticResource errorStyle}"
+                                    Binding="{Binding PO, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True, ValidatesOnDataErrors=true, NotifyOnValidationError=true}" />
                 <DataGridTextColumn Header="Quantity" 
                                     MinWidth="50" 
                                     IsReadOnly="False" 
                                     Foreground="Black"
+                                    CanUserSort="False"
                                     EditingElementStyle="{StaticResource errorStyle}"
-                                    Binding="{Binding Qty, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToDecimalConverter}, ValidatesOnExceptions=True}"/>
-                <DataGridTextColumn Header="Last Modified Date: " MinWidth="200" Binding="{Binding ModifiedOn, StringFormat=g}" IsReadOnly="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Last Modified By: " MinWidth="200" Binding="{Binding ModifiedBy}" IsReadOnly="True" Foreground="Black"/>
+                                    Binding="{Binding Qty, StringFormat=N2, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
+                <DataGridTextColumn Header="Last Modified Date: " MinWidth="200" Binding="{Binding ModifiedOn, StringFormat=g}" CanUserSort="True" IsReadOnly="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Last Modified By: " MinWidth="200" Binding="{Binding ModifiedBy}" IsReadOnly="True" CanUserSort="True" Foreground="Black"/>
             </DataGrid.Columns>
             <DataGrid.RowValidationRules>
-                <local:QuantityValidationRules>
-                    <local:ComparisonValue Value="{Binding Data, Source={StaticResource MaxValProxy}}" 
-                                           Collection="{Binding Data, Source={StaticResource ColProxy}}"/>
-                </local:QuantityValidationRules>
+                <ExceptionValidationRule/>
+                <local:RowDataInfoValidationRule ValidationStep="UpdatedValue">
+                    <local:ComparisonValue Value="{Binding Data, Source={StaticResource MaxValProxy}}" Collection="{Binding Data, Source={StaticResource ColProxy}}"/>
+                </local:RowDataInfoValidationRule>
             </DataGrid.RowValidationRules>
         </DataGrid>
 

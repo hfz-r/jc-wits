@@ -11,7 +11,6 @@ using System.Linq;
 using ESD.JC_GoodsReceive.Notifications;
 using Prism.Interactivity.InteractionRequest;
 using System.Windows;
-using ESD.JC_Infrastructure;
 
 namespace ESD.JC_GoodsReceive.ViewModels
 {
@@ -145,11 +144,9 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 notification,
                 returned =>
                 {
-                    StringToDecimalConverter.user_string = null;
-
-                    if (returned != null && returned.Confirmed)
+                    if (returned.Confirmed && returned.ReturnItem != null)
                     {
-                        //MessageBox.Show("Child details successfully been added.", "Success", MessageBoxButton.OK);
+                        MessageBox.Show($"{returned.ReturnItem}.", "Success", MessageBoxButton.OK);
                     }
                 });
         }

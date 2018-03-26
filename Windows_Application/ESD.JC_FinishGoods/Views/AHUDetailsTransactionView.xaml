@@ -5,15 +5,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ESD.JC_FinishGoods.Views"
              mc:Ignorable="d" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <CollectionViewSource x:Key="TrnxEntries" Source="{Binding trnxCollection}">
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <CollectionViewSource x:Key="TrnxEntries" Source="{Binding AHUtrnxCollectionExt}">
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="CreatedOn.Date" />
+                <PropertyGroupDescription PropertyName="AT.CreatedOn.Date" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </UserControl.Resources>
-
+    
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <wpf:InvokeCommandAction Command="{Binding OnLoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
     <Grid x:Name="LayoutRoot" Background="WhiteSmoke">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -21,7 +31,8 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="1" Margin="10,25,10,10">
-            <DataGrid ItemsSource="{Binding Source={StaticResource TrnxEntries}}" 
+            <DataGrid Name="dgAHU" 
+                ItemsSource="{Binding Source={StaticResource TrnxEntries}}" 
 		        AutoGenerateColumns="False" 
 		        IsReadOnly="True"
 		        HorizontalScrollBarVisibility="Auto"
@@ -46,7 +57,7 @@
                                             <Expander Background="LightGray" HorizontalAlignment="Stretch" IsExpanded="True">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, MM/dd/yyyy}" Margin="10,0,10,0" />
+                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, MM/dd/yyyy}" Margin="5,0,5,0" />
                                                         <TextBlock>(</TextBlock>
                                                         <TextBlock Text="{Binding Path=ItemCount}" Margin="0,0,5,0"/>
                                                         <TextBlock Text="Items"/>
@@ -65,11 +76,16 @@
                     </GroupStyle>
                 </DataGrid.GroupStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Transaction Time" Width="Auto" MinWidth="200" Binding="{Binding CreatedOn, StringFormat=hh\\:mm\\:ss tt}" CanUserSort="True"/>
-                    <DataGridTextColumn Header="Section Received" Width="Auto" MinWidth="20" Binding="{Binding Quantity}" CanUserSort="True"/>
-                    <DataGridTextColumn Header="Ship To (Country)" Width="Auto" MinWidth="400" Binding="{Binding Country.CountryDesc}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Time" Width="Auto" MinWidth="200" Binding="{Binding AT.CreatedOn, StringFormat=hh\\:mm\\:ss tt}" />
+                    <DataGridTextColumn Header="Section Received" Width="Auto" MinWidth="20" Binding="{Binding AT.Quantity}" />
+                    <DataGridTextColumn Header="Ship To" Width="Auto" MinWidth="400" Binding="{Binding ShipTo}" />
                 </DataGrid.Columns>
             </DataGrid>
+
+            <TextBlock Text="No transactions." 
+                       Foreground="Red" 
+                       FontWeight="Medium"
+                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dgAHU}" />
         </StackPanel>
     </Grid>
 </UserControl>

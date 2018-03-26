@@ -95,6 +95,16 @@ namespace ESD.JC_FinishGoods.ViewModels
             {
                 this.FCU = fcuServices.GetFCU(id.Value);
 
+                if (FCU.QtyReceived == null)
+                    FCU.ShipStatus = false;
+                else
+                {
+                    if (FCU.QtyReceived == FCU.Qty)
+                        FCU.ShipStatus = true;
+                    else if (FCU.QtyReceived < FCU.Qty)
+                        FCU.ShipStatus = null;
+                }
+
                 this.EventAggregator.GetEvent<FCUSelectedEvent>().Publish(id.Value);
             }
 

@@ -32,5 +32,11 @@ namespace ESD.JC_Main.Views
                 }
             };
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            Application.Current.Shutdown();
+        }
     }
 }

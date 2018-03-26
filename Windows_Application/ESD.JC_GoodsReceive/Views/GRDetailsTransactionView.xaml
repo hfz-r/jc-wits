@@ -7,6 +7,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
         <CollectionViewSource x:Key="TrnxEntries" Source="{Binding trnxCollection}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="CreatedOn.Date" />
@@ -21,14 +23,15 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="1" Margin="10,25,10,10">
-            <DataGrid ItemsSource="{Binding Source={StaticResource TrnxEntries}}" 
-		AutoGenerateColumns="False" 
-		IsReadOnly="True"
-		HorizontalScrollBarVisibility="Auto"
-		VerticalScrollBarVisibility="Auto"
-		HorizontalAlignment="Left" 
-		VerticalAlignment="Stretch" 
-		AutomationProperties.AutomationId="TransactionsList">
+            <DataGrid Name="dgGRDetails" 
+                    ItemsSource="{Binding Source={StaticResource TrnxEntries}}" 
+		            AutoGenerateColumns="False" 
+		            IsReadOnly="True"
+		            HorizontalScrollBarVisibility="Auto"
+		            VerticalScrollBarVisibility="Auto"
+		            HorizontalAlignment="Left" 
+		            VerticalAlignment="Stretch" 
+		            AutomationProperties.AutomationId="TransactionsList">
                 <DataGrid.GroupStyle>
                     <GroupStyle>
                         <GroupStyle.HeaderTemplate>
@@ -46,7 +49,7 @@
                                             <Expander Background="LightGray" HorizontalAlignment="Stretch" IsExpanded="True">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, MM/dd/yyyy}" Margin="10,0,10,0" />
+                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, MM/dd/yyyy}" Margin="5,0,5,0" />
                                                         <TextBlock>(</TextBlock>
                                                         <TextBlock Text="{Binding Path=ItemCount}" Margin="0,0,5,0"/>
                                                         <TextBlock Text="Items"/>
@@ -70,6 +73,11 @@
                     <DataGridTextColumn Header="Reason" Width="Auto" MinWidth="400" Binding="{Binding Reason.ReasonDesc}" CanUserSort="False"/>
                 </DataGrid.Columns>
             </DataGrid>
+
+            <TextBlock Text="No transactions." 
+                       Foreground="Red" 
+                       FontWeight="Medium"
+                       Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dgGRDetails}" />
         </StackPanel>
     </Grid>
 </UserControl>

@@ -25,5 +25,14 @@ namespace DataLayer.Repositories
                 return getAll.Where(x => x.AHUID == AHUID);
             }
         }
+
+        public Location GetLocationFromAHUTransaction(long ID)
+        {
+            using (var context = new InventoryContext())
+            {
+                var loc = context.Locations.Find(ID);
+                return loc;
+            }
+        }
     }
 }

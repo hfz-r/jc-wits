@@ -5,8 +5,8 @@ using DataLayer.Repositories;
 using ESD.JC_GoodsReceive.Services;
 using ESD.JC_Infrastructure;
 using ESD.JC_GoodsReceive.Views;
-using Prism.Unity;
 using ESD.JC_GoodsReceive.Controllers;
+using Prism.Unity;
 
 namespace ESD.JC_GoodsReceive
 {
@@ -31,6 +31,7 @@ namespace ESD.JC_GoodsReceive
             this.container.RegisterType<IGRTransactionServices, GRTransactionServices>();
             this.container.RegisterType<IEunKGRepository, EunKGRepository>();
             this.container.RegisterType<IEunKGServices, EunKGServices>();
+            this.container.RegisterType<IGRTimerSevices, GRTimerServices>();
 
             this.regionManager.RegisterViewWithRegion(RegionNames.MainNavigationRegion, () => this.container.Resolve<GRNavigationItemView>());
             this.container.RegisterTypeForNavigation<GRMainView>();

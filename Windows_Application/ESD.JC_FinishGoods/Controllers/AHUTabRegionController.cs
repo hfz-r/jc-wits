@@ -54,7 +54,7 @@ namespace ESD.JC_FinishGoods.Controllers
 
             AHUDetailsSummaryViewModel summryVM = summryView.DataContext as AHUDetailsSummaryViewModel;
             AHUDetailsTransactionViewModel trnxVM = trnxView.DataContext as AHUDetailsTransactionViewModel;
-            if (summryVM != null)
+            if (summryVM != null && trnxVM != null)
             {
                 summryVM.summryCollection = lst;
                 trnxVM.trnxCollection = lst;

@@ -2,7 +2,6 @@
 using ESD.JC_LabelPrinting.Helpers;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
@@ -20,7 +19,7 @@ using TDSFramework;
 namespace ESD.JC_LabelPrinting.ViewModels
 {
     [RegionMemberLifetime(KeepAlive = false)]
-    public class LabelPrintMainViewModel : BindableBase, IConfirmNavigationRequest
+    public class LabelPrintMainViewModel : BindableBase
     {
         #region Properties
 
@@ -123,13 +122,6 @@ namespace ESD.JC_LabelPrinting.ViewModels
             }
         }
 
-        private string _SendState;
-        public string SendState
-        {
-            get { return _SendState; }
-            set { SetProperty(ref _SendState, value); }
-        }
-
         public CommandBindingCollection CommandBindings
         {
             get
@@ -140,20 +132,13 @@ namespace ESD.JC_LabelPrinting.ViewModels
 
         #endregion
 
-        private const string NormalStateKey = "Normal";
-        private const string SavingStateKey = "Saving";
-        private const string SavedStateKey = "Saved";
-
         private IEventAggregator EventAggregator;
 
         private CommandBindingCollection _CommandBindings;
         private DelegateCommand<object> _printLblCommand;
-        private InteractionRequest<Confirmation> confirmExitInteractionRequest;
 
         public LabelPrintMainViewModel(IEventAggregator EventAggregator)
         {
-            SendState = NormalStateKey;
-
             this.EventAggregator = EventAggregator;
 
             hlp = new ProgressDialogHelper(EventAggregator);
@@ -162,7 +147,6 @@ namespace ESD.JC_LabelPrinting.ViewModels
 
             _CommandBindings = new CommandBindingCollection();
             _printLblCommand = new DelegateCommand<object>(Print, CanPrint);
-            confirmExitInteractionRequest = new InteractionRequest<Confirmation>();
 
             InitializeCommandBindings();
         }
@@ -171,11 +155,7 @@ namespace ESD.JC_LabelPrinting.ViewModels
         {
             get { return this._printLblCommand; }
         }
-        public IInteractionRequest ConfirmExitInteractionRequest
-        {
-            get { return this.confirmExitInteractionRequest; }
-        }
-
+        
         private void InitializeCommandBindings()
         {
             //Create a command binding for the Save command
@@ -208,14 +188,11 @@ namespace ESD.JC_LabelPrinting.ViewModels
                         MS = dt.Count() > 4 ? dt[4] : string.Empty;
                         BUN = dt.Count() > 5 ? dt[5] : string.Empty;
                         QTY = string.IsNullOrEmpty(dt[6]) ? (decimal?)null : dt.Count() > 6 ? decimal.Parse(dt[6]) : (decimal?)null;
-
-                        SendState = SavingStateKey;
                     }
                 }
             }
             catch (Exception ex)
             {
-                SendState = NormalStateKey;
                 MessageBox.Show(ex.Message, "Notification", MessageBoxButton.OK);
             }
 
@@ -232,8 +209,6 @@ namespace ESD.JC_LabelPrinting.ViewModels
         {
             if (MessageBox.Show("Confirm to generate the label?", "Print", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                SendState = SavingStateKey;
-
                 hlp.SetDialogDescription("Printing...");
 
                 worker.DoWork += delegate (object s, DoWorkEventArgs args)
@@ -331,7 +306,6 @@ namespace ESD.JC_LabelPrinting.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        SendState = NormalStateKey;
                         MessageBox.Show(ex.Message);
                     }
                 };
@@ -339,7 +313,6 @@ namespace ESD.JC_LabelPrinting.ViewModels
                 worker.RunWorkerCompleted += delegate (object s, RunWorkerCompletedEventArgs args)
                 {
                     hlp.pgdialog.Close();
-                    SendState = SavedStateKey;
                 };
 
                 worker.RunWorkerAsync();
@@ -358,24 +331,6 @@ namespace ESD.JC_LabelPrinting.ViewModels
             }
 
             return false;
-        }
-
-        public void ConfirmNavigationRequest(NavigationContext navigationContext, Action<bool> continuationCallback)
-        {
-            if (this.SendState == NormalStateKey)
-            {
-                this.confirmExitInteractionRequest.Raise(
-                    new Confirmation
-                    {
-                        Content = "Are you sure you want to navigate away from this window?",
-                        Title = "Confirm"
-                    },
-                    c => { continuationCallback(c.Confirmed); });
-            }
-            else
-            {
-                continuationCallback(true);
-            }
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)

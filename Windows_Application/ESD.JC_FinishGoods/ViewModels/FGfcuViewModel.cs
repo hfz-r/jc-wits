@@ -47,6 +47,17 @@ namespace ESD.JC_FinishGoods.ViewModels
             set { SetProperty(ref _FCU, value); }
         }
 
+        private ListCollectionView _okColumnFilterList;
+        public ListCollectionView OKColumnFilterList
+        {
+            get { return _okColumnFilterList; }
+            set
+            {
+                SetProperty(ref _okColumnFilterList, value);
+                RaisePropertyChanged("OKColumnFilterList");
+            }
+        }
+
         private DataGridCellInfo _cellInfo;
         public DataGridCellInfo CellInfo
         {
@@ -61,13 +72,6 @@ namespace ESD.JC_FinishGoods.ViewModels
             set { SetProperty(ref _CountChecked, value); }
         }
 
-        private bool _canPrint = true;
-        public bool CanPrint
-        {
-            get { return _canPrint; }
-            set { SetProperty(ref _canPrint, value); }
-        }
-
         private string _FilterTextBox;
         public string FilterTextBox
         {
@@ -80,12 +84,47 @@ namespace ESD.JC_FinishGoods.ViewModels
             }
         }
 
+        private bool _isEnableAutoRefresh;
+        public bool IsEnableAutoRefresh
+        {
+            get { return _isEnableAutoRefresh; }
+            set
+            {
+                SetProperty(ref _isEnableAutoRefresh, value);
+                RaisePropertyChanged("IsEnableAutoRefresh");
+
+                if (_isEnableAutoRefresh)
+                    ExecuteTimer();
+                else
+                    StopTimer();
+            }
+        }
+
+        private double _ProgressValue;
+        public double ProgressValue
+        {
+            get
+            {
+                return _ProgressValue;
+            }
+            set
+            {
+                if (_ProgressValue == value)
+                    return;
+                _ProgressValue = value;
+
+                RaisePropertyChanged("ProgressValue");
+            }
+        }
+
         private string _AuthenticatedUser = string.Empty;
         public string AuthenticatedUser
         {
             get { return _AuthenticatedUser; }
             set { SetProperty(ref _AuthenticatedUser, value); }
         }
+
+        public bool? IsImportBtnEnabled { get; private set; }
 
         #endregion Properties
 
@@ -96,6 +135,7 @@ namespace ESD.JC_FinishGoods.ViewModels
         private IRegionManager regionManager;
         private IEventAggregator eventAggregator;
         private IFCUServices fcuServices;
+        private IFCUTimerSevices timerServices;
 
         public ObservableCollection<FCU> fcuCollection { get; private set; }
         public ObservableCollection<FCU> tempCollection { get; private set; }
@@ -110,13 +150,15 @@ namespace ESD.JC_FinishGoods.ViewModels
         private DelegateCommand _checkedAllCommand;
         private DelegateCommand _unCheckedAllCommand;
 
-        public FGfcuViewModel(ICompositeCommands applicationCommands, IRegionManager regionManager, IEventAggregator eventAggregator, IFCUServices fcuServices)
+        public FGfcuViewModel(ICompositeCommands applicationCommands, IRegionManager regionManager, IEventAggregator eventAggregator, IFCUServices fcuServices, IFCUTimerSevices timerServices)
         {
             this.regionManager = regionManager;
             this.fcuServices = fcuServices;
+            this.timerServices = timerServices;
             this.eventAggregator = eventAggregator;
             this.eventAggregator.GetEvent<AuthenticatedUserEvent>().Subscribe(InitAuthenticatedUser);
             this.eventAggregator.GetEvent<FilterTextBoxEvent>().Subscribe(InitTextBoxSearch);
+            this.eventAggregator.GetEvent<FCU_ItemMessageEvent>().Subscribe(ConsumeItemMessage);
 
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             OpenFCUDetailsCommand = new DelegateCommand<FCU>(OpenFCUDetails);
@@ -132,7 +174,7 @@ namespace ESD.JC_FinishGoods.ViewModels
 
             ImportFGCommand = new DelegateCommand(Import);
             ExportFGCommand = new DelegateCommand(Export);
-            PrintLblCommand = new DelegateCommand(PrintLabel).ObservesCanExecute(() => CanPrint);
+            PrintLblCommand = new DelegateCommand(PrintLabel, CanPrint);
             OKCommand = new DelegateCommand(OKImport);
             XOKCommand = new DelegateCommand(OnLoaded);
         }
@@ -154,7 +196,8 @@ namespace ESD.JC_FinishGoods.ViewModels
 
         private void OnLoaded()
         {
-            this.eventAggregator.GetEvent<ObjectEvent>().Publish(null);
+            IsImportBtnEnabled = null;
+            this.eventAggregator.GetEvent<ObjectEvent>().Publish(IsImportBtnEnabled);
 
             tempCollection = new ObservableCollection<FCU>();
             fcuCollection = new ObservableCollection<FCU>();
@@ -174,10 +217,64 @@ namespace ESD.JC_FinishGoods.ViewModels
                 fcuCollection.Add(obj);
             }
 
+            BindComboBox(fcuCollection);
+
             FCU = new ListCollectionView(fcuCollection);
             FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
             CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
+        }
+
+        private void BindComboBox(ObservableCollection<FCU> fcuCollection)
+        {
+            var ComboList = new List<FCUFilterComboItem>();
+            ComboList.Add(new FCUFilterComboItem
+            {
+                BoolShipStatus = null,
+                TexShipStatus = " - All",
+                GroupedList = null
+            });
+
+            foreach (var obj in fcuCollection.GroupBy(ss => ss.ShipStatus).Select(x => new { Key = x.Key, List = x.ToList() }))
+            {
+                ComboList.Add(new FCUFilterComboItem
+                {
+                    BoolShipStatus = obj.Key,
+                    TexShipStatus = obj.Key == null ? " - Partial" : (obj.Key.ToString() == "False") ? " - NOT OK" : " - OK",
+                    GroupedList = obj.List
+                });
+            }
+
+            OKColumnFilterList = new ListCollectionView(ComboList);
+            //OKColumnFilterList.GroupDescriptions.Add(new PropertyGroupDescription("BoolShipStatus"));
+            OKColumnFilterList.CurrentChanged += OKColumnFilterList_CurrentChanged;
+        }
+
+        private void OKColumnFilterList_CurrentChanged(object sender, EventArgs e)
+        {
+            var currItem = ((ListCollectionView)sender).CurrentItem as FCUFilterComboItem;
+            if (currItem != null)
+            {
+                var FilteredCollection = new ObservableCollection<FCU>();
+                if (currItem.TexShipStatus.Contains("All"))
+                {
+                    foreach (var fcu in fcuCollection)
+                    {
+                        FilteredCollection.Add(fcu);
+                    }
+                }
+                else
+                {
+                    foreach (var fcu in fcuCollection.Where(ok => ok.ShipStatus == currItem.BoolShipStatus))
+                    {
+                        FilteredCollection.Add(fcu);
+                    }
+                }
+                FCU = new ListCollectionView(FilteredCollection);
+                FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
+
+                CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
+            }
         }
 
         private void InitAuthenticatedUser(string user)
@@ -415,21 +512,23 @@ namespace ESD.JC_FinishGoods.ViewModels
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(obj.SerialNo) ||
-                        !string.IsNullOrEmpty(obj.Project))
+                    if (!string.IsNullOrEmpty(obj.SerialNo) && obj.SerialNo != "0")
                         PopulateRecords(obj, tempCollection);
                 }
                 #endregion Cells Comparison
 
                 if (tempCollection.Count() > 0)
                 {
-                    this.eventAggregator.GetEvent<ObjectEvent>().Publish(true);
+                    IsImportBtnEnabled = true;
+                    this.eventAggregator.GetEvent<ObjectEvent>().Publish(IsImportBtnEnabled);
 
                     FCU = new ListCollectionView(tempCollection);
                     FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
                     CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
                 }
+                else
+                    throw new Exception("There was no matched data detected.");
             }
             catch (Exception ex)
             {
@@ -626,6 +725,16 @@ namespace ESD.JC_FinishGoods.ViewModels
             obj.ModifiedBy = AuthenticatedUser;
         }
 
+        private bool CanPrint()
+        {
+            if (IsImportBtnEnabled != null)
+            {
+                return false;
+            }
+
+            return (CountChecked == null && CountChecked.Count.Equals(0)) ? false : (CountChecked.Where(x => x == true).Count() > 0);
+        }
+
         private void PrintLabel()
         {
             if (fcuCollection.Any(x => x.IsChecked == true))
@@ -744,6 +853,44 @@ namespace ESD.JC_FinishGoods.ViewModels
         public event EventHandler IsActiveChanged;
 
         #endregion Composite Buttons
+
+        #region Timer
+
+        private void ExecuteTimer()
+        {
+            timerServices.StartTimerExecute();
+        }
+
+        private void StopTimer()
+        {
+            timerServices.StopTimerExecute();
+        }
+
+        private void ConsumeItemMessage(FCUItemMessage msg)
+        {
+            if (msg == null)
+                return;
+
+            if (msg.HasValue)
+            {
+                ProgressValue = msg.PercentageValue;
+
+                if (msg.State == "Completed")
+                {
+                    #region refresh grid
+                    FCU = new ListCollectionView(fcuCollection);
+                    FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
+
+                    CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
+                    #endregion refresh grid
+
+                    StopTimer();
+                    ExecuteTimer();
+                }
+            }
+        }
+
+        #endregion Timer
     }
 
     [DelimitedRecord("")]
@@ -790,5 +937,12 @@ namespace ESD.JC_FinishGoods.ViewModels
 
         [FieldOrder(8)]
         public decimal QtyReceived { get; set; }
+    }
+
+    public class FCUFilterComboItem
+    {
+        public bool? BoolShipStatus { get; set; }
+        public string TexShipStatus { get; set; }
+        public List<FCU> GroupedList { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using ESD.JC_GoodsReceive.ViewModels;
 
 namespace ESD.JC_GoodsReceive.Views
 {
@@ -14,7 +13,7 @@ namespace ESD.JC_GoodsReceive.Views
             InitializeComponent();
         }
 
-        private void ToolBar_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void ToolBar_Loaded(object sender, RoutedEventArgs e)
         {
             ToolBar toolBar = sender as ToolBar;
             var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;

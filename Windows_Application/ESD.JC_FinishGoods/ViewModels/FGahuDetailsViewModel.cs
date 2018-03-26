@@ -95,6 +95,16 @@ namespace ESD.JC_FinishGoods.ViewModels
             {
                 this.AHU = ahuServices.GetAHU(id.Value);
 
+                if (AHU.SectionReceived == null)
+                    AHU.ShipStatus = false;
+                else
+                {
+                    if (AHU.SectionReceived == AHU.Section)
+                        AHU.ShipStatus = true;
+                    else if (AHU.SectionReceived < AHU.Section)
+                        AHU.ShipStatus = null;
+                }
+
                 this.EventAggregator.GetEvent<AHUSelectedEvent>().Publish(id.Value);
             }
 
