@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Data;
+using System.Linq;
 
 namespace ESD.WITS
 {
@@ -1057,8 +1058,8 @@ namespace ESD.WITS
                 txtGIQtyAvblEun.Text = string.Empty;
                 txtGIQtyEun.Text = string.Empty;
 
-                sSQL = " SELECT GR.[ID], GR.[MaterialShortText], GR.[Quantity], GR.[Eun], GR.[StorageLoc],";
-                sSQL += " ISNULL(SUM(GRT.Quantity),0) AS QtyAvailable, ISNULL(SUM(GRT.Quantity),0) -";
+                sSQL = " SELECT GR.[ID], GR.[MaterialShortText], GR.[Eun], GR.[StorageLoc],";
+                sSQL += "ISNULL(SUM(GRT.Quantity),0) -";
                 sSQL += " (SELECT ISNULL(SUM(GIT.Quantity),0) AS QtyAvailableGI";
                 sSQL += " FROM [dbo].[GoodsReceive] GR ";
                 sSQL += " INNER JOIN [dbo].[GITransaction] GIT   ON GR.ID = GIT.GRID ";
@@ -1080,20 +1081,28 @@ namespace ESD.WITS
                         if (reader != null && reader.Read())
                         {
                             GRID = Convert.ToInt32(reader[0]);
-                            txtGIQtyAvblEun.Text = reader[3].ToString();
-                            txtGIQtyEun.Text = reader[3].ToString();
+                            txtGIQtyAvblEun.Text = reader[2].ToString();
+                            txtGIQtyEun.Text = reader[2].ToString();
                             txtGIQty.Text = "0";
-                            SLoc = reader[4].ToString();
-                            txtGIQtyAvbl.Text = Convert.ToDouble(reader[6]).ToString();
-                            ENMatShortText = reader[7].ToString();
+                            SLoc = reader[3].ToString();
+                            txtGIQtyAvbl.Text = Convert.ToDouble(reader[4]).ToString();
+                            ENMatShortText = reader[1].ToString();
+
+                            if (GIList != null && GIList.Count > 0)
+                            {
+                                var item = GIList.Where(x => x.SAPNo == txtGISAPNo.Text);
+                                double? balance = item != null ? item.Sum(x => (Convert.ToDouble(x.Qty))) : (double?)null;
+                                if (balance != null)
+                                {
+                                    txtGIQtyAvbl.Text = (Convert.ToDouble(txtGIQtyAvbl.Text) - balance).ToString();
+                                }
+                            }
                         }
                         else
                         {
                             txtGIQtyAvbl.Text = string.Empty;
                             txtGIQtyAvblEun.Text = string.Empty;
                             txtGIQtyEun.Text = string.Empty;
-                            dataGrdGI.DataSource = null;
-                            GIList = new List<GI>();
                             MessageBox.Show("Invalid SAP No/GR not complete");
                         }
                     }
@@ -1103,6 +1112,12 @@ namespace ESD.WITS
                 if (!string.IsNullOrEmpty(txtGIQtyAvbl.Text) && Convert.ToDouble(txtGIQtyAvbl.Text) == 0)
                 {
                     MessageBox.Show("No Qty available");
+                    txtGIQtyAvbl.Text = string.Empty;
+                    txtGIQtyAvblEun.Text = string.Empty;
+                    txtGIQtyEun.Text = string.Empty;
+                    txtGIQty.Text = string.Empty;
+                    txtGISAPNo.Focus();
+                    txtGISAPNo.SelectAll();
                 }
             }
             catch(Exception ex)
@@ -1373,7 +1388,7 @@ namespace ESD.WITS
             {
                 if (Convert.ToDouble(txtGIQty.Text) > Convert.ToDouble(txtGIQtyAvbl.Text))
                 {
-                    MessageBox.Show("Qty exceeded", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                    MessageBox.Show("Qty exceeded.\nQuantity available: " + Convert.ToDouble(txtGIQtyAvbl.Text));
                     txtGIQty.Focus();
                     txtGIQty.SelectAll();
                 }
@@ -1462,7 +1477,7 @@ namespace ESD.WITS
 
                         //our first column which is the ID
                         DataGridTextBoxColumn gridColumn4 = new DataGridTextBoxColumn();
-                        gridColumn4.Width = 300;
+                        gridColumn4.Width = 500;
                         gridColumn4.MappingName = "ENDesc";
                         gridColumn4.HeaderText = "ENDesc";
                         tableStyle.GridColumnStyles.Add(gridColumn4);
@@ -1629,37 +1644,15 @@ namespace ESD.WITS
         {
             if (GIList != null && GIList.Count > 0)
             {
-                if (!string.IsNullOrEmpty(txtGIQty.Text) && Convert.ToInt32(txtGIQty.Text) > 0)
-                {
-                    Cursor.Current = Cursors.WaitCursor;
-                    pnlGdIssue.Visible = false;
-                    pnlGdIssueSubmit.Visible = true;
-                    pnlGdIssueSubmit.Dock = DockStyle.Fill;
-                    LoadLocationGITo();
-                    LoadLocationGIFrom();
-                    txtText.Focus();
-                    txtText.SelectAll();
-                    Cursor.Current = Cursors.Default;
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(txtGIQty.Text))
-                    {
-                        MessageBox.Show("Enter Qty");
-                        txtGIQty.Focus();
-                    }
-                    else if (!string.IsNullOrEmpty(txtGIQty.Text) && Convert.ToInt32(txtGIQty.Text) == 0)
-                    {
-                        MessageBox.Show("Qty must be more than 0");
-                        txtGIQty.Focus();
-                    }
-                    else if (!string.IsNullOrEmpty(txtGIQty.Text) && !string.IsNullOrEmpty(txtGIQtyAvbl.Text)
-                        && Convert.ToInt32(txtGIQty.Text) > Convert.ToInt32(txtGIQtyAvbl.Text))
-                    {
-                        MessageBox.Show("Qty exceeded.\nQuantity available: " + Convert.ToInt32(txtGIQtyAvbl.Text));
-                        txtGIQty.Focus();
-                    }
-                }
+                Cursor.Current = Cursors.WaitCursor;
+                pnlGdIssue.Visible = false;
+                pnlGdIssueSubmit.Visible = true;
+                pnlGdIssueSubmit.Dock = DockStyle.Fill;
+                LoadLocationGITo();
+                LoadLocationGIFrom();
+                txtText.Focus();
+                txtText.SelectAll();
+                Cursor.Current = Cursors.Default;
             }
             else
             {
@@ -2307,6 +2300,14 @@ namespace ESD.WITS
             pnlFGSubmit.Visible = false;
             pnlFG.Visible = true;
             pnlFG.Dock = DockStyle.Fill;
+        }
+
+        private void btnFGSubmitHome_Click(object sender, EventArgs e)
+        {
+            pnlFGSubmit.Visible = false;
+            pnlSelection.Visible = true;
+            pnlSelection.Dock = DockStyle.Fill;
+            ClearFGCache(true);
         }
 
         #endregion

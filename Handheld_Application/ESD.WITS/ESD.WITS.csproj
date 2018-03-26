@@ -18,8 +18,7 @@
     <NativePlatformName>Windows CE</NativePlatformName>
     <FormFactorID>
     </FormFactorID>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>WITS_Logo.ico</ApplicationIcon>
     <StartupObject>
     </StartupObject>
   </PropertyGroup>
@@ -112,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.xml" />
+    <Content Include="WITS_Logo.ico" />
     <None Include="Resources\05_CREATE_Table Container.sql" />
     <None Include="Resources\06_CREATE_Table Transactions.sql" />
     <None Include="Resources\01_CREATE_Table Role.sql" />

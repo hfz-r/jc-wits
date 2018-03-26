@@ -140,6 +140,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_99116AF949874AF98554B5EBDC12721A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A2952B0AFCFF84FEDB1CA37F55376A66"
         "OwnerKey" = "8:_15FE4EB1E4458FC58D80571806C8883E"
         "MsmSig" = "8:_UNDEFINED"
@@ -352,7 +358,7 @@
             "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "Register" = "3:0"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -408,7 +414,7 @@
             "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "Register" = "3:0"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -436,7 +442,7 @@
             "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "Register" = "3:0"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -464,7 +470,7 @@
             "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "Register" = "3:0"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -496,6 +502,24 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_99116AF949874AF98554B5EBDC12721A"
+            {
+            "SourcePath" = "8:..\\..\\..\\WITS_Logo.png"
+            "TargetName" = "8:WITS_Logo.png"
+            "Tag" = "8:"
+            "Folder" = "8:_C2AB6859B20A4B4D8ECF2508BE908A28"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{E4F2F62A-3940-4BF5-A031-F7FA98CAAFFA}:_A2952B0AFCFF84FEDB1CA37F55376A66"
             {
             "AssemblyIsInGAC" = "11:FALSE"
@@ -520,7 +544,7 @@
             "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "Register" = "3:0"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -576,7 +600,7 @@
             "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "Register" = "3:0"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -639,20 +663,29 @@
         }
         "Folder"
         {
-            "{F6DFDB62-1DD1-498B-89B7-27BAC542EE5A}:_7C99865697B94C75B2E6D89521F2C0BA"
+            "{27CA7284-31D3-408F-812A-1EF9ACCDB822}:_8E2F06576F5D470CA20D31347F297C20"
             {
-            "Name" = "8:#1911"
+            "Name" = "8:Windows"
             "Condition" = "8:"
-            "Property" = "8:%CE1%"
+            "Property" = "8:CUSTOMFOLDER1"
                 "Folders"
                 {
+                    "{5943FCFD-5B64-4EE4-96C9-4618EC95352A}:_A5D0762825CE4BFEB52E0C62BB6C9EAD"
+                    {
+                    "Name" = "8:Desktop"
+                    "Condition" = "8:"
+                    "Property" = "8:_6FE711E598514D029D66570E8B6CB04C"
+                        "Folders"
+                        {
+                        }
+                    }
                 }
             }
-            "{F6DFDB62-1DD1-498B-89B7-27BAC542EE5A}:_8CE617581A7044588C66FC9FBB0DEDD4"
+            "{F6DFDB62-1DD1-498B-89B7-27BAC542EE5A}:_9836DDB39E4B4E2A965CD68677110310"
             {
-            "Name" = "8:#1912"
+            "Name" = "8:#1919"
             "Condition" = "8:"
-            "Property" = "8:%CE2%"
+            "Property" = "8:%CE17%"
                 "Folders"
                 {
                 }
@@ -769,14 +802,24 @@
         }
         "Shortcut"
         {
-            "{971D45E9-E38C-49AC-B36E-4C5BEA533350}:_3E7DE378E67D4285AAD0F64CA447E935"
+            "{971D45E9-E38C-49AC-B36E-4C5BEA533350}:_5343563E404643C5A901504007CD760C"
             {
             "Name" = "8:Warehouse Inventory Tracking System"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "Target" = "8:_C4F07F9E3D984483865153CDB2E9D98A"
-            "Folder" = "8:_8CE617581A7044588C66FC9FBB0DEDD4"
+            "Folder" = "8:_9836DDB39E4B4E2A965CD68677110310"
+            "WorkingFolder" = "8:_C2AB6859B20A4B4D8ECF2508BE908A28"
+            }
+            "{971D45E9-E38C-49AC-B36E-4C5BEA533350}:_C8C17B82AC6C444E918487E8CBE9EF48"
+            {
+            "Name" = "8:Warehouse Inventory Tracking System"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "Target" = "8:_C4F07F9E3D984483865153CDB2E9D98A"
+            "Folder" = "8:_A5D0762825CE4BFEB52E0C62BB6C9EAD"
             "WorkingFolder" = "8:_C2AB6859B20A4B4D8ECF2508BE908A28"
             }
         }

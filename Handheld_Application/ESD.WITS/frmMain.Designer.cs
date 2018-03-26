@@ -140,7 +140,7 @@
             this.lblFGCountry = new System.Windows.Forms.Label();
             this.btnFGBack = new System.Windows.Forms.Button();
             this.btnFGShip = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnFGSubmitHome = new System.Windows.Forms.PictureBox();
             this.label25 = new System.Windows.Forms.Label();
             this.pnlLogin.SuspendLayout();
             this.pnlSelection.SuspendLayout();
@@ -1167,7 +1167,7 @@
             this.pnlFGSubmit.Controls.Add(this.lblFGCountry);
             this.pnlFGSubmit.Controls.Add(this.btnFGBack);
             this.pnlFGSubmit.Controls.Add(this.btnFGShip);
-            this.pnlFGSubmit.Controls.Add(this.pictureBox1);
+            this.pnlFGSubmit.Controls.Add(this.btnFGSubmitHome);
             this.pnlFGSubmit.Controls.Add(this.label25);
             this.pnlFGSubmit.Location = new System.Drawing.Point(987, 299);
             this.pnlFGSubmit.Name = "pnlFGSubmit";
@@ -1251,14 +1251,14 @@
             this.btnFGShip.Text = "Ship";
             this.btnFGShip.Click += new System.EventHandler(this.btnFGShip_Click);
             // 
-            // pictureBox1
+            // btnFGSubmitHome
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(11, 248);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(40, 37);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.Click += new System.EventHandler(this.btnFGHome_Click);
+            this.btnFGSubmitHome.Image = ((System.Drawing.Image)(resources.GetObject("btnFGSubmitHome.Image")));
+            this.btnFGSubmitHome.Location = new System.Drawing.Point(11, 248);
+            this.btnFGSubmitHome.Name = "btnFGSubmitHome";
+            this.btnFGSubmitHome.Size = new System.Drawing.Size(40, 37);
+            this.btnFGSubmitHome.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnFGSubmitHome.Click += new System.EventHandler(this.btnFGSubmitHome_Click);
             // 
             // label25
             // 
@@ -1408,7 +1408,7 @@
         private System.Windows.Forms.Label lblFGCountry;
         private System.Windows.Forms.Button btnFGBack;
         private System.Windows.Forms.Button btnFGShip;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox btnFGSubmitHome;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.RadioButton rdBtnFGTfrtoCustomer;
         private System.Windows.Forms.RadioButton rdBtnFGTfrtoWarehse;
