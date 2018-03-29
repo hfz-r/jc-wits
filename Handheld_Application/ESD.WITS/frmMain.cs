@@ -6,7 +6,6 @@ using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
-using ESD.WITS.Model;
 using ESD.WITS.Helper;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -64,8 +63,7 @@ namespace ESD.WITS
         private string gStrDBName = string.Empty;
         private string gStrSQLUser = string.Empty;
         private string gStrSQLPwd = string.Empty;
-        private string connectionString = "Data Source=192.168.56.1,5050;Initial Catalog=ESD_WITS;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";
-        //private string connectionString = @"Data Source=172.20.31.218,1433;Initial Catalog=ESD_WITS;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";
+        private string connectionString = @"Data Source=172.20.31.218,1433;Initial Catalog=ESD_WITS;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";
         private int GRID = 0;
         private bool isPartialTxn = false;
         private List<GI> GIList = new List<GI>();
@@ -1263,6 +1261,7 @@ namespace ESD.WITS
             cmbBoxGILocFrom.Enabled = false;
             lblGILocTo.Enabled = false;
             cmbBoxGILocTo.Enabled = false;
+            txtGIProdNo.Focus();
         }
 
         /// <summary>
@@ -1279,6 +1278,7 @@ namespace ESD.WITS
             transferType = TransferType.TRANSFER_POST;
             lblGIProdNo.Enabled = false;
             txtGIProdNo.Enabled = false;
+            cmbBoxGILocFrom.Focus();
         }
 
         /// <summary>
@@ -2137,6 +2137,7 @@ namespace ESD.WITS
         {
             rdBtnAHU.Checked = true;
             rdBtnFCU.Checked = false;
+            txtFGSerial.Focus();
         }
 
         /// <summary>
@@ -2148,6 +2149,7 @@ namespace ESD.WITS
         {
             rdBtnAHU.Checked = false;
             rdBtnFCU.Checked = true;
+            txtFGSerial.Focus();
         }
 
         /// <summary>
@@ -2275,6 +2277,7 @@ namespace ESD.WITS
             cmbBoxFGLocation.Enabled = true;
             lblFGCountry.Enabled = false;
             cmbBoxFGCountry.Enabled = false;
+            cmbBoxFGLocation.Focus();
         }
 
         /// <summary>
@@ -2288,6 +2291,7 @@ namespace ESD.WITS
             cmbBoxFGLocation.Enabled = false;
             lblFGCountry.Enabled = true;
             cmbBoxFGCountry.Enabled = true;
+            cmbBoxFGCountry.Focus();
         }
 
         /// <summary>

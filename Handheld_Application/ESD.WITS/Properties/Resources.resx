@@ -117,23 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="_01_CREATE_Table_Role" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\01_CREATE_Table Role.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="_02_CREATE_Table_User" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\02_CREATE_Table User.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="_03_CREATE_Table_Currency" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\03_CREATE_Table Currency.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="_04_CREATE_Table_Supplier" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\04_CREATE_Table Supplier.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="_05_CREATE_Table_Container" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\05_CREATE_Table Container.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="_06_CREATE_Table_Transactions" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\06_CREATE_Table Transactions.sql;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
 </root>

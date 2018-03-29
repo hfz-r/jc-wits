@@ -76,22 +76,6 @@
     <Compile Include="Helper\SHA256.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\Container.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\Currency.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\Role.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\Supplier.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\Transactions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Model\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmMain.resx">
@@ -112,12 +96,6 @@
   <ItemGroup>
     <Content Include="Config.xml" />
     <Content Include="WITS_Logo.ico" />
-    <None Include="Resources\05_CREATE_Table Container.sql" />
-    <None Include="Resources\06_CREATE_Table Transactions.sql" />
-    <None Include="Resources\01_CREATE_Table Role.sql" />
-    <None Include="Resources\03_CREATE_Table Currency.sql" />
-    <None Include="Resources\04_CREATE_Table Supplier.sql" />
-    <None Include="Resources\02_CREATE_Table User.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
   <ProjectExtensions>
