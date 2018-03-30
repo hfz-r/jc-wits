@@ -63,7 +63,7 @@ namespace ESD.WITS
         private string gStrDBName = string.Empty;
         private string gStrSQLUser = string.Empty;
         private string gStrSQLPwd = string.Empty;
-        private string connectionString = @"Data Source=172.20.31.218,1433;Initial Catalog=ESD_WITS;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";
+        private string connectionString = @"Data Source=10.105.152.73,1438;Initial Catalog=INVENTORY;Trusted_Connection=Yes;User ID=sa;Password=Password1;Persist Security Info=False;Integrated Security=False;";
         private int GRID = 0;
         private bool isPartialTxn = false;
         private List<GI> GIList = new List<GI>();
@@ -428,6 +428,7 @@ namespace ESD.WITS
             btnGIDelete.Enabled = false;
             rdBtnGITfrtoProd.Checked = true;
             rdBtnGITfrPosting.Checked = false;
+            txtGIQty.Text = "0";
             Cursor.Current = Cursors.Default;
         }
 
@@ -1496,7 +1497,7 @@ namespace ESD.WITS
                         txtGIQtyAvbl.Text = string.Empty;
                         txtGIQtyAvblEun.Text = string.Empty;
                         txtGIQtyEun.Text = string.Empty;
-                        txtGIQty.Text = string.Empty;
+                        txtGIQty.Text = "0";
                         txtGISAPNo.Focus();
                         txtGISAPNo.SelectAll();
                     }
@@ -1706,7 +1707,7 @@ namespace ESD.WITS
             txtFGQty.Enabled = true;
             cmbBoxFGLocation.Enabled = true;
             txtFGSerial.Text = string.Empty;
-            txtFGQty.Text = string.Empty;
+            txtFGQty.Text = "0";
             if (cmbBoxFGCountry.SelectedItem != null)
             {
                 cmbBoxFGCountry.SelectedIndex = 0;
@@ -1743,7 +1744,7 @@ namespace ESD.WITS
         {
             Cursor.Current = Cursors.WaitCursor; // set the wait cursor           
             string sSQL = string.Empty;
-            txtFGQty.Text = string.Empty;
+            txtFGQty.Text = "0";
             if (cmbBoxFGCountry.SelectedItem != null)
             {
                 cmbBoxFGCountry.SelectedIndex = 0;
@@ -1923,7 +1924,7 @@ namespace ESD.WITS
                         tableStyle.GridColumnStyles.Add(gridColumn7);
 
                         DataGridTextBoxColumn gridColumn8 = new DataGridTextBoxColumn();
-                        gridColumn8.Width = 80;
+                        gridColumn8.Width = 100;
                         gridColumn8.MappingName = "QtyRcvd";
                         gridColumn8.HeaderText = "Qty Received";
                         tableStyle.GridColumnStyles.Add(gridColumn8);
@@ -2022,6 +2023,7 @@ namespace ESD.WITS
             txtFGSerial.Focus();
             rdBtnAHU.Checked = true;
             rdBtnFCU.Checked = false;
+            txtFGQty.Text = "0";
             Cursor.Current = Cursors.Default;
         }
 
