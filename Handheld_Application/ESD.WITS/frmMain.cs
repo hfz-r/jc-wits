@@ -315,7 +315,7 @@ namespace ESD.WITS
                 if (isPass)
                 {
                     sSQL = "SELECT MACT.IsAllow";
-                    sSQL += " FROM [ESD_WITS].[dbo].[ModuleAccessCtrl] MAC";
+                    sSQL += " FROM [dbo].[ModuleAccessCtrl] MAC";
                     sSQL += " INNER JOIN [dbo].[ModuleAccessCtrlTransaction] MACT";
                     sSQL += " ON MAC.ID = MACT.ModuleID";
                     sSQL += " WHERE Module LIKE '%Handheld%'";
