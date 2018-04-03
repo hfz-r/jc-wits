@@ -1061,6 +1061,7 @@
             // 
             // txtGRPurchaseOrder
             // 
+            this.txtGRPurchaseOrder.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.txtGRPurchaseOrder.Location = new System.Drawing.Point(112, 98);
             this.txtGRPurchaseOrder.Name = "txtGRPurchaseOrder";
             this.txtGRPurchaseOrder.ReadOnly = true;
