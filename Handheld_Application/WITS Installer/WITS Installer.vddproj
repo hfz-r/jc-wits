@@ -20,6 +20,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_1457EA1343DC404E8372C6A3ADB02D47"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_15FE4EB1E4458FC58D80571806C8883E"
         "OwnerKey" = "8:_C4F07F9E3D984483865153CDB2E9D98A"
         "MsmSig" = "8:_UNDEFINED"
@@ -296,8 +302,26 @@
             "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "Register" = "3:0"
-            "Exclude" = "11:TRUE"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_1457EA1343DC404E8372C6A3ADB02D47"
+            {
+            "SourcePath" = "8:..\\ESD.WITS\\dbnetlib.dll"
+            "TargetName" = "8:dbnetlib.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_C2AB6859B20A4B4D8ECF2508BE908A28"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{E4F2F62A-3940-4BF5-A031-F7FA98CAAFFA}:_15FE4EB1E4458FC58D80571806C8883E"
@@ -736,7 +760,7 @@
             }
             "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_C4F07F9E3D984483865153CDB2E9D98A"
             {
-            "SourcePath" = "8:..\\ESD.WITS\\obj\\Debug\\Warehouse Inventory Tracking System.exe"
+            "SourcePath" = "8:..\\ESD.WITS\\obj\\Release\\Warehouse Inventory Tracking System.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C2AB6859B20A4B4D8ECF2508BE908A28"
