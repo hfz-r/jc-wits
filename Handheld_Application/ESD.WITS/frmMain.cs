@@ -69,7 +69,7 @@ namespace ESD.WITS
         private string gStrDBName = string.Empty;
         private string gStrSQLUser = string.Empty;
         private string gStrSQLPwd = string.Empty;
-        private string connectionString = string.Empty;
+        private string connectionString = "Data Source=192.168.180.37,5050;Initial Catalog=ESD_WITS;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";
         private int GRID = 0;
         private bool isPartialTxn = false;
         private List<GI> GIList = new List<GI>();
