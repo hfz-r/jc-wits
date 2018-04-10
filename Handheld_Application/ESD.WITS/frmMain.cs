@@ -17,6 +17,12 @@ namespace ESD.WITS
 {
     public partial class frmMain : Form
     {
+        private class ModuleAccessCtrl
+        {
+            public string Module { get; set; }
+            public bool? IsAllow { get; set; }
+        }
+
         private class GI
         {
             public int ID { get; set; }     
@@ -63,7 +69,7 @@ namespace ESD.WITS
         private string gStrDBName = string.Empty;
         private string gStrSQLUser = string.Empty;
         private string gStrSQLPwd = string.Empty;
-        private string connectionString = @"Data Source=10.105.152.73,1438;Initial Catalog=INVENTORY;Trusted_Connection=Yes;User ID=sa;Password=Password1;Persist Security Info=False;Integrated Security=False;";
+        private string connectionString = string.Empty;
         private int GRID = 0;
         private bool isPartialTxn = false;
         private List<GI> GIList = new List<GI>();
@@ -138,27 +144,6 @@ namespace ESD.WITS
             filePath.Close();
 
             connectionString = @"Data Source=" + gStrSQLServer + ";Initial Catalog=" + gStrDBName + ";Trusted_Connection=Yes;User ID=" + gStrSQLUser + ";Password=" + gStrSQLPwd + ";Persist Security Info=False;Integrated Security=False;";
-        }
-
-        /// <summary>
-        /// Encrypt password to MD5
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static string GetMD5Hash(string input)
-        {
-            System.Security.Cryptography.MD5CryptoServiceProvider x = new System.Security.Cryptography.MD5CryptoServiceProvider();
-            byte[] bs = System.Text.Encoding.UTF8.GetBytes(input);
-
-            bs = x.ComputeHash(bs);
-
-            System.Text.StringBuilder s = new System.Text.StringBuilder();
-
-            foreach (byte b in bs)
-            {
-                s.Append(b.ToString("x2").ToLower());
-            }
-            return s.ToString();
         }
 
         #endregion
@@ -288,7 +273,6 @@ namespace ESD.WITS
                 // Create the command 
                 string sSQL = string.Empty;
                 string RoleID = string.Empty;
-                bool? isAllowed = false;
                 string pass = HashConverter.CalculateHash(password, username);
 
                 sSQL = "SELECT ID, RoleID ";
@@ -314,11 +298,13 @@ namespace ESD.WITS
 
                 if (isPass)
                 {
-                    sSQL = "SELECT MACT.IsAllow";
+                    List<ModuleAccessCtrl> ModuleAccessCtrlList = new List<ModuleAccessCtrl>();
+
+                    sSQL = "SELECT MAC.Module, MACT.IsAllow";
                     sSQL += " FROM [dbo].[ModuleAccessCtrl] MAC";
                     sSQL += " INNER JOIN [dbo].[ModuleAccessCtrlTransaction] MACT";
                     sSQL += " ON MAC.ID = MACT.ModuleID";
-                    sSQL += " WHERE Module LIKE '%Handheld%'";
+                    sSQL += " WHERE (Module LIKE '%Handheld%' OR Module LIKE '%Goods Receive%' OR Module LIKE '%Goods Issue%' OR Module LIKE '%Outbound Delivery%')";
                     sSQL += " AND RoleID = " + RoleID;
 
                     using (connection = new SqlConnection(connectionString))
@@ -328,20 +314,49 @@ namespace ESD.WITS
 
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            if (reader != null && reader.Read())
+                            if (reader != null)
                             {
                                 isPass = true;
-                                isAllowed = (bool?)reader[0];
+
+                                while (reader.Read())
+                                {
+                                    ModuleAccessCtrlList.Add(new ModuleAccessCtrl
+                                    {
+                                        Module = reader[0].ToString(),
+                                        IsAllow = (bool?)reader[1]
+                                    });
+                                }
                             }
                         }
                         connection.Close();
                     }
 
-                    if (isAllowed ?? true)
+                    if (ModuleAccessCtrlList != null 
+                        && ModuleAccessCtrlList.Count > 0 
+                        && ModuleAccessCtrlList.Any(x => x.Module == "Handheld Transaction" && x.IsAllow == true))
                     {
                         pnlLogin.Visible = false;
                         pnlSelection.Visible = true;
                         pnlSelection.Dock = DockStyle.Fill;
+
+                        foreach (var item in ModuleAccessCtrlList)
+                        {
+                            if (item.Module == "Goods Receive")
+                            {
+                                btnGdReceive.Enabled = item.IsAllow != null ? (bool)item.IsAllow : false;
+                                lblGR.Enabled = btnGdReceive.Enabled;
+                            }
+                            else if (item.Module == "Goods Issue")
+                            {
+                                btnGdIssue.Enabled = item.IsAllow != null ? (bool)item.IsAllow : false;
+                                lblGI.Enabled = btnGdIssue.Enabled;
+                            }
+                            else if (item.Module == "Outbound Delivery")
+                            {
+                                btnOutbound.Enabled = item.IsAllow != null ? (bool)item.IsAllow : false;
+                                lblFG.Enabled = btnOutbound.Enabled;
+                            }
+                        }
                     }
                     else
                     {
@@ -422,13 +437,13 @@ namespace ESD.WITS
             pnlGdIssue.Visible = true;
             pnlGdIssue.Dock = DockStyle.Fill;
             SetGIPlaceholder();
-            txtGISAPNo.Focus();
-            txtGISAPNo.SelectAll();
             btnGINext.Enabled = false;
             btnGIDelete.Enabled = false;
             rdBtnGITfrtoProd.Checked = true;
             rdBtnGITfrPosting.Checked = false;
             txtGIQty.Text = "0";
+            txtGISAPNo.Focus();
+            txtGISAPNo.SelectAll();
             Cursor.Current = Cursors.Default;
         }
 
@@ -574,11 +589,12 @@ namespace ESD.WITS
             sSQL += ", GR.[DeliveryNote]";
             sSQL += ", GR.[BillOfLading]";
             sSQL += ", GR.[PurchaseOrder]";
+            sSQL += ", GR.[PostingDate]";
             sSQL += " FROM [dbo].[GoodsReceive] GR";
             sSQL += " LEFT OUTER JOIN [dbo].[GRTransaction] GRT";
             sSQL += " ON GR.ID = GRT.GRID";
             sSQL += " WHERE GR.[Material] = '" + txtGRSAPNo.Text + "'";
-            sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Ok], GR.[Quantity], GR.[Eun], GR.[DeliveryNote], GR.[BillOfLading], GR.[PurchaseOrder]";
+            sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Ok], GR.[Quantity], GR.[Eun], GR.[DeliveryNote], GR.[BillOfLading], GR.[PurchaseOrder], GR.[PostingDate]";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -604,6 +620,7 @@ namespace ESD.WITS
                         txtGRDelNote.Text = reader[6].ToString();
                         txtGRBillLading.Text = reader[7].ToString();
                         txtGRPurchaseOrder.Text = reader[8].ToString();
+                        dtPickerGRPostingDate.Text = reader[9].ToString();
                         txtGRMSDesc.BackColor = Color.Black;
                         txtGRQtyOrdered.BackColor = Color.Black;
                         txtGROrderedEun.BackColor = Color.Black;
@@ -613,6 +630,7 @@ namespace ESD.WITS
 
                         if (isTxnCompleted != null && Convert.ToBoolean(isTxnCompleted)) //complete
                         {
+                            dtPickerGRPostingDate.Enabled = false;
                             btnGRNext.Enabled = false;
                             labelGRQty.Visible = false;
                             btnGRMinusQty.Visible = false;
@@ -936,12 +954,12 @@ namespace ESD.WITS
                         sSQL += " VALUES";
                         sSQL += cmbBoxGRReason.SelectedValue == null ? " (NULL" : " ('" + cmbBoxGRReason.SelectedValue + "'";
                         sSQL += " ,'" + txtGRQty.Text + "'";
-                        sSQL += " ,'" + DateTime.Now + "'";
-                        sSQL += " ,'" + userID + "'";
+                        sSQL += " ,GETDATE()";
+                        sSQL += " ,'" + txtUserID.Text + "'";
                         sSQL += " ," + GRID + ")";
 
                         sSQL += " UPDATE [dbo].[GoodsReceive]";
-                        sSQL += " SET [DocumentDate] = '" + DateTime.Now + "', ";
+                        sSQL += " SET [DocumentDate] = GETDATE(), ";
                         sSQL += " [PostingDate] = '" + dtPickerGRPostingDate.Value + "',";
                         sSQL += " [DeliveryNote] = '" + txtGRDelNote.Text + "', ";
                         sSQL += " [BillOfLading] = '" + txtGRBillLading.Text + "' ";
@@ -1168,7 +1186,7 @@ namespace ESD.WITS
             string sSQL = string.Empty;
             sSQL = "SELECT [ID] ";
             sSQL += " ,[LocationDesc] ";
-            sSQL += "FROM [dbo].[Location] ";
+            sSQL += "FROM [dbo].[Location] ORDER BY LocationDesc ASC ";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -1178,19 +1196,6 @@ namespace ESD.WITS
                 using (SqlDataAdapter sda = new SqlDataAdapter(command))
                 {
                     sda.Fill(dtTo);
-
-                    //cmbBoxGILocTo.DataSource = dtTo;
-                    //cmbBoxGILocTo.DisplayMember = "LocationDesc";
-                    //cmbBoxGILocTo.ValueMember = "ID";
-                    //cmbBoxGILocTo.SelectedIndex = -1;
-
-                    //DataTable dtFrom = new DataTable();
-                    //sda.Fill(dtFrom);
-                    //cmbBoxGILocFrom.DataSource = dtFrom;
-                    //cmbBoxGILocFrom.DisplayMember = "LocationDesc";
-                    //cmbBoxGILocFrom.ValueMember = "ID";
-                    //cmbBoxGILocFrom.SelectedIndex = -1;
-
                     connection.Close();
                 }
             }
@@ -1399,18 +1404,19 @@ namespace ESD.WITS
                     {
                         if (GIList != null && GIList.Count > 0)
                         {
-                            bool isExist = false;
-                            foreach (var item in GIList)
-                            {
-                                if (item.SAPNo == txtGISAPNo.Text)
-                                {
-                                    item.Qty = (Convert.ToDouble(item.Qty) + Convert.ToDouble(txtGIQty.Text)).ToString();
-                                    isExist = true;
-                                    break;
-                                }
-                            }
-                            if (!isExist)
-                            {
+                            //Sembian 04.04.2018 - Always seperate based on each add transaction
+                            //bool isExist = false;
+                            //foreach (var item in GIList)
+                            //{
+                            //    if (item.SAPNo == txtGISAPNo.Text)
+                            //    {
+                            //        item.Qty = (Convert.ToDouble(item.Qty) + Convert.ToDouble(txtGIQty.Text)).ToString();
+                            //        isExist = true;
+                            //        break;
+                            //    }
+                            //}
+                            //if (!isExist)
+                            //{
                                 GIList.Add(new GI
                                 { 
                                     ID = GRID,
@@ -1418,7 +1424,7 @@ namespace ESD.WITS
                                     Qty = txtGIQty.Text,
                                     ENDesc = ENMatShortText
                                 });
-                            }
+                            //}
                         }
                         else
                         {
@@ -1574,12 +1580,27 @@ namespace ESD.WITS
                         txtText.Text = txtText.Text.Replace("'", "''"); 
                         Cursor.Current = Cursors.WaitCursor;
                         string sSQL = string.Empty;
+                        DateTime serverTime = new DateTime();
 
                         using (SqlConnection connection = new SqlConnection(connectionString))
                         {
+                            connection.Open();
+                            sSQL = "SELECT GETDATE();";
+                            SqlCommand command = new SqlCommand(sSQL, connection);
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader != null && reader.Read())
+                                {
+                                    serverTime = Convert.ToDateTime(reader[0]);
+                                }
+                                connection.Close();
+                            }
+
                             foreach (var item in GIList)
                             {
-                                sSQL += " INSERT INTO [dbo].[GITransaction]";
+                                connection.Open();
+                                sSQL = " INSERT INTO [dbo].[GITransaction]";
                                 sSQL += " ([Text]";
                                 sSQL += " ,[Quantity]";
                                 sSQL += " ,[CreatedOn]";
@@ -1592,30 +1613,29 @@ namespace ESD.WITS
                                 sSQL += " VALUES";
                                 sSQL += " ('" + txtText.Text + "'";
                                 sSQL += " ,'" + item.Qty + "'";
-                                sSQL += " ,'" + DateTime.Now + "'";
-                                sSQL += " ,'" + userID + "'";
+                                sSQL += " ,'" + serverTime.ToString("yyyy-MM-dd HH:mm:ss") + "'";
+                                sSQL += " ,'" + txtUserID.Text + "'";
                                 sSQL += " ,'" + item.ID + "'";
                                 sSQL += " ,'" + transferType + "'";
                                 sSQL += !string.IsNullOrEmpty(txtGIProdNo.Text) ? " ,'" + txtGIProdNo.Text + "'" : " ,NULL";
                                 sSQL += !string.IsNullOrEmpty(cmbBoxGILocTo.Text) ? " ,'" + cmbBoxGILocTo.SelectedValue + "'" : " ,NULL";
                                 sSQL += !string.IsNullOrEmpty(cmbBoxGILocFrom.Text) ? " ,'" + cmbBoxGILocFrom.SelectedValue + "')" : " ,NULL)";
+
+                                command = new SqlCommand(sSQL, connection);
+                                command.ExecuteReader();
+                                connection.Close();
                             }
-                            connection.Open();
-                            SqlCommand command = new SqlCommand(sSQL, connection);
-                            command.ExecuteReader();
-                            connection.Close();
                         }
 
                         Cursor.Current = Cursors.Default;
                         MessageBox.Show(txtText.Text + " Submitted");
+                        ClearGICache();
+                        pnlGdIssueSubmit.Visible = false;
+                        pnlGdIssue.Visible = true;
+                        pnlGdIssue.Dock = DockStyle.Fill;
+                        txtGISAPNo.Focus();
+                        txtGISAPNo.SelectAll();
                     }
-
-                    ClearGICache();
-                    pnlGdIssueSubmit.Visible = false;
-                    pnlGdIssue.Visible = true;
-                    pnlGdIssue.Dock = DockStyle.Fill;
-                    txtGISAPNo.Focus();
-                    txtGISAPNo.SelectAll();
                 }
                 else
                 {
@@ -1677,7 +1697,7 @@ namespace ESD.WITS
             string sSQL = string.Empty;
             sSQL = "SELECT [ID] ";
             sSQL += " ,[CountryDesc] ";
-            sSQL += "FROM [dbo].[Country] ";
+            sSQL += "FROM [dbo].[Country] ORDER BY CountryDesc ASC ";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -2076,8 +2096,8 @@ namespace ESD.WITS
                             sSQL += " ," + txtFGQty.Text;
                             sSQL += cmbBoxFGCountry.SelectedValue != null ? " ," + cmbBoxFGCountry.SelectedValue + "" : " ,NULL";
                             sSQL += cmbBoxFGLocation.SelectedValue != null ? " ," + cmbBoxFGLocation.SelectedValue + "" : " ,NULL";
-                            sSQL += " ,'" + DateTime.Now + "'";
-                            sSQL += " ,'" + userID + "')";
+                            sSQL += " ,GETDATE()";
+                            sSQL += " ,'" + txtUserID.Text + "')";
 
                             connection.Open();
                             SqlCommand command = new SqlCommand(sSQL, connection);

@@ -39,15 +39,15 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnHeader = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblGI = new System.Windows.Forms.Label();
+            this.lblGR = new System.Windows.Forms.Label();
             this.btnGdIssue = new System.Windows.Forms.PictureBox();
             this.btnGdReceive = new System.Windows.Forms.PictureBox();
             this.pnlSelection = new System.Windows.Forms.Panel();
             this.btnOutbound = new System.Windows.Forms.PictureBox();
             this.btnSignOut = new System.Windows.Forms.PictureBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
+            this.lblFG = new System.Windows.Forms.Label();
             this.pnlGdReceipt = new System.Windows.Forms.Panel();
             this.dtPickerGRPostingDate = new System.Windows.Forms.DateTimePicker();
             this.btnGRClear = new System.Windows.Forms.Button();
@@ -233,10 +233,10 @@
             // 
             this.label1.BackColor = System.Drawing.Color.White;
             this.label1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(6, 168);
+            this.label1.Location = new System.Drawing.Point(3, 168);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 20);
-            this.label1.Text = "User ID:";
+            this.label1.Text = "Username:";
             // 
             // btnHeader
             // 
@@ -260,23 +260,23 @@
             this.label3.Text = "Warehouse Inventory Tracking System";
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // label9
+            // lblGI
             // 
-            this.label9.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label9.Location = new System.Drawing.Point(126, 140);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(100, 19);
-            this.label9.Text = "Goods Issue";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblGI.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.lblGI.Location = new System.Drawing.Point(126, 140);
+            this.lblGI.Name = "lblGI";
+            this.lblGI.Size = new System.Drawing.Size(100, 19);
+            this.lblGI.Text = "Goods Issue";
+            this.lblGI.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // label4
+            // lblGR
             // 
-            this.label4.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label4.Location = new System.Drawing.Point(6, 141);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(114, 18);
-            this.label4.Text = "Goods Receive";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblGR.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.lblGR.Location = new System.Drawing.Point(6, 141);
+            this.lblGR.Name = "lblGR";
+            this.lblGR.Size = new System.Drawing.Size(114, 18);
+            this.lblGR.Text = "Goods Receive";
+            this.lblGR.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // btnGdIssue
             // 
@@ -301,12 +301,12 @@
             this.pnlSelection.BackColor = System.Drawing.SystemColors.HighlightText;
             this.pnlSelection.Controls.Add(this.btnOutbound);
             this.pnlSelection.Controls.Add(this.btnSignOut);
-            this.pnlSelection.Controls.Add(this.label9);
-            this.pnlSelection.Controls.Add(this.label4);
+            this.pnlSelection.Controls.Add(this.lblGI);
+            this.pnlSelection.Controls.Add(this.lblGR);
             this.pnlSelection.Controls.Add(this.btnGdIssue);
             this.pnlSelection.Controls.Add(this.btnGdReceive);
             this.pnlSelection.Controls.Add(this.label10);
-            this.pnlSelection.Controls.Add(this.label16);
+            this.pnlSelection.Controls.Add(this.lblFG);
             this.pnlSelection.Location = new System.Drawing.Point(249, 3);
             this.pnlSelection.Name = "pnlSelection";
             this.pnlSelection.Size = new System.Drawing.Size(240, 295);
@@ -341,14 +341,14 @@
             this.label10.Text = "Menu";
             this.label10.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // label16
+            // lblFG
             // 
-            this.label16.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label16.Location = new System.Drawing.Point(47, 252);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(155, 21);
-            this.label16.Text = "Outbound Delivery";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblFG.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.lblFG.Location = new System.Drawing.Point(47, 252);
+            this.lblFG.Name = "lblFG";
+            this.lblFG.Size = new System.Drawing.Size(155, 21);
+            this.lblFG.Text = "Outbound Delivery";
+            this.lblFG.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // pnlGdReceipt
             // 
@@ -1314,8 +1314,8 @@
         private System.Windows.Forms.Panel pnlLogin;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblGI;
+        private System.Windows.Forms.Label lblGR;
         private System.Windows.Forms.PictureBox btnGdIssue;
         private System.Windows.Forms.PictureBox btnGdReceive;
         private System.Windows.Forms.Panel pnlSelection;
@@ -1335,7 +1335,7 @@
         private System.Windows.Forms.TextBox txtGRQty;
         private System.Windows.Forms.Button btnHeader;
         private System.Windows.Forms.PictureBox btnOutbound;
-        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label lblFG;
         private System.Windows.Forms.ComboBox cmbBoxGRReason;
         private System.Windows.Forms.Label labelGRReason;
         private System.Windows.Forms.TextBox txtGREun;
