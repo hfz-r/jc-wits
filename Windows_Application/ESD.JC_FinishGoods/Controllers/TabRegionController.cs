@@ -53,12 +53,14 @@ namespace ESD.JC_FinishGoods.Controllers
                 _applicationCommands.ImportFGCommand.UnregisterCommand(ahuViewModel.ImportFGCommand);
                 _applicationCommands.ExportFGCommand.UnregisterCommand(ahuViewModel.ExportFGCommand);
                 _applicationCommands.PrintLblCommand.UnregisterCommand(ahuViewModel.PrintLblCommand);
+                _applicationCommands.DeleteFGCommand.UnregisterCommand(ahuViewModel.DeleteFGCommand);
                 _applicationCommands.OKCommand.UnregisterCommand(ahuViewModel.OKCommand);
                 _applicationCommands.XOKCommand.UnregisterCommand(ahuViewModel.XOKCommand);
 
                 _applicationCommands.ImportFGCommand.UnregisterCommand(fcuViewModel.ImportFGCommand);
                 _applicationCommands.ExportFGCommand.UnregisterCommand(fcuViewModel.ExportFGCommand);
                 _applicationCommands.PrintLblCommand.UnregisterCommand(fcuViewModel.PrintLblCommand);
+                _applicationCommands.DeleteFGCommand.UnregisterCommand(fcuViewModel.DeleteFGCommand);
                 _applicationCommands.OKCommand.UnregisterCommand(fcuViewModel.OKCommand);
                 _applicationCommands.XOKCommand.UnregisterCommand(fcuViewModel.XOKCommand);
             };
@@ -66,12 +68,14 @@ namespace ESD.JC_FinishGoods.Controllers
             _applicationCommands.ImportFGCommand.RegisterCommand(ahuViewModel.ImportFGCommand);
             _applicationCommands.ExportFGCommand.RegisterCommand(ahuViewModel.ExportFGCommand);
             _applicationCommands.PrintLblCommand.RegisterCommand(ahuViewModel.PrintLblCommand);
+            _applicationCommands.DeleteFGCommand.RegisterCommand(ahuViewModel.DeleteFGCommand);
             _applicationCommands.OKCommand.RegisterCommand(ahuViewModel.OKCommand);
             _applicationCommands.XOKCommand.RegisterCommand(ahuViewModel.XOKCommand);
 
             _applicationCommands.ImportFGCommand.RegisterCommand(fcuViewModel.ImportFGCommand);
             _applicationCommands.ExportFGCommand.RegisterCommand(fcuViewModel.ExportFGCommand);
             _applicationCommands.PrintLblCommand.RegisterCommand(fcuViewModel.PrintLblCommand);
+            _applicationCommands.DeleteFGCommand.RegisterCommand(fcuViewModel.DeleteFGCommand);
             _applicationCommands.OKCommand.RegisterCommand(fcuViewModel.OKCommand);
             _applicationCommands.XOKCommand.RegisterCommand(fcuViewModel.XOKCommand);
 

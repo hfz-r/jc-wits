@@ -7,12 +7,11 @@
              mc:Ignorable="d" 
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:prism="http://prismlibrary.com/"
-             d:DesignHeight="300" d:DesignWidth="400">
+             d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
         <DataTemplate x:Key="UserTemplate">
             <Grid Margin="10">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="100"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -28,41 +27,44 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Image Source="/Avatars/MC900433938.PNG"  Width="50" Height="50" />
-                
-                <TextBlock Text="{Binding Name}" Grid.Row="1" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="13" Margin="7" AutomationProperties.AutomationId="NameData"/>
+                <TextBlock Text="{Binding Name}" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="13" Margin="5" AutomationProperties.AutomationId="NameData"/>
 
                 <TextBlock Text="Username: " FontWeight="Bold"
-                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="UsernameLabel"/>
+                           Grid.Row="1" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="UsernameLabel"/>
                 <TextBlock Text="{Binding Username}"                           
-                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="UsernameData"/>
+                           Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="UsernameData"/>
 
                 <TextBlock Text="Role: " FontWeight="Bold"
-                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="RoleLabel"/>
+                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="RoleLabel"/>
                 <TextBlock Text="{Binding Role.RoleCode}"                           
-                           Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="RoleData"/>
+                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="RoleData"/>
 
                 <TextBlock Text="Email: " FontWeight="Bold"
-                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="RoleLabel"/>
+                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="RoleLabel"/>
                 <TextBlock Text="{Binding Email}"                           
-                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="RoleData"/>
+                           Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="RoleData"/>
 
                 <TextBlock Text="Address: " FontWeight="Bold"
-                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="AddressLabel"/>
+                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="AddressLabel"/>
                 <TextBlock Text="{Binding Address}"                           
-                           Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="AddressData"/>
+                           Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="AddressData"/>
 
                 <TextBlock Text="Last Modified Date: " FontWeight="Bold"
-                           Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
-                <TextBlock Text="{Binding ModifiedOn, StringFormat=g}"                           
-                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOnData"/>
+                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
+                <TextBlock Text="{Binding ModifiedOn, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}"                           
+                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOnData"/>
 
                 <TextBlock Text="Last Modified By: " FontWeight="Bold"
-                           Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedByLabel"/>
+                           Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedByLabel"/>
                 <TextBlock Text="{Binding ModifiedBy}"                           
-                           Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
+                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
             </Grid>
         </DataTemplate>
+        <Style TargetType="{x:Type TabItem}" x:Key="HeaderStyle">
+            <Setter Property="Header"
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=Content.DataContext.ViewName}" />
+        </Style>
     </UserControl.Resources>
 
     <i:Interaction.Triggers>
@@ -72,8 +74,8 @@
     </i:Interaction.Triggers>
 
     <Grid x:Name="LayoutRoot" Background="White">
-
         <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -81,7 +83,20 @@
         <ContentControl Content="{Binding User}" ContentTemplate="{StaticResource UserTemplate}"
                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
 
-        <Grid Grid.Row="1">
+        <!--<GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />-->
+
+        <!--<TabControl Grid.Row="1"
+            AutomationProperties.AutomationId="UserDetailsTabControl"
+            Margin="8"
+            IsTabStop="False"
+            prism:RegionManager.RegionName="TabRegionUser"
+            Width="Auto"
+            Height="Auto"
+            HorizontalAlignment="Stretch"
+            ItemContainerStyle="{StaticResource HeaderStyle}">
+        </TabControl>-->
+        
+        <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -89,12 +104,10 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1"  Width="Auto" HorizontalAlignment="Right" Margin="0,5,5,5" Command="{Binding EditThisCommand}" Content="Edit This" />
-            <Button Grid.Column="2"  Width="Auto" HorizontalAlignment="Right" Margin="0,5,5,5" Command="{Binding RemoveThisCommand}" Content="Remove This" />
-            <Button Grid.Column="3"  Width="Auto" HorizontalAlignment="Right" Margin="0,5,5,5" Command="{Binding GoBackCommand}" Content="Go Back" />
+            <Button Grid.Column="1"  Width="Auto" HorizontalAlignment="Right" Margin="0,5,5,5" Command="{Binding RemoveThisCommand}" Content="Remove This" />
+            <Button Grid.Column="2"  Width="Auto" HorizontalAlignment="Right" Margin="0,5,5,5" Command="{Binding GoBackCommand}" Content="Go Back" />
         </Grid>
     </Grid>
 </UserControl>

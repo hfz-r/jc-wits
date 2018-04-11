@@ -10,5 +10,6 @@ namespace ESD.JC_GoodsReceive.Services
         GoodsReceive GetGRBySAPNo(string sap_no);
         GoodsReceive GetEunKG(long ID);
         bool Save(List<GoodsReceive> gr, string state = "");
+        bool Delete(long ID);
     }
 }

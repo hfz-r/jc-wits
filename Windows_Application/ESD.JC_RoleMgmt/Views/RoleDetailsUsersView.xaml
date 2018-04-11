@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="ESD.JC_RoleMgmt.Views.RoleDetailsUsersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ESD.JC_RoleMgmt.Views"
+             mc:Ignorable="d" 
+             xmlns:inf="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <inf:ObservableCommand x:Key="ViewUserDetails" Value="{Binding ViewUserDetailsCommand}"/>
+    </UserControl.Resources>
+    
+    <Grid x:Name="LayoutRoot" Background="WhiteSmoke">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="1" Margin="10,25,10,10">
+            <DataGrid Name="dgRoleDetails" 
+                    ItemsSource="{Binding userCollection}" 
+		            AutoGenerateColumns="False" 
+		            IsReadOnly="True"
+		            HorizontalScrollBarVisibility="Auto"
+		            VerticalScrollBarVisibility="Auto"
+		            HorizontalAlignment="Left" 
+		            VerticalAlignment="Stretch" 
+		            AutomationProperties.AutomationId="TransactionsList">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Username" SortMemberPath="Username" Width="Auto" MinWidth="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                <Hyperlink Command="{Binding DataContext.ViewUserDetailsCommand, ElementName=LayoutRoot}" CommandParameter="{Binding}"
+                                           AutomationProperties.AutomationId="OpenDetailHyperLink">
+                                    <TextBlock Text="{Binding Username}" />
+                                </Hyperlink>
+                            </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Name" Width="Auto" MinWidth="200" Binding="{Binding Name}"/>
+                    <DataGridTextColumn Header="Email" Width="Auto" MinWidth="100" Binding="{Binding Email}" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <TextBlock Text="No user." Foreground="Red" FontWeight="Medium" Visibility="{Binding Items.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=dgRoleDetails}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -74,6 +74,7 @@
     <Compile Include="AccessControl\AuthorizationViewModel.cs" />
     <Compile Include="AccessControl\ModuleAccessServices.cs" />
     <Compile Include="AuthorizedToVisibilityConverter.cs" />
+    <Compile Include="CheckedListItem.cs" />
     <Compile Include="Controls\CompositeCommands.cs" />
     <Compile Include="Controls\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
@@ -94,16 +95,16 @@
     <Compile Include="Events\FGUserSelectedEvent.cs" />
     <Compile Include="Events\FilterTextBoxEvent.cs" />
     <Compile Include="Events\GIUserSelectedEvent.cs" />
+    <Compile Include="Events\GI_ItemMessageEvent.cs" />
     <Compile Include="Events\GR_ItemMessageEvent.cs" />
     <Compile Include="Events\ObjectEvent.cs" />
     <Compile Include="Events\ProgressDialogTextEvent.cs" />
+    <Compile Include="IDCheckerConverter.cs" />
     <Compile Include="OKcolumnColorConverter.cs" />
-    <Compile Include="PanelDimensionsConverter.cs" />
-    <Compile Include="PanelMarginConverter.cs" />
     <Compile Include="TooltipsConverter.cs" />
     <Compile Include="BrushColorConverter.cs" />
     <Compile Include="Events\AuthenticatedUserEvent.cs" />
-    <Compile Include="Events\SelectedRoleEvent.cs" />
+    <Compile Include="Events\RoleSelectedEvent.cs" />
     <Compile Include="Events\GRUserSelectedEvent.cs" />
     <Compile Include="HashConverter.cs" />
     <Compile Include="IgnoreNewItemPlaceHolderConverter.cs" />
@@ -124,6 +125,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="RegionNames.cs" />
+    <Compile Include="Events\UserSelectedEvent.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

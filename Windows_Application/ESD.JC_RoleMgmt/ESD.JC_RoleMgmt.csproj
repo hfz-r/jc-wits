@@ -97,6 +97,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\RoleTabRegionController.cs" />
     <Compile Include="ModelsExt\ModuleAccessCtrlExt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -120,9 +121,17 @@
     <Compile Include="Services\RoleServices.cs" />
     <Compile Include="Utilities\ISequencedObject.cs" />
     <Compile Include="Utilities\ObservableObject.cs" />
-    <Compile Include="ViewModels\RoleMainViewViewModel.cs" />
+    <Compile Include="ViewModels\RoleDetailsModuleViewModel.cs" />
+    <Compile Include="ViewModels\RoleDetailsUsersViewModel.cs" />
+    <Compile Include="ViewModels\RoleMainViewModel.cs" />
     <Compile Include="ViewModels\RoleDetailsViewModel.cs" />
     <Compile Include="ViewModels\RoleOperationViewModel.cs" />
+    <Compile Include="Views\RoleDetailsModuleView.xaml.cs">
+      <DependentUpon>RoleDetailsModuleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RoleDetailsUsersView.xaml.cs">
+      <DependentUpon>RoleDetailsUsersView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\RoleMainView.xaml.cs">
       <DependentUpon>RoleMainView.xaml</DependentUpon>
     </Compile>
@@ -150,6 +159,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\RoleDetailsModuleView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RoleDetailsUsersView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\RoleMainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

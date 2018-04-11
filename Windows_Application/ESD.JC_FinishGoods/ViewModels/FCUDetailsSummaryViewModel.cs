@@ -15,20 +15,19 @@ namespace ESD.JC_FinishGoods.ViewModels
             get { return "Transaction Summary"; }
         }
 
-        private ObservableCollection<FCUTransaction> _summryCollection;
-        public ObservableCollection<FCUTransaction> summryCollection
+        private FCU _summryObj;
+        public FCU summryObj
         {
-            get { return _summryCollection; }
+            get { return _summryObj; }
             set
             {
-                SetProperty(ref _summryCollection, value);
-                if (summryCollection.Count() > 0)
+                SetProperty(ref _summryObj, value);
+                if (_summryObj != null)
                 {
-                    var fcuObj = summryCollection.Select(x => x.FCU).FirstOrDefault();
-                    RemainingQty = fcuObj.Qty - fcuObj.QtyReceived.GetValueOrDefault();
+                    RemainingQty = _summryObj.Qty - _summryObj.QtyReceived.GetValueOrDefault();
 
-                    CountCountries = summryCollection.Where(c => c.CountryID.HasValue).Count();
-                    CountLocations = summryCollection.Where(l => l.LocationID.HasValue).Count();
+                    CountCountries = _summryObj.FCUTransactions.Where(c => c.CountryID.HasValue).Count();
+                    CountLocations = _summryObj.FCUTransactions.Where(l => l.LocationID.HasValue).Count();
                 }
 
                 RaisePropertyChanged("RemainingQty");

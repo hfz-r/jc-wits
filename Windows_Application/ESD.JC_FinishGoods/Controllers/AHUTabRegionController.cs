@@ -31,10 +31,13 @@ namespace ESD.JC_FinishGoods.Controllers
         {
             if (AHUID == 0) return;
 
-            ObservableCollection<AHUTransaction> lst = new ObservableCollection<AHUTransaction>();
+            AHU objSummry = new AHU();
+            objSummry = ahuTransServices.GetAHUDetails(AHUID);
+
+            ObservableCollection<AHUTransaction> lstTrnx = new ObservableCollection<AHUTransaction>();
             foreach (var obj in ahuTransServices.GetAHUTransactionByAHUID(AHUID))
             {
-                lst.Add(obj);
+                lstTrnx.Add(obj);
             }
 
             IRegion tabRegion = regionManager.Regions[RegionNames.TabRegionAHU];
@@ -56,8 +59,8 @@ namespace ESD.JC_FinishGoods.Controllers
             AHUDetailsTransactionViewModel trnxVM = trnxView.DataContext as AHUDetailsTransactionViewModel;
             if (summryVM != null && trnxVM != null)
             {
-                summryVM.summryCollection = lst;
-                trnxVM.trnxCollection = lst;
+                summryVM.summryObj = objSummry;
+                trnxVM.trnxCollection = lstTrnx;
             }
         }
     }

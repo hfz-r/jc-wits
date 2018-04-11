@@ -9,9 +9,9 @@ namespace ESD.JC_ReasonMgmt.Views
     /// </summary>
     public partial class ReasonMainView : UserControl
     {
-        private ReasonMainViewViewModel m_ViewModel;
+        private ReasonMainViewModel m_ViewModel;
 
-        public ReasonMainView(ReasonMainViewViewModel viewModel)
+        public ReasonMainView(ReasonMainViewModel viewModel)
         {
             InitializeComponent();
 
@@ -39,7 +39,7 @@ namespace ESD.JC_ReasonMgmt.Views
         /// </summary>
         private void OnMainGridDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            m_ViewModel = (ReasonMainViewViewModel)this.DataContext;
+            m_ViewModel = (ReasonMainViewModel)this.DataContext;
         }
     }
 }

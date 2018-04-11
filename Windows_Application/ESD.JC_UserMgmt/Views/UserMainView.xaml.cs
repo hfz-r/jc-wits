@@ -9,7 +9,9 @@ namespace ESD.JC_UserMgmt.Views
     /// </summary>
     public partial class UserMainView : UserControl
     {
-        public UserMainView(UserMainViewViewModel viewModel)
+        UserMainViewModel m_ViewModel;
+
+        public UserMainView(UserMainViewModel viewModel)
         {
             InitializeComponent();
 
@@ -31,5 +33,15 @@ namespace ESD.JC_UserMgmt.Views
                 mainPanelBorder.Margin = new Thickness(0);
             }
         }
+
+        private void OnMainGridDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            m_ViewModel = (UserMainViewModel)this.DataContext;
+        }
+
+        //private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        //{
+        //    var aa = ((PasswordBox)sender).Password;
+        //}
     }
 }

@@ -47,14 +47,14 @@ namespace ESD.JC_FinishGoods.ViewModels
             set { SetProperty(ref _AHU, value); }
         }
 
-        private ListCollectionView _okColumnFilterList;
-        public ListCollectionView OKColumnFilterList
+        private ListCollectionView _listBoxAhuStatus;
+        public ListCollectionView ListBoxAhuStatus
         {
-            get { return _okColumnFilterList; }
+            get { return _listBoxAhuStatus; }
             set
             {
-                SetProperty(ref _okColumnFilterList, value);
-                RaisePropertyChanged("OKColumnFilterList");
+                SetProperty(ref _listBoxAhuStatus, value);
+                RaisePropertyChanged("ListBoxAhuStatus");
             }
         }
 
@@ -124,6 +124,13 @@ namespace ESD.JC_FinishGoods.ViewModels
             set { SetProperty(ref _AuthenticatedUser, value); }
         }
 
+        private DateTime _currDateTime;
+        public DateTime currDateTime
+        {
+            get { return _currDateTime; }
+            set { SetProperty(ref _currDateTime, value); }
+        }
+
         public bool? IsImportBtnEnabled { get; private set; }
 
         #endregion Properties
@@ -139,10 +146,12 @@ namespace ESD.JC_FinishGoods.ViewModels
 
         public ObservableCollection<AHU> ahuCollection { get; private set; }
         public ObservableCollection<AHU> tempCollection { get; private set; }
+        public ObservableCollection<CheckedListItem<AHUStatusCategory>> AhuStatusFilter { get; private set; }
 
         public DelegateCommand ImportFGCommand;
         public DelegateCommand ExportFGCommand;
         public DelegateCommand PrintLblCommand;
+        public DelegateCommand DeleteFGCommand;
         public DelegateCommand OKCommand;
         public DelegateCommand XOKCommand;
 
@@ -160,6 +169,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             this.eventAggregator.GetEvent<FilterTextBoxEvent>().Subscribe(InitTextBoxSearch);
             this.eventAggregator.GetEvent<AHU_ItemMessageEvent>().Subscribe(ConsumeItemMessage);
 
+            IsEnableAutoRefresh = true;
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             OpenAHUDetailsCommand = new DelegateCommand<AHU>(OpenAHUDetails);
             _IsSelected = new DelegateCommand<object>(CheckBoxIsSelected);
@@ -172,13 +182,15 @@ namespace ESD.JC_FinishGoods.ViewModels
                 SetIsSelectedProperty(false);
             });
 
-            ImportFGCommand = new DelegateCommand(Import);
-            ExportFGCommand = new DelegateCommand(Export);
-            PrintLblCommand = new DelegateCommand(PrintLabel, CanPrint);
+            ImportFGCommand = new DelegateCommand(Import, CanImport);
+            ExportFGCommand = new DelegateCommand(Export, CanExport);
+            PrintLblCommand = new DelegateCommand(PrintLabel, CanDeletePrint);
+            DeleteFGCommand = new DelegateCommand(Delete, CanDeletePrint);
             OKCommand = new DelegateCommand(OKImport);
             XOKCommand = new DelegateCommand(OnLoaded);
         }
 
+        #region Commands
         public DelegateCommand OnLoadedCommand { get; private set; }
         public ICommand OpenAHUDetailsCommand { get; private set; }
         public ICommand IsSelected
@@ -194,11 +206,10 @@ namespace ESD.JC_FinishGoods.ViewModels
             get { return _unCheckedAllCommand; }
         }
 
+        #endregion Commands
+
         private void OnLoaded()
         {
-            IsImportBtnEnabled = null;
-            this.eventAggregator.GetEvent<ObjectEvent>().Publish(IsImportBtnEnabled);
-
             tempCollection = new ObservableCollection<AHU>();
             ahuCollection = new ObservableCollection<AHU>();
             foreach (var obj in ahuServices.GetAll(false))
@@ -213,67 +224,76 @@ namespace ESD.JC_FinishGoods.ViewModels
                         obj.ShipStatus = null;
                 }
 
+                obj.ShipStatus2 = obj.ShipStatus;
+                obj.Section2 = obj.Section;
+                obj.SectionReceived2 = obj.SectionReceived;
+
                 obj.IsChecked = false;
                 ahuCollection.Add(obj);
             }
 
-            BindComboBox(ahuCollection);
+            IsImportBtnEnabled = null;
+            ImportFGCommand.RaiseCanExecuteChanged();
+            ExportFGCommand.RaiseCanExecuteChanged();
+            this.eventAggregator.GetEvent<ObjectEvent>().Publish(IsImportBtnEnabled);
+
+            BindListBox();
 
             AHU = new ListCollectionView(ahuCollection);
-            AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
+            AHU.SortDescriptions.Add(new SortDescription("CreatedOn", ListSortDirection.Descending));
+            AHU.SortDescriptions.Add(new SortDescription("ID", ListSortDirection.Ascending));
 
             CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
         }
 
-        private void BindComboBox(ObservableCollection<AHU> ahuCollection)
+        private void BindListBox()
         {
-            var ComboList = new List<AHUFilterComboItem>();
-            ComboList.Add(new AHUFilterComboItem
+            AhuStatusFilter = new ObservableCollection<CheckedListItem<AHUStatusCategory>>();
+            foreach (var obj in ahuCollection.GroupBy(ok => ok.ShipStatus).Select(x => new { Key = x.Key }))
             {
-                BoolShipStatus = null,
-                TexShipStatus = " - All",
-                GroupedList = null
-            });
-
-            foreach (var obj in ahuCollection.GroupBy(ss => ss.ShipStatus).Select(x => new { Key = x.Key, List = x.ToList() }))
-            {
-                ComboList.Add(new AHUFilterComboItem
+                AhuStatusFilter.Add(new CheckedListItem<AHUStatusCategory>
                 {
-                    BoolShipStatus = obj.Key,
-                    TexShipStatus = obj.Key == null ? " - Partial" : (obj.Key.ToString() == "False") ? " - NOT OK" : " - OK",
-                    GroupedList = obj.List
+                    IsChecked = true,
+                    Item = new AHUStatusCategory
+                    {
+                        BoolAhuStatus = obj.Key,
+                        TextAhuStatus = obj.Key == null ? " - Partial" : (obj.Key.ToString() == "False") ? " - NOT OK" : " - OK"
+                    }
                 });
             }
 
-            OKColumnFilterList = new ListCollectionView(ComboList);
-            //OKColumnFilterList.GroupDescriptions.Add(new PropertyGroupDescription("BoolShipStatus"));
-            OKColumnFilterList.CurrentChanged += OKColumnFilterList_CurrentChanged;
+            ListBoxAhuStatus = new ListCollectionView(AhuStatusFilter);
         }
 
-        private void OKColumnFilterList_CurrentChanged(object sender, EventArgs e)
+        private bool Filter(object item)
         {
-            var currItem = ((ListCollectionView)sender).CurrentItem as AHUFilterComboItem;
-            if (currItem != null)
+            var ahu = (AHU)item;
+            if (ahu.ID == 0)
             {
-                var FilteredCollection = new ObservableCollection<AHU>();
-                if (currItem.TexShipStatus.Contains("All"))
+                if (string.IsNullOrEmpty(FilterTextBox))
+                    return true;
+
+                return (ahu.Project.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
+                        ahu.SerialNo.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
+            }
+            else
+            {
+                int count = AhuStatusFilter.Where(chk => chk.IsChecked).Count(ok => ok.Item.BoolAhuStatus == ahu.ShipStatus);
+
+                if (string.IsNullOrEmpty(FilterTextBox) && count > 0)
                 {
-                    foreach (var ahu in ahuCollection)
-                    {
-                        FilteredCollection.Add(ahu);
-                    }
+                    return true;
                 }
                 else
                 {
-                    foreach (var ahu in ahuCollection.Where(ok => ok.ShipStatus == currItem.BoolShipStatus))
+                    if (count == 0)
                     {
-                        FilteredCollection.Add(ahu);
+                        return false;
                     }
-                }
-                AHU = new ListCollectionView(FilteredCollection);
-                AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
-                CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
+                    return (ahu.Project.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
+                            ahu.SerialNo.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
+                }
             }
         }
 
@@ -301,6 +321,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             RaisePropertyChanged("AHU");
 
             PrintLblCommand.RaiseCanExecuteChanged();
+            DeleteFGCommand.RaiseCanExecuteChanged();
         }
 
         private void SetIsSelectedProperty(bool isSelected)
@@ -327,24 +348,35 @@ namespace ESD.JC_FinishGoods.ViewModels
             }
 
             PrintLblCommand.RaiseCanExecuteChanged();
+            DeleteFGCommand.RaiseCanExecuteChanged();
 
             AHU = new ListCollectionView(tempObj);
-            AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
+            AHU.SortDescriptions.Add(new SortDescription("CreatedOn", ListSortDirection.Descending));
 
             CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
         }
 
+        private bool CanImport()
+        {
+            if (IsImportBtnEnabled != null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private void Import()
         {
-            var dlg = new OpenFileDialog();
-            dlg.DefaultExt = ".xls|.xlsx";
-            dlg.Filter = "Excel documents (*.xls, *.xlsx, *.xlsm)|*.xls;*.xlsx;*.xlsm";
-
-            tempCollection = new ObservableCollection<AHU>();
-
-            if (dlg.ShowDialog() == true)
+            try
             {
-                try
+                var dlg = new OpenFileDialog();
+                dlg.DefaultExt = ".xls|.xlsx";
+                dlg.Filter = "Excel documents (*.xls, *.xlsx, *.xlsm)|*.xls;*.xlsx;*.xlsm";
+
+                tempCollection = new ObservableCollection<AHU>();
+
+                if (dlg.ShowDialog() == true)
                 {
                     var file = new FileInfo(dlg.FileName);
                     if (!string.IsNullOrEmpty(file.Extension))
@@ -356,11 +388,11 @@ namespace ESD.JC_FinishGoods.ViewModels
 
                         ReadExcelFile();
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Import Failed.", MessageBoxButton.OK);
-                }
+                }                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
             }
         }
 
@@ -370,6 +402,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             {
                 ISheet sheet = ahuWorkbook.GetSheetAt(0);
                 System.Collections.IEnumerator rows = sheet.GetRowEnumerator();
+                currDateTime = DateTime.Now;
 
                 #region Cells Comparison
 
@@ -394,6 +427,13 @@ namespace ESD.JC_FinishGoods.ViewModels
 
                         switch (i)
                         {
+                            case 0:
+                                if (cell == null)
+                                    continue;
+                                else
+                                    obj.IDSeq = SetCellValue(cell);
+                                break;
+
                             case 1:
                                 if (cell == null)
                                     continue;
@@ -624,7 +664,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                                     obj.Section = (cell.CellType.ToString() == "String" ? Convert.ToInt32(cell.StringCellValue) : Convert.ToInt32(cell.NumericCellValue));
                                 break;
 
-                            case 91:
+                            case 90:
                                 if (cell == null)
                                     continue;
                                 if (cell.CellType.ToString() == "Formula")
@@ -646,10 +686,13 @@ namespace ESD.JC_FinishGoods.ViewModels
                 if (tempCollection != null && tempCollection.Count() > 0)
                 {
                     IsImportBtnEnabled = true;
+                    ImportFGCommand.RaiseCanExecuteChanged();
+                    ExportFGCommand.RaiseCanExecuteChanged();
                     this.eventAggregator.GetEvent<ObjectEvent>().Publish(IsImportBtnEnabled);
 
                     AHU = new ListCollectionView(tempCollection);
-                    AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
+                    AHU.SortDescriptions.Clear();
+                    AHU.SortDescriptions.Add(new SortDescription("IDSeq", ListSortDirection.Ascending));
 
                     CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
                 }
@@ -678,6 +721,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             {
                 temp.Add(new AHU
                 {
+                    IDSeq = Convert.ToInt64(rec.IDSeq),
                     Project = rec.Project,
                     UnitTag = rec.UnitTag,
                     PartNo = rec.PartNo,
@@ -691,6 +735,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                     MotorPulley = rec.MotorPulley,
                     Belt = rec.Belt,
                     Section = rec.Section,
+                    Section2 = rec.Section,
                     CoolingCoil1 = (!string.IsNullOrEmpty(rec.CoolingCoil1a) ? rec.CoolingCoil1a : "-") + "R" + " / " +
                                    (!string.IsNullOrEmpty(rec.CoolingCoil1b) ? rec.CoolingCoil1b : "-") + "FPI" + " / " +
                                    (!string.IsNullOrEmpty(rec.CoolingCoil1c) ? rec.CoolingCoil1c : "-") + " / " +
@@ -711,13 +756,25 @@ namespace ESD.JC_FinishGoods.ViewModels
                     SalesOrder = rec.SalesOrder,
                     Item = rec.Item,
                     SerialNo = rec.SerialNo,
-                    CreatedOn = DateTime.Now,
+                    CreatedOn = currDateTime,
                     CreatedBy = AuthenticatedUser,
-                    ModifiedOn = DateTime.Now,
+                    ModifiedOn = currDateTime,
                     ModifiedBy = AuthenticatedUser,
-                    IsChecked = true
+                    IsChecked = true,
+                    ShipStatus = false,
+                    ShipStatus2 = false
                 });
             }
+        }
+
+        private bool CanExport()
+        {
+            if (IsImportBtnEnabled != null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void Export()
@@ -755,6 +812,8 @@ namespace ESD.JC_FinishGoods.ViewModels
             storage.ColumnsHeaders.Add("Item");
             storage.ColumnsHeaders.Add("Serial No.");
             storage.ColumnsHeaders.Add("Section Received");
+            storage.ColumnsHeaders.Add("Shipped By");
+            storage.ColumnsHeaders.Add("Shipped On");
 
             ObservableCollection<AHUImportCLassModel> importObj = new ObservableCollection<AHUImportCLassModel>();
             foreach (var ahu in ahuCollection)
@@ -768,7 +827,9 @@ namespace ESD.JC_FinishGoods.ViewModels
                     Section = ahu.Section,
                     Item = ahu.Item,
                     SerialNo = ahu.SerialNo,
-                    SectionReceived = ahu.SectionReceived.GetValueOrDefault()
+                    SectionReceived = ahu.SectionReceived.GetValueOrDefault(),
+                    ShippedBy = ahu.CreatedBy,
+                    ShippedOn = Convert.ToString(ahu.CreatedOn)
                 });
             }
 
@@ -776,7 +837,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             {
                 storage.InsertRecords(importObj.ToArray());
             }
-            if (MessageBox.Show("File Export Success. Are you want to open the file?", "Notification", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Exported successfully. Open file?", "Notification", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 OpenExportedFile(storage.FileName);
             }
@@ -801,17 +862,25 @@ namespace ESD.JC_FinishGoods.ViewModels
         {
             try
             {
-                if (MessageBox.Show("Are you confirm you want to save this?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                if (tempCollection.All(x => x.IsChecked == false))
                 {
-                    if (Save())
-                        OnLoaded();
-                    else
-                        throw new Exception("Save Failed.");
+                    MessageBox.Show("No changes have been made.");
+                    OnLoaded();
+                }
+                else
+                {
+                    if (MessageBox.Show("Confirm to save this?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    {
+                        if (Save())
+                            OnLoaded();
+                        else
+                            throw new Exception("Save failed.");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Import Failed.", MessageBoxButton.OK);
+                MessageBox.Show(ex.Message, "Import failed.", MessageBoxButton.OK);
             }
         }
 
@@ -881,7 +950,31 @@ namespace ESD.JC_FinishGoods.ViewModels
             obj.ModifiedBy = AuthenticatedUser;
         }
 
-        private bool CanPrint()
+        private void Delete()
+        {
+            if (ahuCollection.Any(x => x.IsChecked == true))
+            {
+                if (MessageBox.Show("Confirm to delete?", "Delete", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var listObj = ahuCollection.Where(x => x.IsChecked == true).ToList();
+
+                    try
+                    {
+                        foreach (var item in listObj)
+                        {
+                            ahuServices.Delete(item.ID);
+                        }
+                        OnLoaded();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+        }
+
+        private bool CanDeletePrint()
         {
             if (IsImportBtnEnabled != null)
             {
@@ -898,8 +991,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                 if (MessageBox.Show("Confirm to generate the label?", "Print", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     var listObj = ahuCollection.Where(x => x.IsChecked == true).ToList();
-
-                    StringBuilder strErrorPallet = new StringBuilder();
+                    
                     System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
                     pd.PrinterSettings = new PrinterSettings();
                     pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
@@ -947,15 +1039,12 @@ namespace ESD.JC_FinishGoods.ViewModels
                             strPallet.Replace("<Item>", item.Item.ToString());
                             strPallet.Replace("<SerialNo>", item.SerialNo);
 
-                            if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
+                            for (int i = 0; i < Properties.Settings.Default.PrintCount; i++)
                             {
-                                strErrorPallet.Append(item.SerialNo + ", ");
+                                if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
+                                {
+                                }
                             }
-                        }
-
-                        if (strErrorPallet.Length > 0)
-                        {
-                            strErrorPallet.Remove(strErrorPallet.Length - 2, 2);
                         }
 
                         OnLoaded();
@@ -977,18 +1066,6 @@ namespace ESD.JC_FinishGoods.ViewModels
             this.regionManager.RequestNavigate(RegionNames.MainContentRegion, new Uri(ahuDetailsViewName + parameters, UriKind.Relative));
         }
 
-        private bool Filter(object item)
-        {
-            if (string.IsNullOrEmpty(FilterTextBox))
-                return true;
-
-            var ahu = (AHU)item;
-
-            return (ahu.Project.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
-                    ahu.SerialNo.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
-
-        }
-
         #region Composite Buttons
 
         bool _isActive;
@@ -1007,6 +1084,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             ImportFGCommand.IsActive = IsActive;
             ExportFGCommand.IsActive = IsActive;
             PrintLblCommand.IsActive = IsActive;
+            DeleteFGCommand.IsActive = IsActive;
             OKCommand.IsActive = IsActive;
             XOKCommand.IsActive = IsActive;
 
@@ -1041,10 +1119,47 @@ namespace ESD.JC_FinishGoods.ViewModels
                 if (msg.State == "Completed")
                 {
                     #region refresh grid
-                    AHU = new ListCollectionView(ahuCollection);
-                    AHU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
-                    CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
+                    if (ahuCollection != null && ahuCollection.Count > 0)
+                    {
+                        foreach (var obj in ahuCollection)
+                        {
+                            var ahu = ahuServices.GetAHU(obj.ID);
+                            obj.ShipStatus = ahu.ShipStatus;
+                            obj.Section = ahu.Section;
+                            obj.SectionReceived = ahu.SectionReceived;
+
+                            if (obj.SectionReceived == null)
+                                obj.ShipStatus = false;
+                            else
+                            {
+                                if (obj.SectionReceived == obj.Section)
+                                    obj.ShipStatus = true;
+                                else if (obj.SectionReceived < obj.Section)
+                                    obj.ShipStatus = null;
+                            }
+
+                            obj.ShipStatus2 = obj.ShipStatus;
+                            obj.Section2 = obj.Section;
+                            obj.SectionReceived2 = obj.SectionReceived;
+
+                            if (AhuStatusFilter.All(x => x.Item.BoolAhuStatus != ahu.ShipStatus))
+                            {
+                                AhuStatusFilter.Add(new CheckedListItem<AHUStatusCategory>
+                                {
+                                    IsChecked = true,
+                                    Item = new AHUStatusCategory
+                                    {
+                                        BoolAhuStatus = ahu.ShipStatus,
+                                        TextAhuStatus = ahu.ShipStatus == null ? " - Partial" : (ahu.ShipStatus.ToString() == "False") ? " - NOT OK" : " - OK"
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    CollectionViewSource.GetDefaultView(ListBoxAhuStatus).Refresh();
+
                     #endregion refresh grid
 
                     StopTimer();
@@ -1071,85 +1186,85 @@ namespace ESD.JC_FinishGoods.ViewModels
         [FieldOrder(4)]
         public string Model { get; set; }
 
-        [FieldOrder(9)]
+        [FieldOrder(12)]
         public string PowerSupply { get; set; }
 
-        [FieldOrder(10)]
+        [FieldOrder(13)]
         public string FanType { get; set; }
 
-        [FieldOrder(11)]
+        [FieldOrder(14)]
         public string MotorPole { get; set; }
 
-        [FieldOrder(12)]
+        [FieldOrder(15)]
         public string FanMotor { get; set; }
 
-        [FieldOrder(13)]
+        [FieldOrder(16)]
         public string FanRPM { get; set; }
 
-        [FieldOrder(14)]
+        [FieldOrder(17)]
         public string FanPulley { get; set; }
 
-        [FieldOrder(15)]
+        [FieldOrder(18)]
         public string MotorPulley { get; set; }
 
-        [FieldOrder(16)]
+        [FieldOrder(19)]
         public string Belt { get; set; }
 
         [FieldOrder(5)]
         public int? Section { get; set; }
 
-        [FieldOrder(17)]
+        [FieldOrder(20)]
         public string CoolingCoil1a { get; set; }
 
-        [FieldOrder(18)]
+        [FieldOrder(21)]
         public string CoolingCoil1b { get; set; }
 
-        [FieldOrder(19)]
+        [FieldOrder(22)]
         public string CoolingCoil1c { get; set; }
 
-        [FieldOrder(20)]
+        [FieldOrder(23)]
         public string CoolingCoil1d { get; set; }
 
-        [FieldOrder(21)]
+        [FieldOrder(24)]
         public string CoolingCoil2a { get; set; }
 
-        [FieldOrder(22)]
+        [FieldOrder(25)]
         public string CoolingCoil2b { get; set; }
 
-        [FieldOrder(23)]
+        [FieldOrder(26)]
         public string CoolingCoil2c { get; set; }
 
-        [FieldOrder(24)]
+        [FieldOrder(27)]
         public string CoolingCoil2d { get; set; }
 
-        [FieldOrder(25)]
+        [FieldOrder(28)]
         public string HeatingCoil1a { get; set; }
 
-        [FieldOrder(26)]
+        [FieldOrder(29)]
         public string HeatingCoil1b { get; set; }
 
-        [FieldOrder(27)]
+        [FieldOrder(30)]
         public string HeatingCoil1c { get; set; }
 
-        [FieldOrder(28)]
+        [FieldOrder(31)]
         public string HeatingCoil1d { get; set; }
 
-        [FieldOrder(29)]
+        [FieldOrder(32)]
         public string HeatingCoil2a { get; set; }
 
-        [FieldOrder(30)]
+        [FieldOrder(33)]
         public string HeatingCoil2b { get; set; }
 
-        [FieldOrder(31)]
+        [FieldOrder(34)]
         public string HeatingCoil2c { get; set; }
 
-        [FieldOrder(32)]
+        [FieldOrder(35)]
         public string HeatingCoil2d { get; set; }
 
-        [FieldOrder(33)]
+        [FieldOrder(36)]
         public string Heater { get; set; }
 
-        [FieldOrder(34)]
+        [FieldOrder(37)]
         public string SalesOrder { get; set; }
 
         [FieldOrder(6)]
@@ -1160,12 +1275,20 @@ namespace ESD.JC_FinishGoods.ViewModels
 
         [FieldOrder(8)]
         public int? SectionReceived { get; set; }
+
+        [FieldOrder(11)]
+        public string IDSeq { get; set; }
+
+        [FieldOrder(9)]
+        public string ShippedBy { get; set; }
+
+        [FieldOrder(10)]
+        public string ShippedOn { get; set; }
     }
 
-    public class AHUFilterComboItem
+    public class AHUStatusCategory
     {
-        public bool? BoolShipStatus { get; set; }
-        public string TexShipStatus { get; set; }
-        public List<AHU> GroupedList { get; set; }
+        public bool? BoolAhuStatus { get; set; }
+        public string TextAhuStatus { get; set; }
     }
 }

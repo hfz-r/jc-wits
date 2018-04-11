@@ -35,7 +35,7 @@
                 
                 <TextBlock Text="Quantity Issued" Foreground="#FF525252"
                            Grid.Row="2" Grid.Column="0"/>
-                <TextBlock Text="{Binding Quantity}" FontWeight="Bold"
+                <TextBlock Text="{Binding Quantity, StringFormat={}{0:G29}}" FontWeight="Bold"
                            Grid.Row="2" Grid.Column="1"/>
             </Grid>
         </DataTemplate>
@@ -50,8 +50,6 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="GR`s Purchase Order" Foreground="#FF525252"
@@ -61,18 +59,13 @@
 
                 <TextBlock Text="Quantity Issued" Foreground="#FF525252"
                            Grid.Row="1" Grid.Column="0"/>
-                <TextBlock Text="{Binding Quantity}" FontWeight="Bold"
+                <TextBlock Text="{Binding Quantity, StringFormat={}{0:G29}}" FontWeight="Bold"
                            Grid.Row="1" Grid.Column="1"/>
 
-                <TextBlock Text="Total To (Location)" Foreground="#FF525252"
+                <TextBlock Text="Total Transaction" Foreground="#FF525252"
                            Grid.Row="2" Grid.Column="0"/>
                 <TextBlock Text="{Binding DataContext.TotalTo, ElementName=LayoutRoot}" FontWeight="Bold"
                            Grid.Row="2" Grid.Column="1"/>
-
-                <TextBlock Text="Total From (Location)" Foreground="#FF525252"
-                           Grid.Row="3" Grid.Column="0"/>
-                <TextBlock Text="{Binding DataContext.TotalFrom, ElementName=LayoutRoot}" FontWeight="Bold"
-                           Grid.Row="3" Grid.Column="1"/>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>

@@ -1,4 +1,5 @@
 ﻿using DataLayer;
+using ESD.JC_Infrastructure;
 using ESD.JC_RoleMgmt.ModelsExt;
 using ESD.JC_RoleMgmt.Services;
 using Prism.Commands;
@@ -17,7 +18,7 @@ using static ESD.JC_RoleMgmt.Services.RoleServices;
 namespace ESD.JC_RoleMgmt.ViewModels
 {
     [RegionMemberLifetime(KeepAlive = false)]
-    public class RoleOperationViewModel : BindableBase, IConfirmNavigationRequest
+    public class RoleOperationViewModel : BindableBase, IDataErrorInfo, IConfirmNavigationRequest
     {
         #region Properties
 
@@ -64,6 +65,17 @@ namespace ESD.JC_RoleMgmt.ViewModels
             }
         }
 
+        private bool _IsSaveEnabled;
+        public bool IsSaveEnabled
+        {
+            get { return _IsSaveEnabled; }
+            set
+            {
+                SetProperty(ref _IsSaveEnabled, value);
+                RaisePropertyChanged("IsSaveEnabled");
+            }
+        }   
+
         private string _SendState;
         public string SendState
         {
@@ -82,6 +94,8 @@ namespace ESD.JC_RoleMgmt.ViewModels
             }
         }
 
+        private int _errorCount = 0;
+
         #endregion
 
         private const string NormalStateKey = "Normal";
@@ -90,17 +104,20 @@ namespace ESD.JC_RoleMgmt.ViewModels
 
         private IRegionNavigationJournal navigationJournal;
         private IRoleServices RoleServices;
+        private IRegionManager RegionManager;
         private IModuleAccessCtrlServices ModuleAccessCtrlServices;
         private IModuleAccessCtrlTransactionServices ModuleAccessCtrlTransactionServices;
         private InteractionRequest<Confirmation> confirmExitInteractionRequest;
         private DelegateCommand<object> _saveCommand;
 
-        public RoleOperationViewModel(IRoleServices _RoleServices, IModuleAccessCtrlServices _ModuleAccessCtrlServices, IModuleAccessCtrlTransactionServices _ModuleAccessCtrlTransactionServices)
+        public RoleOperationViewModel(IRoleServices _RoleServices, IModuleAccessCtrlServices _ModuleAccessCtrlServices, IModuleAccessCtrlTransactionServices _ModuleAccessCtrlTransactionServices,
+            IRegionManager _RegionManager)
         {
             RoleServices = _RoleServices;
             ModuleAccessCtrlServices = _ModuleAccessCtrlServices;
-            ModuleAccessCtrlTransactionServices = _ModuleAccessCtrlTransactionServices; 
-             SendState = NormalStateKey;
+            ModuleAccessCtrlTransactionServices = _ModuleAccessCtrlTransactionServices;
+            RegionManager = _RegionManager;
+            SendState = NormalStateKey;
 
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             CancelCommand = new DelegateCommand(Cancel);
@@ -133,8 +150,8 @@ namespace ESD.JC_RoleMgmt.ViewModels
                     ModuleList.Add(new ModuleAccessCtrlExt
                     {
                         ID = item.ID,
-                        Module = item.Module,
-                        IsChecked = false
+                        Module = item.Module.Contains("User Management") ? "User Management (DEFAULT)" : item.Module,
+                        IsChecked = item.Module.Contains("User Management") ? true : false
                     });
                 }
             }
@@ -149,9 +166,13 @@ namespace ESD.JC_RoleMgmt.ViewModels
                     {
                         foreach (var tempModule in ModuleList)
                         {
-                            if (tempModule.ID == item.ModuleID)
+                            if (tempModule.ID == item.ModuleID && !tempModule.Module.Contains("User Management"))
                             {
                                 tempModule.IsChecked = item.IsAllow;
+                            }
+                            else if (tempModule.Module.Contains("User Management"))
+                            {
+                                tempModule.Module = "User Management (DEFAULT)";
                             }
                         }
                     }
@@ -200,7 +221,7 @@ namespace ESD.JC_RoleMgmt.ViewModels
                         ModuleAccessCtrlTransactionServices.Save(module, "Save");
                     }
                 }
-                       
+
                 if (ok.state)
                 {
                     this.SendState = SavedStateKey;
@@ -241,7 +262,7 @@ namespace ESD.JC_RoleMgmt.ViewModels
                 {
                     ModuleID = item.ID,
                     RoleID = id,
-                    IsAllow = item.IsChecked
+                    IsAllow = item.Module.Contains("User Management") ? true : item.IsChecked
                 });
             }
             return newObj;
@@ -265,7 +286,7 @@ namespace ESD.JC_RoleMgmt.ViewModels
         {
             if (ModuleTransactionList != null && ModuleTransactionList.Count > 0)
             {
-                foreach(var item in ModuleTransactionList)
+                foreach (var item in ModuleTransactionList)
                 {
                     foreach (var tempModule in ModuleList)
                     {
@@ -277,10 +298,13 @@ namespace ESD.JC_RoleMgmt.ViewModels
                 }
             }
             return ModuleTransactionList;
-        }        
+        }
 
         private bool CanSave(object ignored)
         {
+            if (_errorCount > 0)
+                return false;
+
             return !string.IsNullOrEmpty(RoleCodeAlias);
         }
 
@@ -310,7 +334,7 @@ namespace ESD.JC_RoleMgmt.ViewModels
                 this.confirmExitInteractionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "Are you sure you want to navigate away from this window?",
+                        Content = "Confirm to navigate away from this window?",
                         Title = "Confirm"
                     },
                     c => { continuationCallback(c.Confirmed); });
@@ -328,13 +352,14 @@ namespace ESD.JC_RoleMgmt.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
+            navigationContext.NavigationService.Region.RegionManager.Regions.Remove(RegionNames.TabRegionRole);
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             var roledata = new Role();
 
-            AuthenticatedUser = (!string.IsNullOrEmpty((string)navigationContext.Parameters["AuthenticatedUser"]) ? 
+            AuthenticatedUser = (!string.IsNullOrEmpty((string)navigationContext.Parameters["AuthenticatedUser"]) ?
                 (string)navigationContext.Parameters["AuthenticatedUser"] : string.Empty);
 
             var id = GetRequestedRoleID(navigationContext);
@@ -346,6 +371,7 @@ namespace ESD.JC_RoleMgmt.ViewModels
                     if (!string.IsNullOrEmpty(RoleCodeAlias))
                     {
                         IsEnabled = false;
+                        IsSaveEnabled = true;
                     }
 
                     RoleCodeAlias = role.RoleCode;
@@ -360,11 +386,48 @@ namespace ESD.JC_RoleMgmt.ViewModels
             else
             {
                 IsEnabled = true;
+                IsSaveEnabled = false;
             }
 
             this.RoleData = roledata;
 
             this.navigationJournal = navigationContext.NavigationService.Journal;
         }
+
+        public void AddUIValidationError()
+        {
+            _errorCount++;
+        }
+
+        public void RemoveUIValidationError()
+        {
+            _errorCount--;
+        }
+
+        #region IDataErrorInfo Members
+
+        string IDataErrorInfo.Error
+        {
+            get { return null; }
+        }
+
+        string IDataErrorInfo.this[string columnName]
+        {
+            get
+            {
+                if (columnName == "RoleCodeAlias")
+                {
+                    if (RoleServices.GetAll(false).Where(r => r.RoleCode == RoleCodeAlias).Count() > 0 && IsEnabled)
+                    {
+                        IsSaveEnabled = false;
+                        return $"{RoleCodeAlias} already Exist! Please find another.";
+                    }
+                }
+                IsSaveEnabled = true;
+
+                return null;
+            }
+        }
+        #endregion
     }
 }

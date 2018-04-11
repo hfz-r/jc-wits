@@ -3,21 +3,29 @@ using DataLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
+using System.Linq;
 
 namespace ESD.JC_UserMgmt.Services
 {
     public class UserServices : IUserServices
     {
         private IUserRepository userRepository;
+        private IGRTransactionRepository grTrnxRepository;
+        private IGITransactionRepository giTrnxRepository;
 
-        public UserServices(IUserRepository _userRepository)
+        public UserServices(IUserRepository _userRepository, IGRTransactionRepository grTrnxRepository, IGITransactionRepository giTrnxRepository)
         {
             userRepository = _userRepository;
+            this.grTrnxRepository = grTrnxRepository;
+            this.giTrnxRepository = giTrnxRepository;
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<User> GetAll(bool eagerLoading)
         {
-            return userRepository.GetAll(true);
+            if (eagerLoading)
+                return userRepository.GetAll(true);
+            else
+                return userRepository.GetAll(false);
         }
 
         public User GetUser(long ID)
@@ -25,17 +33,17 @@ namespace ESD.JC_UserMgmt.Services
             return userRepository.GetUser(ID);
         }
 
-        public bool Save(User User, string state = "")
+        public bool Save(List<User> users, string state = "")
         {
             try
             {
                 if (!string.IsNullOrEmpty(state) && state == "Save")
                 {
-                    userRepository.Add(User);
+                    users.ForEach(x => userRepository.Add(x));
                 }
                 else if (!string.IsNullOrEmpty(state) && state == "Update")
                 {
-                    userRepository.Update(User);
+                    users.ForEach(x => userRepository.Update(x));
                 }
             }
             catch (DbEntityValidationException e)
@@ -60,7 +68,7 @@ namespace ESD.JC_UserMgmt.Services
             return true;
         }
 
-        public void Delete(long ID)
+        public bool Delete(long ID)
         {
             try
             {
@@ -78,6 +86,44 @@ namespace ESD.JC_UserMgmt.Services
             {
                 throw new Exception(ex.Message);
             }
+
+            return true;
+        }
+
+        public IEnumerable<GRTransaction> GetUserGRTrnx(long ID)
+        {
+            try
+            {
+                var trnx = grTrnxRepository.GetAll(true);
+                if (trnx != null)
+                {
+                    return trnx.Where(u => u.CreatedBy == ID.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return null;
+        }
+
+        public IEnumerable<GITransaction> GetUserGITrnx(long ID)
+        {
+            try
+            {
+                var trnx = giTrnxRepository.GetAll(true);
+                if (trnx != null)
+                {
+                    return trnx.Where(u => u.CreatedBy == ID.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return null;
         }
     }
 }

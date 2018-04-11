@@ -42,7 +42,7 @@
                                             <Expander Background="LightGray" HorizontalAlignment="Stretch" IsExpanded="True">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, MM/dd/yyyy}" Margin="5,0,5,0" />
+                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, dd/MM/yyyy}" Margin="5,0,5,0" />
                                                         <TextBlock>(</TextBlock>
                                                         <TextBlock Text="{Binding Path=ItemCount}" Margin="0,0,5,0"/>
                                                         <TextBlock Text="Items"/>
@@ -61,10 +61,11 @@
                     </GroupStyle>
                 </DataGrid.GroupStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Text" Width="Auto" MinWidth="150" Binding="{Binding Text}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Text" Width="Auto" MinWidth="150" Binding="{Binding Text}" />
                     <DataGridTextColumn Header="Transaction Time" Width="Auto" MinWidth="200" Binding="{Binding CreatedOn, StringFormat=hh\\:mm\\:ss tt}" CanUserSort="True"/>
-                    <DataGridTextColumn Header="Quantity" Width="Auto" MinWidth="20" Binding="{Binding Quantity}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Quantity" Width="Auto" MinWidth="20" Binding="{Binding Quantity}" />
                     <DataGridTextColumn Header="Production No." Width="Auto" Binding="{Binding ProductionNo}" CanUserSort="True"/>
+                    <DataGridTextColumn Header="Issued By" Width="Auto" MinWidth="300" Binding="{Binding CreatedBy}" CanUserSort="True"/>
                 </DataGrid.Columns>
             </DataGrid>
         </DataTemplate>
@@ -94,7 +95,7 @@
                                             <Expander Background="LightGray" HorizontalAlignment="Stretch" IsExpanded="True">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, MM/dd/yyyy}" Margin="5,0,5,0" />
+                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, dd/MM/yyyy}" Margin="5,0,5,0" />
                                                         <TextBlock>(</TextBlock>
                                                         <TextBlock Text="{Binding Path=ItemCount}" Margin="0,0,5,0"/>
                                                         <TextBlock Text="Items"/>
@@ -113,11 +114,12 @@
                     </GroupStyle>
                 </DataGrid.GroupStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Text" Width="Auto" MinWidth="150" Binding="{Binding Text}" CanUserSort="False"/>
-                    <DataGridTextColumn Header="Transaction Time" Width="Auto" MinWidth="200" Binding="{Binding CreatedOn, StringFormat=hh\\:mm\\:ss tt}" CanUserSort="True"/>
-                    <DataGridTextColumn Header="Quantity" Width="Auto" MinWidth="20" Binding="{Binding Quantity}" CanUserSort="False"/>
-                    <DataGridTextColumn Header="Location To" Width="Auto" Binding="{Binding Location1.LocationDesc}" CanUserSort="True"/>
-                    <DataGridTextColumn Header="Location From" Width="Auto" Binding="{Binding Location.LocationDesc}" CanUserSort="True"/>
+                    <DataGridTextColumn Header="Text" Width="Auto" MinWidth="150" Binding="{Binding Text}" />
+                    <DataGridTextColumn Header="Transaction Time" Width="Auto" MinWidth="200" Binding="{Binding CreatedOn, StringFormat=hh\\:mm\\:ss tt}"/>
+                    <DataGridTextColumn Header="Quantity" Width="Auto" MinWidth="20" Binding="{Binding Quantity, StringFormat={}{0:G29}}" />
+                    <DataGridTextColumn Header="Location To" Width="Auto" Binding="{Binding Location1.LocationDesc}"/>
+                    <DataGridTextColumn Header="Location From" Width="Auto" Binding="{Binding Location.LocationDesc}"/>
+                    <DataGridTextColumn Header="Issued By" Width="Auto" MinWidth="300" Binding="{Binding CreatedBy}" CanUserSort="True"/>
                 </DataGrid.Columns>
             </DataGrid>
         </DataTemplate>

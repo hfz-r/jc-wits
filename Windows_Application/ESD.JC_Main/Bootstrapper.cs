@@ -27,6 +27,7 @@ using Prism.Unity;
 using Prism.Mvvm;
 using Prism.Modularity;
 using Microsoft.Practices.Unity;
+using ESD.JC_UserMgmt.ViewModels;
 
 namespace ESD.JC_Main
 {
@@ -75,6 +76,7 @@ namespace ESD.JC_Main
             base.ConfigureContainer();
 
             Container.RegisterType<IUserRepository, UserRepository>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<IModuleAccessCtrlTransactionRepository, ModuleAccessCtrlTransactionRepository>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IAuthenticationService, AuthenticationService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IModuleAccessServices, ModuleAccessServices>(new ContainerControlledLifetimeManager());
         }
@@ -85,9 +87,8 @@ namespace ESD.JC_Main
 
             ViewModelLocationProvider.Register<LoginWindow>(() => Container.TryResolve<LoginWindowViewModel>());
             ViewModelLocationProvider.Register<MainWindow>(() => Container.TryResolve<MainWindowViewModel>());
-
             ViewModelLocationProvider.Register<RoleMgmtNavigationItemView>(() => Container.TryResolve<AuthorizationViewModel>());
-            ViewModelLocationProvider.Register<UserMgmtNavigationItemView>(() => Container.TryResolve<AuthorizationViewModel>());
+            ViewModelLocationProvider.Register<UserMgmtNavigationItemView>(() => Container.TryResolve<UserMainViewModel>());
             ViewModelLocationProvider.Register<LocationMgmtNavigationItemView>(() => Container.TryResolve<AuthorizationViewModel>());
             ViewModelLocationProvider.Register<CountryMgmtNavigationItemView>(() => Container.TryResolve<AuthorizationViewModel>());
             ViewModelLocationProvider.Register<ReasonMgmtNavigationItemView>(() => Container.TryResolve<AuthorizationViewModel>());

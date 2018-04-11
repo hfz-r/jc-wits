@@ -22,7 +22,7 @@ namespace ESD.JC_LabelPrinting.Helpers
                 parseFormat = ParseTextFormat;
             }
             else
-                throw new Exception("Format error.");
+                throw new Exception("Incorrect format.");
 
             if (parseFormat != null)
             {

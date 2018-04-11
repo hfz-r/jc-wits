@@ -32,29 +32,27 @@
                 <TextBlock Text="{Binding RoleName}"                           
                            Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="RoleNameData"/>
 
-                <!--<TextBlock Text="Module: " FontWeight="Bold"
-                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModuleLabel"/>
-                <TextBlock Text="{Binding Module}"                           
-                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="ModuleData"/>-->
-
                 <TextBlock Text="Description: " FontWeight="Bold"
-                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="DescriptionLabel"/>
-                <ScrollViewer Grid.Row="3" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch"
-                              VerticalScrollBarVisibility="Auto">
-                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" AutomationProperties.AutomationId="DescriptionData"/>
-                </ScrollViewer>
+                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="DescriptionLabel"/>
+                <TextBlock Text="{Binding Description}"                           
+                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="DescriptionData"/>
 
                 <TextBlock Text="Last Modified Date: " FontWeight="Bold"
-                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
-                <TextBlock Text="{Binding ModifiedOn, StringFormat=g}"                           
-                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOnData"/>
+                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
+                <TextBlock Text="{Binding ModifiedOn, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}"                           
+                           Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOnData"/>
 
                 <TextBlock Text="Last Modified By: " FontWeight="Bold"
-                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedByLabel"/>
-                <TextBlock Text="{Binding ModifiedBy}"                           
-                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
+                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedByLabel"/>
+                <TextBlock Text="{Binding CreatedBy}"                           
+                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
             </Grid>
         </DataTemplate>
+        <Style TargetType="{x:Type TabItem}" x:Key="HeaderStyle">
+            <Setter Property="Header"
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=Content.DataContext.ViewName}" />
+        </Style>
     </UserControl.Resources>
 
     <i:Interaction.Triggers>
@@ -74,18 +72,19 @@
         <ContentControl Content="{Binding Role}" ContentTemplate="{StaticResource RoleTemplate}"
                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
 
-        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="15" ShowsPreview="True" />
-        <StackPanel Grid.Row="1" Margin="10,25,10,10">
-            <DataGrid ItemsSource="{Binding ModuleList}" AutoGenerateColumns="False" 
-                      IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
-                      HorizontalAlignment="Left" VerticalAlignment="Stretch" AutomationProperties.AutomationId="TransactionsList">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Module" Width="Auto" MinWidth="260" Binding="{Binding Module}" CanUserSort="True"/>
-                    <DataGridCheckBoxColumn Header="Allow Access" Width="Auto" MinWidth="120" Binding="{Binding IsChecked}" CanUserSort="True"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
-        
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
+
+        <TabControl Grid.Row="1"
+            AutomationProperties.AutomationId="RoleDetailsTabControl"
+            Margin="8"
+            IsTabStop="False"
+            prism:RegionManager.RegionName="TabRegionRole"
+            Width="Auto"
+            Height="Auto"
+            HorizontalAlignment="Stretch"
+            ItemContainerStyle="{StaticResource HeaderStyle}">
+        </TabControl>
+
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

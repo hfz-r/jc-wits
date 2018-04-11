@@ -38,11 +38,12 @@
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="CountryID" Type="bigint" Nullable="false" />
-    <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="CountryID" Type="bigint" />
+    <Property Name="Quantity" Type="int" Nullable="false" />
     <Property Name="AHUID" Type="bigint" Nullable="false" />
     <Property Name="CreatedOn" Type="datetime" Nullable="false" />
     <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="LocationID" Type="bigint" />
   </EntityType>
   <EntityType Name="Country">
     <Key>
@@ -100,11 +101,12 @@
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="CountryID" Type="bigint" Nullable="false" />
-    <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="CountryID" Type="bigint" />
+    <Property Name="Quantity" Type="numeric" Precision="18" Scale="0" Nullable="false" />
     <Property Name="FCUID" Type="bigint" Nullable="false" />
     <Property Name="CreatedOn" Type="datetime" Nullable="false" />
     <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="LocationID" Type="bigint" />
   </EntityType>
   <EntityType Name="GITransaction">
     <Key>
@@ -135,7 +137,7 @@
     <Property Name="ENMaterialShortText" Type="varchar" MaxLength="200" />
     <Property Name="MaterialShortText" Type="varchar" MaxLength="200" Nullable="false" />
     <Property Name="Ok" Type="bit" />
-    <Property Name="Quantity" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+    <Property Name="Quantity" Type="numeric" Precision="18" Scale="2" Nullable="false" />
     <Property Name="Eun" Type="varchar" MaxLength="10" />
     <Property Name="MvmtType" Type="varchar" MaxLength="10" />
     <Property Name="StorageLoc" Type="nvarchar" MaxLength="200" Nullable="false" />
@@ -147,7 +149,7 @@
     <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
     <Property Name="ModifiedBy" Type="varchar" MaxLength="20" Nullable="false" />
-    <Property Name="QtyReceived" Type="numeric" Precision="18" Scale="0" />
+    <Property Name="QtyReceived" Type="numeric" Precision="18" Scale="2" />
   </EntityType>
   <EntityType Name="GRTransaction">
     <Key>
@@ -219,7 +221,7 @@
     <Property Name="Username" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="Password" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
-    <Property Name="RoleID" Type="bigint" Nullable="false" />
+    <Property Name="RoleID" Type="bigint" />
     <Property Name="Email" Type="varchar" MaxLength="50" />
     <Property Name="Address" Type="varchar" MaxLength="200" />
     <Property Name="CreatedOn" Type="datetime" Nullable="false" />
@@ -240,7 +242,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_AHU_COUNTRYID">
-    <End Role="Country" Type="Self.Country" Multiplicity="1" />
+    <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
     <End Role="AHUTransaction" Type="Self.AHUTransaction" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Country">
@@ -264,7 +266,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_FCU_COUNTRYID">
-    <End Role="Country" Type="Self.Country" Multiplicity="1" />
+    <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
     <End Role="FCUTransaction" Type="Self.FCUTransaction" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Country">
@@ -372,7 +374,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_Role_RoleID">
-    <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+    <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
     <End Role="Users" Type="Self.Users" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Roles">

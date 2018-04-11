@@ -30,7 +30,7 @@ namespace ESD.JC_Infrastructure
                     qty = (decimal)values[1];
             }
 
-            return string.Format("{0}/{1}", qtyRecieved, qty);
+            return string.Format("{0:G29}/{1:G29}", qtyRecieved, qty);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

@@ -9,5 +9,6 @@ namespace DataLayer.Repositories
         AHU GetAHUBySerialNo(string serial_no);
         IEnumerable<AHU> GetAll(bool eagerLoading);
         void Update(AHU ahu);
+        void Delete(long ID);
     }
 }

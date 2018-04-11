@@ -8,5 +8,6 @@ namespace ESD.JC_FinishGoods.Services
         IEnumerable<FCUTransaction> GetAll(bool eagerLoading);
         IEnumerable<FCUTransaction> GetFCUTransactionByFCUID(long FCUID);
         Location GetLocationFromFCUTransaction(long ID);
+        FCU GetFCUDetails(long ID);
     }
 }

@@ -111,7 +111,7 @@
                 
                 <TextBlock Text="Quantity: " FontWeight="Bold"
                            Grid.Row="8" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QtyLabel"/>
-                <TextBlock Text="{Binding Qty}"                           
+                <TextBlock Text="{Binding Qty, StringFormat={}{0:G29}}"                           
                            Grid.Row="8" Grid.Column="1" AutomationProperties.AutomationId="Qty"/>
 
                 <TextBlock Text="Cooling Coil: " FontWeight="Bold"
@@ -146,7 +146,7 @@
 
                 <TextBlock Text="Last Modified Date: " FontWeight="Bold"
                            Grid.Row="15" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
-                <TextBlock Text="{Binding ModifiedOn, StringFormat=g}"                           
+                <TextBlock Text="{Binding ModifiedOn, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}"                           
                            Grid.Row="15" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOn"/>
 
                 <TextBlock Text="Last Modified By: " FontWeight="Bold"

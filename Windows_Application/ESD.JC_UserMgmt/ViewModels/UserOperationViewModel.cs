@@ -123,7 +123,7 @@ namespace ESD.JC_UserMgmt.ViewModels
 
         private void OnLoaded()
         {
-            var roles = RoleServices.GetAll();
+            var roles = RoleServices.GetAll(true);
             if (roles.Count() > 0)
             {
                 RoleList = new ObservableCollection<Role>();
@@ -158,13 +158,6 @@ namespace ESD.JC_UserMgmt.ViewModels
                 MessageBox.Show("User Name is required.", "Notification", MessageBoxButton.OK);
                 return;
             }
-            else if (string.IsNullOrEmpty(Password))
-            {
-                this.SendState = NormalStateKey;
-
-                MessageBox.Show("Password is required.", "Notification", MessageBoxButton.OK);
-                return;
-            }
             else if (string.IsNullOrEmpty(data.Name))
             {
                 this.SendState = NormalStateKey;
@@ -186,12 +179,20 @@ namespace ESD.JC_UserMgmt.ViewModels
                 if (data.ID != 0)
                 {
                     var updateObj = Update(data);
-                    ok = UserServices.Save(updateObj, "Update");
+                    //ok = UserServices.Save(updateObj, "Update");
                 }
                 else
                 {
+                    if (string.IsNullOrEmpty(Password))
+                    {
+                        this.SendState = NormalStateKey;
+
+                        MessageBox.Show("Password is required.", "Notification", MessageBoxButton.OK);
+                        return;
+                    }
+
                     var newObj = Add(data);
-                    ok = UserServices.Save(newObj, "Save");
+                    //ok = UserServices.Save(newObj, "Save");
                 }
 
                 if (ok)
@@ -234,7 +235,7 @@ namespace ESD.JC_UserMgmt.ViewModels
             if (userUpdate != null)
             {
                 userUpdate.Username = UsernameAlias;
-                userUpdate.Password = HashConverter.CalculateHash(Password, UsernameAlias);
+                userUpdate.Password = !string.IsNullOrEmpty(Password) ? HashConverter.CalculateHash(Password, UsernameAlias) : data.Password;
                 userUpdate.Role = SelectedRole;
                 userUpdate.RoleID = SelectedRole.ID;
                 userUpdate.Name = data.Name;
@@ -272,7 +273,7 @@ namespace ESD.JC_UserMgmt.ViewModels
                 this.confirmExitInteractionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "Are you sure you want to navigate away from this window?",
+                        Content = "Confirm to navigate away from this window?",
                         Title = "Confirm"
                     },
                     c => { continuationCallback(c.Confirmed); });

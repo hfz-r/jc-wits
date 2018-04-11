@@ -1,8 +1,8 @@
 ﻿using ESD.JC_GoodsReceive.ViewModels;
+using ESD.JC_Infrastructure;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media.Animation;
+using System.Windows.Data;
 
 namespace ESD.JC_GoodsReceive.Views
 {
@@ -11,14 +11,14 @@ namespace ESD.JC_GoodsReceive.Views
     /// </summary>
     public partial class GRMainView : UserControl
     {
-        private bool expanded = false;
+        private GRMainViewModel viewModel;
 
-        public GRMainView(GRMainViewModel viewModel)
+        public GRMainView(GRMainViewModel _viewModel)
         {
             InitializeComponent();
-            GR_Loaded();
 
-            DataContext = viewModel;
+            DataContext = _viewModel;
+            viewModel = _viewModel;
         }
 
         private void ToolBar_Loaded(object sender, RoutedEventArgs e)
@@ -37,24 +37,30 @@ namespace ESD.JC_GoodsReceive.Views
             }
         }
 
-        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        private void btnOkFilter_Click(object sender, RoutedEventArgs e)
         {
-            //Handle single leftbutton mouse clicks
-            if (e.ClickCount < 2 && e.LeftButton == MouseButtonState.Pressed)
-            {
-                if (expanded == false)
-                    sidePanel.BeginStoryboard((Storyboard)this.Resources["expandStoryBoard"]);
-                else
-                    sidePanel.BeginStoryboard((Storyboard)this.Resources["collapseStoryBoard"]);
+            okPopupSelection.IsOpen = true;
+        }
 
-                expanded = !expanded;
+        private void btnSelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (CheckedListItem<OkCategory> item in viewModel.OkFilter)
+            {
+                item.IsChecked = true;
             }
         }
 
-        private void GR_Loaded()
+        private void btnUnselectAll_Click(object sender, RoutedEventArgs e)
         {
-            sidePanel.BeginStoryboard((Storyboard)this.Resources["expandStoryBoard"]);
-            sidePanel.BeginStoryboard((Storyboard)this.Resources["collapseStoryBoard"]);
+            foreach (CheckedListItem<OkCategory> item in viewModel.OkFilter)
+            {
+                item.IsChecked = false;
+            }
+        }
+
+        private void ApplyFilters(object sender, RoutedEventArgs e)
+        {
+            CollectionViewSource.GetDefaultView(viewModel.GoodReceives).Refresh();
         }
     }
 }

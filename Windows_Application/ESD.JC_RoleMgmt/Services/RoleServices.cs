@@ -17,9 +17,17 @@ namespace ESD.JC_RoleMgmt.Services
             roleRepository = _roleRepository;
         }
 
-        public IEnumerable<Role> GetAll()
+        public IEnumerable<Role> GetAll(bool eagerLoading)
         {
-            return roleRepository.GetAll(false);
+            if (eagerLoading)
+                return roleRepository.GetAll(true);
+            else
+                return roleRepository.GetAll(false);
+        }
+
+        public IEnumerable<Role> GetRoleWithAssociated(long ID)
+        {
+            return roleRepository.GetRoleWithAssociated(ID);
         }
 
         public Role GetRole(long ID)

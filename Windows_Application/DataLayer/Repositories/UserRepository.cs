@@ -70,7 +70,12 @@ namespace DataLayer.Repositories
         {
             using (var context = new InventoryContext())
             {
-                context.Entry(user).State = EntityState.Modified;
+                var entity = context.Users.Where(x => x.ID == user.ID).AsQueryable().FirstOrDefault();
+                if (entity == null)
+                    context.Users.Add(user);
+                else
+                    context.Entry(entity).CurrentValues.SetValues(user);
+
                 context.SaveChanges();
             }
         }
@@ -79,8 +84,8 @@ namespace DataLayer.Repositories
         {
             using (var context = new InventoryContext())
             {
-                User user = context.Users.Find(ID);
-                context.Users.Remove(user);
+                var users = context.Users.Where(id => id.ID == ID).Include(r => r.Role);
+                context.Users.RemoveRange(users);
 
                 context.SaveChanges();
             }

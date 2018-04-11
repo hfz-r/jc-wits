@@ -73,5 +73,22 @@ namespace DataLayer.Repositories
                 context.SaveChanges();
             }
         }
+
+        public void Delete(long ID)
+        {
+            using (var context = new InventoryContext())
+            {
+                var GRTxn = context.GRTransactions.Where(id => id.GRID == ID);
+                context.GRTransactions.RemoveRange(GRTxn);
+
+                var EUNTxn = context.EunKGs.Where(id => id.GRID == ID);
+                context.EunKGs.RemoveRange(EUNTxn);
+
+                var GR = context.GoodsReceives.Where(id => id.ID == ID);
+                context.GoodsReceives.RemoveRange(GR);
+
+                context.SaveChanges();
+            }
+        }
     }
 }

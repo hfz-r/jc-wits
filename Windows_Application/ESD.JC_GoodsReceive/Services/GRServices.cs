@@ -70,5 +70,27 @@ namespace ESD.JC_GoodsReceive.Services
 
             return true;
         }
+
+        public bool Delete(long ID)
+        {
+            try
+            {
+                var grObj = GetGR(ID);
+                if (grObj != null)
+                {
+                    grRepository.Delete(ID);
+                }
+                else
+                {
+                    throw new Exception("Record Not Found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return true;
+        }
     }
 }

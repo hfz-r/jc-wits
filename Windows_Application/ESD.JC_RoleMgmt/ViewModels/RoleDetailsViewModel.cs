@@ -1,20 +1,20 @@
 ﻿using DataLayer;
 using ESD.JC_Infrastructure;
-using ESD.JC_RoleMgmt.ModelsExt;
+using ESD.JC_Infrastructure.Events;
 using ESD.JC_RoleMgmt.Services;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
 namespace ESD.JC_RoleMgmt.ViewModels
 {
+    [RegionMemberLifetime(KeepAlive = false)]
     public class RoleDetailsViewModel : BindableBase, INavigationAware
     {
         private Role _Role;
@@ -46,35 +46,19 @@ namespace ESD.JC_RoleMgmt.ViewModels
             }
         }
 
-        private ObservableCollection<ModuleAccessCtrlExt> _ModuleList;
-        public ObservableCollection<ModuleAccessCtrlExt> ModuleList
-        {
-            get { return _ModuleList; }
-            set { SetProperty(ref _ModuleList, value); }
-        }
-
-        private List<ModuleAccessCtrlTransaction> _ModuleTransactionList;
-        public List<ModuleAccessCtrlTransaction> ModuleTransactionList
-        {
-            get { return _ModuleTransactionList; }
-            set { SetProperty(ref _ModuleTransactionList, value); }
-        }
-
         private const string roleOperationViewName = "RoleOperationView";
 
         private IRegionNavigationJournal navigationJournal;
         private IRegionManager RegionManager;
         private IRoleServices RoleServices;
-        private IModuleAccessCtrlServices ModuleAccessCtrlServices;
-        private IModuleAccessCtrlTransactionServices ModuleAccessCtrlTransactionServices;
+        private IEventAggregator EventAggregator;
         private InteractionRequest<Confirmation> confirmRemoveThisInteractionRequest;
 
-        public RoleDetailsViewModel(IRegionManager _RegionManager, IRoleServices _RoleServices, IModuleAccessCtrlServices _ModuleAccessCtrlServices, IModuleAccessCtrlTransactionServices _ModuleAccessCtrlTransactionServices)
+        public RoleDetailsViewModel(IRegionManager _RegionManager, IRoleServices _RoleServices, IEventAggregator _EventAggregator)
         {
             RegionManager = _RegionManager;
             RoleServices = _RoleServices;
-            ModuleAccessCtrlServices = _ModuleAccessCtrlServices;
-            ModuleAccessCtrlTransactionServices = _ModuleAccessCtrlTransactionServices;
+            EventAggregator = _EventAggregator;
 
             EditThisCommand = new DelegateCommand(EditThis);
             RemoveThisCommand = new DelegateCommand(RemoveThis, CanRemove);
@@ -110,7 +94,7 @@ namespace ESD.JC_RoleMgmt.ViewModels
             this.confirmRemoveThisInteractionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "Are you confirm you want to remove this?",
+                        Content = "Confirm to remove this?",
                         Title = "Confirm"
                     },
                     c => { InteractionResultMessage = c.Confirmed ? InitDelete(Role.ID) : "NOT OK!"; });
@@ -132,15 +116,18 @@ namespace ESD.JC_RoleMgmt.ViewModels
                 MessageBox.Show(ex.Message, "Notification", MessageBoxButton.OK);
             }
 
-            return "OK!";
+            return "Role deleted.";
         }
 
         private bool CanRemove()
         {
             if (Role == null)
                 return false;
+            if (Role.RoleCode == "ADMINISTRATOR")
+                return false;
 
-            if (Role.RoleCode.Equals("ADMIN"))
+            var user = Role.Users.Where(x => x.Username == AuthenticatedUser).FirstOrDefault();
+            if (user != null && Role.ID == user.RoleID)
                 return false;
 
             return true;
@@ -191,41 +178,7 @@ namespace ESD.JC_RoleMgmt.ViewModels
             {
                 this.Role = RoleServices.GetRole(id.Value);
 
-                ModuleList = new ObservableCollection<ModuleAccessCtrlExt>();
-                var module = ModuleAccessCtrlServices.GetAll();
-                if (module.Count() > 0)
-                {
-                    var tempObj = new List<ModuleAccessCtrl>();
-                    tempObj = ModuleAccessCtrlServices.GetAll().ToList();
-
-                    foreach (var item in tempObj)
-                    {
-                        ModuleList.Add(new ModuleAccessCtrlExt
-                        {
-                            ID = item.ID,
-                            Module = item.Module,
-                            IsChecked = false
-                        });
-                    }
-                }
-
-                if (this.Role.ID != 0)
-                {
-                    ModuleTransactionList = ModuleAccessCtrlTransactionServices.GetModuleAccessCtrlTransaction(this.Role.ID);
-                    if (ModuleTransactionList != null && ModuleTransactionList.Count > 0)
-                    {
-                        foreach (var item in ModuleTransactionList)
-                        {
-                            foreach (var tempModule in ModuleList)
-                            {
-                                if (tempModule.ID == item.ModuleID)
-                                {
-                                    tempModule.IsChecked = item.IsAllow;
-                                }
-                            }
-                        }
-                    }
-                }
+                this.EventAggregator.GetEvent<RoleSelectedEvent>().Publish(id.Value);
             }
 
             this.navigationJournal = navigationContext.NavigationService.Journal;

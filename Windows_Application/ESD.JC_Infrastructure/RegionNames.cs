@@ -1,5 +1,3 @@
-using System;
-
 namespace ESD.JC_Infrastructure
 {
     public static class RegionNames
@@ -11,5 +9,7 @@ namespace ESD.JC_Infrastructure
         public const string TabRegionGI = "TabRegionGI";
         public const string TabRegionFCU = "TabRegionFCU";
         public const string TabRegionAHU = "TabRegionAHU";
+        public const string TabRegionRole = "TabRegionRole";
+        public const string TabRegionUser = "TabRegionUser";
     }
 }

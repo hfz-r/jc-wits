@@ -3,8 +3,6 @@ using ESD.JC_GoodsReceive.Services;
 using Prism.Mvvm;
 using Prism.Regions;
 using Microsoft.Practices.Unity;
-using System.Linq;
-using System.Collections.ObjectModel;
 
 namespace ESD.JC_GoodsReceive.ViewModels
 {
@@ -15,20 +13,17 @@ namespace ESD.JC_GoodsReceive.ViewModels
             get { return "Transaction Summary"; }
         }
 
-        private ObservableCollection<GRTransaction> _summryCollection;
-        public ObservableCollection<GRTransaction> summryCollection
+        private GoodsReceive _summryObj;
+        public GoodsReceive summryObj
         {
-            get { return _summryCollection; }
+            get { return _summryObj; }
             set
             {
-                SetProperty(ref _summryCollection, value);
-                if (summryCollection.Count() > 0)
+                SetProperty(ref _summryObj, value);
+                if (_summryObj != null)
                 {
-                    var grObj = summryCollection.Select(x => x.GoodsReceive).FirstOrDefault();
-                    RemainingQty = grObj.Quantity - grObj.QtyReceived.GetValueOrDefault();
+                    RemainingQty = _summryObj.Quantity - _summryObj.QtyReceived.GetValueOrDefault();
                 }
-
-                RaisePropertyChanged("summryCollection");
             }
         }
 

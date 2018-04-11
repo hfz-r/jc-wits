@@ -144,6 +144,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Services\GIServices.cs" />
+    <Compile Include="Services\GITimerServices.cs" />
     <Compile Include="Services\GITransactionServices.cs" />
     <Compile Include="Services\IGIServices.cs" />
     <Compile Include="Services\IGITransactionServices.cs" />
@@ -215,6 +216,10 @@
     <ProjectReference Include="..\ESD.JC_Infrastructure\ESD.JC_Infrastructure.csproj">
       <Project>{3ffe8ec2-5990-4664-9f45-14c469255859}</Project>
       <Name>ESD.JC_Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Timer\Timer.csproj">
+      <Project>{ae133bfc-d008-4452-8d54-70eba42d584e}</Project>
+      <Name>Timer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

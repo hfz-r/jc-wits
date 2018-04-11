@@ -25,7 +25,19 @@ namespace ESD.JC_FinishGoods.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("TEC B-SA4T (300 dpi)")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int PrintCount {
+            get {
+                return ((int)(this["PrintCount"]));
+            }
+            set {
+                this["PrintCount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("TEC B-SX4T (203 dpi)")]
         public string PrinterPort {
             get {
                 return ((string)(this["PrinterPort"]));

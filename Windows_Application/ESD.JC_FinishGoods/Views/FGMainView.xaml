@@ -39,21 +39,21 @@
                 </Grid.ColumnDefinitions>
 
                 <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
-                    <Button ToolTipService.ToolTip="OK?" Command="{Binding ApplicationCommands.OKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
+                    <Button ToolTipService.ToolTip="Confirm" Command="{Binding ApplicationCommands.OKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_ok.png" Height="40" Width="40" Margin="4"/>
                         </StackPanel>
                     </Button>
                     <Separator Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}" />
-                    <Button ToolTipService.ToolTip="NOT OK?" Command="{Binding ApplicationCommands.XOKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
+                    <Button ToolTipService.ToolTip="Cancel" Command="{Binding ApplicationCommands.XOKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_xok.png" Height="40" Width="40" Margin="4"/>
                         </StackPanel>
                     </Button>
                     <Separator Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}" />
-                    <Button ToolTipService.ToolTip="Click to print the label!" Command="{Binding ApplicationCommands.PrintLblCommand}">
+                    <Button ToolTipService.ToolTip="Click to print label" Command="{Binding ApplicationCommands.PrintLblCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
@@ -69,22 +69,57 @@
                             </Image>
                         </StackPanel>
                     </Button>
+                    <Separator/>
+                    <Button ToolTipService.ToolTip="Click to delete selected item" Command="{Binding ApplicationCommands.DeleteFGCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </StackPanel>
+                    </Button>
                     <StackPanel Width="20"/>
-                    <Button ToolTipService.ToolTip="Click to import goods!" Command="{Binding ApplicationCommands.ImportFGCommand}">
+                    <Button ToolTipService.ToolTip="Click to import goods" Command="{Binding ApplicationCommands.ImportFGCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/img_btn_import.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
                             </Image>
                         </StackPanel>
                     </Button>
                     <Separator />
-                    <Button ToolTipService.ToolTip="Click to export goods!" Command="{Binding ApplicationCommands.ExportFGCommand}">
+                    <Button ToolTipService.ToolTip="Click to export goods" Command="{Binding ApplicationCommands.ExportFGCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/img_btn_export.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
                             </Image>
                         </StackPanel>
-                    </Button>
+                    </Button>                    
                 </ToolBar>
 
                 <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,10,20,10">
@@ -96,14 +131,28 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
-                            VerticalAlignment="Center" CornerRadius="5">
-                        <StackPanel Margin="5" Orientation="Horizontal">
-                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
-                                   Source="/Resources/btn_find.png" Height="18"/>
-                            <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
-                                     HorizontalAlignment="Stretch" />
-                        </StackPanel>
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2" VerticalAlignment="Center" CornerRadius="5">
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" RenderOptions.BitmapScalingMode="HighQuality" Source="/Resources/btn_find.png" Height="18"/>
+                            <TextBox Grid.Column="1" Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
+                                     HorizontalAlignment="Stretch" x:Name="FilterTextBox"/>
+                            <TextBlock Grid.Column="1" IsHitTestVisible="False" FontSize="10" Text="Project/Serial No" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="DarkGray">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=FilterTextBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </Border>
                 </Grid>
             </Grid>

@@ -168,8 +168,8 @@
     <Compile Include="ViewModels\GRDetailsTransactionViewModel.cs" />
     <Compile Include="ViewModels\GRDetailsViewModel.cs" />
     <Compile Include="ViewModels\GRMainViewModel.cs" />
-    <Compile Include="Views\BindingProxy.cs" />
-    <Compile Include="Views\ComparisonValue.cs" />
+    <Compile Include="Validations\BindingProxy.cs" />
+    <Compile Include="Validations\ComparisonValue.cs" />
     <Compile Include="Views\EunKGDetailsView.xaml.cs">
       <DependentUpon>EunKGDetailsView.xaml</DependentUpon>
     </Compile>
@@ -188,9 +188,9 @@
     <Compile Include="Views\GRNavigationItemView.xaml.cs">
       <DependentUpon>GRNavigationItemView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ValidationRules.cs" />
+    <Compile Include="Validations\ValidationRules.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
@@ -199,6 +199,10 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\JC-WITS_GR.btw" />
+    <None Include="Resources\JC-WITS_GR.prn" />
+    <None Include="Resources\JC-WITS_KG.btw" />
+    <None Include="Resources\JC-WITS_KG.prn" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

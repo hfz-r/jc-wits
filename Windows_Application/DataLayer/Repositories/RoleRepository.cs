@@ -18,6 +18,16 @@ namespace DataLayer.Repositories
             }
         }
 
+        public IEnumerable<Role> GetRoleWithAssociated(long ID)
+        {
+            using (var context = new InventoryContext())
+            {
+                return context.Roles.Include(u => u.Users)
+                                    .Include(m => m.ModuleAccessCtrlTransactions.Select(mod => mod.ModuleAccessCtrl))
+                                    .Where(r => r.ID == ID).ToList();
+            }
+        }
+
         public Role GetRole(long ID)
         {
             using (var context = new InventoryContext())
@@ -54,6 +64,9 @@ namespace DataLayer.Repositories
         {
             using (var context = new InventoryContext())
             {
+                var moduleAccessCtrlTxn = context.ModuleAccessCtrlTransactions.Where(id => id.RoleID == ID).Include(m => m.ModuleAccessCtrl);
+                context.ModuleAccessCtrlTransactions.RemoveRange(moduleAccessCtrlTxn);
+
                 var roles = context.Roles.Where(id => id.ID == ID).Include(u => u.Users);
                 context.Roles.RemoveRange(roles);
 

@@ -11,8 +11,8 @@ namespace ESD.JC_Main.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string roleMgmtModuleName = "RoleMgmtModule";
-        private static Uri mainViewUri = new Uri("RoleMainView", UriKind.Relative);
+        private const string userMgmtModuleName = "UserMgmtModule";
+        private static Uri mainViewUri = new Uri("UserMainView", UriKind.Relative);
 
         IModuleManager ModuleManager;
         IRegionManager RegionManager;
@@ -26,17 +26,11 @@ namespace ESD.JC_Main.Views
 
             this.ModuleManager.LoadModuleCompleted += (s, e) =>
             {
-                if (e.ModuleInfo.ModuleName == roleMgmtModuleName)
+                if (e.ModuleInfo.ModuleName == userMgmtModuleName)
                 {
                     this.RegionManager.RequestNavigate(RegionNames.MainContentRegion, mainViewUri);
                 }
             };
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-            Application.Current.Shutdown();
         }
     }
 }

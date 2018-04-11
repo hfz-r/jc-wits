@@ -1,6 +1,7 @@
 ﻿using DataLayer.Repositories;
 using ESD.JC_RoleMgmt.Services;
 using ESD.JC_RoleMgmt.Views;
+using ESD.JC_RoleMgmt.Controllers;
 using ESD.JC_Infrastructure;
 using Prism.Modularity;
 using Microsoft.Practices.Unity;
@@ -13,6 +14,8 @@ namespace ESD.JC_RoleMgmt
     {
         private readonly IUnityContainer container;
         private readonly IRegionManager regionManager;
+
+        private RoleTabRegionController TabRegionController;
 
         public RoleMgmtModule(IUnityContainer container, IRegionManager regionManager)
         {
@@ -30,9 +33,13 @@ namespace ESD.JC_RoleMgmt
             this.container.RegisterType<IModuleAccessCtrlTransactionServices, ModuleAccessCtrlTransactionServices>();
 
             this.regionManager.RegisterViewWithRegion(RegionNames.MainNavigationRegion, () => this.container.Resolve<RoleMgmtNavigationItemView>());
-            this.regionManager.RegisterViewWithRegion(RegionNames.MainContentRegion, () => this.container.Resolve<RoleMainView>());
+            //this.regionManager.RegisterViewWithRegion(RegionNames.MainContentRegion, () => this.container.Resolve<RoleMainView>());
+            this.container.RegisterTypeForNavigation<RoleMainView>();
             this.container.RegisterTypeForNavigation<RoleDetailsView>();
             this.container.RegisterTypeForNavigation<RoleOperationView>();
+
+            //regionManager.RegisterViewWithRegion(RegionNames.TabRegionRole, () => this.container.Resolve<RoleDetailsUsersView>());
+            this.TabRegionController = this.container.Resolve<RoleTabRegionController>();
         }
     }
 }

@@ -15,20 +15,19 @@ namespace ESD.JC_FinishGoods.ViewModels
             get { return "Transaction Summary"; }
         }
 
-        private ObservableCollection<AHUTransaction> _summryCollection;
-        public ObservableCollection<AHUTransaction> summryCollection
+        private AHU _summryObj;
+        public AHU summryObj
         {
-            get { return _summryCollection; }
+            get { return _summryObj; }
             set
             {
-                SetProperty(ref _summryCollection, value);
-                if (summryCollection.Count() > 0)
+                SetProperty(ref _summryObj, value);
+                if (_summryObj != null)
                 {
-                    var ahuObj = summryCollection.Select(x => x.AHU).FirstOrDefault();
-                    RemainingSect = ahuObj.Section.GetValueOrDefault() - ahuObj.SectionReceived.GetValueOrDefault();
+                    RemainingSect = _summryObj.Section.GetValueOrDefault() - _summryObj.SectionReceived.GetValueOrDefault();
 
-                    CountCountries = summryCollection.Where(c => c.CountryID.HasValue).Count();
-                    CountLocations = summryCollection.Where(l => l.LocationID.HasValue).Count();
+                    CountCountries = _summryObj.AHUTransactions.Where(c => c.CountryID.HasValue).Count();
+                    CountLocations = _summryObj.AHUTransactions.Where(l => l.LocationID.HasValue).Count();
                 }
 
                 RaisePropertyChanged("RemainingSect");

@@ -96,3 +96,101 @@ C:\WITS\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.Proper
 C:\WITS\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.csproj.GenerateResource.Cache
 C:\WITS\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.dll
 C:\WITS\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_ReasonMgmt.dll.config
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_ReasonMgmt.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_ReasonMgmt.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\DataLayer.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\EntityFramework.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_Infrastructure.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.Configuration.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.RegistrationByConvention.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.Unity.Wpf.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.Wpf.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\DataLayer.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_Infrastructure.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\EntityFramework.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.Configuration.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.RegistrationByConvention.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.Unity.Wpf.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.Wpf.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\de\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\en\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\es\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\it\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ru\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.csprojResolveAssemblyReference.cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\Views\ReasonMainView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\Views\ReasonMgmtNavigationItemView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\Views\ReasonMainView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\Views\ReasonMgmtNavigationItemView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt_MarkupCompile.cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.g.resources
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.Properties.Resources.resources
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.csproj.GenerateResource.Cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_ReasonMgmt.dll.config
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_ReasonMgmt.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_ReasonMgmt.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\DataLayer.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\EntityFramework.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_Infrastructure.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.Configuration.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.RegistrationByConvention.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.Unity.Wpf.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.Wpf.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\DataLayer.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_Infrastructure.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\EntityFramework.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.Configuration.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Microsoft.Practices.Unity.RegistrationByConvention.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.Unity.Wpf.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\Prism.Wpf.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\de\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\en\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\es\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\it\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ru\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.csprojResolveAssemblyReference.cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\Views\ReasonMainView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\Views\ReasonMgmtNavigationItemView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\Views\ReasonMainView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\Views\ReasonMgmtNavigationItemView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt_MarkupCompile.cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.g.resources
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.Properties.Resources.resources
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.csproj.GenerateResource.Cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\ESD.JC_ReasonMgmt.pdb

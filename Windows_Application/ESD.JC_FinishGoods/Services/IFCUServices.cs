@@ -9,5 +9,6 @@ namespace ESD.JC_FinishGoods.Services
         FCU GetFCU(long ID);
         FCU GetFCUBySerialNo(string serial_no);
         bool Save(List<FCU> fcus, string state = "");
+        bool Delete(long ID);
     }
 }

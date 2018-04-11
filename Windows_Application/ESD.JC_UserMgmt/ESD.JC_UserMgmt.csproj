@@ -97,6 +97,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\UserTabRegionController.cs" />
+    <Compile Include="Converters\DataGridAccessConverter.cs" />
+    <Compile Include="ModelsExt\RoleExt.cs" />
+    <Compile Include="ModelsExt\UserExt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -111,11 +115,27 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Services\IUserServices.cs" />
+    <Compile Include="Services\SequencingService.cs" />
     <Compile Include="Services\UserServices.cs" />
     <Compile Include="UserMgmtModule.cs" />
+    <Compile Include="Utilities\ISequencedObject.cs" />
+    <Compile Include="Utilities\ObservableObject.cs" />
+    <Compile Include="Validations\BindingProxy.cs" />
+    <Compile Include="Validations\ComparisonValue.cs" />
+    <Compile Include="Validations\ValidationRules.cs" />
+    <Compile Include="ViewModels\UserDetailsGITrnxViewModel.cs" />
+    <Compile Include="ViewModels\UserDetailsGRTrnxViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
-    <Compile Include="ViewModels\UserMainViewViewModel.cs" />
+    <Compile Include="ViewModels\UserMainViewModel.cs" />
     <Compile Include="ViewModels\UserOperationViewModel.cs" />
+    <Compile Include="Views\DataGridRowReadOnlyBehavior.cs" />
+    <Compile Include="Views\ReadOnlyService.cs" />
+    <Compile Include="Views\UserDetailsGITrnxView.xaml.cs">
+      <DependentUpon>UserDetailsGITrnxView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserDetailsGRTrnxView.xaml.cs">
+      <DependentUpon>UserDetailsGRTrnxView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\UserDetailsView.xaml.cs">
       <DependentUpon>UserDetailsView.xaml</DependentUpon>
     </Compile>
@@ -143,6 +163,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\UserDetailsGITrnxView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserDetailsGRTrnxView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\UserDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -173,10 +201,6 @@
       <Project>{AAA5321E-3854-4E6D-9A83-B1A572A3FA96}</Project>
       <Name>ESD.JC_RoleMgmt</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Avatars\MC900433938.PNG" />
-    <Resource Include="Avatars\MC900434899.PNG" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

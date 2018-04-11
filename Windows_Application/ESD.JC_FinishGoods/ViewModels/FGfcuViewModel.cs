@@ -47,14 +47,14 @@ namespace ESD.JC_FinishGoods.ViewModels
             set { SetProperty(ref _FCU, value); }
         }
 
-        private ListCollectionView _okColumnFilterList;
-        public ListCollectionView OKColumnFilterList
+        private ListCollectionView _listBoxFcuStatus;
+        public ListCollectionView ListBoxFcuStatus
         {
-            get { return _okColumnFilterList; }
+            get { return _listBoxFcuStatus; }
             set
             {
-                SetProperty(ref _okColumnFilterList, value);
-                RaisePropertyChanged("OKColumnFilterList");
+                SetProperty(ref _listBoxFcuStatus, value);
+                RaisePropertyChanged("ListBoxFcuStatus");
             }
         }
 
@@ -124,6 +124,13 @@ namespace ESD.JC_FinishGoods.ViewModels
             set { SetProperty(ref _AuthenticatedUser, value); }
         }
 
+        private DateTime _currDateTime;
+        public DateTime currDateTime
+        {
+            get { return _currDateTime; }
+            set { SetProperty(ref _currDateTime, value); }
+        }
+
         public bool? IsImportBtnEnabled { get; private set; }
 
         #endregion Properties
@@ -139,10 +146,12 @@ namespace ESD.JC_FinishGoods.ViewModels
 
         public ObservableCollection<FCU> fcuCollection { get; private set; }
         public ObservableCollection<FCU> tempCollection { get; private set; }
+        public ObservableCollection<CheckedListItem<FCUStatusCategory>> FcuStatusFilter { get; private set; }
 
         public DelegateCommand ImportFGCommand;
         public DelegateCommand ExportFGCommand;
         public DelegateCommand PrintLblCommand;
+        public DelegateCommand DeleteFGCommand;
         public DelegateCommand OKCommand;
         public DelegateCommand XOKCommand;
 
@@ -160,6 +169,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             this.eventAggregator.GetEvent<FilterTextBoxEvent>().Subscribe(InitTextBoxSearch);
             this.eventAggregator.GetEvent<FCU_ItemMessageEvent>().Subscribe(ConsumeItemMessage);
 
+            IsEnableAutoRefresh = true;
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             OpenFCUDetailsCommand = new DelegateCommand<FCU>(OpenFCUDetails);
             _IsSelected = new DelegateCommand<object>(CheckBoxIsSelected);
@@ -172,12 +182,15 @@ namespace ESD.JC_FinishGoods.ViewModels
                 SetIsSelectedProperty(false);
             });
 
-            ImportFGCommand = new DelegateCommand(Import);
-            ExportFGCommand = new DelegateCommand(Export);
+            ImportFGCommand = new DelegateCommand(Import, CanImport);
+            ExportFGCommand = new DelegateCommand(Export, CanExport);
             PrintLblCommand = new DelegateCommand(PrintLabel, CanPrint);
+            DeleteFGCommand = new DelegateCommand(Delete, CanDelete);
             OKCommand = new DelegateCommand(OKImport);
             XOKCommand = new DelegateCommand(OnLoaded);
         }
+
+        #region Commands
 
         public DelegateCommand OnLoadedCommand { get; private set; }
         public ICommand OpenFCUDetailsCommand { get; private set; }
@@ -194,11 +207,10 @@ namespace ESD.JC_FinishGoods.ViewModels
             get { return _unCheckedAllCommand; }
         }
 
+        #endregion
+
         private void OnLoaded()
         {
-            IsImportBtnEnabled = null;
-            this.eventAggregator.GetEvent<ObjectEvent>().Publish(IsImportBtnEnabled);
-
             tempCollection = new ObservableCollection<FCU>();
             fcuCollection = new ObservableCollection<FCU>();
             foreach (var obj in fcuServices.GetAll(false))
@@ -213,67 +225,76 @@ namespace ESD.JC_FinishGoods.ViewModels
                         obj.ShipStatus = null;
                 }
 
+                obj.ShipStatus2 = obj.ShipStatus;
+                obj.Qty2 = obj.Qty;
+                obj.QtyReceived2 = obj.QtyReceived;
+
                 obj.IsChecked = false;
                 fcuCollection.Add(obj);
             }
 
-            BindComboBox(fcuCollection);
+            IsImportBtnEnabled = null;
+            ImportFGCommand.RaiseCanExecuteChanged();
+            ExportFGCommand.RaiseCanExecuteChanged();
+            this.eventAggregator.GetEvent<ObjectEvent>().Publish(IsImportBtnEnabled);
+
+            BindListBox();
 
             FCU = new ListCollectionView(fcuCollection);
-            FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
+            FCU.SortDescriptions.Add(new SortDescription("CreatedOn", ListSortDirection.Descending));
+            FCU.SortDescriptions.Add(new SortDescription("ID", ListSortDirection.Ascending));
 
             CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
         }
 
-        private void BindComboBox(ObservableCollection<FCU> fcuCollection)
+        private void BindListBox()
         {
-            var ComboList = new List<FCUFilterComboItem>();
-            ComboList.Add(new FCUFilterComboItem
+            FcuStatusFilter = new ObservableCollection<CheckedListItem<FCUStatusCategory>>();
+            foreach (var obj in fcuCollection.GroupBy(ok => ok.ShipStatus).Select(x => new { Key = x.Key }))
             {
-                BoolShipStatus = null,
-                TexShipStatus = " - All",
-                GroupedList = null
-            });
-
-            foreach (var obj in fcuCollection.GroupBy(ss => ss.ShipStatus).Select(x => new { Key = x.Key, List = x.ToList() }))
-            {
-                ComboList.Add(new FCUFilterComboItem
+                FcuStatusFilter.Add(new CheckedListItem<FCUStatusCategory>
                 {
-                    BoolShipStatus = obj.Key,
-                    TexShipStatus = obj.Key == null ? " - Partial" : (obj.Key.ToString() == "False") ? " - NOT OK" : " - OK",
-                    GroupedList = obj.List
+                    IsChecked = true,
+                    Item = new FCUStatusCategory
+                    {
+                        BoolFcuStatus = obj.Key,
+                        TextFcuStatus = obj.Key == null ? " - Partial" : (obj.Key.ToString() == "False") ? " - NOT OK" : " - OK"
+                    }
                 });
             }
 
-            OKColumnFilterList = new ListCollectionView(ComboList);
-            //OKColumnFilterList.GroupDescriptions.Add(new PropertyGroupDescription("BoolShipStatus"));
-            OKColumnFilterList.CurrentChanged += OKColumnFilterList_CurrentChanged;
+            ListBoxFcuStatus = new ListCollectionView(FcuStatusFilter);
         }
 
-        private void OKColumnFilterList_CurrentChanged(object sender, EventArgs e)
+        private bool Filter(object item)
         {
-            var currItem = ((ListCollectionView)sender).CurrentItem as FCUFilterComboItem;
-            if (currItem != null)
+            var fcu = (FCU)item;
+            if (fcu.ID == 1)
             {
-                var FilteredCollection = new ObservableCollection<FCU>();
-                if (currItem.TexShipStatus.Contains("All"))
+                if (string.IsNullOrEmpty(FilterTextBox))
+                    return true;
+
+                return (fcu.Project.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
+                        fcu.SerialNo.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
+            }
+            else
+            {
+                int count = FcuStatusFilter.Where(chk => chk.IsChecked).Count(ok => ok.Item.BoolFcuStatus == fcu.ShipStatus);
+
+                if (string.IsNullOrEmpty(FilterTextBox) && count > 0)
                 {
-                    foreach (var fcu in fcuCollection)
-                    {
-                        FilteredCollection.Add(fcu);
-                    }
+                    return true;
                 }
                 else
                 {
-                    foreach (var fcu in fcuCollection.Where(ok => ok.ShipStatus == currItem.BoolShipStatus))
+                    if (count == 0)
                     {
-                        FilteredCollection.Add(fcu);
+                        return false;
                     }
-                }
-                FCU = new ListCollectionView(FilteredCollection);
-                FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
-                CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
+                    return (fcu.Project.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
+                            fcu.SerialNo.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
+                }
             }
         }
 
@@ -301,6 +322,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             RaisePropertyChanged("FCU");
 
             PrintLblCommand.RaiseCanExecuteChanged();
+            DeleteFGCommand.RaiseCanExecuteChanged();
         }
 
         private void SetIsSelectedProperty(bool isSelected)
@@ -327,6 +349,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             }
 
             PrintLblCommand.RaiseCanExecuteChanged();
+            DeleteFGCommand.RaiseCanExecuteChanged();
 
             FCU = new ListCollectionView(tempObj);
             FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
@@ -334,17 +357,27 @@ namespace ESD.JC_FinishGoods.ViewModels
             CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
         }
 
+        private bool CanImport()
+        {
+            if (IsImportBtnEnabled != null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private void Import()
         {
-            var dlg = new OpenFileDialog();
-            dlg.DefaultExt = ".xls|.xlsx";
-            dlg.Filter = "Excel documents (*.xls, *.xlsx, *.xlsm)|*.xls;*.xlsx;*.xlsm";
-
-            tempCollection = new ObservableCollection<FCU>();
-
-            if (dlg.ShowDialog() == true)
+            try
             {
-                try
+                var dlg = new OpenFileDialog();
+                dlg.DefaultExt = ".xls|.xlsx";
+                dlg.Filter = "Excel documents (*.xls, *.xlsx, *.xlsm)|*.xls;*.xlsx;*.xlsm";
+
+                tempCollection = new ObservableCollection<FCU>();
+
+                if (dlg.ShowDialog() == true)
                 {
                     var file = new FileInfo(dlg.FileName);
                     if (!string.IsNullOrEmpty(file.Extension))
@@ -357,10 +390,10 @@ namespace ESD.JC_FinishGoods.ViewModels
                         ReadExcelFile();
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Import Failed.", MessageBoxButton.OK);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
             }
         }
 
@@ -370,6 +403,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             {
                 ISheet sheet = fcuWorkbook.GetSheetAt(1);
                 System.Collections.IEnumerator rows = sheet.GetRowEnumerator();
+                currDateTime = DateTime.Now;
 
                 #region Cells Comparison
                 while (rows.MoveNext())
@@ -389,6 +423,13 @@ namespace ESD.JC_FinishGoods.ViewModels
 
                         switch (i)
                         {
+                            case 0:
+                                if (cell == null)
+                                    continue;
+                                else
+                                    obj.IDSeq = SetCellValue(cell);
+                                break;
+
                             case 1:
                                 if (cell == null)
                                     continue;
@@ -498,7 +539,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                                     obj.CoolingCoil2 = SetCellValue(cell);
                                 break;
 
-                            case 29:
+                            case 28:
                                 if (cell == null)
                                     continue;
                                 if (cell.CellType.ToString() == "Formula")
@@ -520,10 +561,13 @@ namespace ESD.JC_FinishGoods.ViewModels
                 if (tempCollection.Count() > 0)
                 {
                     IsImportBtnEnabled = true;
+                    ImportFGCommand.RaiseCanExecuteChanged();
+                    ExportFGCommand.RaiseCanExecuteChanged();
                     this.eventAggregator.GetEvent<ObjectEvent>().Publish(IsImportBtnEnabled);
 
                     FCU = new ListCollectionView(tempCollection);
-                    FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
+                    FCU.SortDescriptions.Clear();
+                    FCU.SortDescriptions.Add(new SortDescription("IDSeq", ListSortDirection.Ascending));
 
                     CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
                 }
@@ -552,6 +596,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             {
                 temp.Add(new FCU
                 {
+                    ID = Convert.ToInt64(rec.IDSeq),
                     Project = rec.Project,
                     UnitTag = rec.UnitTag,
                     PartNo = rec.PartNo,
@@ -560,17 +605,30 @@ namespace ESD.JC_FinishGoods.ViewModels
                     FanMotor1 = rec.FanMotor1,
                     FanMotor2 = rec.FanMotor2,
                     Qty = rec.Qty,
+                    Qty2 = rec.Qty,
                     CoolingCoil = rec.CoolingCoil1 + "R" + "/" + rec.CoolingCoil2 + "H",
                     SalesOrder = rec.SalesOrder,
                     Item = rec.Item,
                     SerialNo = rec.SerialNo,
-                    CreatedOn = DateTime.Now,
+                    CreatedOn = currDateTime,
                     CreatedBy = AuthenticatedUser,
-                    ModifiedOn = DateTime.Now,
+                    ModifiedOn = currDateTime,
                     ModifiedBy = AuthenticatedUser,
-                    IsChecked = true
+                    IsChecked = true,
+                    ShipStatus = false,
+                    ShipStatus2 = false
                 });
             }
+        }
+
+        private bool CanExport()
+        {
+            if (IsImportBtnEnabled != null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void Export()
@@ -608,6 +666,8 @@ namespace ESD.JC_FinishGoods.ViewModels
             storage.ColumnsHeaders.Add("Item");
             storage.ColumnsHeaders.Add("Serial No.");
             storage.ColumnsHeaders.Add("Quantity Received");
+            storage.ColumnsHeaders.Add("Shipped By");
+            storage.ColumnsHeaders.Add("Shipped On");
 
             ObservableCollection<FCUImportCLassModel> importObj = new ObservableCollection<FCUImportCLassModel>();
             foreach (var fcu in fcuCollection)
@@ -621,7 +681,9 @@ namespace ESD.JC_FinishGoods.ViewModels
                     Qty = fcu.Qty,
                     Item = fcu.Item,
                     SerialNo = fcu.SerialNo,
-                    QtyReceived = fcu.QtyReceived.GetValueOrDefault()
+                    QtyReceived = fcu.QtyReceived.GetValueOrDefault(),
+                    ShippedBy = fcu.CreatedBy,
+                    ShippedOn = Convert.ToString(fcu.CreatedOn)
                 });
             }
 
@@ -629,7 +691,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             {
                 storage.InsertRecords(importObj.ToArray());
             }
-            if (MessageBox.Show("File Export Success. Are you want to open the file?", "Notification", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Exported successfully. Open file?", "Notification", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 OpenExportedFile(storage.FileName);
             }
@@ -654,17 +716,25 @@ namespace ESD.JC_FinishGoods.ViewModels
         {
             try
             {
-                if (MessageBox.Show("Are you confirm you want to save this?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                if (tempCollection.All(x => x.IsChecked == false))
                 {
-                    if (Save())
-                        OnLoaded();
-                    else
-                        throw new Exception("Save Failed.");
+                    MessageBox.Show("No changes have been made.");
+                    OnLoaded();
+                }
+                else
+                {
+                    if (MessageBox.Show("Confirm to save this?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    {
+                        if (Save())
+                            OnLoaded();
+                        else
+                            throw new Exception("Save failed.");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Import Failed.", MessageBoxButton.OK);
+                MessageBox.Show(ex.Message, "Import failed.", MessageBoxButton.OK);
             }
         }
 
@@ -725,6 +795,40 @@ namespace ESD.JC_FinishGoods.ViewModels
             obj.ModifiedBy = AuthenticatedUser;
         }
 
+        private bool CanDelete()
+        {
+            if (IsImportBtnEnabled != null)
+            {
+                return false;
+            }
+
+            return (CountChecked == null && CountChecked.Count.Equals(0)) ? false : (CountChecked.Where(x => x == true).Count() > 0);
+        }
+
+        private void Delete()
+        {
+            if (fcuCollection.Any(x => x.IsChecked == true))
+            {
+                if (MessageBox.Show("Confirm to delete?", "Delete", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var listObj = fcuCollection.Where(x => x.IsChecked == true).ToList();
+
+                    try
+                    {
+                        foreach (var item in listObj)
+                        {
+                            fcuServices.Delete(item.ID);
+                        }
+                        OnLoaded();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+        }
+
         private bool CanPrint()
         {
             if (IsImportBtnEnabled != null)
@@ -742,8 +846,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                 if (MessageBox.Show("Confirm to generate the label?", "Print", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     var listObj = fcuCollection.Where(x => x.IsChecked == true).ToList();
-
-                    StringBuilder strErrorPallet = new StringBuilder();
+                    
                     System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
                     pd.PrinterSettings = new PrinterSettings();
                     pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
@@ -780,19 +883,16 @@ namespace ESD.JC_FinishGoods.ViewModels
                             strPallet.Replace("<HeatingCoil>", item.HeatingCoil);
                             strPallet.Replace("<Heater>", item.Heater);
                             strPallet.Replace("<SalesOrder>", item.SalesOrder);
-                            strPallet.Replace("<Qty>", item.Qty.ToString());
+                            strPallet.Replace("<Qty>", item.Qty.ToString("G29"));
                             strPallet.Replace("<Item>", item.Item.ToString());
                             strPallet.Replace("<SerialNo>", item.SerialNo);
 
-                            if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
+                            for (int i = 0; i < Properties.Settings.Default.PrintCount; i++)
                             {
-                                strErrorPallet.Append(item.SerialNo + ", ");
+                                if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
+                                {
+                                }
                             }
-                        }
-
-                        if (strErrorPallet.Length > 0)
-                        {
-                            strErrorPallet.Remove(strErrorPallet.Length - 2, 2);
                         }
 
                         OnLoaded();
@@ -814,18 +914,6 @@ namespace ESD.JC_FinishGoods.ViewModels
             this.regionManager.RequestNavigate(RegionNames.MainContentRegion, new Uri(fcuDetailsViewName + parameters, UriKind.Relative));
         }
 
-        private bool Filter(object item)
-        {
-            if (string.IsNullOrEmpty(FilterTextBox))
-                return true;
-
-            var fcu = (FCU)item;
-
-            return (fcu.Project.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
-                    fcu.SerialNo.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
-
-        }
-
         #region Composite Buttons
 
         bool _isActive;
@@ -844,6 +932,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             ImportFGCommand.IsActive = IsActive;
             ExportFGCommand.IsActive = IsActive;
             PrintLblCommand.IsActive = IsActive;
+            DeleteFGCommand.IsActive = IsActive;
             OKCommand.IsActive = IsActive;
             XOKCommand.IsActive = IsActive;
 
@@ -878,10 +967,48 @@ namespace ESD.JC_FinishGoods.ViewModels
                 if (msg.State == "Completed")
                 {
                     #region refresh grid
-                    FCU = new ListCollectionView(fcuCollection);
-                    FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
 
-                    CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
+                    if (fcuCollection != null && fcuCollection.Count > 0)
+                    {
+                        foreach (var obj in fcuCollection)
+                        {
+                            var fcu = fcuServices.GetFCU(obj.ID);
+                            obj.ShipStatus = fcu.ShipStatus;
+                            obj.Qty = fcu.Qty;
+                            obj.QtyReceived = fcu.QtyReceived;
+
+                            if (obj.QtyReceived == null)
+                                obj.ShipStatus = false;
+                            else
+                            {
+                                if (obj.QtyReceived == obj.Qty)
+                                    obj.ShipStatus = true;
+                                else if (obj.QtyReceived < obj.Qty)
+                                    obj.ShipStatus = null;
+                            }
+
+                            obj.ShipStatus2 = obj.ShipStatus;
+                            obj.Qty2 = obj.Qty;
+                            obj.QtyReceived2 = obj.QtyReceived;
+
+                            if (FcuStatusFilter.All(x => x.Item.BoolFcuStatus != fcu.ShipStatus))
+                            {
+                                FcuStatusFilter.Add(new CheckedListItem<FCUStatusCategory>
+                                {
+                                    IsChecked = true,
+                                    Item = new FCUStatusCategory
+                                    {
+                                        BoolFcuStatus = fcu.ShipStatus,
+                                        TextFcuStatus = fcu.ShipStatus == null ? " - Partial" : (fcu.ShipStatus.ToString() == "False") ? " - NOT OK" : " - OK"
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    if(ListBoxFcuStatus != null)
+                        CollectionViewSource.GetDefaultView(ListBoxFcuStatus).Refresh();
+
                     #endregion refresh grid
 
                     StopTimer();
@@ -908,25 +1035,25 @@ namespace ESD.JC_FinishGoods.ViewModels
         [FieldOrder(4)]
         public string Model { get; set; }
 
-        [FieldOrder(14)]
+        [FieldOrder(16)]
         public string PowerSupply { get; set; }
 
-        [FieldOrder(9)]
+        [FieldOrder(11)]
         public string FanMotor1 { get; set; }
 
-        [FieldOrder(10)]
+        [FieldOrder(12)]
         public string FanMotor2 { get; set; }
 
         [FieldOrder(5)]
         public decimal Qty { get; set; }
 
-        [FieldOrder(11)]
+        [FieldOrder(13)]
         public string CoolingCoil1 { get; set; }
 
-        [FieldOrder(12)]
+        [FieldOrder(14)]
         public string CoolingCoil2 { get; set; }
 
-        [FieldOrder(13)]
+        [FieldOrder(15)]
         public string SalesOrder { get; set; }
 
         [FieldOrder(6)]
@@ -934,15 +1061,23 @@ namespace ESD.JC_FinishGoods.ViewModels
 
         [FieldOrder(7)]
         public string SerialNo { get; set; }
-
+    
         [FieldOrder(8)]
         public decimal QtyReceived { get; set; }
+
+        [FieldOrder(17)]
+        public string IDSeq { get; set; }
+
+        [FieldOrder(9)]
+        public string ShippedBy { get; set; }
+
+        [FieldOrder(10)]
+        public string ShippedOn { get; set; }
     }
 
-    public class FCUFilterComboItem
+    public class FCUStatusCategory
     {
-        public bool? BoolShipStatus { get; set; }
-        public string TexShipStatus { get; set; }
-        public List<FCU> GroupedList { get; set; }
+        public bool? BoolFcuStatus { get; set; }
+        public string TextFcuStatus { get; set; }
     }
 }

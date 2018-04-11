@@ -31,10 +31,13 @@ namespace ESD.JC_GoodsReceive.Controllers
         {
             if (GRID == 0) return;
 
-            ObservableCollection<GRTransaction> lst = new ObservableCollection<GRTransaction>();
+            GoodsReceive objSummry = new GoodsReceive();
+            objSummry = grTransServices.GetGRDetails(GRID);
+
+            ObservableCollection<GRTransaction> lstTrnx = new ObservableCollection<GRTransaction>();
             foreach (var obj in grTransServices.GetGRTransactionByGRID(GRID))
             {
-                lst.Add(obj);
+                lstTrnx.Add(obj);
             }
 
             IRegion tabRegion = regionManager.Regions[RegionNames.TabRegionGR];
@@ -56,8 +59,8 @@ namespace ESD.JC_GoodsReceive.Controllers
             GRDetailsTransactionViewModel trnxVM = trnxView.DataContext as GRDetailsTransactionViewModel;
             if (summryVM != null && trnxVM != null)
             {
-                summryVM.summryCollection = lst;
-                trnxVM.trnxCollection = lst;
+                summryVM.summryObj = objSummry;
+                trnxVM.trnxCollection = lstTrnx;
             }
         }
     }

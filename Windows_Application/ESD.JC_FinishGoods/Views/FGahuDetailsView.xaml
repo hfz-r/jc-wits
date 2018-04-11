@@ -187,7 +187,7 @@
 
                 <TextBlock Text="Last Modified Date: " FontWeight="Bold"
                            Grid.Row="22" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
-                <TextBlock Text="{Binding ModifiedOn, StringFormat=g}"                           
+                <TextBlock Text="{Binding ModifiedOn, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}"                           
                            Grid.Row="22" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOn"/>
 
                 <TextBlock Text="Last Modified By: " FontWeight="Bold"

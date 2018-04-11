@@ -4,7 +4,6 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             mc:Ignorable="d"
-            xmlns:ToggleSwitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch"
             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
             xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
             xmlns:prism="http://prismlibrary.com/"
@@ -17,63 +16,15 @@
         <infrastructure:BrushColorConverter x:Key="BooleanToBrushConverter"/>
         <infrastructure:OKcolumnColorConverter x:Key="ColumnColorConverter"/>
         <infrastructure:TooltipsConverter x:Key="TooltipsToString"/>
-        <infrastructure:PanelDimensionsConverter x:Key="PanelDimensionsConverter"/>
-        <infrastructure:PanelMarginConverter x:Key="PanelMarginConverter"/>
         <infrastructure:ObservableCommand x:Key="OpenGRDetailsCommand" Value="{Binding OpenGRDetailsCommand}"/>
         <conv:CollectionToBooleanConverter x:Key="CollectionToBooleanConverter"/>
-        
-        <Storyboard x:Key="expandStoryBoard" 
-                    TargetProperty="RenderTransform.(TranslateTransform.X)"
-                    AccelerationRatio=".4"
-                    DecelerationRatio=".4">
-            <DoubleAnimation Storyboard.TargetName="sidePanel" Duration="0:0:0.6" From="0">
-                <DoubleAnimation.To>
-                    <MultiBinding Converter="{StaticResource PanelDimensionsConverter}">
-                        <Binding Mode="OneWay" Source="{x:Reference propertiesPanel}" Path="Width" />
-                        <Binding Mode="OneWay" Source="{x:Reference tabButton}" Path="Width" />
-                    </MultiBinding>
-                </DoubleAnimation.To>
-            </DoubleAnimation>
-        </Storyboard>
-        <Storyboard x:Key="collapseStoryBoard" 
-                    TargetProperty="RenderTransform.(TranslateTransform.X)"
-                    AccelerationRatio=".4"
-                    DecelerationRatio=".4">
-            <DoubleAnimation Storyboard.TargetName="sidePanel" Duration="0:0:0.6" To="0">
-                <DoubleAnimation.From>
-                    <MultiBinding Converter="{StaticResource PanelDimensionsConverter}">
-                        <Binding Mode="OneWay" Source="{x:Reference propertiesPanel}" Path="Width" />
-                        <Binding Mode="OneWay" Source="{x:Reference tabButton}" Path="Width" />
-                    </MultiBinding>
-                </DoubleAnimation.From>
-            </DoubleAnimation>
-        </Storyboard>
-
-        <Style TargetType="StackPanel" x:Key="FadeOutSP">
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Control.MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard >
-                            <DoubleAnimation Duration="0:0:1" To="1" Storyboard.TargetProperty="Opacity"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="Control.MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard >
-                            <DoubleAnimation Duration="0:0:1" To="0.35" Storyboard.TargetProperty="Opacity"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
 
         <Style TargetType="Button" x:Key="OKColumnFlatButtonStyle">
             <Setter Property="Background">
                 <Setter.Value>
                     <MultiBinding Converter="{StaticResource ColumnColorConverter}" >
-                        <Binding Path="BoolOk" />
-                        <Binding Path="TextOk"/>
+                        <Binding Path="Item.BoolOk" />
+                        <Binding Path="Item.TextOk"/>
                     </MultiBinding>
                 </Setter.Value>
             </Setter>
@@ -116,7 +67,10 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding PurchaseOrder}" FontWeight="Bold" FontSize="13" Margin="5" AutomationProperties.AutomationId="PartNumberDataBlock"/>
+                        <TextBlock Text="PO No:" FontWeight="Bold"
+                           Grid.Row="0" Grid.Column="0" Margin="5,10,5,0" AutomationProperties.AutomationId="POPNoLbl"/>
+                        <TextBlock Text="{Binding PurchaseOrder}"                           
+                           Grid.Row="0" Grid.Column="1" Margin="0,10,0,0" AutomationProperties.AutomationId="PONoData"/>
 
                         <TextBlock Text="SAP No:" FontWeight="Bold"
                            Grid.Row="1" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="SAPNoLbl"/>
@@ -145,7 +99,7 @@
 
                         <TextBlock Text="Qty:" FontWeight="Bold"
                            Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QtyLbl"/>
-                        <TextBlock Text="{Binding Quantity}"                           
+                        <TextBlock Text="{Binding Quantity, StringFormat={}{0:G29}}"                           
                            Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="QtyData"/>
 
                         <TextBlock Text="Bun:" FontWeight="Bold"
@@ -161,9 +115,10 @@
                             <RowDefinition Height="35"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
@@ -177,19 +132,20 @@
 
                         <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Label`s Preview" VerticalAlignment="Center" FontWeight="Bold" TextDecorations="underline" FontFamily="Cambria" FontSize="13"/>
 
-                        <Border Grid.Row="1" Grid.RowSpan="5" Grid.Column="1" Grid.ColumnSpan="3" Margin="-5" BorderThickness="2" BorderBrush="Black"/>
+                        <Border Grid.Row="1" Grid.RowSpan="6" Grid.Column="1" Grid.ColumnSpan="3" Margin="-5" BorderThickness="2" BorderBrush="Black"/>
 
                         <Image Grid.Row="1" Grid.RowSpan="2" Grid.Column="3" Grid.ColumnSpan="1" Source="/Resources/img_qrcode.png" Height="60" Width="60"/>
 
-                        <TextBlock Grid.Row="1" Grid.Column="1"  Text="SAP No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoLbl"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="Legacy No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoLbl"/>
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="EN:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="ENLbl"/>
-                        <TextBlock Grid.Row="4" Grid.Column="1" Text="MS:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSLbl"/>
-                        <Grid Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2">
+                        <TextBlock Grid.Row="1" Grid.Column="1"  Text="PO No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="PONoLbl"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1"  Text="SAP No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoLbl"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="Legacy No:" Margin="0,0,0,10" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoLbl"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="EN:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSLbl"/>
+                        <TextBlock Grid.Row="5" Grid.Column="1" Text="MS:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSLbl"/>
+                        <Grid Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -197,13 +153,14 @@
                             <TextBlock Grid.Column="0" Text="BIN:" FontWeight="Bold" HorizontalAlignment="Right" />
                             <TextBlock Grid.Column="1" Text="{Binding StorageBin}" FontWeight="Bold" HorizontalAlignment="Left" />
                             <TextBlock Grid.Column="3" Text="QTY:" FontWeight="Bold" HorizontalAlignment="Right" />
-                            <TextBlock Grid.Column="4" Text="{Binding Quantity}" FontWeight="Bold" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Column="4" Text="{Binding Quantity, StringFormat={}{0:G29}}" FontWeight="Bold" HorizontalAlignment="Left" />
                             <TextBlock Grid.Column="5" Text="{Binding Eun}" FontWeight="Bold" HorizontalAlignment="Left" />
                         </Grid>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Material}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoData"/>
-                        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Material}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoData"/>
-                        <TextBlock Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding MaterialShortText}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="ENData"/>
-                        <TextBlock Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding MaterialShortText}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSData"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding PurchaseOrder}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="PONoData"/>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Material}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoData"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Material}" Margin="0,0,0,10" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoData"/>
+                        <TextBlock Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding MaterialShortText}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="ENData"/>
+                        <TextBlock Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding MaterialShortText}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSData"/>
                     </Grid>
                 </StackPanel>
             </Grid>
@@ -218,7 +175,7 @@
             <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
         </prism:InteractionRequestTrigger>
     </i:Interaction.Triggers>
-    
+
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -235,21 +192,21 @@
                 </Grid.ColumnDefinitions>
 
                 <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
-                    <Button ToolTipService.ToolTip="OK?" Command="{Binding OKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
+                    <Button ToolTipService.ToolTip="Confirm" Command="{Binding OKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_ok.png" Height="40" Width="40" Margin="4"/>
                         </StackPanel>
                     </Button>
                     <Separator Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}" />
-                    <Button ToolTipService.ToolTip="NOT OK?" Command="{Binding XOKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
+                    <Button ToolTipService.ToolTip="Cancel" Command="{Binding XOKCommand}" Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_xok.png" Height="40" Width="40" Margin="4"/>
                         </StackPanel>
                     </Button>
                     <Separator Visibility="{Binding ImportBtn, Converter={StaticResource ObjectToVisibility}}" />
-                    <Button ToolTipService.ToolTip="Click to print the label!" Command="{Binding PrintLblCommand}">
+                    <Button ToolTipService.ToolTip="Click to print the label" Command="{Binding PrintLblCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
@@ -265,19 +222,54 @@
                             </Image>
                         </StackPanel>
                     </Button>
+                    <Separator/>
+                    <Button ToolTipService.ToolTip="Click to delete selected item" Command="{Binding DeleteFGCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </StackPanel>
+                    </Button>
                     <StackPanel Width="20"/>
-                    <Button ToolTipService.ToolTip="Click to import goods!" Command="{Binding ImportGRCommand}">
+                    <Button ToolTipService.ToolTip="Click to import goods" Command="{Binding ImportGRCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/img_btn_import.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
                             </Image>
                         </StackPanel>
                     </Button>
                     <Separator />
-                    <Button ToolTipService.ToolTip="Click to export goods!" Command="{Binding ExportGRCommand}">
+                    <Button ToolTipService.ToolTip="Click to export goods" Command="{Binding ExportGRCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/img_btn_export.png" Height="40" Width="40" Margin="4">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
                             </Image>
                         </StackPanel>
                     </Button>
@@ -292,14 +284,28 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
-                            VerticalAlignment="Center" CornerRadius="5">
-                        <StackPanel Margin="5" Orientation="Horizontal">
-                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
-                                   Source="/Resources/btn_find.png" Height="18"/>
-                            <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
-                                     HorizontalAlignment="Stretch" />
-                        </StackPanel>
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2" VerticalAlignment="Center" CornerRadius="5">
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" RenderOptions.BitmapScalingMode="HighQuality" Source="/Resources/btn_find.png" Height="18"/>
+                            <TextBox Grid.Column="1" Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
+                                     HorizontalAlignment="Stretch" x:Name="FilterTextBox"/>
+                            <TextBlock Grid.Column="1" IsHitTestVisible="False" FontSize="10" Text="PO No/SAP No/EN" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="DarkGray">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=FilterTextBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </Border>
                 </Grid>
             </Grid>
@@ -307,7 +313,7 @@
 
         <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
 
-        <DataGrid x:Name="dgGrid" Grid.Row="1" Margin="0,10,0,0" ItemsSource="{Binding Path=GoodReceives}" CurrentCell="{Binding CellInfo, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+        <DataGrid x:Name="dgGrid" Grid.Row="1" Margin="0,10,0,0" ItemsSource="{Binding Path=GoodReceives, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CurrentCell="{Binding CellInfo, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                 AutomationProperties.AutomationId="GRGrid" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="Auto">
@@ -341,7 +347,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Purchase Order" Width="Auto">
+                <DataGridTemplateColumn Header="Purchase Order" SortMemberPath="PurchaseOrder" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch">
@@ -365,19 +371,19 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Vendor" Width="Auto" Binding="{Binding Vendor}" CanUserSort="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Material" Width="Auto" Binding="{Binding Material}" CanUserSort="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Material Short Text" Width="*" Binding="{Binding MaterialShortText}" CanUserSort="False" Foreground="Black">
+                <DataGridTextColumn Header="Vendor" Width="Auto" Binding="{Binding Vendor}" Foreground="Black"/>
+                <DataGridTextColumn Header="Material" Width="Auto" Binding="{Binding Material}" Foreground="Black"/>
+                <DataGridTextColumn Header="Material Short Text" Width="*" Binding="{Binding MaterialShortText}" Foreground="Black">
                     <DataGridTextColumn.ElementStyle>
                         <Style>
                             <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="OK" Width="Auto" Binding="{Binding Ok}" Foreground="Transparent">
+                <DataGridTextColumn Width="Auto" Binding="{Binding Ok2, StringFormat={}{0:G29}}" Foreground="Transparent">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Background" Value="{Binding Ok, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}"/>
+                            <Setter Property="Background" Value="{Binding Ok2, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                     <DataGridTextColumn.CellStyle>
@@ -385,85 +391,74 @@
                             <Setter Property="ToolTip">
                                 <Setter.Value>
                                     <MultiBinding Converter="{StaticResource TooltipsToString}" >
-                                        <Binding Path="QtyReceived" />
-                                        <Binding Path="Quantity"/>
+                                        <Binding Path="QtyReceived2" />
+                                        <Binding Path="Quantity2"/>
                                     </MultiBinding>
                                 </Setter.Value>
                             </Setter>
                         </Style>
                     </DataGridTextColumn.CellStyle>
+                    <DataGridTextColumn.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Ok" />
+                            <Button Name="btnOkFilter" Margin="8,0,0,0" Click="btnOkFilter_Click">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image RenderOptions.BitmapScalingMode="HighQuality" Source="/Resources/filter.png" 
+                                               Height="10" Width="10" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </StackPanel>
+                    </DataGridTextColumn.Header>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Quantity" Width="Auto" Binding="{Binding Quantity}" CanUserSort="False" Foreground="Black"/>
-                <DataGridTextColumn Header="Eun" Width="Auto" Binding="{Binding Eun}" CanUserSort="False" Foreground="Black"/>
-                <DataGridTextColumn Header="MvmtType" Width="Auto" Binding="{Binding MvmtType}" CanUserSort="False" Foreground="Black"/>
-                <DataGridTextColumn Header="Storage Loc" Width="Auto" Binding="{Binding StorageLoc}" CanUserSort="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Plant" Width="Auto" Binding="{Binding Plant}" CanUserSort="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Storage Bin" Width="Auto" Binding="{Binding StorageBin}" CanUserSort="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Document Date" Width="Auto" Binding="{Binding DocumentDate, StringFormat=g}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Quantity" Width="Auto" Binding="{Binding Quantity, StringFormat={}{0:G29}}" Foreground="Black"/>
+                <DataGridTextColumn Header="Eun" Width="Auto" Binding="{Binding Eun}" Foreground="Black"/>
+                <DataGridTextColumn Header="Mvmt Type" Width="Auto" Binding="{Binding MvmtType}" Foreground="Black"/>
+                <DataGridTextColumn Header="Storage Loc" Width="Auto" Binding="{Binding StorageLoc}" Foreground="Black"/>
+                <DataGridTextColumn Header="Plant" Width="Auto" Binding="{Binding Plant}" Foreground="Black"/>
+                <DataGridTextColumn Header="Storage Bin" Width="Auto" Binding="{Binding StorageBin}" Foreground="Black"/>
+                <DataGridTextColumn Header="Document Date" Width="Auto" Binding="{Binding DocumentDate, StringFormat='{}{0:dd/MM/yyyy}'}" Foreground="Black"/>
             </DataGrid.Columns>
         </DataGrid>
 
-        <StackPanel x:Name="sidePanel" Style="{StaticResource FadeOutSP}" Opacity="0.35" Grid.Row="1" HorizontalAlignment="Right"
-                Margin="{Binding ElementName=propertiesPanel, Path=Width, Converter={StaticResource PanelMarginConverter}}">
-            <StackPanel.RenderTransform>
-                <TranslateTransform />
-            </StackPanel.RenderTransform>
-            <StackPanel Orientation="Horizontal">
-                <ctrl:SidePanelTab x:Name="tabButton" VerticalAlignment="Top" Margin="0,20,0,0" MouseDown="StackPanel_MouseDown" />
-                <StackPanel Orientation="Vertical" Background="LightGray" MouseDown="StackPanel_MouseDown">
-                    <Grid x:Name="propertiesPanel" Width="250" Height="Auto">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="40"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Datagrid Options" Grid.ColumnSpan="2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,10"/>
-                        <TextBlock Text="Auto-refresh grid:" Grid.Row="1" Grid.Column="0" Padding="10,10" />
-                        <ToggleSwitch:HorizontalToggleSwitch 
-                                Grid.Row="1" Grid.Column="1" 
-                                BorderBrush="#FF1F1F1F"
-                                Width="80" 
-                                UncheckedBackground="#FF333430" 
-                                UncheckedForeground="#FF999999" 
-                                ThumbSize="40" 
-                                IsChecked="{Binding IsEnableAutoRefresh, Mode=TwoWay}" 
-                                HorizontalAlignment="Left">
-                            <ToggleSwitch:HorizontalToggleSwitch.CheckedBackground>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#FF3EB3EC"/>
-                                    <GradientStop Color="#FF349BE6" Offset="1"/>
-                                </LinearGradientBrush>
-                            </ToggleSwitch:HorizontalToggleSwitch.CheckedBackground>
-                            <ToggleSwitch:HorizontalToggleSwitch.ThumbBrush>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#FF4D4E48"/>
-                                    <GradientStop Color="#FF333430" Offset="1"/>
-                                    <GradientStop Color="#FF333330" Offset="0.021"/>
-                                </LinearGradientBrush>
-                            </ToggleSwitch:HorizontalToggleSwitch.ThumbBrush>
-                        </ToggleSwitch:HorizontalToggleSwitch>
-                        <TextBlock Text="(OK) column filter: " Grid.Row="2" Grid.Column="0" Padding="10,10" />
-                        <ComboBox Grid.Row="2" Grid.Column="1" Padding="10,10" Margin="0,5,10,5"
-                                  ItemsSource="{Binding OKColumnFilterList}"
-                                  AutomationProperties.AutomationId="OKColumnFilterData">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Content="{Binding BoolOk}" Style="{StaticResource OKColumnFlatButtonStyle}"/>
-                                        <TextBlock Text="{Binding TextOk}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </Grid>
+        <Popup Name="okPopupSelection" Placement="Bottom" PlacementTarget="{Binding ElementName=btnOkFilter}" StaysOpen="False" Width="200">
+            <Border Background="LightGray" BorderBrush="Gray" BorderThickness="1,1,1,1">
+                <StackPanel Margin="5,5,5,15">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                        <Button Margin="0,0,0,0" Name="btnSelectAll" Click="btnSelectAll_Click">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <TextBlock Text="Select All" Foreground="Blue" Cursor="Hand" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                        <Button Margin="10,0,0,0" Name="btnUnselectAll" Click="btnUnselectAll_Click">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <TextBlock Text="Select None" Foreground="Blue" Cursor="Hand" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
+
+                    <ListBox ItemsSource="{Binding ListBoxOk}" BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" 
+                                              Checked="ApplyFilters" 
+                                              Unchecked="ApplyFilters" />
+                                    <Button Content="{Binding Item.BoolOk}" Style="{StaticResource OKColumnFlatButtonStyle}"/>
+                                    <TextBlock Text="{Binding Item.TextOk}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </StackPanel>
-            </StackPanel>
-        </StackPanel>
+            </Border>
+        </Popup>
 
         <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="15" ShowsPreview="True" />
         <ContentControl x:Name="Preview" Content="{Binding GoodReceives.CurrentItem}"
@@ -473,7 +468,7 @@
                         Visibility="{Binding GoodReceives.CurrentItem, Converter={StaticResource ObjectToVisibility}}">
         </ContentControl>
 
-        <StackPanel Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2">
+        <StackPanel Visibility="Collapsed" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2">
             <ProgressBar Name="pbStatus" Width="100" Minimum="0" Maximum="100" Value="{Binding ProgressValue}" ToolTip="Grid`s auto-refresh countdown"/>
             <TextBlock Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" FontSize="10" FontWeight="Light" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </StackPanel>

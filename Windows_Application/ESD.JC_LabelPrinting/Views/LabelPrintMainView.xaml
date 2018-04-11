@@ -26,17 +26,22 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0">
-                    <ToolBar Background="Transparent" HorizontalAlignment="Left" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
-                            <Button ToolTipService.ToolTip="Click to paste!" Command="ApplicationCommands.Paste"  Margin="6,0">
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 0" >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
+                            <Button ToolTipService.ToolTip="Click to paste" Command="ApplicationCommands.Paste" >
                                 <StackPanel Orientation="Horizontal">
-                                <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                    <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                        Source="/Resources/btn_paste.png" Height="40" Width="40" Margin="4">
                                     </Image>
                                 </StackPanel>
                             </Button>
                             <Separator />
-                            <Button ToolTipService.ToolTip="Click to reset textbox!" Click="Button_Click" Margin="6,0">
+                            <Button ToolTipService.ToolTip="Click to clear everything" Click="Button_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                            Source="/Resources/btn_reset.png" Height="40" Width="40" Margin="4">
@@ -44,9 +49,9 @@
                                 </StackPanel>
                             </Button>
                             <Separator />
-                            <Button ToolTipService.ToolTip="Click to print the label!" Command="{Binding PrintLblCommand}">
+                            <Button ToolTipService.ToolTip="Click to print label" Command="{Binding PrintLblCommand}">
                                 <StackPanel Orientation="Horizontal">
-                                <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                    <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                        Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
                                         <Image.Style>
                                             <Style TargetType="Image">
@@ -61,6 +66,7 @@
                                 </StackPanel>
                             </Button>
                         </ToolBar>
+                    </Grid>
                 </StackPanel>
 
                 <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
@@ -68,6 +74,7 @@
                 <StackPanel Grid.Row="1" Margin="5,10,5,5">
                     <Grid Name="GridLP" Margin="5,10,5,5">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
                             <RowDefinition Height="30"/>
                             <RowDefinition Height="30"/>
                             <RowDefinition Height="30"/>
@@ -85,7 +92,7 @@
 
                         <Label Grid.Row="0" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Bin:</Label>
                         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding BIN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" 
-                                AutomationProperties.AutomationId="BinData">
+                                AutomationProperties.AutomationId="BinData" MaxLength="5">
                             <ei:Interaction.Behaviors>
                                 <local:TextBoxOnEscapeBehavior />
                             </ei:Interaction.Behaviors>
@@ -93,7 +100,7 @@
 
                         <Label Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">SAP No:</Label>
                         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SAPNO, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" 
-                                AutomationProperties.AutomationId="SAPNoData">
+                                AutomationProperties.AutomationId="SAPNoData" MaxLength="12">
                             <ei:Interaction.Behaviors>
                                 <local:TextBoxOnEscapeBehavior />
                             </ei:Interaction.Behaviors>
@@ -101,7 +108,7 @@
 
                         <Label Grid.Row="2" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Legacy No:</Label>
                         <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding LEGACYNO, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" 
-                                 AutomationProperties.AutomationId="LegacyNoData">
+                                 AutomationProperties.AutomationId="LegacyNoData" MaxLength="12">
                             <ei:Interaction.Behaviors>
                                 <local:TextBoxOnEscapeBehavior />
                             </ei:Interaction.Behaviors>
@@ -109,7 +116,7 @@
                         
                         <Label Grid.Row="3" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">EN:</Label>
                         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding EN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" 
-                                 AutomationProperties.AutomationId="ENData">
+                                 AutomationProperties.AutomationId="ENData" MaxLength="80">
                             <ei:Interaction.Behaviors>
                                 <local:TextBoxOnEscapeBehavior />
                             </ei:Interaction.Behaviors>
@@ -117,7 +124,7 @@
 
                         <Label Grid.Row="4" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">MS:</Label>
                         <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding MS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" 
-                                 AutomationProperties.AutomationId="MSData">
+                                 AutomationProperties.AutomationId="MSData" MaxLength="80">
                             <ei:Interaction.Behaviors>
                                 <local:TextBoxOnEscapeBehavior />
                             </ei:Interaction.Behaviors>
@@ -125,15 +132,15 @@
 
                         <Label Grid.Row="5" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Bun:</Label>
                         <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding BUN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" 
-                                 AutomationProperties.AutomationId="BunData">
+                                 AutomationProperties.AutomationId="BunData" MaxLength="5">
                             <ei:Interaction.Behaviors>
                                 <local:TextBoxOnEscapeBehavior />
                             </ei:Interaction.Behaviors>
                         </TextBox>
 
                         <Label Grid.Row="6" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Qty:</Label>
-                        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding QTY, StringFormat=N2, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Margin="0,5,0,0" 
-                                 AutomationProperties.AutomationId="QtyData">
+                        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding QTY, StringFormat={}{0:G29}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" 
+                                 AutomationProperties.AutomationId="QtyData" MaxLength="9">
                             <ei:Interaction.Behaviors>
                                 <local:TextBoxOnEscapeBehavior />
                             </ei:Interaction.Behaviors>
@@ -141,11 +148,20 @@
 
                         <Label Grid.Row="7" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Vendor ID:</Label>
                         <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding VENDORID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" 
-                                 AutomationProperties.AutomationId="VendorIDData">
+                                 AutomationProperties.AutomationId="VendorIDData" MaxLength="10">
                             <ei:Interaction.Behaviors>
                                 <local:TextBoxOnEscapeBehavior />
                             </ei:Interaction.Behaviors>
                         </TextBox>
+
+                        <Label Grid.Row="8" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">PO No:</Label>
+                        <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding PONO, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" 
+                                 AutomationProperties.AutomationId="PONoData" MaxLength="12">
+                            <ei:Interaction.Behaviors>
+                                <local:TextBoxOnEscapeBehavior />
+                            </ei:Interaction.Behaviors>
+                        </TextBox>
+
                     </Grid>
                 </StackPanel>
                 <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="15" ShowsPreview="True" />
@@ -158,6 +174,7 @@
                     <StackPanel Grid.Column="0">
                         <Grid>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -181,40 +198,45 @@
                             <TextBlock Text="{Binding SAPNO}"                           
                            Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="SAPNoData"/>
 
+                            <TextBlock Text="PO No:" FontWeight="Bold"
+                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="PONoLbl"/>
+                            <TextBlock Text="{Binding PONO}"                           
+                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="PONoData"/>
+
                             <TextBlock Text="Legacy No:" FontWeight="Bold"
-                           Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LegacyNoLbl"/>
+                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LegacyNoLbl"/>
                             <TextBlock Text="{Binding LEGACYNO}"                           
-                           Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="LegacyNoData"/>
+                           Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="LegacyNoData"/>
 
                             <TextBlock Text="Vendor ID:" FontWeight="Bold"
-                           Grid.Row="3" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="VendorIdLbl"/>
+                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="VendorIdLbl"/>
                             <TextBlock Text="{Binding VENDORID}"                           
-                           Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="VendorIdData"/>
+                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="VendorIdData"/>
 
                             <TextBlock Text="EN:" FontWeight="Bold"
-                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ENLbl"/>
+                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ENLbl"/>
                             <TextBlock Text="{Binding EN}"                           
-                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="ENData"/>
+                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="ENData"/>
 
                             <TextBlock Text="MS:" FontWeight="Bold"
-                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="MSLbl"/>
+                           Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="MSLbl"/>
                             <TextBlock Text="{Binding MS}"                           
-                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="MSData"/>
+                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="MSData"/>
 
                             <TextBlock Text="Bin:" FontWeight="Bold"
-                           Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="BinLbl"/>
+                           Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="BinLbl"/>
                             <TextBlock Text="{Binding BIN}"                           
-                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="BinData"/>
+                           Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="BinData"/>
 
                             <TextBlock Text="Qty:" FontWeight="Bold"
-                           Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QtyLbl"/>
-                            <TextBlock Text="{Binding QTY}"                           
-                           Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="QtyData"/>
+                           Grid.Row="8" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QtyLbl"/>
+                            <TextBlock Text="{Binding QTY, StringFormat={}{0:G29}}"                           
+                           Grid.Row="8" Grid.Column="1" AutomationProperties.AutomationId="QtyData"/>
 
                             <TextBlock Text="Bun:" FontWeight="Bold"
-                           Grid.Row="8" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="BunLbl"/>
+                           Grid.Row="9" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="BunLbl"/>
                             <TextBlock Text="{Binding BUN}"                           
-                           Grid.Row="8" Grid.Column="1" AutomationProperties.AutomationId="BunData"/>
+                           Grid.Row="9" Grid.Column="1" AutomationProperties.AutomationId="BunData"/>
                         </Grid>
                     </StackPanel>
 
@@ -247,7 +269,18 @@
 
                             <TextBlock Grid.Row="1" Grid.Column="1"  Text="SAP No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoLbl"/>
                             <TextBlock Grid.Row="2" Grid.Column="1" Text="Legacy No:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoLbl"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="Vendor ID:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="VendorIdLbl"/>
+                            <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"  >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="75"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="25"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Vendor ID:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="VendorIdLbl"/>
+                                <TextBlock Grid.Column="1" Text="{Binding VENDORID}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="VendorIdData"/>
+                                <TextBlock Grid.Column="2" Text="Bin:" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Right" AutomationProperties.AutomationId="BinLbl"/>
+                                <TextBlock Grid.Column="3" Text="{Binding BIN}" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            </Grid>
                             <TextBlock Grid.Row="4" Grid.Column="1" Text="EN:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="ENLbl"/>
                             <TextBlock Grid.Row="5" Grid.Column="1" Text="MS:" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSLbl"/>
                             <Grid Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2">
@@ -259,17 +292,16 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="BIN:" FontWeight="Bold" />
-                                <TextBlock Grid.Column="1" Text="{Binding BIN}" FontWeight="Bold" HorizontalAlignment="Left" />
+                                <TextBlock Grid.Column="0" Text="PO No:" FontWeight="Bold" />
+                                <TextBlock Grid.Column="1" Text="{Binding PONO}" FontWeight="Bold" HorizontalAlignment="Left" />
                                 <TextBlock Grid.Column="3" Text="QTY:" FontWeight="Bold" />
-                                <TextBlock Grid.Column="4" Text="{Binding QTY}" FontWeight="Bold" HorizontalAlignment="Left" />
+                                <TextBlock Grid.Column="4" Text="{Binding QTY, StringFormat={}{0:G29}}" FontWeight="Bold" HorizontalAlignment="Left" />
                                 <TextBlock Grid.Column="5" Text="{Binding BUN}" FontWeight="Bold" HorizontalAlignment="Left" />
                             </Grid>
                             <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SAPNO}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="SAPNoData"/>
                             <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding LEGACYNO}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="LegacyNoData"/>
-                            <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding VENDORID}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="VendorIdData"/>
-                            <TextBlock Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding EN}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="ENData"/>
-                            <TextBlock Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding MS}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="MSData"/>
+                            <TextBlock Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding EN}" FontWeight="Bold" TextWrapping="Wrap" VerticalAlignment="Center" AutomationProperties.AutomationId="ENData"/>
+                            <TextBlock Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding MS}" FontWeight="Bold" TextWrapping="Wrap" VerticalAlignment="Center" AutomationProperties.AutomationId="MSData"/>
                         </Grid>
                     </StackPanel>
                 </Grid>

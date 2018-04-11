@@ -9,5 +9,6 @@ namespace DataLayer.Repositories
         FCU GetFCU(long ID);
         FCU GetFCUBySerialNo(string serial_no);
         void Update(FCU fcu);
+        void Delete(long ID);
     }
 }

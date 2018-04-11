@@ -38,15 +38,17 @@
                 </Grid.ColumnDefinitions>
 
                 <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
-                    <Button ToolTipService.ToolTip="Click to save reason!" Command="{Binding SaveLocationCommand}">
+                    <Button ToolTipService.ToolTip="Click to save location" Command="{Binding SaveLocationCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_save.png" Height="40" Width="40" Margin="4"/>
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_save.png" Height="40" Width="40" Margin="4"/>
                         </StackPanel>
                     </Button>
                     <Separator />
-                    <Button ToolTipService.ToolTip="Click to delete reason!" Command="{Binding DeleteLocationCommand}">
+                    <Button ToolTipService.ToolTip="Click to delete location" Command="{Binding DeleteLocationCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
                                 <Image.Style>
                                     <Style TargetType="Image">
                                         <Style.Triggers>
@@ -70,13 +72,28 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
-                            VerticalAlignment="Center" CornerRadius="5">
-                        <StackPanel Margin="5" Orientation="Horizontal">
-                            <Image Source="/Resources/btn_find.png" Height="18"/>
-                            <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
-                                     HorizontalAlignment="Stretch" />
-                        </StackPanel>
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2" VerticalAlignment="Center" CornerRadius="5">
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" RenderOptions.BitmapScalingMode="HighQuality" Source="/Resources/btn_find.png" Height="18"/>
+                            <TextBox Grid.Column="1" Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
+                                     HorizontalAlignment="Stretch" x:Name="FilterTextBox"/>
+                            <TextBlock Grid.Column="1" IsHitTestVisible="False" FontSize="10" Text="Description" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="DarkGray">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=FilterTextBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </Border>
                 </Grid>
             </Grid>
@@ -90,7 +107,7 @@
         </StackPanel>
 
         <DataGrid x:Name="LocationGrid"
-                    ItemsSource="{Binding Countries}" 
+                    ItemsSource="{Binding Location}" 
                     SelectedItem="{Binding SelectedLocation, Converter={StaticResource ignoreNewItemPlaceHolderConverter}}" 
                     CurrentCell="{Binding CellInfo, Mode=TwoWay}"
                     AutoGenerateColumns="False" 
@@ -103,10 +120,10 @@
                     Margin="0,10,0,0"
                     DataContextChanged="OnMainGridDataContextChanged">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="No." Width="Auto" Binding="{Binding SequenceNumber}" CanUserSort="True" IsReadOnly="false" Foreground="Black"/>
+                <DataGridTextColumn Header="No." Width="Auto" Binding="{Binding SequenceNumber}" IsReadOnly="false" Foreground="Black"/>
                 <DataGridTextColumn Header="Description" Width="*" Binding="{Binding LocationDesc}" IsReadOnly="false" Foreground="Black" />
-                <DataGridTextColumn Header="Last Modified Date: " Width="Auto" Binding="{Binding ModifiedOn, StringFormat=g}" IsReadOnly="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Last Modified By: " Width="Auto" Binding="{Binding ModifiedBy}" IsReadOnly="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Last Modified Date " Width="Auto" Binding="{Binding ModifiedOn, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}" IsReadOnly="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Last Modified By " Width="Auto" Binding="{Binding ModifiedBy}" IsReadOnly="True" Foreground="Black"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

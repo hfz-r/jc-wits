@@ -31,10 +31,13 @@ namespace ESD.JC_FinishGoods.Controllers
         {
             if (FCUID == 0) return;
 
-            ObservableCollection<FCUTransaction> lst = new ObservableCollection<FCUTransaction>();
+            FCU objSummry = new FCU();
+            objSummry = fcuTransServices.GetFCUDetails(FCUID);
+
+            ObservableCollection<FCUTransaction> lstTrnx = new ObservableCollection<FCUTransaction>();
             foreach (var obj in fcuTransServices.GetFCUTransactionByFCUID(FCUID))
             {
-                lst.Add(obj);
+                lstTrnx.Add(obj);
             }
 
             IRegion tabRegion = regionManager.Regions[RegionNames.TabRegionFCU];
@@ -56,8 +59,8 @@ namespace ESD.JC_FinishGoods.Controllers
             FCUDetailsTransactionViewModel trnxVM = trnxView.DataContext as FCUDetailsTransactionViewModel;
             if (summryVM != null && trnxVM != null)
             {
-                summryVM.summryCollection = lst;
-                trnxVM.trnxCollection = lst;
+                summryVM.summryObj = objSummry;
+                trnxVM.trnxCollection = lstTrnx;
             }
         }
     }

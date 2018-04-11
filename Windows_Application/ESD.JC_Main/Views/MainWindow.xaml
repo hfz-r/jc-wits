@@ -37,7 +37,7 @@
             <TextBlock HorizontalAlignment="Right" Width="Auto" FontFamily="Cambria" VerticalAlignment="Center" Margin="0,0,10,0">
                     <Run Text="{Binding AuthenticatedUser}" FontWeight="SemiBold" Foreground="White" FontSize="14" />
                     <Run Text=" " FontWeight="ExtraBold" Foreground="DarkBlue" />
-                    <Button MinHeight="0" ToolTipService.ToolTip="Click to logout!" Command="{Binding LogoutCommand}" 
+                    <Button MinHeight="0" ToolTipService.ToolTip="Click here to logout" Command="{Binding LogoutCommand}" 
                             CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">

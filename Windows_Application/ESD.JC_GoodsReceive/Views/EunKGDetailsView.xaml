@@ -8,7 +8,7 @@
             xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
             xmlns:prism="http://prismlibrary.com/"
             prism:ViewModelLocator.AutoWireViewModel="True"
-            xmlns:local="clr-namespace:ESD.JC_GoodsReceive.Views"
+            xmlns:validation="clr-namespace:ESD.JC_GoodsReceive.Validations"
             xmlns:conv="clr-namespace:ESD.JC_GoodsReceive.Converters"
             xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure" 
             d:DesignWidth="800" d:DesignHeight="600">
@@ -16,7 +16,7 @@
         <infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
         <infrastructure:IgnoreNewItemPlaceHolderConverter x:Key="ignoreNewItemPlaceHolderConverter"/>
         <conv:CollectionEUnKGToBooleanConverter x:Key="CollectionEUnKGConverter"/>
-        
+
         <DataTemplate x:Key="EunKGTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -167,93 +167,66 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 0" >
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
-                    <Button ToolTipService.ToolTip="Click to save!" Command="{Binding SaveEunKGCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+        <StackPanel Grid.Row="0" Grid.Column="0">
+            <ToolBar Background="Transparent" HorizontalAlignment="Left" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
+                <Button ToolTipService.ToolTip="Click to save" Command="{Binding SaveEunKGCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_save.png" Height="40" Width="40" Margin="4">
-                                <Image.Style>
-                                    <Style TargetType="Image">
-                                        <Style.Triggers>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="Opacity" Value="0.5" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
-                        </StackPanel>
-                    </Button>
-                    <Separator />
-                    <Button ToolTipService.ToolTip="Click to delete!" Command="{Binding DeleteEunKGCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Opacity" Value="0.5" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </StackPanel>
+                </Button>
+                <Separator />
+                <Button ToolTipService.ToolTip="Click to delete" Command="{Binding DeleteEunKGCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
-                                <Image.Style>
-                                    <Style TargetType="Image">
-                                        <Style.Triggers>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="Opacity" Value="0.5" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
-                        </StackPanel>
-                    </Button>
-                    <Separator />
-                    <Button ToolTipService.ToolTip="Click to print the label!" Command="{Binding PrintLblCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Opacity" Value="0.5" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </StackPanel>
+                </Button>
+                <Separator />
+                <Button ToolTipService.ToolTip="Click to print the label" Command="{Binding PrintLblCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_printlbl.png" Height="40" Width="40" Margin="4">
-                                <Image.Style>
-                                    <Style TargetType="Image">
-                                        <Style.Triggers>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="Opacity" Value="0.5" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
-                        </StackPanel>
-                    </Button>
-                    <Separator />
-                    <Button ToolTipService.ToolTip="GO Back!" Command="{Binding _backCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Opacity" Value="0.5" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </StackPanel>
+                </Button>
+                <Separator />
+                <Button ToolTipService.ToolTip="Return to main page" Command="{Binding _backCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_back.png" Height="40" Width="40" Margin="4"/>
-                        </StackPanel>
-                    </Button>
-                </ToolBar>
-
-                <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,10,20,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
-                            VerticalAlignment="Center" CornerRadius="5">
-                        <StackPanel Margin="5" Orientation="Horizontal">
-                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
-                                   Source="/Resources/btn_find.png" Height="18"/>
-                            <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
-                                     HorizontalAlignment="Stretch" />
-                        </StackPanel>
-                    </Border>
-                </Grid>
-            </Grid>
+                    </StackPanel>
+                </Button>
+            </ToolBar>
         </StackPanel>
 
         <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
@@ -289,8 +262,8 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-                <local:BindingProxy x:Key="ColProxy" Data="{Binding Path=DataContext.EunKGs, ElementName=dgEunKG}"/>
-                <local:BindingProxy x:Key="MaxValProxy" Data="{Binding Path=MaximumValue, Mode=TwoWay}"/>
+                <validation:BindingProxy x:Key="ColProxy" Data="{Binding Path=DataContext.EunKGs, ElementName=dgEunKG}"/>
+                <validation:BindingProxy x:Key="MaxValProxy" Data="{Binding Path=MaximumValue, Mode=TwoWay}"/>
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="Auto">
@@ -313,10 +286,9 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="No." Width="Auto" Binding="{Binding SequenceNumber}" CanUserSort="True" IsReadOnly="false" Foreground="Black"/>
+                <DataGridTextColumn Header="No." Width="Auto" Binding="{Binding SequenceNumber}" IsReadOnly="false" Foreground="Black"/>
                 <DataGridTextColumn Header="Purchase Order" 
                                     Width="*" 
-                                    CanUserSort="True" 
                                     IsReadOnly="False" 
                                     Foreground="Black" 
                                     EditingElementStyle="{StaticResource errorStyle}"
@@ -325,17 +297,16 @@
                                     MinWidth="50" 
                                     IsReadOnly="False" 
                                     Foreground="Black"
-                                    CanUserSort="False"
                                     EditingElementStyle="{StaticResource errorStyle}"
                                     Binding="{Binding Qty, StringFormat=N2, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True, ValidatesOnDataErrors=true, NotifyOnValidationError=true}"/>
-                <DataGridTextColumn Header="Last Modified Date: " MinWidth="200" Binding="{Binding ModifiedOn, StringFormat=g}" CanUserSort="True" IsReadOnly="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Last Modified By: " MinWidth="200" Binding="{Binding ModifiedBy}" IsReadOnly="True" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Last Modified Date: " MinWidth="200" Binding="{Binding ModifiedOn, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}" IsReadOnly="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Last Modified By: " MinWidth="200" Binding="{Binding ModifiedBy}" IsReadOnly="True" Foreground="Black"/>
             </DataGrid.Columns>
             <DataGrid.RowValidationRules>
                 <ExceptionValidationRule/>
-                <local:RowDataInfoValidationRule ValidationStep="UpdatedValue">
-                    <local:ComparisonValue Value="{Binding Data, Source={StaticResource MaxValProxy}}" Collection="{Binding Data, Source={StaticResource ColProxy}}"/>
-                </local:RowDataInfoValidationRule>
+                <validation:RowDataInfoValidationRule ValidationStep="UpdatedValue">
+                    <validation:ComparisonValue Value="{Binding Data, Source={StaticResource MaxValProxy}}" Collection="{Binding Data, Source={StaticResource ColProxy}}"/>
+                </validation:RowDataInfoValidationRule>
             </DataGrid.RowValidationRules>
         </DataGrid>
 

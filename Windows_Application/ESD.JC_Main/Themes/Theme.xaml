@@ -968,6 +968,39 @@
                                 </TransformGroup>
                             </Path.RenderTransform>
                         </Path>
+                        <!-- Resize Grippers -->
+                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left">
+                            <Thumb.Style>
+                                <Style TargetType="{x:Type Thumb}">
+                                    <Setter Property="Width" Value="8"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Cursor" Value="SizeWE"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                                <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Thumb.Style>
+                        </Thumb>
+                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right">
+                            <Thumb.Style>
+                                <Style TargetType="{x:Type Thumb}">
+                                    <Setter Property="Width" Value="8"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Cursor" Value="SizeWE"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                                <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Thumb.Style>
+                        </Thumb>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -1072,13 +1105,13 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="DragIndicatorStyle">
             <Setter.Value>
-                <Style TargetType="ContentControl">
+                <Style TargetType="Control">
                     <Setter Property="FontSize" Value="13" />
                     <Setter Property="FontWeight" Value="Bold" />
                     <Setter Property="Foreground" Value="#7FFFFFFF" />
                     <Setter Property="Template">
                         <Setter.Value>
-                            <ControlTemplate TargetType="ContentControl">
+                            <ControlTemplate TargetType="Control">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
@@ -1136,7 +1169,7 @@
         <Setter Property="GridLinesVisibility" Value="Vertical" />
         <Setter Property="IsTabStop" Value="True" />
     </Style>
-    
+
     <!--ComboBox Togglebutton-->
     <Style x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
         <Setter Property="Template">

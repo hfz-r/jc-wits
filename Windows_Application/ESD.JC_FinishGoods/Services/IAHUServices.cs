@@ -9,5 +9,6 @@ namespace ESD.JC_FinishGoods.Services
         AHU GetAHUBySerialNo(string serial_no);
         IEnumerable<AHU> GetAll(bool eagerLoading);
         bool Save(List<AHU> ahus, string state = "");
+        bool Delete(long ID);
     }
 }

@@ -36,17 +36,17 @@
                 
                 <TextBlock Text="Quantity Ordered" Foreground="#FF525252"
                            Grid.Row="2" Grid.Column="0"/>
-                <TextBlock Text="{Binding FCU.Qty}" FontWeight="Bold"
+                <TextBlock Text="{Binding Qty, StringFormat={}{0:G29}}" FontWeight="Bold"
                            Grid.Row="2" Grid.Column="1"/>
 
                 <TextBlock Text="Quantity Received" Foreground="#FF525252"
                            Grid.Row="3" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding FCU.QtyReceived}" FontWeight="Bold"
+                <TextBlock Text="{Binding QtyReceived, TargetNullValue=0, StringFormat={}{0:G29}}" FontWeight="Bold"
                            Grid.Row="3" Grid.Column="1"/>
 
                 <TextBlock Text="Remaining Quantity" Foreground="#FF525252"
                            Grid.Row="4" Grid.Column="0" Margin="0,0,15,0"/>
-                <TextBlock Text="{Binding DataContext.RemainingQty, ElementName=LayoutRoot}" FontWeight="Bold"
+                <TextBlock Text="{Binding DataContext.RemainingQty, StringFormat={}{0:G29}, ElementName=LayoutRoot}" FontWeight="Bold"
                            Grid.Row="4" Grid.Column="1"/>
             </Grid>
         </DataTemplate>
@@ -62,7 +62,7 @@
                         Height="Auto" 
                         Margin="10,25,10,10"
                         FontSize="14"
-                        Content="{Binding summryCollection}" 
+                        Content="{Binding summryObj}" 
                         ContentTemplate="{StaticResource FCUDetailTemplate}"/>
     </Grid>
 </UserControl>

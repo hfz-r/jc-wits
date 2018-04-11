@@ -30,10 +30,10 @@
                 <TextBlock FontWeight="Bold" Grid.Row="0" Grid.Column="1">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Text" Value="{Binding GoodsReceive.Quantity}"/>
+                            <Setter Property="Text" Value="{Binding Quantity, StringFormat={}{0:G29}}"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding GoodsReceive.Eun, Converter={StaticResource UnitKGs}}" Value="true">
-                                    <Setter Property="Text" Value="{Binding GoodsReceive.Quantity, StringFormat=N2}"/>
+                                <DataTrigger Binding="{Binding Eun, Converter={StaticResource UnitKGs}}" Value="true">
+                                    <Setter Property="Text" Value="{Binding Quantity, StringFormat=N2}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -44,10 +44,10 @@
                 <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="1">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Text" Value="{Binding GoodsReceive.QtyReceived}"/>
+                            <Setter Property="Text" Value="{Binding QtyReceived, FallbackValue=0, TargetNullValue=0, StringFormat={}{0:G29}}"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding GoodsReceive.Eun, Converter={StaticResource UnitKGs}}" Value="true">
-                                    <Setter Property="Text" Value="{Binding  GoodsReceive.QtyReceived, StringFormat=N2}"/>
+                                <DataTrigger Binding="{Binding Eun, Converter={StaticResource UnitKGs}}" Value="true">
+                                    <Setter Property="Text" Value="{Binding  QtyReceived, StringFormat=N2}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -58,9 +58,9 @@
                 <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="1">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Text" Value="{Binding DataContext.RemainingQty, ElementName=LayoutRoot}"/>
+                            <Setter Property="Text" Value="{Binding DataContext.RemainingQty, StringFormat={}{0:G29}, ElementName=LayoutRoot}"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding GoodsReceive.Eun, Converter={StaticResource UnitKGs}}" Value="true">
+                                <DataTrigger Binding="{Binding Eun, Converter={StaticResource UnitKGs}}" Value="true">
                                     <Setter Property="Text" Value="{Binding DataContext.RemainingQty, ElementName=LayoutRoot, StringFormat=N2}"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -81,7 +81,7 @@
                         Height="Auto" 
                         Margin="10,25,10,10"
                         FontSize="14"
-                        Content="{Binding summryCollection}" 
+                        Content="{Binding summryObj}" 
                         ContentTemplate="{StaticResource GRDetailTemplate}"/>
     </Grid>
 </UserControl>

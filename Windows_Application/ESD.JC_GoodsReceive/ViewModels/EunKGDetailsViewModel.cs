@@ -305,7 +305,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             this.interactionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "Are you confirm you want to save this?",
+                        Content = "Confirm to save this?",
                         Title = "Confirm"
                     },
                     c =>
@@ -344,7 +344,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 this.interactionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "Are you confirm you want to remove this?",
+                        Content = "Confirm to remove this?",
                         Title = "Confirm"
                     },
                     c =>
@@ -512,7 +512,6 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
                     worker.DoWork += delegate (object s, DoWorkEventArgs args)
                     {
-                        StringBuilder strErrorPallet = new StringBuilder();
                         System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
                         pd.PrinterSettings = new PrinterSettings();
                         pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
@@ -521,7 +520,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                         {
                             string fileName = string.Empty;
                             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                            fileName = path + @"\JC-WITS_GR_Label.prn";
+                            fileName = path + @"\JC-WITS_KG.prn";
 
                             StreamReader txtReader = new StreamReader(fileName, false);
                             string xTemp = txtReader.ReadToEnd();
@@ -540,10 +539,11 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
                                 strPallet = new StringBuilder();
                                 strPallet.Append(strPalletTemplate.ToString());
+                                strPallet.Replace("<PONO>", item.PO);
                                 strPallet.Replace("<SAPNO>", item.SAPNO);
                                 strPallet.Replace("<LEGACYNO>", item.SAPNO);
                                 strPallet.Replace("<BIN>", item.BIN);
-                                strPallet.Replace("<QTY>", item.Qty.ToString());
+                                strPallet.Replace("<QTY>", item.Qty.ToString("G29"));
                                 strPallet.Replace("<BUN>", item.EUN);
                                 strPallet.Replace("<QRCODE>", item.SAPNO + ";" + item.Qty.ToString());
 
@@ -596,7 +596,6 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
                                 if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
                                 {
-                                    strErrorPallet.Append(item.GRID + ", ");
                                 }
 
                                 if (worker.CancellationPending)
@@ -607,12 +606,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
                                 hlp.Initialize();
                             }
-
-                            if (strErrorPallet.Length > 0)
-                            {
-                                strErrorPallet.Remove(strErrorPallet.Length - 2, 2);
-                            }
-
+                            
                             State = "RefreshGrid";
                             OnLoaded();
                         }

@@ -116,7 +116,7 @@
                 <TextBlock Grid.Row="8" Grid.Column="1" AutomationProperties.AutomationId="QuantityData">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Text" Value="{Binding Quantity}"/>
+                            <Setter Property="Text" Value="{Binding Quantity, StringFormat={}{0:G29}}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Eun, Converter={StaticResource UnitKGs}}" Value="true">
                                     <Setter Property="Text" Value="{Binding Quantity, StringFormat=N2}"/>
@@ -173,17 +173,17 @@
 
                 <TextBlock Text="Document Date: " FontWeight="Bold"
                            Grid.Row="14" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="DocDateLabel"/>
-                <TextBlock Text="{Binding DocumentDate, StringFormat=g}"                          
+                <TextBlock Text="{Binding DocumentDate, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}"                          
                            Grid.Row="14" Grid.Column="1" AutomationProperties.AutomationId="DocDateData"/>
 
                 <TextBlock Text="Posting Date: " FontWeight="Bold"
                            Grid.Row="15" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="PostingDateLabel"/>
-                <TextBlock Text="{Binding PostingDate, StringFormat=g}"                          
+                <TextBlock Text="{Binding PostingDate, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}"                          
                            Grid.Row="15" Grid.Column="1" AutomationProperties.AutomationId="PostingDateData"/>
 
                 <TextBlock Text="Last Modified Date: " FontWeight="Bold"
                            Grid.Row="16" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
-                <TextBlock Text="{Binding ModifiedOn, StringFormat=g}"                           
+                <TextBlock Text="{Binding ModifiedOn, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}"                           
                            Grid.Row="16" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOnData"/>
 
                 <TextBlock Text="Last Modified By: " FontWeight="Bold"

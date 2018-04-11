@@ -7,5 +7,6 @@ namespace ESD.JC_GoodsReceive.Services
     {
         IEnumerable<GRTransaction> GetAll(bool eagerLoading);
         IEnumerable<GRTransaction> GetGRTransactionByGRID(long GRID);
+        GoodsReceive GetGRDetails(long GRID);
     }
 }

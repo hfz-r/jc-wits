@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="PrinterPort" Type="System.String" Scope="User">
-      <Value Profile="(Default)">TEC B-SA4T (300 dpi) (Copy 1)</Value>
+      <Value Profile="(Default)">//M3081946/TEC B-SA4T (300 dpi)</Value>
     </Setting>
   </Settings>
 </SettingsFile>

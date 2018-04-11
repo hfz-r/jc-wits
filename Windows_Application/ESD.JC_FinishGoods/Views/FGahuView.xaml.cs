@@ -1,7 +1,8 @@
 ﻿using System.Windows.Controls;
 using ESD.JC_FinishGoods.ViewModels;
-using System.Windows.Input;
-using System.Windows.Media.Animation;
+using System.Windows;
+using System.Windows.Data;
+using ESD.JC_Infrastructure;
 
 namespace ESD.JC_FinishGoods.Views
 {
@@ -10,34 +11,40 @@ namespace ESD.JC_FinishGoods.Views
     /// </summary>
     public partial class FGahuView : UserControl
     {
-        private bool expanded = false;
+        private FGahuViewModel viewModel;
 
-        public FGahuView(FGahuViewModel viewModel)
+        public FGahuView(FGahuViewModel _viewModel)
         {
             InitializeComponent();
-            AHU_Loaded();
 
-            DataContext = viewModel;
+            DataContext = _viewModel;
+            viewModel = _viewModel;
         }
 
-        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        private void btnAhuStatusFilter_Click(object sender, RoutedEventArgs e)
         {
-            //Handle single leftbutton mouse clicks
-            if (e.ClickCount < 2 && e.LeftButton == MouseButtonState.Pressed)
-            {
-                if (expanded == false)
-                    sidePanel.BeginStoryboard((Storyboard)this.Resources["expandStoryBoard"]);
-                else
-                    sidePanel.BeginStoryboard((Storyboard)this.Resources["collapseStoryBoard"]);
+            ahuStatusPopupSelection.IsOpen = true;
+        }
 
-                expanded = !expanded;
+        private void btnSelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (CheckedListItem<AHUStatusCategory> item in viewModel.AhuStatusFilter)
+            {
+                item.IsChecked = true;
             }
         }
 
-        private void AHU_Loaded()
+        private void btnUnselectAll_Click(object sender, RoutedEventArgs e)
         {
-            sidePanel.BeginStoryboard((Storyboard)this.Resources["expandStoryBoard"]);
-            sidePanel.BeginStoryboard((Storyboard)this.Resources["collapseStoryBoard"]);
+            foreach (CheckedListItem<AHUStatusCategory> item in viewModel.AhuStatusFilter)
+            {
+                item.IsChecked = false;
+            }
+        }
+
+        private void ApplyFilters(object sender, RoutedEventArgs e)
+        {
+            CollectionViewSource.GetDefaultView(viewModel.AHU).Refresh();
         }
     }
 }

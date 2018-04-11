@@ -43,12 +43,15 @@ namespace ESD.JC_GoodsReceive.ViewModels
             set { SetProperty(ref _GoodReceives, value); }
         }
 
-        private ListCollectionView _okColumnFilterList;
-        public ListCollectionView OKColumnFilterList
+        private ListCollectionView _listBoxOk;
+        public ListCollectionView ListBoxOk
         {
-            get { return _okColumnFilterList; }
-            set { SetProperty(ref _okColumnFilterList, value);
-                RaisePropertyChanged("OKColumnFilterList"); }
+            get { return _listBoxOk; }
+            set
+            {
+                SetProperty(ref _listBoxOk, value);
+                RaisePropertyChanged("ListBoxOk");
+            }
         }
 
         private string _InteractionResultMessage;
@@ -154,7 +157,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             }
         }
 
-       
+
         #endregion
 
         private const string grDetailsViewName = "GRDetailsView";
@@ -168,10 +171,12 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         public ObservableCollection<GoodsReceive> grCollection { get; private set; }
         public ObservableCollection<GoodsReceive> tempCollection { get; private set; }
+        public ObservableCollection<CheckedListItem<OkCategory>> OkFilter { get; private set; }
 
         private DelegateCommand<object> _ImportGRCommand;
         private DelegateCommand<object> _ExportGRCommand;
         private DelegateCommand<object> _PrintLblCommand;
+        private DelegateCommand<object> _DeleteFGCommand;
         private DelegateCommand<object> _IsSelected;
         private DelegateCommand _checkedAllCommand;
         private DelegateCommand _unCheckedAllCommand;
@@ -184,15 +189,16 @@ namespace ESD.JC_GoodsReceive.ViewModels
             this.timerServices = timerServices;
             this.eventAggregator = eventAggregator;
             this.eventAggregator.GetEvent<GR_ItemMessageEvent>().Subscribe(ConsumeItemMessage);
-
+            
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             OpenGRDetailsCommand = new DelegateCommand<GoodsReceive>(OpenGRDetails);
             XOKCommand = new DelegateCommand(OnLoaded);
             OKCommand = new DelegateCommand(OKImport);
 
-            _ImportGRCommand = new DelegateCommand<object>(ImportGR);
-            _ExportGRCommand = new DelegateCommand<object>(ExportGR);
-            _PrintLblCommand = new DelegateCommand<object>(PrintLabel, CanPrint);
+            _ImportGRCommand = new DelegateCommand<object>(ImportGR, CanImport);
+            _ExportGRCommand = new DelegateCommand<object>(ExportGR, CanExport);
+            _PrintLblCommand = new DelegateCommand<object>(PrintLabel, CanDeletePrint);
+            _DeleteFGCommand = new DelegateCommand<object>(Delete, CanDeletePrint);
             _IsSelected = new DelegateCommand<object>(CheckBoxIsSelected);
             _checkedAllCommand = new DelegateCommand(() =>
             {
@@ -202,9 +208,10 @@ namespace ESD.JC_GoodsReceive.ViewModels
             {
                 SetIsSelectedProperty(false);
             });
-
             confirmDeleteInteractionRequest = new InteractionRequest<Confirmation>();
         }
+
+        #region Commands
 
         public DelegateCommand OnLoadedCommand { get; private set; }
         public ICommand OpenGRDetailsCommand { get; private set; }
@@ -221,6 +228,10 @@ namespace ESD.JC_GoodsReceive.ViewModels
         public ICommand PrintLblCommand
         {
             get { return this._PrintLblCommand; }
+        }
+        public ICommand DeleteFGCommand
+        {
+            get { return this._DeleteFGCommand; }
         }
         public ICommand IsSelected
         {
@@ -239,9 +250,14 @@ namespace ESD.JC_GoodsReceive.ViewModels
             get { return this.confirmDeleteInteractionRequest; }
         }
 
+        #endregion Commands
+
         private void OnLoaded()
         {
             ImportBtn = null;
+
+            if (ProgressValue == 0)
+                IsEnableAutoRefresh = true;
 
             tempCollection = new ObservableCollection<GoodsReceive>();
             grCollection = new ObservableCollection<GoodsReceive>();
@@ -256,12 +272,19 @@ namespace ESD.JC_GoodsReceive.ViewModels
                     else if (obj.QtyReceived < obj.Quantity)
                         obj.Ok = null;
                 }
-                
+
+                obj.Ok2 = obj.Ok;
+                obj.Quantity2 = obj.Quantity;
+                obj.QtyReceived2 = obj.QtyReceived;
+
                 obj.IsChecked = false;
                 grCollection.Add(obj);
             }
+            
+            _ImportGRCommand.RaiseCanExecuteChanged();
+            _ExportGRCommand.RaiseCanExecuteChanged();
 
-            BindComboBox(grCollection);
+            BindListBox();
 
             GoodReceives = new ListCollectionView(grCollection);
             GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
@@ -269,68 +292,58 @@ namespace ESD.JC_GoodsReceive.ViewModels
             CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
         }
 
-        private void BindComboBox(ObservableCollection<GoodsReceive> grCollection)
+        private void BindListBox()
         {
-            var ComboList = new List<FilterComboItem>();
-            ComboList.Add(new FilterComboItem
+            OkFilter = new ObservableCollection<CheckedListItem<OkCategory>>();
+            foreach (var obj in grCollection.GroupBy(ok => ok.Ok).Select(x => new { Key = x.Key }))
             {
-                BoolOk = null,
-                TextOk = " - All",
-                GroupedList = null
-            });
-
-            foreach (var obj in grCollection.GroupBy(ok => ok.Ok).Select(x => new { Key = x.Key, List = x.ToList() }))
-            {
-                ComboList.Add(new FilterComboItem
+                OkFilter.Add(new CheckedListItem<OkCategory>
                 {
-                    BoolOk = obj.Key,
-                    TextOk = obj.Key == null ? " - Partial" : (obj.Key.ToString() == "False") ? " - NOT OK" : " - OK",
-                    GroupedList = obj.List
+                    IsChecked = true,
+                    Item = new OkCategory
+                    {
+                        BoolOk = obj.Key,
+                        TextOk = obj.Key == null ? " - Partial" : (obj.Key.ToString() == "False") ? " - NOT OK" : " - OK"
+                    }
                 });
             }
 
-            OKColumnFilterList = new ListCollectionView(ComboList);
-            //OKColumnFilterList.GroupDescriptions.Add(new PropertyGroupDescription("BoolOk"));
-            OKColumnFilterList.CurrentChanged += OKColumnFilterList_CurrentChanged;
+            ListBoxOk = new ListCollectionView(OkFilter);
         }
 
-        private void OKColumnFilterList_CurrentChanged(object sender, EventArgs e)
+        private bool Filter(object obj)
         {
-            var currItem = ((ListCollectionView)sender).CurrentItem as FilterComboItem;
-            if (currItem != null)
+            var gr = (GoodsReceive)obj;
+
+            if (gr.ID == 0)
             {
-                var FilteredCollection = new ObservableCollection<GoodsReceive>();
-                if (currItem.TextOk.Contains("All"))
+                if (string.IsNullOrEmpty(FilterTextBox))
+                    return true;
+
+                return (gr.PurchaseOrder.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
+                        gr.Material.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
+                        gr.MaterialShortText.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
+            }
+            else
+            {
+                int count = OkFilter.Where(chk => chk.IsChecked).Count(ok => ok.Item.BoolOk == gr.Ok);
+
+                if (string.IsNullOrEmpty(FilterTextBox) && count > 0)
                 {
-                    foreach (var gr in grCollection)
-                    {
-                        FilteredCollection.Add(gr);
-                    }
+                    return true;
                 }
                 else
                 {
-                    foreach (var gr in grCollection.Where(ok => ok.Ok == currItem.BoolOk))
+                    if (count == 0)
                     {
-                        FilteredCollection.Add(gr);
+                        return false;
                     }
+
+                    return (gr.PurchaseOrder.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
+                            gr.Material.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
+                            gr.MaterialShortText.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
                 }
-                GoodReceives = new ListCollectionView(FilteredCollection);
-                GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
-
-                CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
             }
-        }
-
-        private bool Filter(object item)
-        {
-            if (string.IsNullOrEmpty(FilterTextBox))
-                return true;
-
-            var gr = (GoodsReceive)item;
-
-            return (gr.PurchaseOrder.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
-                    gr.Material.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) ||
-                    gr.MaterialShortText.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase));
         }
 
         private void CheckBoxIsSelected(object IsChecked)
@@ -347,35 +360,52 @@ namespace ESD.JC_GoodsReceive.ViewModels
             RaisePropertyChanged("GoodReceives");
 
             _PrintLblCommand.RaiseCanExecuteChanged();
+            _DeleteFGCommand.RaiseCanExecuteChanged();
+        }
+
+        private bool CanImport(object ignored)
+        {
+            if (ImportBtn != null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void ImportGR(object ignored)
         {
-            var dlg = new OpenFileDialog();
-            dlg.DefaultExt = ".xls|.xlsx|.csv";
-            dlg.Filter = "Excel documents (*.xls, *.xlsx)|*.xls;*.xlsx|CSV files (*.csv)|*.csv";
-
-            tempCollection = new ObservableCollection<GoodsReceive>();
-
-            if (dlg.ShowDialog() == true)
+            try
             {
-                var file = new FileInfo(dlg.FileName);
-                if (file.Extension == ".csv")
-                {
-                    ReadCSVFile(file.FullName);
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(file.Extension))
-                    {
-                        using (FileStream fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
-                        {
-                            grWorkbook = new XSSFWorkbook(fs);
-                        }
+                var dlg = new OpenFileDialog();
+                dlg.DefaultExt = ".xls|.xlsx|.csv";
+                dlg.Filter = "Excel documents (*.xls, *.xlsx)|*.xls;*.xlsx|CSV files (*.csv)|*.csv";
+                tempCollection = new ObservableCollection<GoodsReceive>();
 
-                        ReadExcelFile();
+                if (dlg.ShowDialog() == true)
+                {
+                    var file = new FileInfo(dlg.FileName);
+                    if (file.Extension == ".csv")
+                    {
+                        ReadCSVFile(file.FullName);
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(file.Extension))
+                        {
+                            using (FileStream fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
+                            {
+                                grWorkbook = new XSSFWorkbook(fs);
+                            }
+
+                            ReadExcelFile();
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
             }
         }
 
@@ -385,7 +415,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             {
                 ISheet sheet = grWorkbook.GetSheet("GR");
                 System.Collections.IEnumerator rows = sheet.GetRowEnumerator();
-
+                
                 #region Cells Comparison
                 while (rows.MoveNext())
                 {
@@ -469,7 +499,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                                 if (cell == null)
                                     obj.Ok = null;
                                 else
-                                    obj.Ok = cell.BooleanCellValue;
+                                    obj.Ok = cell.BooleanCellValue.ToString();
                                 break;
 
                             case 10:
@@ -522,12 +552,18 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 if (tempCollection.Count() > 0)
                 {
                     ImportBtn = true;
+                    IsEnableAutoRefresh = false;
+
+                    _ImportGRCommand.RaiseCanExecuteChanged();
+                    _ExportGRCommand.RaiseCanExecuteChanged();
 
                     GoodReceives = new ListCollectionView(tempCollection);
-                    GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
+                    GoodReceives.SortDescriptions.Add(new SortDescription("CreatedOn", ListSortDirection.Descending));
 
                     CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
                 }
+                else
+                    throw new Exception("There was no matched data detected.");
             }
             catch (Exception ex)
             {
@@ -542,20 +578,28 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         private void OKImport()
         {
-            this.confirmDeleteInteractionRequest.Raise(
+            if (tempCollection.All(x => x.IsChecked == false))
+            {
+                MessageBox.Show("No changes have been made.");
+                OnLoaded();
+            }
+            else
+            {
+                this.confirmDeleteInteractionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "Are you confirm you want to save this?",
+                        Content = "Confirm to save this?",
                         Title = "Confirm"
                     },
                      c =>
                      {
                          if (c.Confirmed)
                          {
-                            if (Save())
+                             if (Save())
                                  OnLoaded();
                          }
                      });
+            }
         }
 
         private void ReadCSVFile(string fullName)
@@ -588,6 +632,10 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 if (tempCollection.Count() > 0)
                 {
                     ImportBtn = true;
+                    IsEnableAutoRefresh = false;
+
+                    _ImportGRCommand.RaiseCanExecuteChanged();
+                    _ExportGRCommand.RaiseCanExecuteChanged();
 
                     GoodReceives = new ListCollectionView(tempCollection);
                     GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
@@ -667,7 +715,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             obj.Plant = gr.Plant;
             obj.StorageBin = gr.StorageBin;
             obj.DocumentDate = gr.DocumentDate;
-            obj.PostingDate = DateTime.Now;
+            obj.PostingDate = gr.PostingDate;
             obj.ModifiedOn = DateTime.Now;
             obj.ModifiedBy = AuthenticatedUser;
         }
@@ -679,7 +727,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 temp.Add(new GoodsReceive
                 {
                     DocumentDate = rec.DocumentDate,
-                    PostingDate = DateTime.Now,
+                    PostingDate = null,
                     PurchaseOrder = rec.PurchaseOrder,
                     Vendor = rec.Vendor ?? string.Empty,
                     DeliveryNote = rec.DeliveryNote ?? string.Empty,
@@ -687,8 +735,10 @@ namespace ESD.JC_GoodsReceive.ViewModels
                     HeaderText = rec.HeaderText ?? string.Empty,
                     Material = rec.Material,
                     MaterialShortText = rec.MaterialShortText,
-                    Ok = rec.Ok.GetValueOrDefault(),
+                    Ok = Convert.ToBoolean(rec.Ok),
+                    Ok2 = Convert.ToBoolean(rec.Ok),
                     Quantity = rec.Quantity,
+                    Quantity2 = rec.Quantity,
                     Eun = rec.Eun,
                     MvmtType = rec.MvmtType ?? string.Empty,
                     StorageLoc = rec.StorageLoc,
@@ -701,6 +751,16 @@ namespace ESD.JC_GoodsReceive.ViewModels
                     IsChecked = true
                 });
             }
+        }
+
+        private bool CanExport(object ignored)
+        {
+            if (ImportBtn != null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void ExportGR(object ignored)
@@ -746,29 +806,77 @@ namespace ESD.JC_GoodsReceive.ViewModels
             storage.ColumnsHeaders.Add("Storage Loc");
             storage.ColumnsHeaders.Add("Plant");
             storage.ColumnsHeaders.Add("Storage Bin");
+            storage.ColumnsHeaders.Add("Quantity Received");
+            storage.ColumnsHeaders.Add("Transaction Reason");
+            storage.ColumnsHeaders.Add("Received By");
+            storage.ColumnsHeaders.Add("Received On");
 
             ObservableCollection<ImportCLassModel> importObj = new ObservableCollection<ImportCLassModel>();
-            foreach (var rec in grCollection)
+            ImportCLassModel temp = new ImportCLassModel();
+
+            using (var db = new InventoryContext())
             {
-                importObj.Add(new ImportCLassModel
+                foreach (var rec in grCollection)
                 {
-                    DocumentDate = rec.DocumentDate,
-                    PostingDate = DateTime.Now,
-                    PurchaseOrder = rec.PurchaseOrder,
-                    Vendor = rec.Vendor ?? string.Empty,
-                    DeliveryNote = rec.DeliveryNote ?? string.Empty,
-                    BillOfLading = rec.BillOfLading ?? string.Empty,
-                    HeaderText = rec.HeaderText ?? string.Empty,
-                    Material = rec.Material,
-                    MaterialShortText = rec.MaterialShortText,
-                    Ok = rec.Ok.GetValueOrDefault(),
-                    Quantity = rec.Quantity,
-                    Eun = rec.Eun,
-                    MvmtType = rec.MvmtType ?? string.Empty,
-                    StorageLoc = rec.StorageLoc,
-                    Plant = rec.Plant,
-                    StorageBin = rec.StorageBin
-                });
+                    var grTxn = db.GRTransactions.Where(p => p.GRID == rec.ID);
+                    if (grTxn != null && grTxn.Count() > 0)
+                    {
+                        foreach(var item in grTxn)
+                        {
+                            temp = new ImportCLassModel()
+                            {
+                                DocumentDate = rec.DocumentDate,
+                                PostingDate = rec.PostingDate,
+                                PurchaseOrder = rec.PurchaseOrder,
+                                Vendor = rec.Vendor ?? string.Empty,
+                                DeliveryNote = rec.DeliveryNote ?? string.Empty,
+                                BillOfLading = rec.BillOfLading ?? string.Empty,
+                                HeaderText = rec.HeaderText ?? string.Empty,
+                                Material = rec.Material,
+                                MaterialShortText = rec.MaterialShortText,
+                                Ok = rec.Ok == null || rec.Ok == false ? "Not Complete" : "Completed",
+                                Quantity = rec.Quantity,
+                                Eun = rec.Eun,
+                                MvmtType = rec.MvmtType ?? string.Empty,
+                                StorageLoc = rec.StorageLoc,
+                                Plant = rec.Plant,
+                                StorageBin = rec.StorageBin,
+                                QuantityReceived = item.Quantity,
+                                ReasonDesc = item.Reason != null ? item.Reason.ReasonDesc : string.Empty,
+                                ReceivedBy = item.CreatedBy,
+                                ReceivedOn = Convert.ToString(item.CreatedOn),
+                            };
+                            importObj.Add(temp);
+                        }
+                    }
+                    else
+                    {
+                        temp = new ImportCLassModel()
+                        {
+                            DocumentDate = rec.DocumentDate,
+                            PostingDate = rec.PostingDate,
+                            PurchaseOrder = rec.PurchaseOrder,
+                            Vendor = rec.Vendor ?? string.Empty,
+                            DeliveryNote = rec.DeliveryNote ?? string.Empty,
+                            BillOfLading = rec.BillOfLading ?? string.Empty,
+                            HeaderText = rec.HeaderText ?? string.Empty,
+                            Material = rec.Material,
+                            MaterialShortText = rec.MaterialShortText,
+                            Ok = rec.Ok == null || rec.Ok == false ? "Not Complete" : "Completed",
+                            Quantity = rec.Quantity,
+                            Eun = rec.Eun,
+                            MvmtType = rec.MvmtType ?? string.Empty,
+                            StorageLoc = rec.StorageLoc,
+                            Plant = rec.Plant,
+                            StorageBin = rec.StorageBin,
+                            QuantityReceived = 0,
+                            ReasonDesc = string.Empty,
+                            ReceivedBy = string.Empty,
+                            ReceivedOn = string.Empty
+                        };
+                        importObj.Add(temp);
+                    }
+                }
             }
 
             if (importObj != null)
@@ -778,7 +886,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 this.confirmDeleteInteractionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "File Export Success. Are you want to open the file?",
+                        Content = "Exported successfully. Open file?",
                         Title = "Notification"
                     },
                     c => { InteractionResultMessage = c.Confirmed ? OpenExportedFile(storage.FileName) : "NOT OK!"; });
@@ -794,12 +902,36 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
                 Workbook wb = excel.Workbooks.Open(fileName);
             }
-            catch
+            catch (Exception ex)
             {
-                throw new Exception();
+                MessageBox.Show(ex.Message);
             }
 
             return "OK";
+        }
+
+        private void Delete(object ignored)
+        {
+            if (grCollection.Any(x => x.IsChecked == true))
+            {
+                if (MessageBox.Show("Confirm to delete?", "Delete", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var listObj = grCollection.Where(x => x.IsChecked == true).ToList();
+
+                    try
+                    {
+                        foreach (var item in listObj)
+                        {
+                            grServices.Delete(item.ID);
+                        }
+                        OnLoaded();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
         }
 
         private void PrintLabel(object ignored)
@@ -809,8 +941,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 if (MessageBox.Show("Confirm to generate the label?", "Print", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     var listObj = grCollection.Where(x => x.IsChecked == true).ToList();
-
-                    StringBuilder strErrorPallet = new StringBuilder();
+                    
                     System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
                     pd.PrinterSettings = new PrinterSettings();
                     pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
@@ -819,7 +950,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                     {
                         string fileName = string.Empty;
                         string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                        fileName = path + @"\JC-WITS_Label.prn";
+                        fileName = path + @"\JC-WITS_GR.prn";
 
                         StreamReader txtReader = new StreamReader(fileName, false);
                         string xTemp = txtReader.ReadToEnd();
@@ -837,11 +968,11 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
                             strPallet = new StringBuilder();
                             strPallet.Append(strPalletTemplate.ToString());
+                            strPallet.Replace("<PONO>", item.PurchaseOrder);
                             strPallet.Replace("<SAPNO>", item.Material);
                             strPallet.Replace("<LEGACYNO>", item.Material);
                             strPallet.Replace("<BIN>", item.StorageBin);
-                            strPallet.Replace("<QTY>", item.Quantity.ToString());
-                            strPallet.Replace("<BUN>", item.Eun);
+                            strPallet.Replace("<QUANTITY>", item.Quantity.ToString("G29") + " " + item.Eun);
 
                             if (item.Eun == "KG")
                                 strPallet.Replace("<QRCODE>", item.Material + ";" + item.Quantity);
@@ -858,7 +989,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                                 switch (x)
                                 {
                                     case 0:
-                                        input = item.ENMaterialShortText;
+                                        input = item.MaterialShortText;
                                         lbl = "<EN";
                                         break;
                                     case 1:
@@ -867,7 +998,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                                         break;
                                 }
 
-                                string[] words = input.Split(' ');
+                                string[] words = !string.IsNullOrEmpty(input) ? input.Split(' ') : new string[] { };
 
                                 string part = string.Empty;
                                 int partCounter = 0;
@@ -899,13 +1030,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
                             if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
                             {
-                                strErrorPallet.Append(item.PurchaseOrder + ", ");
                             }
-                        }
-
-                        if (strErrorPallet.Length > 0)
-                        {
-                            strErrorPallet.Remove(strErrorPallet.Length - 2, 2);
                         }
 
                         OnLoaded();
@@ -918,7 +1043,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             }
         }
 
-        private bool CanPrint(object ignored)
+        private bool CanDeletePrint(object ignored)
         {
             if (ImportBtn != null)
             {
@@ -961,6 +1086,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             }
 
             _PrintLblCommand.RaiseCanExecuteChanged();
+            _DeleteFGCommand.RaiseCanExecuteChanged();
 
             GoodReceives = new ListCollectionView(tempObj);
             GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
@@ -968,12 +1094,12 @@ namespace ESD.JC_GoodsReceive.ViewModels
             CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
         }
 
-        private void ExecuteTimer()
+        public void ExecuteTimer()
         {
             timerServices.StartTimerExecute();
         }
 
-        private void StopTimer()
+        public void StopTimer()
         {
             timerServices.StopTimerExecute();
         }
@@ -990,10 +1116,44 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 if (msg.State == "Completed")
                 {
                     #region refresh grid
-                    GoodReceives = new ListCollectionView(grCollection);
-                    GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
 
-                    CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
+                    foreach (var obj in grCollection)
+                    {
+                        var gr = grServices.GetGR(obj.ID);
+                        obj.Ok = gr.Ok.GetValueOrDefault();
+                        obj.Quantity = gr.Quantity;
+                        obj.QtyReceived = gr.QtyReceived;
+
+                        if (obj.QtyReceived == null)
+                            obj.Ok = false;
+                        else
+                        {
+                            if (obj.QtyReceived == obj.Quantity)
+                                obj.Ok = true;
+                            else if (obj.QtyReceived < obj.Quantity)
+                                obj.Ok = null;
+                        }
+
+                        obj.Ok2 = obj.Ok;
+                        obj.Quantity2 = obj.Quantity;
+                        obj.QtyReceived2 = obj.QtyReceived;
+
+                        if (OkFilter.All(x => x.Item.BoolOk != gr.Ok))
+                        {
+                            OkFilter.Add(new CheckedListItem<OkCategory>
+                            {
+                                IsChecked = true,
+                                Item = new OkCategory
+                                {
+                                    BoolOk = gr.Ok,
+                                    TextOk = gr.Ok == null ? " - Partial" : (gr.Ok.ToString() == "False") ? " - NOT OK" : " - OK"
+                                }
+                            });
+                        }
+                    }
+
+                    CollectionViewSource.GetDefaultView(ListBoxOk).Refresh();
+
                     #endregion refresh grid
 
                     StopTimer();
@@ -1034,32 +1194,43 @@ namespace ESD.JC_GoodsReceive.ViewModels
         public string MaterialShortText { get; set; }
 
         [FieldOrder(10)]
-        public bool? Ok { get; set; }
+        public string Ok { get; set; }
 
-        [FieldOrder(11)]
+        [FieldOrder(12)]
         [FieldConverter(ConverterKind.Decimal, ".")]
         public decimal Quantity { get; set; }
 
-        [FieldOrder(12)]
+        [FieldOrder(13)]
         public string Eun { get; set; }
 
-        [FieldOrder(13)]
+        [FieldOrder(14)]
         public string MvmtType { get; set; }
 
-        [FieldOrder(14)]
+        [FieldOrder(15)]
         public string StorageLoc { get; set; }
 
-        [FieldOrder(15)]
+        [FieldOrder(16)]
         public int Plant { get; set; }
 
-        [FieldOrder(16)]
+        [FieldOrder(17)]
         public string StorageBin { get; set; }
+
+        [FieldOrder(18)]
+        public decimal QuantityReceived { get; set; }
+
+        [FieldOrder(19)]
+        public string ReasonDesc { get; set; }
+
+        [FieldOrder(20)]
+        public string ReceivedBy { get; set; }
+
+        [FieldOrder(21)]
+        public string ReceivedOn { get; set; }
     }
 
-    public class FilterComboItem
+    public class OkCategory
     {
         public bool? BoolOk { get; set; }
         public string TextOk { get; set; }
-        public List<GoodsReceive> GroupedList { get; set; }
     }
 }

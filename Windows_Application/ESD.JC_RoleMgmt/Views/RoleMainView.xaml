@@ -37,15 +37,17 @@
                 </Grid.ColumnDefinitions>
 
                 <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
-                    <Button ToolTipService.ToolTip="Click to add new role!" Command="{Binding AddRoleCommand}">
+                    <Button ToolTipService.ToolTip="Click to add new role" Command="{Binding AddRoleCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_add.png" Height="40" Width="40" Margin="4"/>
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_add.png" Height="40" Width="40" Margin="4"/>
                         </StackPanel>
                     </Button>
                     <Separator />
-                    <Button ToolTipService.ToolTip="Click to edit role!" Command="{Binding EditRoleCommand}">
+                    <Button ToolTipService.ToolTip="Click to edit role" Command="{Binding EditRoleCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_edit.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_edit.png" Height="40" Width="40" Margin="4">
                                 <Image.Style>
                                     <Style TargetType="Image">
                                         <Style.Triggers>
@@ -59,9 +61,10 @@
                         </StackPanel>
                     </Button>
                     <Separator />
-                    <Button ToolTipService.ToolTip="Click to delete role!" Command="{Binding DeleteRoleCommand}">
+                    <Button ToolTipService.ToolTip="Click to delete role" Command="{Binding DeleteRoleCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
                                 <Image.Style>
                                     <Style TargetType="Image">
                                         <Style.Triggers>
@@ -85,13 +88,28 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
-                            VerticalAlignment="Center" CornerRadius="5">
-                        <StackPanel Margin="5" Orientation="Horizontal">
-                            <Image Source="/Resources/btn_find.png" Height="18"/>
-                            <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
-                                     HorizontalAlignment="Stretch" />
-                        </StackPanel>
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2" VerticalAlignment="Center" CornerRadius="5">
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" RenderOptions.BitmapScalingMode="HighQuality" Source="/Resources/btn_find.png" Height="18"/>
+                            <TextBox Grid.Column="1" Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
+                                     HorizontalAlignment="Stretch" x:Name="FilterTextBox"/>
+                            <TextBlock Grid.Column="1" IsHitTestVisible="False" FontSize="10" Text="Rolecode/Rolename" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="DarkGray">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=FilterTextBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </Border>
                 </Grid>
             </Grid>
@@ -104,7 +122,7 @@
                   HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" Grid.Row="2" Margin="0,10,0,0">
 
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Role Code" Width="*">
+                <DataGridTemplateColumn Header="Role Code" SortMemberPath="RoleCode" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch">
@@ -116,8 +134,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Role Name" Width="*" Binding="{Binding RoleName}" CanUserSort="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Description" Width="350" Binding="{Binding Description}" CanUserSort="False" Foreground="Black">
+                <DataGridTextColumn Header="Role Name" Width="*" Binding="{Binding RoleName}" Foreground="Black"/>
+                <DataGridTextColumn Header="Description" Width="350" Binding="{Binding Description}"  Foreground="Black">
                     <DataGridTextColumn.ElementStyle>
                         <Style>
                             <Setter Property="TextBlock.TextWrapping" Value="Wrap" />

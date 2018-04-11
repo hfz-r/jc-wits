@@ -49,7 +49,7 @@
                                             <Expander Background="LightGray" HorizontalAlignment="Stretch" IsExpanded="True">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, MM/dd/yyyy}" Margin="5,0,5,0" />
+                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, dd/MM/yyyy}" Margin="5,0,5,0" />
                                                         <TextBlock>(</TextBlock>
                                                         <TextBlock Text="{Binding Path=ItemCount}" Margin="0,0,5,0"/>
                                                         <TextBlock Text="Items"/>
@@ -69,8 +69,9 @@
                 </DataGrid.GroupStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Transaction Time" Width="Auto" MinWidth="200" Binding="{Binding CreatedOn, StringFormat=hh\\:mm\\:ss tt}" CanUserSort="True"/>
-                    <DataGridTextColumn Header="Quantity Received" Width="Auto" MinWidth="20" Binding="{Binding Quantity}" CanUserSort="True"/>
-                    <DataGridTextColumn Header="Reason" Width="Auto" MinWidth="400" Binding="{Binding Reason.ReasonDesc}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Quantity Received" Width="Auto" MinWidth="20" Binding="{Binding Quantity, StringFormat={}{0:G29}}" CanUserSort="True"/>
+                    <DataGridTextColumn Header="Reason" Width="Auto" MinWidth="400" Binding="{Binding Reason.ReasonDesc}" />
+                    <DataGridTextColumn Header="Received By" Width="Auto" MinWidth="300" Binding="{Binding CreatedBy}" CanUserSort="True"/>
                 </DataGrid.Columns>
             </DataGrid>
 

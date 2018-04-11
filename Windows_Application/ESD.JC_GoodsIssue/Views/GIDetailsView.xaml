@@ -7,8 +7,10 @@
              mc:Ignorable="d" 
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
              d:DesignHeight="300" d:DesignWidth="400">
     <UserControl.Resources>
+        <infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
         <DataTemplate x:Key="GITemplate">
             <Grid Margin="10">
                 <Grid.RowDefinitions>
@@ -37,7 +39,7 @@
 
                 <TextBlock Text="Quantity: " FontWeight="Bold"
                            Grid.Row="2" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QuantityLabel"/>
-                <TextBlock Text="{Binding Quantity}"                           
+                <TextBlock Text="{Binding Quantity, StringFormat={}{0:G29}}"                           
                            Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="QuantityData"/>
 
                 <TextBlock Text="Transfer Type: " FontWeight="Bold"
@@ -45,30 +47,30 @@
                 <TextBlock Text="{Binding TransferType}"                           
                            Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="TransTypeData"/>
 
-                <TextBlock Text="Production No.: " FontWeight="Bold"
+                <TextBlock Text="Production No.: " FontWeight="Bold" Visibility="{Binding DataContext.TransferPROD, ElementName=LayoutRoot, Converter={StaticResource ObjectToVisibility}}"
                            Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ProdNoLabel"/>
-                <TextBlock Text="{Binding ProductionNo}"                           
+                <TextBlock Text="{Binding ProductionNo}" Visibility="{Binding DataContext.TransferPROD, ElementName=LayoutRoot, Converter={StaticResource ObjectToVisibility}}"                            
                            Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="ProdNoData"/>
 
-                <TextBlock Text="Location To: " FontWeight="Bold"
-                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LocToLabel"/>
-                <TextBlock Text="{Binding Location1.LocationDesc}"                           
-                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="LocToData"/>
+                <TextBlock Text="Location To: " FontWeight="Bold" Visibility="{Binding DataContext.TransferPOST, ElementName=LayoutRoot, Converter={StaticResource ObjectToVisibility}}"
+                           Grid.Row="4" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LocToLabel"/>
+                <TextBlock Text="{Binding Location1.LocationDesc}" Visibility="{Binding DataContext.TransferPOST, ElementName=LayoutRoot, Converter={StaticResource ObjectToVisibility}}"
+                           Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="LocToData"/>
 
-                <TextBlock Text="Location From: " FontWeight="Bold"
-                           Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LocFromLabel"/>
-                <TextBlock Text="{Binding  Location.LocationDesc}"                           
-                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="LocFromData"/>
+                <TextBlock Text="Location From: " FontWeight="Bold" Visibility="{Binding DataContext.TransferPOST, ElementName=LayoutRoot, Converter={StaticResource ObjectToVisibility}}"
+                           Grid.Row="5" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="LocFromLabel"/>
+                <TextBlock Text="{Binding  Location.LocationDesc}" Visibility="{Binding DataContext.TransferPOST, ElementName=LayoutRoot, Converter={StaticResource ObjectToVisibility}}"
+                           Grid.Row="5" Grid.Column="1" AutomationProperties.AutomationId="LocFromData"/>
 
                 <TextBlock Text="Last Modified Date: " FontWeight="Bold"
-                           Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
-                <TextBlock Text="{Binding CreatedOn, StringFormat=g}"                           
-                           Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOnData"/>
+                           Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedOnLabel"/>
+                <TextBlock Text="{Binding CreatedOn, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}"                           
+                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="ModifiedOnData"/>
 
                 <TextBlock Text="Last Modified By: " FontWeight="Bold"
-                           Grid.Row="8" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedByLabel"/>
+                           Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="ModifiedByLabel"/>
                 <TextBlock Text="{Binding CreatedBy}"                           
-                           Grid.Row="8" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
+                           Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="ModifiedByData"/>
             </Grid>
         </DataTemplate>
         <Style TargetType="{x:Type TabItem}" x:Key="HeaderStyle">

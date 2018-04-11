@@ -84,12 +84,6 @@ C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.dll
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.Unity.Wpf.dll
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.Wpf.dll
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\System.Windows.Interactivity.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Xceed.Wpf.AvalonDock.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Aero.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Xceed.Wpf.AvalonDock.Themes.VS2010.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Xceed.Wpf.DataGrid.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Xceed.Wpf.Toolkit.dll
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\DataLayer.pdb
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ESD.JC_Infrastructure.pdb
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\EntityFramework.xml
@@ -112,29 +106,139 @@ C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ko\Microsoft.Expression.In
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ru\Microsoft.Expression.Interactions.resources.dll
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\fr\Xceed.Wpf.AvalonDock.resources.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\hu\Xceed.Wpf.AvalonDock.resources.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\it\Xceed.Wpf.AvalonDock.resources.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\pt-BR\Xceed.Wpf.AvalonDock.resources.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
-C:\WITS\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.csprojResolveAssemblyReference.cache
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMainView.baml
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMgmtNavigationItemView.baml
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleOperationView.baml
+C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsModuleView.g.cs
+C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsUsersView.g.cs
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMainView.g.cs
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsView.g.cs
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMgmtNavigationItemView.g.cs
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleOperationView.g.cs
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt_MarkupCompile.cache
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt_MarkupCompile.lref
+C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsModuleView.baml
+C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsUsersView.baml
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsView.baml
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.g.resources
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.Properties.Resources.resources
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.csproj.GenerateResource.Cache
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.dll
 C:\WITS\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ESD.JC_RoleMgmt.dll.config
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ESD.JC_RoleMgmt.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ESD.JC_RoleMgmt.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\DataLayer.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\EntityFramework.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ESD.JC_Infrastructure.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.Configuration.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.RegistrationByConvention.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.Unity.Wpf.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.Wpf.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\DataLayer.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ESD.JC_Infrastructure.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\EntityFramework.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.Configuration.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.RegistrationByConvention.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.Unity.Wpf.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.Wpf.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\de\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\en\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\es\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\it\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ru\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.csprojResolveAssemblyReference.cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMainView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMgmtNavigationItemView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleOperationView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsModuleView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsUsersView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMainView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMgmtNavigationItemView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleOperationView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt_MarkupCompile.cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt_MarkupCompile.lref
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsModuleView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsUsersView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.g.resources
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.Properties.Resources.resources
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.csproj.GenerateResource.Cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ESD.JC_RoleMgmt.dll.config
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ESD.JC_RoleMgmt.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ESD.JC_RoleMgmt.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\DataLayer.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\EntityFramework.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ESD.JC_Infrastructure.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.Configuration.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.RegistrationByConvention.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.Unity.Wpf.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.Wpf.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\DataLayer.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ESD.JC_Infrastructure.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\EntityFramework.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.pdb
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.ServiceLocation.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.Configuration.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Microsoft.Practices.Unity.RegistrationByConvention.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.Unity.Wpf.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\Prism.Wpf.xml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\de\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\en\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\es\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\fr\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\it\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ja\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ko\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\ru\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\bin\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.csprojResolveAssemblyReference.cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMainView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMgmtNavigationItemView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleOperationView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsModuleView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsUsersView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMainView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleMgmtNavigationItemView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleOperationView.g.cs
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt_MarkupCompile.cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt_MarkupCompile.lref
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsModuleView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsUsersView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\Views\RoleDetailsView.baml
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.g.resources
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.Properties.Resources.resources
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.csproj.GenerateResource.Cache
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.dll
+C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_RoleMgmt\obj\Debug\ESD.JC_RoleMgmt.pdb

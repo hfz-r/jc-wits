@@ -70,7 +70,7 @@ namespace ESD.JC_Main.ViewModels
         private void Confirmed(Window window, CustomPrincipal customPrincipal)
         {
             customPrincipal.Identity = new AnonymousIdentity();
-            window.Close();
+            window.Hide();
             try
             {
                 new Bootstrapper().Run();

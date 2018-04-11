@@ -57,7 +57,7 @@
                                             <Expander Background="LightGray" HorizontalAlignment="Stretch" IsExpanded="True">
                                                 <Expander.Header>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, MM/dd/yyyy}" Margin="5,0,5,0" />
+                                                        <TextBlock Text="{Binding Path=Name, StringFormat=dddd\, dd/MM/yyyy}" Margin="5,0,5,0" />
                                                         <TextBlock>(</TextBlock>
                                                         <TextBlock Text="{Binding Path=ItemCount}" Margin="0,0,5,0"/>
                                                         <TextBlock Text="Items"/>
@@ -79,6 +79,7 @@
                     <DataGridTextColumn Header="Time" Width="Auto" MinWidth="200" Binding="{Binding AT.CreatedOn, StringFormat=hh\\:mm\\:ss tt}" />
                     <DataGridTextColumn Header="Section Received" Width="Auto" MinWidth="20" Binding="{Binding AT.Quantity}" />
                     <DataGridTextColumn Header="Ship To" Width="Auto" MinWidth="400" Binding="{Binding ShipTo}" />
+                    <DataGridTextColumn Header="Shipped By" Width="Auto" MinWidth="300" Binding="{Binding AT.CreatedBy}" CanUserSort="True"/>
                 </DataGrid.Columns>
             </DataGrid>
 

@@ -60,5 +60,19 @@ namespace DataLayer.Repositories
                 context.SaveChanges();
             }
         }
+
+        public void Delete(long ID)
+        {
+            using (var context = new InventoryContext())
+            {
+                var FCUTxn = context.FCUTransactions.Where(id => id.FCUID == ID);
+                context.FCUTransactions.RemoveRange(FCUTxn);
+
+                var fcu = context.FCUs.Where(id => id.ID == ID);
+                context.FCUs.RemoveRange(fcu);
+
+                context.SaveChanges();
+            }
+        }
     }
 }

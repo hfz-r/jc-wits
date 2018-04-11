@@ -9,7 +9,7 @@ namespace ESD.JC_RoleMgmt.Views
     /// </summary>
     public partial class RoleMainView : UserControl
     {
-        public RoleMainView(RoleMainViewViewModel viewModel)
+        public RoleMainView(RoleMainViewModel viewModel)
         {
             InitializeComponent();
 

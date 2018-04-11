@@ -72,12 +72,12 @@
         </StackPanel>
 
         <StackPanel Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right" Margin="0,-20,10,0" VerticalAlignment="Center">
-            <Button Content="Login" Width="110" Height="28" ToolTipService.ToolTip="Press to login!"
+            <Button Content="Login" Width="110" Height="28" ToolTipService.ToolTip="Login"
                         Command="{Binding LoginCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="10,-20,0,0" VerticalAlignment="Center">
-            <Button Content="Close" Width="110" Height="28" ToolTipService.ToolTip="Press to close!"
+            <Button Content="Close" Width="110" Height="28" ToolTipService.ToolTip="Close Application"
                         Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
         </StackPanel>
 

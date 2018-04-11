@@ -116,7 +116,7 @@
     <Compile Include="Services\SequencingService.cs" />
     <Compile Include="Utilities\ISequencedObject.cs" />
     <Compile Include="Utilities\ObservableObject.cs" />
-    <Compile Include="ViewModels\ReasonMainViewViewModel.cs" />
+    <Compile Include="ViewModels\ReasonMainViewModel.cs" />
     <Compile Include="Views\ReasonMainView.xaml.cs">
       <DependentUpon>ReasonMainView.xaml</DependentUpon>
     </Compile>

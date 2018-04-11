@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ESD.JC_FinishGoods.Views"
              mc:Ignorable="d" 
-             xmlns:ToggleSwitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
              xmlns:prism="http://prismlibrary.com/"
@@ -19,63 +18,15 @@
         <infrastructure:BrushColorConverter x:Key="BooleanToBrushConverter"/>
         <infrastructure:OKcolumnColorConverter x:Key="ColumnColorConverter"/>
         <infrastructure:TooltipsConverter x:Key="TooltipsToString"/>
-        <infrastructure:PanelDimensionsConverter x:Key="PanelDimensionsConverter"/>
-        <infrastructure:PanelMarginConverter x:Key="PanelMarginConverter"/>
         <infrastructure:ObservableCommand x:Key="OpenFCUDetailsCommand" Value="{Binding OpenFCUDetailsCommand}"/>
         <conv:CollectionToBooleanConverter x:Key="CollectionToBooleanConverter"/>
-
-        <Storyboard x:Key="expandStoryBoard" 
-                    TargetProperty="RenderTransform.(TranslateTransform.X)"
-                    AccelerationRatio=".4"
-                    DecelerationRatio=".4">
-            <DoubleAnimation Storyboard.TargetName="sidePanel" Duration="0:0:0.6" From="0">
-                <DoubleAnimation.To>
-                    <MultiBinding Converter="{StaticResource PanelDimensionsConverter}">
-                        <Binding Mode="OneWay" Source="{x:Reference propertiesPanel}" Path="Width" />
-                        <Binding Mode="OneWay" Source="{x:Reference tabButton}" Path="Width" />
-                    </MultiBinding>
-                </DoubleAnimation.To>
-            </DoubleAnimation>
-        </Storyboard>
-        <Storyboard x:Key="collapseStoryBoard" 
-                    TargetProperty="RenderTransform.(TranslateTransform.X)"
-                    AccelerationRatio=".4"
-                    DecelerationRatio=".4">
-            <DoubleAnimation Storyboard.TargetName="sidePanel" Duration="0:0:0.6" To="0">
-                <DoubleAnimation.From>
-                    <MultiBinding Converter="{StaticResource PanelDimensionsConverter}">
-                        <Binding Mode="OneWay" Source="{x:Reference propertiesPanel}" Path="Width" />
-                        <Binding Mode="OneWay" Source="{x:Reference tabButton}" Path="Width" />
-                    </MultiBinding>
-                </DoubleAnimation.From>
-            </DoubleAnimation>
-        </Storyboard>
-
-        <Style TargetType="StackPanel" x:Key="FadeOutSP">
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Control.MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard >
-                            <DoubleAnimation Duration="0:0:1" To="1" Storyboard.TargetProperty="Opacity"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="Control.MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard >
-                            <DoubleAnimation Duration="0:0:1" To="0.35" Storyboard.TargetProperty="Opacity"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
 
         <Style TargetType="Button" x:Key="OKColumnFlatButtonStyle">
             <Setter Property="Background">
                 <Setter.Value>
                     <MultiBinding Converter="{StaticResource ColumnColorConverter}" >
-                        <Binding Path="BoolShipStatus" />
-                        <Binding Path="TexShipStatus"/>
+                        <Binding Path="Item.BoolFcuStatus"/>
+                        <Binding Path="Item.TextFcuStatus"/>
                     </MultiBinding>
                 </Setter.Value>
             </Setter>
@@ -143,7 +94,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Project" Width="*">
+                <DataGridTemplateColumn Header="Project" SortMemberPath="Project" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch">
@@ -174,20 +125,20 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Unit Tag" Width="Auto" Binding="{Binding UnitTag}" Foreground="Black"/>
                 <DataGridTextColumn Header="Part No." Width="*" Binding="{Binding PartNo}" Foreground="Black"/>
-                <DataGridTextColumn Header="Model" Width="*" Binding="{Binding Model}" CanUserSort="False" Foreground="Black">
+                <DataGridTextColumn Header="Model" Width="Auto" Binding="{Binding Model}"  Foreground="Black">
                     <DataGridTextColumn.ElementStyle>
                         <Style>
                             <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Serial No." Width="*" Binding="{Binding SerialNo}" CanUserSort="False" Foreground="Black"/>
-                <DataGridTextColumn Header="Item No." Width="Auto" Binding="{Binding Item}" Foreground="Black"/>
-                <DataGridTextColumn Header="Quantity" Width="Auto" Binding="{Binding Qty}" Foreground="Black"/>
-                <DataGridTextColumn Header="Shipping Status" Width="Auto" Binding="{Binding ShipStatus}" Foreground="Transparent">
+                <DataGridTextColumn Header="Serial No." Width="Auto" Binding="{Binding SerialNo}" Foreground="Black"/>
+                <DataGridTextColumn Header="Item No." Width="*" Binding="{Binding Item}" Foreground="Black"/>
+                <DataGridTextColumn Header="Quantity" Width="*" Binding="{Binding Qty, StringFormat={}{0:G29}}" Foreground="Black"/>
+                <DataGridTextColumn Width="*" Binding="{Binding ShipStatus2}" Foreground="Transparent">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Background" Value="{Binding ShipStatus, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}"/>
+                            <Setter Property="Background" Value="{Binding ShipStatus2, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                     <DataGridTextColumn.CellStyle>
@@ -195,80 +146,69 @@
                             <Setter Property="ToolTip">
                                 <Setter.Value>
                                     <MultiBinding Converter="{StaticResource TooltipsToString}" >
-                                        <Binding Path="QtyReceived" />
-                                        <Binding Path="Qty"/>
+                                        <Binding Path="QtyReceived2" />
+                                        <Binding Path="Qty2"/>
                                     </MultiBinding>
                                 </Setter.Value>
                             </Setter>
                         </Style>
                     </DataGridTextColumn.CellStyle>
+                    <DataGridTextColumn.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Shipping Status" />
+                            <Button Name="btnFcuStatusFilter" Margin="8,0,0,0" Click="btnFcuStatusFilter_Click">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Image RenderOptions.BitmapScalingMode="HighQuality" Source="/Resources/filter.png" Height="10" Width="10" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </StackPanel>
+                    </DataGridTextColumn.Header>
                 </DataGridTextColumn>
+                <DataGridTextColumn Header="Created On" Width="Auto" Binding="{Binding CreatedOn, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}" Foreground="Black"/>
             </DataGrid.Columns>
         </DataGrid>
 
-        <StackPanel x:Name="sidePanel" Style="{StaticResource FadeOutSP}" Opacity="0.35" Grid.Row="0" HorizontalAlignment="Right"
-                Margin="{Binding ElementName=propertiesPanel, Path=Width, Converter={StaticResource PanelMarginConverter}}">
-            <StackPanel.RenderTransform>
-                <TranslateTransform />
-            </StackPanel.RenderTransform>
-            <StackPanel Orientation="Horizontal">
-                <ctrl:SidePanelTab x:Name="tabButton" VerticalAlignment="Top" Margin="0,20,0,0" MouseDown="StackPanel_MouseDown" />
-                <StackPanel Orientation="Vertical" Background="LightGray" MouseDown="StackPanel_MouseDown">
-                    <Grid x:Name="propertiesPanel" Width="250" Height="Auto">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="40"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Datagrid Options" Grid.ColumnSpan="2" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,10"/>
-                        <TextBlock Text="Auto-refresh grid:" Grid.Row="1" Grid.Column="0" Padding="10,10" />
-                        <ToggleSwitch:HorizontalToggleSwitch 
-                                Grid.Row="1" Grid.Column="1" 
-                                BorderBrush="#FF1F1F1F"
-                                Width="80" 
-                                UncheckedBackground="#FF333430" 
-                                UncheckedForeground="#FF999999" 
-                                ThumbSize="40" 
-                                IsChecked="{Binding IsEnableAutoRefresh, Mode=TwoWay}" 
-                                HorizontalAlignment="Left">
-                            <ToggleSwitch:HorizontalToggleSwitch.CheckedBackground>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#FF3EB3EC"/>
-                                    <GradientStop Color="#FF349BE6" Offset="1"/>
-                                </LinearGradientBrush>
-                            </ToggleSwitch:HorizontalToggleSwitch.CheckedBackground>
-                            <ToggleSwitch:HorizontalToggleSwitch.ThumbBrush>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#FF4D4E48"/>
-                                    <GradientStop Color="#FF333430" Offset="1"/>
-                                    <GradientStop Color="#FF333330" Offset="0.021"/>
-                                </LinearGradientBrush>
-                            </ToggleSwitch:HorizontalToggleSwitch.ThumbBrush>
-                        </ToggleSwitch:HorizontalToggleSwitch>
-                        <TextBlock Text="(ShipStatus) column filter: " Grid.Row="2" Grid.Column="0" Padding="10,10" />
-                        <ComboBox Grid.Row="2" Grid.Column="1" Padding="10,10" Margin="0,5,10,5"
-                                  ItemsSource="{Binding OKColumnFilterList}"
-                                  AutomationProperties.AutomationId="OKColumnFilterData">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Content="{Binding BoolShipStatus}" Style="{StaticResource OKColumnFlatButtonStyle}"/>
-                                        <TextBlock Text="{Binding TexShipStatus}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </Grid>
-                </StackPanel>
-            </StackPanel>
-        </StackPanel>
+        <Popup Name="fcuStatusPopupSelection" Placement="Bottom" PlacementTarget="{Binding ElementName=btnFcuStatusFilter}" StaysOpen="False" Width="200">
+            <Border Background="LightGray" BorderBrush="Gray" BorderThickness="1,1,1,1">
+                <StackPanel Margin="5,5,5,15">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                        <Button Margin="0,0,0,0" Name="btnSelectAll" Click="btnSelectAll_Click">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <TextBlock Text="Select All" Foreground="Blue" Cursor="Hand" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
 
-        <StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2">
+                        <Button Margin="10,0,0,0" Name="btnUnselectAll" Click="btnUnselectAll_Click">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <TextBlock Text="Select None" Foreground="Blue" Cursor="Hand" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
+
+                    <ListBox ItemsSource="{Binding ListBoxFcuStatus}" BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" 
+									  Checked="ApplyFilters" 
+									  Unchecked="ApplyFilters" />
+                                    <Button Content="{Binding Item.BoolFcuStatus}" Style="{StaticResource OKColumnFlatButtonStyle}"/>
+                                    <TextBlock Text="{Binding Item.TextFcuStatus}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <StackPanel Visibility="Collapsed" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2">
             <ProgressBar Name="pbStatus" Width="100" Minimum="0" Maximum="100" Value="{Binding ProgressValue}" ToolTip="Grid`s auto-refresh countdown"/>
             <TextBlock Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" FontSize="10" FontWeight="Light" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </StackPanel>

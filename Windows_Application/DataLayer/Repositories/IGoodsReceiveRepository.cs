@@ -10,5 +10,6 @@ namespace DataLayer.Repositories
         GoodsReceive GetEunKGDetails(long ID);
         void Add(GoodsReceive gr);
         void Update(GoodsReceive gr);
+        void Delete(long ID);
     }
 }

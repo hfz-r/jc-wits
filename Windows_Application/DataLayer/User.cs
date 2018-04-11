@@ -18,7 +18,7 @@ namespace DataLayer
         public string Username { get; set; }
         public string Password { get; set; }
         public string Name { get; set; }
-        public long RoleID { get; set; }
+        public Nullable<long> RoleID { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
         public System.DateTime CreatedOn { get; set; }

@@ -7,10 +7,12 @@ namespace ESD.JC_GoodsReceive.Services
     public class GRTransactionServices : IGRTransactionServices
     {
         private IGRTransactionRepository grTrnxRepository;
+        private IGoodsReceiveRepository grRepository;
 
-        public GRTransactionServices(IGRTransactionRepository grTrnxRepository)
+        public GRTransactionServices(IGRTransactionRepository grTrnxRepository, IGoodsReceiveRepository grRepository)
         {
             this.grTrnxRepository = grTrnxRepository;
+            this.grRepository = grRepository;
         }
 
         public IEnumerable<GRTransaction> GetAll(bool eagerLoading)
@@ -24,6 +26,11 @@ namespace ESD.JC_GoodsReceive.Services
         public IEnumerable<GRTransaction> GetGRTransactionByGRID(long GRID)
         {
             return grTrnxRepository.GetGRTransactionByGRID(GRID);
+        }
+
+        public GoodsReceive GetGRDetails(long GRID)
+        {
+            return grRepository.GetGR(GRID);
         }
     }
 }

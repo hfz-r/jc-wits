@@ -69,5 +69,27 @@ namespace ESD.JC_FinishGoods.Services
 
             return true;
         }
+
+        public bool Delete(long ID)
+        {
+            try
+            {
+                var fcuObj = GetFCU(ID);
+                if (fcuObj != null)
+                {
+                    fcuRepository.Delete(ID);
+                }
+                else
+                {
+                    throw new Exception("Record Not Found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return true;
+        }
     }
 }

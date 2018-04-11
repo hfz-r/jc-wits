@@ -24,6 +24,23 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="errorStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="true">
+                            <Border Background="Red" DockPanel.Dock="Left" Margin="10,-10,0,0" Width="15" Height="15" CornerRadius="10"
+                                    ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
+                                <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Foreground="White"/>
+                            </Border>
+                            <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
+                                <Border BorderBrush="Red" BorderThickness="1" />
+                            </AdornedElementPlaceholder>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" Background="White">
@@ -85,8 +102,14 @@
                         </Grid.ColumnDefinitions>
 
                         <Label Grid.Row="0" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Role Code:</Label>
-                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding RoleCodeAlias}" 
-                         TextChanged="TextBox_TextChanged" Margin="0,5,0,0" IsEnabled="{Binding IsEnabled}" AutomationProperties.AutomationId="RoleCodeData"/>
+                        <TextBox Grid.Row="0" 
+                                 Grid.Column="1" 
+                                 Style="{StaticResource errorStyle}"
+                                 Text="{Binding RoleCodeAlias, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" 
+                                 TextChanged="TextBox_TextChanged" 
+                                 Margin="0,5,0,0" 
+                                 IsEnabled="{Binding IsEnabled}"
+                                 AutomationProperties.AutomationId="RoleCodeData"/>
 
                         <Label Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" VerticalAlignment="Bottom">Role Name:</Label>
                         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding RoleData.RoleName}" Margin="0,5,0,0" 
@@ -137,7 +160,7 @@
                 </GroupBox>
 
                 <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Command="{Binding SaveCommand}" Width="60" Margin="6,0">
+                    <Button Command="{Binding SaveCommand}" Width="60" Margin="6,0" IsEnabled="{Binding IsSaveEnabled}">
                         Save
                     </Button>
                     <Button Command="{Binding CancelCommand}" Width="60">

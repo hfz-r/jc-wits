@@ -1,7 +1,9 @@
 ﻿using DataLayer;
 using ESD.JC_Infrastructure;
+using ESD.JC_Infrastructure.Events;
 using ESD.JC_UserMgmt.Services;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -11,6 +13,7 @@ using System.Windows.Input;
 
 namespace ESD.JC_UserMgmt.ViewModels
 {
+    [RegionMemberLifetime(KeepAlive = false)]
     public class UserDetailsViewModel : BindableBase, INavigationAware
     {
         private User _User;
@@ -46,38 +49,26 @@ namespace ESD.JC_UserMgmt.ViewModels
 
         private IRegionNavigationJournal navigationJournal;
         private IRegionManager RegionManager;
+        private IEventAggregator EventAggregator;
         private IUserServices UserServices;
         private InteractionRequest<Confirmation> confirmRemoveThisInteractionRequest;
 
-        public UserDetailsViewModel(IRegionManager _RegionManager, IUserServices _UserServices)
+        public UserDetailsViewModel(IRegionManager _RegionManager, IUserServices _UserServices, IEventAggregator _EventAggregator)
         {
             RegionManager = _RegionManager;
+            EventAggregator = _EventAggregator;
             UserServices = _UserServices;
 
-            EditThisCommand = new DelegateCommand(EditThis);
             RemoveThisCommand = new DelegateCommand(RemoveThis, CanRemove);
             GoBackCommand = new DelegateCommand(GoBack);
             confirmRemoveThisInteractionRequest = new InteractionRequest<Confirmation>();
         }
 
-        public ICommand EditThisCommand { get; private set; }
         public ICommand RemoveThisCommand { get; private set; }
         public ICommand GoBackCommand { get; private set; }
         public IInteractionRequest ConfirmRemoveThisInteractionRequest
         {
             get { return this.confirmRemoveThisInteractionRequest; }
-        }
-
-        private void EditThis()
-        {
-            if (User == null)
-                return;
-
-            var parameters = new NavigationParameters();
-            parameters.Add("AuthenticatedUser", AuthenticatedUser);
-            parameters.Add("ID", User.ID);
-
-            this.RegionManager.RequestNavigate(RegionNames.MainContentRegion, new Uri(userOperationViewName + parameters, UriKind.Relative));
         }
 
         private void RemoveThis()
@@ -88,7 +79,7 @@ namespace ESD.JC_UserMgmt.ViewModels
             this.confirmRemoveThisInteractionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "Are you confirm you want to remove this?",
+                        Content = "Confirm to remove this?",
                         Title = "Confirm"
                     },
                     c => { InteractionResultMessage = c.Confirmed ? InitDelete(User.ID) : "NOT OK!"; });
@@ -110,15 +101,16 @@ namespace ESD.JC_UserMgmt.ViewModels
                 MessageBox.Show(ex.Message, "Notification", MessageBoxButton.OK);
             }
 
-            return "OK!";
+            return "User deleted.";
         }
 
         private bool CanRemove()
         {
             if (User == null)
                 return false;
-
-            if (User.Role.RoleCode.Equals("ADMIN"))
+            if (User.Username == AuthenticatedUser)
+                return false;
+            if (User.Role.RoleCode == "ADMINISTRATOR")
                 return false;
 
             return true;
@@ -157,6 +149,7 @@ namespace ESD.JC_UserMgmt.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
+            navigationContext.NavigationService.Region.RegionManager.Regions.Remove(RegionNames.TabRegionRole);
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -168,6 +161,8 @@ namespace ESD.JC_UserMgmt.ViewModels
             if (ID.HasValue)
             {
                 this.User = UserServices.GetUser(ID.Value);
+
+                this.EventAggregator.GetEvent<UserSelectedEvent>().Publish(ID.Value);
             }
 
             this.navigationJournal = navigationContext.NavigationService.Journal;

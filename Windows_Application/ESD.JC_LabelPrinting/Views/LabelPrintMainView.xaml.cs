@@ -45,6 +45,9 @@ namespace ESD.JC_LabelPrinting.Views
                 if (ctl.GetType() == typeof(TextBox))
                     ((TextBox)ctl).Text = string.Empty;
             }
+
+            var obj = DataContext as LabelPrintMainViewModel;
+            obj.QTY = null;
         }
     }
 }

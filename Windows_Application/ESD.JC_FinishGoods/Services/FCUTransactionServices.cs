@@ -7,10 +7,12 @@ namespace ESD.JC_FinishGoods.Services
     public class FCUTransactionServices : IFCUTransactionServices
     {
         private IFCUTransactionRepository fcuTrnxRepository;
+        private IFCURepository fcuRepository;
 
-        public FCUTransactionServices(IFCUTransactionRepository fcuTrnxRepository)
+        public FCUTransactionServices(IFCUTransactionRepository fcuTrnxRepository, IFCURepository fcuRepository)
         {
             this.fcuTrnxRepository = fcuTrnxRepository;
+            this.fcuRepository = fcuRepository;
         }
 
         public IEnumerable<FCUTransaction> GetAll(bool eagerLoading)
@@ -29,6 +31,11 @@ namespace ESD.JC_FinishGoods.Services
         public Location GetLocationFromFCUTransaction(long ID)
         {
             return fcuTrnxRepository.GetLocationFromFCUTransaction(ID);
+        }
+
+        public FCU GetFCUDetails(long ID)
+        {
+            return fcuRepository.GetFCU(ID);
         }
     }
 }

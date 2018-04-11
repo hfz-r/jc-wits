@@ -7,10 +7,14 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:cnvt="clr-namespace:ESD.JC_UserMgmt.Converters"
+             xmlns:validation="clr-namespace:ESD.JC_UserMgmt.Validations"
              xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure" 
              d:DesignWidth="800" d:DesignHeight="600">
-
     <UserControl.Resources>
+        <cnvt:DataGridAccessConverter x:Key="DGAccessConverter"/>
+        <infrastructure:IgnoreNewItemPlaceHolderConverter x:Key="ignoreNewItemPlaceHolderConverter"/>
+        <infrastructure:IDCheckerConverter Cutoff="0" x:Key="IDCheckerConverter"/>
         <infrastructure:ObservableCommand x:Key="OpenUserDetailsCommand" Value="{Binding OpenUserDetailsCommand}"/>
     </UserControl.Resources>
 
@@ -18,16 +22,17 @@
         <i:EventTrigger EventName="Loaded">
             <wpf:InvokeCommandAction Command="{Binding OnLoadedCommand}" />
         </i:EventTrigger>
-        <prism:InteractionRequestTrigger SourceObject="{Binding ConfirmDeleteInteractionRequest, Mode=OneWay}">
+        <prism:InteractionRequestTrigger SourceObject="{Binding InteractionRequest, Mode=OneWay}">
             <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
         </prism:InteractionRequestTrigger>
     </i:Interaction.Triggers>
-
+    
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 0" >
@@ -38,15 +43,10 @@
                 </Grid.ColumnDefinitions>
 
                 <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
-                    <Button ToolTipService.ToolTip="Click to add new User!" Command="{Binding AddUserCommand}">
+                    <Button ToolTipService.ToolTip="Click to save user" Command="{Binding SaveUserCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_add.png" Height="40" Width="40" Margin="4"/>
-                        </StackPanel>
-                    </Button>
-                    <Separator />
-                    <Button ToolTipService.ToolTip="Click to edit User!" Command="{Binding EditUserCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_edit.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_save.png" Height="40" Width="40" Margin="4">
                                 <Image.Style>
                                     <Style TargetType="Image">
                                         <Style.Triggers>
@@ -60,9 +60,10 @@
                         </StackPanel>
                     </Button>
                     <Separator />
-                    <Button ToolTipService.ToolTip="Click to delete User!" Command="{Binding DeleteUserCommand}">
+                    <Button ToolTipService.ToolTip="Click to delete user" Command="{Binding DeleteUserCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
+                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
+                                   Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
                                 <Image.Style>
                                     <Style TargetType="Image">
                                         <Style.Triggers>
@@ -86,13 +87,28 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2"
-                            VerticalAlignment="Center" CornerRadius="5">
-                        <StackPanel Margin="5" Orientation="Horizontal">
-                            <Image Source="/Resources/btn_find.png" Height="18"/>
-                            <TextBox Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
-                                     HorizontalAlignment="Stretch" />
-                        </StackPanel>
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2" VerticalAlignment="Center" CornerRadius="5">
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" RenderOptions.BitmapScalingMode="HighQuality" Source="/Resources/btn_find.png" Height="18"/>
+                            <TextBox Grid.Column="1" Text="{Binding FilterTextBox, UpdateSourceTrigger=PropertyChanged}" Style="{x:Null}" Margin="3 0 0 0" Width="100"
+                                     HorizontalAlignment="Stretch" x:Name="FilterTextBox"/>
+                            <TextBlock Grid.Column="1" IsHitTestVisible="False" FontSize="10" Text="Name/Username" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="DarkGray">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=FilterTextBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </Border>
                 </Grid>
             </Grid>
@@ -100,28 +116,138 @@
 
         <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="10" ShowsPreview="True" />
 
-        <DataGrid ItemsSource="{Binding Path=Users}" SelectedItem="{Binding SelectedUser}" CurrentCell="{Binding CellInfo, Mode=TwoWay}" AutoGenerateColumns="False" 
-                  IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutomationProperties.AutomationId="UserGrid" 
-                  HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" Grid.Row="2" Margin="0,10,0,0">
+        <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Bottom">
+            <TextBlock Text="Number of items: " TextWrapping="NoWrap"/>
+            <TextBlock Text="{Binding ItemCount}" TextWrapping="Wrap"/>
+        </StackPanel>
 
+        <DataGrid x:Name="UserGrid"
+                    ItemsSource="{Binding Users}" 
+                    SelectedItem="{Binding SelectedUser, Converter={StaticResource ignoreNewItemPlaceHolderConverter}}" 
+                    CurrentCell="{Binding CellInfo, Mode=TwoWay}"
+                    AutoGenerateColumns="False" 
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch" 
+                    AutomationProperties.AutomationId="UserGrid" 
+                    HorizontalScrollBarVisibility="Hidden" 
+                    VerticalScrollBarVisibility="Auto" 
+                    Grid.Row="2" 
+                    Margin="0,10,0,0"
+                    DataContextChanged="OnMainGridDataContextChanged"
+                    xmlns:Behaviors="clr-namespace:ESD.JC_UserMgmt.Views">
+            <i:Interaction.Behaviors>
+                <Behaviors:DataGridRowReadOnlyBehavior/>
+            </i:Interaction.Behaviors>
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="DataGridCell.IsSelected" Value="True">
+                            <Setter Property="Background" Value="#FF63AADA" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="Padding" Value="-2"/>
+                    <Style.Triggers>
+                        <DataTrigger Value="True">
+                            <DataTrigger.Binding>
+                                <MultiBinding Converter="{StaticResource DGAccessConverter}">
+                                    <Binding Path="ID"></Binding>
+                                    <Binding Path="Username"></Binding>
+                                    <Binding Path="RoleID"></Binding>
+                                </MultiBinding>
+                            </DataTrigger.Binding>
+                            <Setter Property="Behaviors:ReadOnlyService.IsReadOnly" Value="True"/>
+                            <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+                            <Setter Property="ToolTip" Value="Unable to edit/remove other user"/>
+                        </DataTrigger>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="Background" Value="Red"/>
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <validation:BindingProxy x:Key="Collection" Data="{Binding Path=Users}"/>
+            </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Name" Width="*">
+                <DataGridTemplateColumn Header="No" SortMemberPath="SequenceNumber" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                                <Hyperlink Command="{Binding DataContext.OpenUserDetailsCommand, ElementName=LayoutRoot}" CommandParameter="{Binding}"
-                                           AutomationProperties.AutomationId="OpenUserDetailHyperLink">
-                                    <TextBlock Text="{Binding Name}" />
-                                </Hyperlink>
-                            </TextBlock>
+                            <Hyperlink Command="{Binding DataContext.OpenUserDetailsCommand, ElementName=LayoutRoot}" CommandParameter="{Binding}"
+                                        AutomationProperties.AutomationId="OpenUserDetailHyperLink">
+                                <TextBlock Text="{Binding SequenceNumber}" />
+                                <Hyperlink.Style>
+                                    <Style TargetType="Hyperlink">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ID}" Value="0">
+			                                    <Setter Property="Foreground" Value="Black" />
+			                                    <Setter Property="Cursor" Value="Arrow" />
+                                                <Setter Property="IsEnabled" Value="False"/>
+			                                    <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
+		                                    </DataTrigger>                  
+                                        </Style.Triggers>
+                                    </Style>
+                                </Hyperlink.Style>
+                            </Hyperlink>
+                        </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Username" Width="*" Binding="{Binding Username}" CanUserSort="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Role" Width="*" Binding="{Binding Role.RoleCode}" CanUserSort="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Email" Width="*" Binding="{Binding Email}" CanUserSort="False" Foreground="Black"/>
+                <DataGridTextColumn Header="Username" 
+                                    Width="Auto"
+                                    Binding="{Binding Username, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" 
+                                    IsReadOnly="{Binding IsEditable}" 
+                                    Foreground="Black"/>
+                <DataGridTextColumn Header="Password" Width="80" Binding="{Binding Password, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsEditable}" FontWeight="Bold" Foreground="Black">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=ID, Converter={StaticResource IDCheckerConverter}}">
+                                    <DataTrigger.Value>true</DataTrigger.Value>
+                                    <Setter Property="Background" Value="LightGray"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsEditable}" Foreground="Black" />
+                <DataGridComboBoxColumn Header="Role" 
+                                        Width="Auto"
+                                        MinWidth="150"
+                                        SelectedValueBinding="{Binding RoleID, UpdateSourceTrigger=PropertyChanged}" 
+                                        SelectedValuePath="ID"
+                                        DisplayMemberPath="RoleCode">  
+                    <DataGridComboBoxColumn.ElementStyle>
+                        <Style TargetType="{x:Type ComboBox}">
+                            <Setter Property="ItemsSource" Value="{Binding Path=DataContext.Roles, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+                        </Style>
+                    </DataGridComboBoxColumn.ElementStyle>
+                    <DataGridComboBoxColumn.EditingElementStyle>
+                        <Style TargetType="{x:Type ComboBox}">
+                            <Setter Property="ItemsSource" Value="{Binding Path=DataContext.Roles, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+                        </Style>
+                    </DataGridComboBoxColumn.EditingElementStyle>
+                </DataGridComboBoxColumn>
+                <DataGridTextColumn Header="Email" 
+                                    Width="Auto" 
+                                    Binding="{Binding Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" 
+                                    IsReadOnly="False" 
+                                    Foreground="Black"/>
+                <DataGridTextColumn Header="Address" Width="*" Binding="{Binding Address, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsEditable}" Foreground="Black">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
-
+            <DataGrid.RowValidationRules>
+                <ExceptionValidationRule/>
+                <validation:UserDataGrid ValidationStep="UpdatedValue">
+                    <validation:ComparisonValue Collection="{Binding Data, Source={StaticResource Collection}}"/>
+                </validation:UserDataGrid>
+            </DataGrid.RowValidationRules>
         </DataGrid>
     </Grid>
 </UserControl>

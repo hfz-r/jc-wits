@@ -6,9 +6,11 @@ namespace ESD.JC_UserMgmt.Services
 {
     public interface IUserServices
     {
-        IEnumerable<User> GetAll();
+        IEnumerable<User> GetAll(bool eagerLoading);
         User GetUser(long ID);
-        bool Save(User User, string state = "");
-        void Delete(long ID);
+        bool Save(List<User> users, string state = "");
+        bool Delete(long ID);
+        IEnumerable<GRTransaction> GetUserGRTrnx(long ID);
+        IEnumerable<GITransaction> GetUserGITrnx(long ID);
     }
 }

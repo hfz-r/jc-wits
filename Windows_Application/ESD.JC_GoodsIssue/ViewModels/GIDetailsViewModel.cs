@@ -6,6 +6,7 @@ using Prism.Events;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
 using Prism.Regions;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ESD.JC_GoodsIssue.ViewModels
@@ -28,6 +29,28 @@ namespace ESD.JC_GoodsIssue.ViewModels
             {
                 SetProperty(ref _AuthenticatedUser, value);
                 RaisePropertyChanged("AuthenticatedUser");
+            }
+        }
+
+        private object _TransferPROD;
+        public object TransferPROD
+        {
+            get { return _TransferPROD; }
+            set
+            {
+                SetProperty(ref _TransferPROD, value);
+                RaisePropertyChanged("TransferPROD");
+            }
+        }
+
+        private object _TransferPOST;
+        public object TransferPOST
+        {
+            get { return _TransferPOST; }
+            set
+            {
+                SetProperty(ref _TransferPOST, value);
+                RaisePropertyChanged("TransferPOST");
             }
         }
 
@@ -97,6 +120,17 @@ namespace ESD.JC_GoodsIssue.ViewModels
             if (id.HasValue)
             {
                 this.GoodsIssue = GIServices.GetGI(id.Value);
+
+                if (GoodsIssue.TransferType == "TRANSFER_POST")
+                {
+                    TransferPOST = true;
+                    TransferPROD = null;
+                }
+                else if (GoodsIssue.TransferType == "TRANSFER_PROD")
+                {
+                    TransferPOST = null;
+                    TransferPROD = true;
+                }
 
                 this.EventAggregator.GetEvent<GIUserSelectedEvent>().Publish(id.Value);
             }

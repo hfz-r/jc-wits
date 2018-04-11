@@ -55,6 +55,39 @@ namespace ESD.JC_GoodsIssue.ViewModels
             }
         }
 
+        private bool _isEnableAutoRefresh;
+        public bool IsEnableAutoRefresh
+        {
+            get { return _isEnableAutoRefresh; }
+            set
+            {
+                SetProperty(ref _isEnableAutoRefresh, value);
+                RaisePropertyChanged("IsEnableAutoRefresh");
+
+                if (_isEnableAutoRefresh)
+                    ExecuteTimer();
+                else
+                    StopTimer();
+            }
+        }
+
+        private double _ProgressValue;
+        public double ProgressValue
+        {
+            get
+            {
+                return _ProgressValue;
+            }
+            set
+            {
+                if (_ProgressValue == value)
+                    return;
+                _ProgressValue = value;
+
+                RaisePropertyChanged("ProgressValue");
+            }
+        }
+
         private string _AuthenticatedUser = string.Empty;
         public string AuthenticatedUser
         {
@@ -82,22 +115,28 @@ namespace ESD.JC_GoodsIssue.ViewModels
         private IEventAggregator EventAggregator;
         private IRegionManager RegionManager;
         private IGIServices GIServices;
+        private IGITimerSevices timerServices;
         private DelegateCommand<object> _ExportCommand;
         private InteractionRequest<Confirmation> confirmDeleteInteractionRequest;
 
-        public GIMainViewModel(IEventAggregator _EventAggregator, IRegionManager _RegionManager, IGIServices _GIServices)
+        public GIMainViewModel(IEventAggregator _EventAggregator, IRegionManager _RegionManager, IGIServices _GIServices, IGITimerSevices _timerServices)
         {
             RegionManager = _RegionManager;
             GIServices = _GIServices;
+            timerServices = _timerServices;
             EventAggregator = _EventAggregator;
             EventAggregator.GetEvent<AuthenticatedUserEvent>().Subscribe(InitAuthenticatedUser);
             EventAggregator.GetEvent<CollectionViewSourceEvent>().Subscribe(InitCollectionViewSource);
+            EventAggregator.GetEvent<GI_ItemMessageEvent>().Subscribe(ConsumeItemMessage);
 
+            IsEnableAutoRefresh = true;
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             _ExportCommand = new DelegateCommand<object>(Export);
             OpenGIDetailsCommand = new DelegateCommand<GITransaction>(OpenGIDetails);
             confirmDeleteInteractionRequest = new InteractionRequest<Confirmation>();
         }
+
+        #region Commands
 
         public DelegateCommand OnLoadedCommand { get; private set; }
         public ICommand OpenGIDetailsCommand { get; private set; }
@@ -110,13 +149,24 @@ namespace ESD.JC_GoodsIssue.ViewModels
             get { return this.confirmDeleteInteractionRequest; }
         }
 
+        #endregion Commands
+
         private void OnLoaded()
         {
             GoodsIssues = new ObservableCollection<GITransaction>();
             foreach(var obj in GIServices.GetAll(true).ToList())
             {
+                if (obj.TransferType.Contains("POST"))
+                {
+                    obj.TransferType = "Transfer Posting";
+                }
+                else
+                {
+                    obj.TransferType = "Transfer to Production";
+                }
+
                 GoodsIssues.Add(obj);
-            }
+            }            
         }
 
         private void InitAuthenticatedUser(string user)
@@ -178,28 +228,32 @@ namespace ESD.JC_GoodsIssue.ViewModels
                 System.Globalization.CultureInfo.InvariantCulture)) +
                 ".xlsx";
 
-            storage.ColumnsHeaders.Add("ID");
             storage.ColumnsHeaders.Add("SAP No.");
             storage.ColumnsHeaders.Add("Text");
             storage.ColumnsHeaders.Add("Quantity");
+            storage.ColumnsHeaders.Add("Eun");
             storage.ColumnsHeaders.Add("Transfer Type");
             storage.ColumnsHeaders.Add("Production No.");
             storage.ColumnsHeaders.Add("Location To");
             storage.ColumnsHeaders.Add("Location From");
+            storage.ColumnsHeaders.Add("Issued By");
+            storage.ColumnsHeaders.Add("Issued On");
 
             ObservableCollection<ExportCLassModel> exportObj = new ObservableCollection<ExportCLassModel>();
             foreach (var gr in GoodsIssues)
             {
                 exportObj.Add(new ExportCLassModel
                 {
-                    ID = gr.ID,
                     SAPNo = gr.GoodsReceive.Material,
                     Text = gr.Text,
                     Quantity = gr.Quantity,
-                    TransferType = gr.TransferType,
+                    Eun = gr.GoodsReceive.Eun,
+                    TransferType = gr.TransferType.Contains("POST") ? "Transfer Posting" : "Transfer to Production",
                     ProductionNo = gr.ProductionNo,
                     LocationTo = (gr.Location1 != null) ? gr.Location1.LocationDesc : string.Empty,
-                    LocationFrom = (gr.Location != null) ? gr.Location.LocationDesc : string.Empty
+                    LocationFrom = (gr.Location != null) ? gr.Location.LocationDesc : string.Empty,
+                    IssuedBy = gr.CreatedBy,
+                    IssuedOn = Convert.ToString(gr.CreatedOn)
                 });
             }
 
@@ -210,7 +264,7 @@ namespace ESD.JC_GoodsIssue.ViewModels
                 this.confirmDeleteInteractionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "File Export Success. Are you want to open the file?",
+                        Content = "Exported successfully. Open file?",
                         Title = "Notification"
                     },
                      c =>
@@ -241,14 +295,45 @@ namespace ESD.JC_GoodsIssue.ViewModels
 
             return true;
         }
+        #region Timer
+
+        private void ExecuteTimer()
+        {
+            timerServices.StartTimerExecute();
+        }
+
+        private void StopTimer()
+        {
+            timerServices.StopTimerExecute();
+        }
+
+        private void ConsumeItemMessage(GIItemMessage msg)
+        {
+            if (msg == null)
+                return;
+
+            if (msg.HasValue)
+            {
+                ProgressValue = msg.PercentageValue;
+
+                if (msg.State == "Completed")
+                {
+                    #region refresh grid
+                    OnLoaded();
+                    #endregion refresh grid
+
+                    StopTimer();
+                    ExecuteTimer();
+                }
+            }
+        }
+
+        #endregion Timer
     }
 
     [DelimitedRecord("")]
     public class ExportCLassModel
     {
-        [FieldOrder(1)]
-        public long ID { get; set; }
-
         [FieldOrder(2)]
         public string SAPNo { get; set; }
 
@@ -259,17 +344,26 @@ namespace ESD.JC_GoodsIssue.ViewModels
         [FieldConverter(ConverterKind.Decimal, ".")]
         public decimal Quantity { get; set; }
 
-        [FieldOrder(5)]
-        public string TransferType { get; set; }
-
         [FieldOrder(6)]
-        public string ProductionNo { get; set; }
+        public string Eun { get; set; }
 
         [FieldOrder(7)]
-        public string LocationTo { get; set; }
+        public string TransferType { get; set; }
 
         [FieldOrder(8)]
+        public string ProductionNo { get; set; }
+
+        [FieldOrder(9)]
+        public string LocationTo { get; set; }
+
+        [FieldOrder(10)]
         public string LocationFrom { get; set; }
+
+        [FieldOrder(11)]
+        public string IssuedBy { get; set; }
+
+        [FieldOrder(12)]
+        public string IssuedOn { get; set; }
     }
 
 }

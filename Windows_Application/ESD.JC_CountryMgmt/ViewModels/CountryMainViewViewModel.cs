@@ -161,7 +161,7 @@ namespace ESD.JC_CountryMgmt.ViewModels
             this.interactionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "Are you confirm you want to save this?",
+                        Content = "Confirm to save this?",
                         Title = "Confirm"
                     },
                     c =>
@@ -184,7 +184,7 @@ namespace ESD.JC_CountryMgmt.ViewModels
                 this.interactionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "Are you confirm you want to remove this?",
+                        Content = "Confirm to remove this?",
                         Title = "Confirm"
                     },
                     c =>
@@ -199,7 +199,10 @@ namespace ESD.JC_CountryMgmt.ViewModels
             }
             else
             {
-                Countries.Remove(SelectedCountry);
+                if (!string.IsNullOrEmpty(SelectedCountry.CountryDesc))
+                {
+                    Countries.Remove(SelectedCountry);
+                }
             }
         }
 

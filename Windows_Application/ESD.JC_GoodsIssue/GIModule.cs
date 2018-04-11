@@ -29,6 +29,7 @@ namespace ESD.JC_GoodsIssue
             this.container.RegisterType<IGIServices, GIServices>();
             this.container.RegisterType<IGITransactionRepository, GITransactionRepository>();
             this.container.RegisterType<IGITransactionServices, GITransactionServices>();
+            this.container.RegisterType<IGITimerSevices, GITimerServices>();
 
             this.regionManager.RegisterViewWithRegion(RegionNames.MainNavigationRegion, () => this.container.Resolve<GINavigationItemView>());
             this.container.RegisterTypeForNavigation<GIMainView>();

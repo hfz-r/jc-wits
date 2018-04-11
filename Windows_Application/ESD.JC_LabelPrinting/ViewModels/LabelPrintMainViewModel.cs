@@ -7,6 +7,7 @@ using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
@@ -99,6 +100,8 @@ namespace ESD.JC_LabelPrinting.ViewModels
         }
 
         private decimal? _qty;
+
+        [StringLength(8)]
         public decimal? QTY
         {
             get { return _qty; }
@@ -118,6 +121,18 @@ namespace ESD.JC_LabelPrinting.ViewModels
             {
                 SetProperty(ref _vendorID, value);
                 RaisePropertyChanged("VENDORID");
+                _printLblCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        private string _poNO;
+        public string PONO
+        {
+            get { return _poNO; }
+            set
+            {
+                SetProperty(ref _poNO, value);
+                RaisePropertyChanged("PONO");
                 _printLblCommand.RaiseCanExecuteChanged();
             }
         }
@@ -187,7 +202,7 @@ namespace ESD.JC_LabelPrinting.ViewModels
                         EN = dt.Count() > 3 ? dt[3] : string.Empty;
                         MS = dt.Count() > 4 ? dt[4] : string.Empty;
                         BUN = dt.Count() > 5 ? dt[5] : string.Empty;
-                        QTY = string.IsNullOrEmpty(dt[6]) ? (decimal?)null : dt.Count() > 6 ? decimal.Parse(dt[6]) : (decimal?)null;
+                        QTY = dt.Count() > 6 ? decimal.Parse(dt[6]) : (decimal?)null;
                     }
                 }
             }
@@ -211,9 +226,9 @@ namespace ESD.JC_LabelPrinting.ViewModels
             {
                 hlp.SetDialogDescription("Printing...");
 
+                worker = new BackgroundWorker();
                 worker.DoWork += delegate (object s, DoWorkEventArgs args)
                 {
-                    StringBuilder strErrorPallet = new StringBuilder();
                     System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
                     pd.PrinterSettings = new PrinterSettings();
                     pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
@@ -222,7 +237,7 @@ namespace ESD.JC_LabelPrinting.ViewModels
                     {
                         string fileName = string.Empty;
                         string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                        fileName = path + @"\JC-WITS_GR_Label_Manual.prn";
+                        fileName = path + @"\JC-WITS_Label_Manual.prn";
 
                         StreamReader txtReader = new StreamReader(fileName, false);
                         string xTemp = txtReader.ReadToEnd();
@@ -241,9 +256,9 @@ namespace ESD.JC_LabelPrinting.ViewModels
                         strPallet.Replace("<SAPNO>", SAPNO);
                         strPallet.Replace("<LEGACYNO>", LEGACYNO);
                         strPallet.Replace("<BIN>", BIN);
-                        strPallet.Replace("<QTY>", QTY.Value.ToString());
-                        strPallet.Replace("<BUN>", BUN);
+                        strPallet.Replace("<QUANTITY>", QTY.Value.ToString("G29") + " " + BUN);
                         strPallet.Replace("<VENDORID>", VENDORID);
+                        strPallet.Replace("<PONO>", PONO);
 
                         for (int x = 0; x < 2; x++)
                         {
@@ -295,13 +310,6 @@ namespace ESD.JC_LabelPrinting.ViewModels
                         if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
                         {
                         }
-
-                        if (worker.CancellationPending)
-                        {
-                            args.Cancel = true;
-                            return;
-                        }
-
                         hlp.Initialize();
                     }
                     catch (Exception ex)

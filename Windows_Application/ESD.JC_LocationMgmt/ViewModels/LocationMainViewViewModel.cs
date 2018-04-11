@@ -22,11 +22,11 @@ namespace ESD.JC_LocationMgmt.ViewModels
 {
     public class LocationMainViewViewModel : BindableBase
     {
-        private ObservableCollection<LocationExt> _Countries;
-        public ObservableCollection<LocationExt> Countries
+        private ObservableCollection<LocationExt> _Location;
+        public ObservableCollection<LocationExt> Location
         {
-            get { return _Countries; }
-            set { SetProperty(ref _Countries, value); }
+            get { return _Location; }
+            set { SetProperty(ref _Location, value); }
         }
 
         private LocationExt _SelectedLocation;
@@ -64,8 +64,8 @@ namespace ESD.JC_LocationMgmt.ViewModels
             set
             {
                 SetProperty(ref _FilterTextBox, value);
-                if (Countries != null)
-                    CollectionViewSource.GetDefaultView(Countries).Refresh();
+                if (Location != null)
+                    CollectionViewSource.GetDefaultView(Location).Refresh();
             }
         }
 
@@ -113,12 +113,12 @@ namespace ESD.JC_LocationMgmt.ViewModels
 
         private void OnLoaded()
         {
-            Countries = new ObservableCollection<LocationExt>();
-            Countries.CollectionChanged += Countries_CollectionChanged;
+            Location = new ObservableCollection<LocationExt>();
+            Location.CollectionChanged += Location_CollectionChanged;
 
             foreach (var r in LocationServices.GetAll())
             {
-                Countries.Add(new LocationExt
+                Location.Add(new LocationExt
                 {
                     ID = r.ID,
                     LocationDesc = r.LocationDesc,
@@ -127,16 +127,16 @@ namespace ESD.JC_LocationMgmt.ViewModels
                 });
             }
 
-            CollectionViewSource.GetDefaultView(Countries).Filter = LocationFilter;
+            CollectionViewSource.GetDefaultView(Location).Filter = LocationFilter;
 
-            Countries = SequencingService.SetCollectionSequence(Countries);
-            RaisePropertyChanged("Countries");
+            Location = SequencingService.SetCollectionSequence(Location);
+            RaisePropertyChanged("Location");
         }
 
-        private void Countries_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void Location_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            ItemCount = Countries.Count;
-            SequencingService.SetCollectionSequence(Countries);
+            ItemCount = Location.Count;
+            SequencingService.SetCollectionSequence(Location);
         }
 
         private void InitAuthenticatedUser(string user)
@@ -161,7 +161,7 @@ namespace ESD.JC_LocationMgmt.ViewModels
             this.interactionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "Are you confirm you want to save this?",
+                        Content = "Confirm to save this?",
                         Title = "Confirm"
                     },
                     c =>
@@ -184,7 +184,7 @@ namespace ESD.JC_LocationMgmt.ViewModels
                 this.interactionRequest.Raise(
                     new Confirmation
                     {
-                        Content = "Are you confirm you want to remove this?",
+                        Content = "Confirm to remove this?",
                         Title = "Confirm"
                     },
                     c =>
@@ -199,7 +199,10 @@ namespace ESD.JC_LocationMgmt.ViewModels
             }
             else
             {
-                Countries.Remove(SelectedLocation);
+                if (!string.IsNullOrEmpty(SelectedLocation.LocationDesc))
+                {
+                    Location.Remove(SelectedLocation);
+                }
             }
         }
 
@@ -209,7 +212,7 @@ namespace ESD.JC_LocationMgmt.ViewModels
 
             List<LocationExt> toSaveList = new List<LocationExt>();
             List<LocationExt> toUpdateList = new List<LocationExt>();
-            foreach (var rsn in Countries.ToList())
+            foreach (var rsn in Location.ToList())
             {
                 if (rsn.ID == 0 && !string.IsNullOrEmpty(rsn.LocationDesc))
                     toSaveList.Add(rsn);

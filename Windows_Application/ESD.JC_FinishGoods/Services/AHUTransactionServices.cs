@@ -7,10 +7,12 @@ namespace ESD.JC_FinishGoods.Services
     public class AHUTransactionServices : IAHUTransactionServices
     {
         private IAHUTransactionRepository ahuTrnxRepository;
+        private IAHURepository ahuRepository;
 
-        public AHUTransactionServices(IAHUTransactionRepository ahuTrnxRepository)
+        public AHUTransactionServices(IAHUTransactionRepository ahuTrnxRepository, IAHURepository ahuRepository)
         {
             this.ahuTrnxRepository = ahuTrnxRepository;
+            this.ahuRepository = ahuRepository;
         }
 
         public IEnumerable<AHUTransaction> GetAll(bool eagerLoading)
@@ -29,6 +31,11 @@ namespace ESD.JC_FinishGoods.Services
         public Location GetLocationFromAHUTransaction(long ID)
         {
             return ahuTrnxRepository.GetLocationFromAHUTransaction(ID);
+        }
+
+        public AHU GetAHUDetails(long ID)
+        {
+            return ahuRepository.GetAHU(ID);
         }
     }
 }
