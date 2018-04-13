@@ -1,4 +1,6 @@
 ﻿using ESD.JC_GoodsIssue.ViewModels;
+using ESD.JC_GoodsReceive.ViewModels;
+using ESD.JC_Infrastructure;
 using ESD.JC_Infrastructure.Events;
 using Prism.Events;
 using System.Windows;
@@ -13,12 +15,16 @@ namespace ESD.JC_GoodsIssue.Views
     public partial class GIMainView : UserControl
     {
         private IEventAggregator EventAggregator;
+        private GIMainViewModel viewModel;
 
-        public GIMainView(GIMainViewModel viewModel, IEventAggregator EventAggregator)
+        public GIMainView(GIMainViewModel _viewModel, IEventAggregator EventAggregator)
         {
             InitializeComponent();
 
             DataContext = viewModel;
+
+            DataContext = _viewModel;
+            viewModel = _viewModel;
 
             this.EventAggregator = EventAggregator;
             this.EventAggregator.GetEvent<CollectionViewSourceEvent>().Publish((CollectionViewSource)(this.Resources["TrnxEntries"]));
@@ -37,6 +43,22 @@ namespace ESD.JC_GoodsIssue.Views
             if (mainPanelBorder != null)
             {
                 mainPanelBorder.Margin = new Thickness(0);
+            }
+        }
+
+        private void btnSelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (CheckedListItem<OkCategory> item in viewModel.OkFilter)
+            {
+                item.IsChecked = true;
+            }
+        }
+
+        private void btnUnselectAll_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (CheckedListItem<OkCategory> item in viewModel.OkFilter)
+            {
+                item.IsChecked = false;
             }
         }
     }

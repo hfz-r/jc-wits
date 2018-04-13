@@ -94,7 +94,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Project" SortMemberPath="Project" Width="*">
+                <DataGridTemplateColumn Header="Project" CanUserSort="False" SortMemberPath="Project" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch">
@@ -123,19 +123,19 @@
                         </Style>
                     </DataGridTemplateColumn.CellStyle>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Unit Tag" Width="Auto" Binding="{Binding UnitTag}" Foreground="Black"/>
-                <DataGridTextColumn Header="Part No." Width="*" Binding="{Binding PartNo}" Foreground="Black"/>
-                <DataGridTextColumn Header="Model" Width="*" Binding="{Binding Model}"  Foreground="Black">
+                <DataGridTextColumn Header="Unit Tag" CanUserSort="False" Width="Auto" Binding="{Binding UnitTag}" Foreground="Black"/>
+                <DataGridTextColumn Header="Part No." CanUserSort="False" Width="*" Binding="{Binding PartNo}" Foreground="Black"/>
+                <DataGridTextColumn Header="Model" CanUserSort="False" Width="*" Binding="{Binding Model}"  Foreground="Black">
                     <DataGridTextColumn.ElementStyle>
                         <Style>
                             <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Serial No." Width="*" Binding="{Binding SerialNo}" Foreground="Black"/>
-                <DataGridTextColumn Header="Item No." Width="Auto" Binding="{Binding Item}" Foreground="Black"/>
-                <DataGridTextColumn Header="Section" Width="Auto" Binding="{Binding Section}" Foreground="Black"/>
-                <DataGridTextColumn Width="Auto" Binding="{Binding ShipStatus2, Mode=TwoWay}" Foreground="Transparent">
+                <DataGridTextColumn Header="Serial No." CanUserSort="False" Width="*" Binding="{Binding SerialNo}" Foreground="Black"/>
+                <DataGridTextColumn Header="Item No."  CanUserSort="False" Width="Auto" Binding="{Binding Item}" Foreground="Black"/>
+                <DataGridTextColumn Header="Section" CanUserSort="False" Width="Auto" Binding="{Binding Section}" Foreground="Black"/>
+                <DataGridTextColumn Width="Auto" Binding="{Binding ShipStatus2, Mode=TwoWay}" CanUserSort="False" Foreground="Transparent">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Background" Value="{Binding ShipStatus2, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}"/>
@@ -167,7 +167,7 @@
                         </StackPanel>
                     </DataGridTextColumn.Header>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Created On" Width="Auto" Binding="{Binding CreatedOn, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}" Foreground="Black"/>
+                <DataGridTextColumn Header="Created On" Width="Auto" CanUserSort="False" Binding="{Binding CreatedOn, StringFormat='{}{0:dd/MM/yyyy hh:mm tt}'}" Foreground="Black"/>
             </DataGrid.Columns>
         </DataGrid>
 

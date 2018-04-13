@@ -1,10 +1,6 @@
 ﻿using DataLayer;
 using DataLayer.Repositories;
-using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Validation;
-using System.Linq;
 
 namespace ESD.JC_GoodsIssue.Services
 {

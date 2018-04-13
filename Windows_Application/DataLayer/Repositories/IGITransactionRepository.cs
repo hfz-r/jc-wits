@@ -6,5 +6,6 @@ namespace DataLayer.Repositories
     {
         IEnumerable<GITransaction> GetAll(bool eagerLoading);
         IEnumerable<GITransaction> GetGITransaction(long ID);
+        void Delete(long ID);
     }
 }

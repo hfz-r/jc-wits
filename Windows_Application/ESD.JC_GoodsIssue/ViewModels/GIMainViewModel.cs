@@ -1,5 +1,6 @@
 ﻿using DataLayer;
 using ESD.JC_GoodsIssue.Services;
+using ESD.JC_GoodsReceive.ViewModels;
 using ESD.JC_Infrastructure;
 using ESD.JC_Infrastructure.Events;
 using FileHelpers;
@@ -11,10 +12,12 @@ using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -108,21 +111,35 @@ namespace ESD.JC_GoodsIssue.ViewModels
             }
         }
 
+        private List<bool> _CountChecked = new List<bool>();
+        public List<bool> CountChecked
+        {
+            get { return _CountChecked; }
+            set { SetProperty(ref _CountChecked, value); }
+        }
+
         private CollectionViewSource cvs { get; set; }
 
         private const string giDetailsViewName = "GIDetailsView";
+        public ObservableCollection<CheckedListItem<OkCategory>> OkFilter { get; private set; }
 
         private IEventAggregator EventAggregator;
         private IRegionManager RegionManager;
         private IGIServices GIServices;
+        private IGITransactionServices GITransactionServices;
         private IGITimerSevices timerServices;
+        private DelegateCommand<object> _DeleteCommand;
+        private DelegateCommand<object> _IsSelected;
+        private DelegateCommand _checkedAllCommand;
+        private DelegateCommand _unCheckedAllCommand;
         private DelegateCommand<object> _ExportCommand;
         private InteractionRequest<Confirmation> confirmDeleteInteractionRequest;
 
-        public GIMainViewModel(IEventAggregator _EventAggregator, IRegionManager _RegionManager, IGIServices _GIServices, IGITimerSevices _timerServices)
+        public GIMainViewModel(IEventAggregator _EventAggregator, IRegionManager _RegionManager, IGIServices _GIServices, IGITimerSevices _timerServices, IGITransactionServices _GITransactionServices)
         {
             RegionManager = _RegionManager;
             GIServices = _GIServices;
+            GITransactionServices = _GITransactionServices;
             timerServices = _timerServices;
             EventAggregator = _EventAggregator;
             EventAggregator.GetEvent<AuthenticatedUserEvent>().Subscribe(InitAuthenticatedUser);
@@ -132,6 +149,16 @@ namespace ESD.JC_GoodsIssue.ViewModels
             IsEnableAutoRefresh = true;
             OnLoadedCommand = new DelegateCommand(OnLoaded);
             _ExportCommand = new DelegateCommand<object>(Export);
+            _DeleteCommand = new DelegateCommand<object>(Delete, CanDelete);
+            _IsSelected = new DelegateCommand<object>(CheckBoxIsSelected);
+            _checkedAllCommand = new DelegateCommand(() =>
+            {
+                SetIsSelectedProperty(true);
+            });
+            _unCheckedAllCommand = new DelegateCommand(() =>
+            {
+                SetIsSelectedProperty(false);
+            });
             OpenGIDetailsCommand = new DelegateCommand<GITransaction>(OpenGIDetails);
             confirmDeleteInteractionRequest = new InteractionRequest<Confirmation>();
         }
@@ -140,6 +167,22 @@ namespace ESD.JC_GoodsIssue.ViewModels
 
         public DelegateCommand OnLoadedCommand { get; private set; }
         public ICommand OpenGIDetailsCommand { get; private set; }
+        public ICommand DeleteCommand
+        {
+            get { return this._DeleteCommand; }
+        }
+        public ICommand IsSelected
+        {
+            get { return this._IsSelected; }
+        }
+        public ICommand CheckedAllCommand
+        {
+            get { return _checkedAllCommand; }
+        }
+        public ICommand UnCheckedAllCommand
+        {
+            get { return _unCheckedAllCommand; }
+        }
         public ICommand ExportCommand
         {
             get { return this._ExportCommand; }
@@ -200,9 +243,83 @@ namespace ESD.JC_GoodsIssue.ViewModels
 
             this.RegionManager.RequestNavigate(RegionNames.MainContentRegion, new Uri(giDetailsViewName + parameters, UriKind.Relative));
         }
+        private void SetIsSelectedProperty(bool isSelected)
+        {
+            ObservableCollection<GITransaction> tempObj = new ObservableCollection<GITransaction>();
+            if (GoodsIssues != null && GoodsIssues.Count() > 0)
+                tempObj = GoodsIssues;
+
+            foreach (var gr in tempObj)
+            {
+                gr.IsChecked = isSelected;
+            }
+
+            switch (isSelected)
+            {
+                case true:
+                    CountChecked.AddRange(Enumerable.Repeat(true, tempObj.Count));
+                    break;
+                case false:
+                    CountChecked = new List<bool>();
+                    break;
+            }
+            
+            _DeleteCommand.RaiseCanExecuteChanged();            
+        }
+
+        private void CheckBoxIsSelected(object IsChecked)
+        {
+            bool chk = (bool)IsChecked;
+            if (chk)
+                CountChecked.Add(chk);
+            else
+            {
+                if (CountChecked.Where(x => x == true).Count() > 0)
+                    CountChecked.Remove(true);
+            }
+
+            RaisePropertyChanged("GoodsReceive");
+            
+            _DeleteCommand.RaiseCanExecuteChanged();
+        }
+
+        private void Delete(object ignored)
+        {
+            if (GoodsIssues.Any(x => x.IsChecked == true))
+            {
+                if (MessageBox.Show("Confirm to delete?", "Delete", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    var listObj = GoodsIssues.Where(x => x.IsChecked == true).ToList();
+
+                    try
+                    {
+                        foreach (var item in listObj)
+                        {
+                            GITransactionServices.Delete(item.ID);
+                        }
+                        OnLoaded();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+        }
+
+        private bool CanDelete(object ignored)
+        {
+            return (CountChecked == null && CountChecked.Count.Equals(0)) ? false : (CountChecked.Where(x => x == true).Count() > 0);
+        }
 
         private void Export(object ignored)
         {
+            if (GoodsIssues != null && GoodsIssues.Count == 0)
+            {
+                MessageBox.Show("There is no records to export");
+                return;
+            }
+
             ExcelNPOIStorage storage = new ExcelNPOIStorage(typeof(ExportCLassModel), 0, 0);
 
             string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Export GI");
@@ -282,7 +399,7 @@ namespace ESD.JC_GoodsIssue.ViewModels
         {
             try
             {
-                Application excel = new Application();
+                Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
                 excel.Visible = true;
 
                 Workbook wb = excel.Workbooks.Open(fileName);

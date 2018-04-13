@@ -7,7 +7,7 @@ namespace ESD.JC_Infrastructure.Controls
         CompositeCommand ImportFGCommand { get; }
         CompositeCommand ExportFGCommand { get; }
         CompositeCommand PrintLblCommand { get; }
-        CompositeCommand DeleteFGCommand { get; }
+        CompositeCommand DeleteCommand { get; }
         CompositeCommand OKCommand { get; }
         CompositeCommand XOKCommand { get; }
     }
@@ -32,10 +32,10 @@ namespace ESD.JC_Infrastructure.Controls
             get { return _printLblCommand; }
         }
 
-        private CompositeCommand _deleteFGCommand = new CompositeCommand(true);
-        public CompositeCommand DeleteFGCommand
+        private CompositeCommand _deleteCommand = new CompositeCommand(true);
+        public CompositeCommand DeleteCommand
         {
-            get { return _deleteFGCommand; }
+            get { return _deleteCommand; }
         }
 
         private CompositeCommand _okCommand = new CompositeCommand(true);

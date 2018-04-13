@@ -178,6 +178,8 @@
     <Property Name="GRID" Type="Int64" Nullable="false" />
     <NavigationProperty Name="GoodsReceive" Relationship="Self.FK_GoodsReceive_GRID" FromRole="GRTransaction" ToRole="GoodsReceive" />
     <NavigationProperty Name="Reason" Relationship="Self.FK_Reason_ReasonID" FromRole="GRTransaction" ToRole="Reason" />
+    <Property Name="DeliveryNote" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="BillOfLading" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="Location">
     <Key>

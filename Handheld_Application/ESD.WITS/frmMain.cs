@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ESD.WITS
 {
@@ -69,7 +70,7 @@ namespace ESD.WITS
         private string gStrDBName = string.Empty;
         private string gStrSQLUser = string.Empty;
         private string gStrSQLPwd = string.Empty;
-        private string connectionString = "Data Source=10.105.152.73,1438;Initial Catalog=INVENTORY;Trusted_Connection=Yes;User ID=sa;Password=Password1;Persist Security Info=False;Integrated Security=False;";
+        private string connectionString = "Data Source=192.168.180.37,5050;Initial Catalog=ESD_WITS;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";
         private int GRID = 0;
         private bool isPartialTxn = false;
         private List<GI> GIList = new List<GI>();
@@ -82,6 +83,7 @@ namespace ESD.WITS
         private int FGQtyBal = 0;
         private AHUFCU AHUFCURec = new AHUFCU();
         private bool isShip = false;
+        private bool IsAHUTxn = false;
         #endregion
 
         #region Initialization
@@ -159,20 +161,43 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void txtNumeric_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if ((e.KeyChar == '.') && (((TextBox)sender).Text.IndexOf('.') > -1))
+            if (txtGROrderedEun.Text.Equals("KG"))
             {
-                e.Handled = true;
-                return;
-            }
-
-            if (!Char.IsDigit(e.KeyChar))
-            {
-                if ((e.KeyChar != '.') &&
-                    (e.KeyChar != Convert.ToChar(Keys.Back)))
+                if ((e.KeyChar == '.') && (((TextBox)sender).Text.IndexOf('.') > -1))
                 {
                     e.Handled = true;
                     return;
                 }
+
+                if (!Char.IsDigit(e.KeyChar))
+                {
+                    if ((e.KeyChar != '.') &&
+                        (e.KeyChar != Convert.ToChar(Keys.Back)))
+                    {
+                        e.Handled = true;
+                        return;
+                    }
+                }
+
+                TextBox tb = sender as TextBox;
+
+                if (Char.IsDigit(e.KeyChar) || e.KeyChar == '.')
+                {
+                    if (tb.SelectionLength == 0)
+                    {
+                        if (Regex.IsMatch(tb.Text, "^\\d*\\.\\d{2}$"))
+                            e.Handled = true;
+                    }
+                }
+            }
+            else
+            {
+                if (!Char.IsDigit(e.KeyChar))
+                {
+                    e.Handled = true;
+                    return;
+                }
+                
             }
         }
 
@@ -447,9 +472,25 @@ namespace ESD.WITS
             Cursor.Current = Cursors.Default;
         }
 
+        /// <summary>
+        /// Navigate from Main menu to Outbound Delivery page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnOutbound_Click(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            pnlSelection.Visible = false;
+            pnlFG.Visible = true;
+            pnlFG.Dock = DockStyle.Fill;
+            ClearFGCache();
+            txtFGSerial.Focus();
+            Cursor.Current = Cursors.Default;
+        }
+
         #endregion
 
-        #region Good Receive Page
+        #region Good Receive
 
         /// <summary>
         /// Validate respective field before submitting to DB
@@ -586,15 +627,13 @@ namespace ESD.WITS
             sSQL += ", GR.[Quantity]";
             sSQL += ", GR.[Eun]";
             sSQL += ", ISNULL(SUM(GRT.Quantity),0) AS QtyOrdered";
-            sSQL += ", GR.[DeliveryNote]";
-            sSQL += ", GR.[BillOfLading]";
             sSQL += ", GR.[PurchaseOrder]";
             sSQL += ", GR.[PostingDate]";
             sSQL += " FROM [dbo].[GoodsReceive] GR";
             sSQL += " LEFT OUTER JOIN [dbo].[GRTransaction] GRT";
             sSQL += " ON GR.ID = GRT.GRID";
             sSQL += " WHERE GR.[Material] = '" + txtGRSAPNo.Text + "'";
-            sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Ok], GR.[Quantity], GR.[Eun], GR.[DeliveryNote], GR.[BillOfLading], GR.[PurchaseOrder], GR.[PostingDate]";
+            sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Ok], GR.[Quantity], GR.[Eun], GR.[PurchaseOrder], GR.[PostingDate]";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -609,18 +648,18 @@ namespace ESD.WITS
                         txtGRMSDesc.Text = reader[1].ToString();
                         isTxnCompleted = Convert.ToByte(reader[2]); //var
                         txtGREun.Text = reader[4].ToString();
-                        qtyOrd = reader[3].ToString() == "0.00" ? "0" : reader[3].ToString();
-                        txtGRQtyOrdered.Text = txtGROrderedEun.Text != "KG" ?
-                            (Convert.ToInt64(Math.Floor(Convert.ToDouble(qtyOrd)))).ToString() : qtyOrd.ToString();
+                        qtyOrd = reader[3].ToString() == "0.00" ? "0" : reader[3].ToString();                       
                         txtGROrderedEun.Text = reader[4].ToString();
+                        txtGRQtyOrdered.Text = txtGROrderedEun.Text != "KG" ?
+                           (Convert.ToInt64(Math.Floor(Convert.ToDouble(qtyOrd)))).ToString() : qtyOrd.ToString();
                         txtGRRcvdEun.Text = txtGROrderedEun.Text;
                         qtyRcvd = reader[5].ToString() == "0.00" ? "0" : reader[5].ToString();
                         txtGRQtyRcvd.Text = txtGRRcvdEun.Text != "KG" ? 
                             (Convert.ToInt64(Math.Floor(Convert.ToDouble(qtyRcvd)))).ToString() : qtyRcvd.ToString();
-                        txtGRDelNote.Text = reader[6].ToString();
-                        txtGRBillLading.Text = reader[7].ToString();
-                        txtGRPurchaseOrder.Text = reader[8].ToString();
-                        dtPickerGRPostingDate.Text = reader[9].ToString();
+                        txtGRDelNote.Text = string.Empty;
+                        txtGRBillLading.Text = string.Empty;
+                        txtGRPurchaseOrder.Text = reader[6].ToString();
+                        dtPickerGRPostingDate.Text = reader[7].ToString();
                         txtGRMSDesc.BackColor = Color.Black;
                         txtGRQtyOrdered.BackColor = Color.Black;
                         txtGROrderedEun.BackColor = Color.Black;
@@ -796,7 +835,7 @@ namespace ESD.WITS
                 {
                     double remaining = Convert.ToDouble(txtGRQty.Text) + Convert.ToDouble(txtGRQtyRcvd.Text);
 
-                    if (remaining == Convert.ToDouble(txtGRQtyOrdered.Text))
+                    if (remaining >= Convert.ToDouble(txtGRQtyOrdered.Text))
                     {
                         cmbBoxGRReason.Visible = false;
                         labelGRReason.Visible = false;
@@ -950,19 +989,21 @@ namespace ESD.WITS
                         sSQL += " ,[Quantity]";
                         sSQL += " ,[CreatedOn]";
                         sSQL += " ,[CreatedBy]";
+                        sSQL += " ,[DeliveryNote]";
+                        sSQL += " ,[BillOfLading]";
                         sSQL += " ,[GRID])";
                         sSQL += " VALUES";
                         sSQL += cmbBoxGRReason.SelectedValue == null ? " (NULL" : " ('" + cmbBoxGRReason.SelectedValue + "'";
                         sSQL += " ,'" + txtGRQty.Text + "'";
                         sSQL += " ,GETDATE()";
                         sSQL += " ,'" + txtUserID.Text + "'";
+                        sSQL += " ,'" + txtGRDelNote.Text + "'";
+                        sSQL += " ,'" + txtGRBillLading.Text + "'";
                         sSQL += " ," + GRID + ")";
 
                         sSQL += " UPDATE [dbo].[GoodsReceive]";
                         sSQL += " SET [DocumentDate] = GETDATE(), ";
-                        sSQL += " [PostingDate] = '" + dtPickerGRPostingDate.Value + "',";
-                        sSQL += " [DeliveryNote] = '" + txtGRDelNote.Text + "', ";
-                        sSQL += " [BillOfLading] = '" + txtGRBillLading.Text + "' ";
+                        sSQL += " [PostingDate] = '" + dtPickerGRPostingDate.Value + "'";
                         sSQL += " WHERE ID = @GRID";
 
                         sSQL += " UPDATE [dbo].[GoodsReceive]";
@@ -981,6 +1022,7 @@ namespace ESD.WITS
                             MessageBox.Show("GR Posted");
                             connection.Close();
                         }
+
                         ResetNewRecord();
                         ClearCache(true);
                         pnlGdReceiptCont.Visible = false;
@@ -1005,11 +1047,21 @@ namespace ESD.WITS
             pnlSelection.Dock = DockStyle.Fill;
         }
 
+        /// <summary>
+        /// Clear cache
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnGRContClear_Click(object sender, EventArgs e)
         {
             ClearCache(true);
         }
 
+        /// <summary>
+        /// Return to GR Main page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnGRBack_Click(object sender, EventArgs e)
         {
             pnlGdReceiptCont.Visible = false;
@@ -1017,6 +1069,11 @@ namespace ESD.WITS
             pnlGdReceipt.Dock = DockStyle.Fill;
         }
 
+        /// <summary>
+        /// Navigate to next page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnGRNext_Click(object sender, EventArgs e)
         {
             if (ValidateGR())
@@ -1031,12 +1088,28 @@ namespace ESD.WITS
             }
         }
 
+        /// <summary>
+        /// Return to main menu page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnGRHomeCont_Click(object sender, EventArgs e)
         {
             ClearCache(true);
             pnlGdReceiptCont.Visible = false;
             pnlSelection.Visible = true;
             pnlSelection.Dock = DockStyle.Fill;
+        }
+
+        /// <summary>
+        /// Focus on qty text box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtGRQty_GotFocus(object sender, EventArgs e)
+        {
+            txtGRQty.Focus();
+            txtGRQty.SelectAll();
         }
 
         #endregion
@@ -1178,7 +1251,7 @@ namespace ESD.WITS
         }
 
         /// <summary>
-        /// load location to
+        /// load location
         /// </summary>
         private DataTable LoadLocation()
         {
@@ -1202,6 +1275,9 @@ namespace ESD.WITS
             return dtTo;
         }
 
+        /// <summary>
+        /// load location to
+        /// </summary>
         private void LoadLocationGITo()
         {
             DataTable dt = LoadLocation();
@@ -1211,6 +1287,9 @@ namespace ESD.WITS
             cmbBoxGILocTo.SelectedIndex = -1;
         }
 
+        /// <summary>
+        /// load location from
+        /// </summary>
         private void LoadLocationGIFrom()
         {
             DataTable dt = LoadLocation();
@@ -1218,15 +1297,6 @@ namespace ESD.WITS
             cmbBoxGILocFrom.DisplayMember = "LocationDesc";
             cmbBoxGILocFrom.ValueMember = "ID";
             cmbBoxGILocFrom.SelectedIndex = -1;
-        }
-
-        private void LoadLocationFG()
-        {
-            DataTable dt = LoadLocation();
-            cmbBoxFGLocation.DataSource = dt;
-            cmbBoxFGLocation.DisplayMember = "LocationDesc";
-            cmbBoxFGLocation.ValueMember = "ID";
-            cmbBoxFGLocation.SelectedIndex = -1;
         }
 
         /// <summary>
@@ -1720,14 +1790,9 @@ namespace ESD.WITS
         /// <summary>
         /// Clear FG text
         /// </summary>
-        private void ClearFGCache(bool isClear)
+        private void ClearFGCache()
         {
-            btFGMinusQty.Enabled = true;
-            btFGAddQty.Enabled = true;
-            txtFGQty.Enabled = true;
-            cmbBoxFGLocation.Enabled = true;
             txtFGSerial.Text = string.Empty;
-            txtFGQty.Text = "0";
             if (cmbBoxFGCountry.SelectedItem != null)
             {
                 cmbBoxFGCountry.SelectedIndex = 0;
@@ -1739,22 +1804,17 @@ namespace ESD.WITS
                 cmbBoxFGLocation.SelectedIndex = -1;
             }
             dataGrdFG.DataSource = null;
-            rdBtnAHU.Enabled = true;
-            rdBtnFCU.Enabled = true;
-            btnFGNext.Enabled = true;
-            rdBtnFGTfrtoWarehse.Checked = true;
-            rdBtnFGTfrtoWarehse.Enabled = true;
-            lblFGLocation.Enabled = true;
+            rdBtnFGTfrtoWarehse.Checked = false;
+            rdBtnFGTfrtoWarehse.Enabled = false;
+            lblFGLocation.Enabled = false;
             rdBtnFGTfrtoCustomer.Checked = false;
             rdBtnFGTfrtoCustomer.Enabled = false;
             lblFGCountry.Enabled = false;
             FGQtyBal = 0;
+            isShip = false;
             txtFGSerial.Focus();
-            if (isClear)
-            {
-                rdBtnAHU.Checked = true;
-                rdBtnFCU.Checked = false;
-            }
+            cmbBoxFGCountry.Enabled = false;
+            cmbBoxFGLocation.Enabled = false;      
         }
 
         /// <summary>
@@ -1764,7 +1824,7 @@ namespace ESD.WITS
         {
             Cursor.Current = Cursors.WaitCursor; // set the wait cursor           
             string sSQL = string.Empty;
-            txtFGQty.Text = "0";
+
             if (cmbBoxFGCountry.SelectedItem != null)
             {
                 cmbBoxFGCountry.SelectedIndex = 0;
@@ -1775,11 +1835,31 @@ namespace ESD.WITS
                 cmbBoxFGLocation.SelectedIndex = 0;
                 cmbBoxFGLocation.SelectedIndex = -1;
             }
+            isShip = false;
             cmbBoxFGCountry.Enabled = false;
             lblFGCountry.Enabled = false;
-            dataGrdFG.DataSource = null;            
+            dataGrdFG.DataSource = null;
 
-            if (rdBtnAHU.Checked)
+            string[] temp = null;
+            if (!string.IsNullOrEmpty(txtFGSerial.Text))
+            {
+                temp = txtFGSerial.Text.Split(';');
+                txtFGSerial.Text = temp[0];
+                if (temp.Length > 1)
+                {
+                    IsAHUTxn = temp[1] == "AHU" ? true : false;
+                }
+                else
+                {
+                    Cursor.Current = Cursors.Default;
+                    MessageBox.Show("Invalid barcode.");
+                    txtFGSerial.SelectAll();
+                    return;
+                }
+            }
+            txtFGSerial.SelectionStart = txtFGSerial.Text.Length;
+
+            if (IsAHUTxn)
             {
                 sSQL = "SELECT AHU.[ID]";
                 sSQL += ", AHU.[Project]";
@@ -1796,7 +1876,7 @@ namespace ESD.WITS
                 sSQL += " WHERE [SerialNo] = '" + txtFGSerial.Text + "'";
                 sSQL += " GROUP BY AHU.[ID], AHU.[Project], AHU.[UnitTag], AHU.[PartNo], AHU.[Model], AHU.[Item], AHU.[Section], AHUT.[CountryID], AHUT.[LocationID]";
             }
-            else if (rdBtnFCU.Checked)
+            else
             {
                 sSQL = "SELECT FCU.[ID]";
                 sSQL += ", FCU.[Project]";
@@ -1833,23 +1913,20 @@ namespace ESD.WITS
                         AHUFCURec.Country = (reader[8] == System.DBNull.Value) ? (int?)null : int.Parse(reader[8].ToString());
                         AHUFCURec.Location = (reader[9] == System.DBNull.Value) ? (int?)null : int.Parse(reader[9].ToString());
 
-                        btFGMinusQty.Enabled = true;
-                        btFGAddQty.Enabled = true;
-                        txtFGQty.Enabled = true;
                         cmbBoxFGCountry.Enabled = true;
-                        rdBtnFCU.Enabled = true;
-                        rdBtnAHU.Enabled = true;
 
-                        if (rdBtnAHU.Checked)
+                        if (IsAHUTxn)
                         {
                             AHUFCURec.Section = Convert.ToInt32(reader[6]);
                             FGQtyBal = AHUFCURec.Section - AHUFCURec.QtyRcvd;
                         }
-                        else if (rdBtnFCU.Checked)
+                        else
                         {
                             AHUFCURec.Qty = Convert.ToInt32(reader[6]);
                             FGQtyBal = AHUFCURec.Qty - AHUFCURec.QtyRcvd;
                         }
+
+                        #region Create data column and assign
 
                         DataTable t = new DataTable("FG");
                         DataColumn dc1 = new DataColumn("ID", typeof(string));
@@ -1858,7 +1935,7 @@ namespace ESD.WITS
                         DataColumn dc4 = new DataColumn("PartNo", typeof(string));
                         DataColumn dc5 = new DataColumn("Model", typeof(string));
                         DataColumn dc6 = new DataColumn("Item", typeof(string));
-                        DataColumn dc7 = rdBtnAHU.Checked ? new DataColumn("Section", typeof(string)) : new DataColumn("Qty", typeof(string));
+                        DataColumn dc7 = IsAHUTxn ? new DataColumn("Section", typeof(string)) : new DataColumn("Qty", typeof(string));
                         DataColumn dc8 = new DataColumn("QtyRcvd", typeof(string));
 
                         t.Columns.Add(dc1);
@@ -1879,11 +1956,11 @@ namespace ESD.WITS
                         newRow["Item"] = AHUFCURec.Item;
                         newRow["QtyRcvd"] = AHUFCURec.QtyRcvd;
 
-                        if (rdBtnAHU.Checked)
+                        if (IsAHUTxn)
                         {
                             newRow["Section"] = AHUFCURec.Section;
                         }
-                        else if (rdBtnFCU.Checked)
+                        else
                         {
                             newRow["Qty"] = AHUFCURec.Qty;
                         }
@@ -1899,7 +1976,7 @@ namespace ESD.WITS
                         tableStyle.GridColumnStyles.Add(gridColumn1);
 
                         DataGridTextBoxColumn gridColumn2 = new DataGridTextBoxColumn();
-                        gridColumn2.Width = 200;
+                        gridColumn2.Width = 230;
                         gridColumn2.MappingName = "Project";
                         gridColumn2.HeaderText = "Project";
                         tableStyle.GridColumnStyles.Add(gridColumn2);
@@ -1911,13 +1988,13 @@ namespace ESD.WITS
                         tableStyle.GridColumnStyles.Add(gridColumn3);
 
                         DataGridTextBoxColumn gridColumn4 = new DataGridTextBoxColumn();
-                        gridColumn4.Width = 60;
+                        gridColumn4.Width = 50;
                         gridColumn4.MappingName = "PartNo";
                         gridColumn4.HeaderText = "Part No";
                         tableStyle.GridColumnStyles.Add(gridColumn4);
 
                         DataGridTextBoxColumn gridColumn5 = new DataGridTextBoxColumn();
-                        gridColumn5.Width = 100;
+                        gridColumn5.Width = 230;
                         gridColumn5.MappingName = "Model";
                         gridColumn5.HeaderText = "Model";
                         tableStyle.GridColumnStyles.Add(gridColumn5);
@@ -1931,7 +2008,7 @@ namespace ESD.WITS
                         DataGridTextBoxColumn gridColumn7 = new DataGridTextBoxColumn();
                         gridColumn7.Width = 50;
 
-                        if (rdBtnAHU.Checked)
+                        if (IsAHUTxn)
                         {
                             gridColumn7.MappingName = "Section";
                             gridColumn7.HeaderText = "Section";
@@ -1943,26 +2020,19 @@ namespace ESD.WITS
                         }
                         tableStyle.GridColumnStyles.Add(gridColumn7);
 
-                        DataGridTextBoxColumn gridColumn8 = new DataGridTextBoxColumn();
-                        gridColumn8.Width = 100;
-                        gridColumn8.MappingName = "QtyRcvd";
-                        gridColumn8.HeaderText = "Qty Received";
-                        tableStyle.GridColumnStyles.Add(gridColumn8);
-
                         dataGrdFG.TableStyles.Clear();
                         dataGrdFG.TableStyles.Add(tableStyle);
                         dataGrdFG.DataSource = t;
-                        Cursor.Current = Cursors.Default;
 
-                        if ((rdBtnAHU.Checked && AHUFCURec.QtyRcvd == AHUFCURec.Section) ||
-                            (rdBtnFCU.Checked && AHUFCURec.QtyRcvd == AHUFCURec.Qty))
+                        #endregion
+
+                        Cursor.Current = Cursors.Default;
+                        LoadLocationFG();
+                        LoadCountry();
+
+                        if ((IsAHUTxn && AHUFCURec.QtyRcvd == AHUFCURec.Section) ||
+                            (!IsAHUTxn && AHUFCURec.QtyRcvd == AHUFCURec.Qty))
                         {
-                            LoadLocationFG();
-                            LoadCountry();
-                            btFGMinusQty.Enabled = false;
-                            btFGAddQty.Enabled = false;
-                            txtFGQty.Text = AHUFCURec.QtyRcvd.ToString();
-                            txtFGQty.Enabled = false;
                             rdBtnFGTfrtoCustomer.Checked = AHUFCURec.Country == null ? false : true;
                             rdBtnFGTfrtoWarehse.Checked = AHUFCURec.Location == null ? false : true;
                             cmbBoxFGCountry.SelectedValue = AHUFCURec.Country == null ? -1 : AHUFCURec.Country;
@@ -1972,7 +2042,6 @@ namespace ESD.WITS
                             rdBtnFGTfrtoCustomer.Enabled = false;
                             rdBtnFGTfrtoWarehse.Enabled = false;
                             btnFGShip.Enabled = false;
-                            lblFGQty.Enabled = false;
                             lblFGLocation.Enabled = false;
                             lblFGCountry.Enabled = false;
                             MessageBox.Show("All package has been shipped.");
@@ -1980,9 +2049,6 @@ namespace ESD.WITS
                         }
                         else
                         {
-                            btFGMinusQty.Enabled = true;
-                            btFGAddQty.Enabled = true;
-                            txtFGQty.Enabled = true;
                             rdBtnFGTfrtoWarehse.Checked = true;
                             cmbBoxFGLocation.Enabled = true;
                             rdBtnFGTfrtoWarehse.Enabled = true;
@@ -1990,7 +2056,6 @@ namespace ESD.WITS
                             rdBtnFGTfrtoCustomer.Enabled = true;
                             cmbBoxFGCountry.Enabled = false;
                             btnFGShip.Enabled = true;
-                            lblFGQty.Enabled = true;
                             lblFGLocation.Enabled = true;
                             lblFGCountry.Enabled = false;
                             isShip = false;
@@ -1999,7 +2064,7 @@ namespace ESD.WITS
                     else
                     {
                         Cursor.Current = Cursors.Default;
-                        ClearFGCache(false);
+                        ClearFGCache();
                         MessageBox.Show("Serial No. does not exist.");
                         isShip = false;
                     }
@@ -2030,31 +2095,15 @@ namespace ESD.WITS
         }
 
         /// <summary>
-        /// Navigate from Main menu to Outbound Delivery page
+        /// load location FG
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnOutbound_Click(object sender, EventArgs e)
+        private void LoadLocationFG()
         {
-            Cursor.Current = Cursors.WaitCursor;
-            pnlSelection.Visible = false;
-            pnlFG.Visible = true;
-            pnlFG.Dock = DockStyle.Fill;
-            txtFGSerial.Focus();
-            rdBtnAHU.Checked = true;
-            rdBtnFCU.Checked = false;
-            txtFGQty.Text = "0";
-            Cursor.Current = Cursors.Default;
-        }
-
-        /// <summary>
-        /// Clear Click event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnFGClear_Click(object sender, EventArgs e)
-        {
-            ClearFGCache(true);
+            DataTable dt = LoadLocation();
+            cmbBoxFGLocation.DataSource = dt;
+            cmbBoxFGLocation.DisplayMember = "LocationDesc";
+            cmbBoxFGLocation.ValueMember = "ID";
+            cmbBoxFGLocation.SelectedIndex = -1;
         }
 
         /// <summary>
@@ -2075,12 +2124,12 @@ namespace ESD.WITS
                     {
                         if (AHUFCURec.ID > 0)
                         {
-                            if (rdBtnAHU.Checked)
+                            if (IsAHUTxn)
                             {
                                 sSQL = " INSERT INTO [dbo].[AHUTransaction]";
                                 sSQL += " ([AHUID]";
                             }
-                            else if (rdBtnFCU.Checked)
+                            else
                             {
                                 sSQL = " INSERT INTO [dbo].[FCUTransaction]";
                                 sSQL += " ([FCUID]";
@@ -2093,7 +2142,8 @@ namespace ESD.WITS
                             sSQL += " ,[CreatedBy])";
                             sSQL += " VALUES";
                             sSQL += " (" + AHUFCURec.ID;
-                            sSQL += " ," + txtFGQty.Text;
+                            sSQL += " ,";
+                            sSQL += IsAHUTxn ? AHUFCURec.Section : AHUFCURec.Qty;
                             sSQL += cmbBoxFGCountry.SelectedValue != null ? " ," + cmbBoxFGCountry.SelectedValue + "" : " ,NULL";
                             sSQL += cmbBoxFGLocation.SelectedValue != null ? " ," + cmbBoxFGLocation.SelectedValue + "" : " ,NULL";
                             sSQL += " ,GETDATE()";
@@ -2113,11 +2163,9 @@ namespace ESD.WITS
                         }
                     }
 
-                    ClearFGCache(false);
+                    ClearFGCache();
                     txtFGSerial.Focus();
                     txtFGSerial.SelectAll();
-                    ResetNewRecord();
-                    pnlFGSubmit.Visible = false;
                     pnlFG.Visible = true;
                     pnlFG.Dock = DockStyle.Fill;
                 }
@@ -2134,7 +2182,7 @@ namespace ESD.WITS
             pnlFG.Visible = false;
             pnlSelection.Visible = true;
             pnlSelection.Dock = DockStyle.Fill;
-            ClearFGCache(true);
+            ClearFGCache();
         }
 
         /// <summary>
@@ -2146,145 +2194,15 @@ namespace ESD.WITS
         {
             if (e != null && e.KeyCode == Keys.Enter)
             {
-                GetFG();
-            }
-        }
-
-        /// <summary>
-        /// Is AHU Txn
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void rdBtnAHU_Click(object sender, EventArgs e)
-        {
-            rdBtnAHU.Checked = true;
-            rdBtnFCU.Checked = false;
-            txtFGSerial.Focus();
-        }
-
-        /// <summary>
-        /// Is FCU Txn
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void rdBtnFCU_Click(object sender, EventArgs e)
-        {
-            rdBtnAHU.Checked = false;
-            rdBtnFCU.Checked = true;
-            txtFGSerial.Focus();
-        }
-
-        /// <summary>
-        /// Minus quantity
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btFGMinusQty_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(txtFGQty.Text))
-            {
-                txtFGQty.Text = "0";
-            }
-
-            if (FGQtyBal > 0)
-            {
-                int decreasedVal = int.Parse(txtFGQty.Text) - 1;
-
-                if (decreasedVal >= 0)
+                if (string.IsNullOrEmpty(txtFGSerial.Text))
                 {
-                    txtFGQty.Text = decreasedVal.ToString();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Add quantity
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btFGAddQty_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(txtFGQty.Text))
-            {
-                txtFGQty.Text = "0";
-            }
-
-            if (FGQtyBal > 0)
-            {
-                int increasedVal = int.Parse(txtFGQty.Text) + 1;
-
-                if (increasedVal <= FGQtyBal)
-                {
-                    txtFGQty.Text = increasedVal.ToString();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Navigate to next page
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnFGNext_Click(object sender, EventArgs e)
-        {
-            if (!isShip)
-            {
-                if (dataGrdFG != null && dataGrdFG.DataSource != null)
-                {
-                    if (!string.IsNullOrEmpty(txtFGQty.Text) && Convert.ToInt32(txtFGQty.Text) > 0)
-                    {
-                        Cursor.Current = Cursors.WaitCursor;
-                        LoadLocationFG();
-                        LoadCountry();
-                        pnlFG.Visible = false;
-                        pnlFGSubmit.Visible = true;
-                        pnlFGSubmit.Dock = DockStyle.Fill;
-                        txtText.Focus();
-                        txtText.SelectAll();
-                        rdBtnFGTfrtoCustomer.Checked = false;
-                        lblFGCountry.Enabled = false;
-                        cmbBoxFGCountry.Enabled = false;
-                        rdBtnFGTfrtoWarehse.Checked = true;
-                        lblFGLocation.Enabled = true;
-                        cmbBoxFGLocation.Enabled = true;
-                        Cursor.Current = Cursors.Default;
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(txtFGQty.Text))
-                        {
-                            MessageBox.Show("Enter Qty");
-                            txtFGQty.Focus();
-                        }
-                        else if (!string.IsNullOrEmpty(txtFGQty.Text) && Convert.ToInt32(txtFGQty.Text) == 0)
-                        {
-                            MessageBox.Show("Qty must be more than 0");
-                            txtFGQty.Focus();
-                        }
-                        else if (!string.IsNullOrEmpty(txtFGQty.Text) && FGQtyBal > 0)
-                        {
-                            if (Convert.ToDouble(txtFGQty.Text) > FGQtyBal)
-                            {
-                                MessageBox.Show("Qty exceeded.\nQuantity available: " + FGQtyBal);
-                                txtFGQty.Focus();
-                            }
-                        }
-                    }
+                    MessageBox.Show("Enter Serial No");
+                    txtFGSerial.Focus();
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(txtFGSerial.Text))
-                    {
-                        MessageBox.Show("Enter Serial No");
-                        txtFGSerial.Focus();
-                    }
+                    GetFG();
                 }
-            }
-            else
-            {
-                pnlFG.Visible = false;
-                pnlFGSubmit.Visible = true;
-                pnlFGSubmit.Dock = DockStyle.Fill;
             }
         }
 
@@ -2300,6 +2218,11 @@ namespace ESD.WITS
             lblFGCountry.Enabled = false;
             cmbBoxFGCountry.Enabled = false;
             cmbBoxFGLocation.Focus();
+            if (cmbBoxFGCountry.SelectedItem != null)
+            {
+                cmbBoxFGCountry.SelectedIndex = 0;
+                cmbBoxFGCountry.SelectedIndex = -1;
+            }
         }
 
         /// <summary>
@@ -2314,29 +2237,39 @@ namespace ESD.WITS
             lblFGCountry.Enabled = true;
             cmbBoxFGCountry.Enabled = true;
             cmbBoxFGCountry.Focus();
+            if (cmbBoxFGLocation.SelectedItem != null)
+            {
+                cmbBoxFGLocation.SelectedIndex = 0;
+                cmbBoxFGLocation.SelectedIndex = -1;
+            }
         }
 
         /// <summary>
-        /// Return to FG Main page
+        /// Clear Cache
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnFGBack_Click(object sender, EventArgs e)
+        private void btnFGClear_Click(object sender, EventArgs e)
         {
-            pnlFGSubmit.Visible = false;
-            pnlFG.Visible = true;
-            pnlFG.Dock = DockStyle.Fill;
-        }
-
-        private void btnFGSubmitHome_Click(object sender, EventArgs e)
-        {
-            pnlFGSubmit.Visible = false;
-            pnlSelection.Visible = true;
-            pnlSelection.Dock = DockStyle.Fill;
-            ClearFGCache(true);
+            ClearFGCache();
+            txtFGSerial.Focus();
+            txtFGSerial.SelectAll();
         }
 
         #endregion
+
+        private void txtGRQty_LostFocus(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtGRQty.Text))
+            {
+                txtGRQty.Text = "0";
+            }
+
+            if (txtGRQty.Text.StartsWith("0") && !txtGRQty.Text.StartsWith("0.") && txtGRQty.Text.Length > 1)
+            {
+                txtGRQty.Text = txtGRQty.Text.Substring(1);
+            }
+        }
 
         #endregion
     }

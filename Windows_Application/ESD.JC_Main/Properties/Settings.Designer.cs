@@ -22,17 +22,5 @@ namespace ESD.JC_Main.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("//M3081946/TEC B-SA4T (300 dpi)")]
-        public string PrinterPort {
-            get {
-                return ((string)(this["PrinterPort"]));
-            }
-            set {
-                this["PrinterPort"] = value;
-            }
-        }
     }
 }

@@ -37,12 +37,6 @@ C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\Pris
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\Prism.Wpf.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\System.Windows.Interactivity.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\TDSFramework.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\Xceed.Wpf.AvalonDock.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Aero.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\Xceed.Wpf.AvalonDock.Themes.VS2010.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\Xceed.Wpf.DataGrid.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\Xceed.Wpf.Toolkit.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\NPOI.OOXML.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\NPOI.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\FileHelpers.ExcelNPOIStorage.dll
@@ -83,16 +77,6 @@ C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ko\M
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ru\Microsoft.Expression.Interactions.resources.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\zh-Hans\Microsoft.Expression.Interactions.resources.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\zh-Hant\Microsoft.Expression.Interactions.resources.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\fr\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\hu\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\it\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\pt-BR\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\obj\Debug\App.baml
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.g.resources
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.Properties.Resources.resources
@@ -402,3 +386,16 @@ C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Ap
 C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.csproj.GenerateResource.Cache
 C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.exe.manifest
 C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_Main\obj\Debug\ESD.JC_Main.application
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ToggleSwitch.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\Timer.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\Timer.pdb
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\de\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\en\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\es\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\fr\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\it\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ja\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ko\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\ru\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Main\bin\Debug\zh-Hant\System.Windows.Interactivity.resources.dll

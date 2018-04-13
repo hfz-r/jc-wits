@@ -1,4 +1,3 @@
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_ReasonMgmt.dll.config
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_ReasonMgmt.dll
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\ESD.JC_ReasonMgmt.pdb
 C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_ReasonMgmt\bin\Debug\DataLayer.dll

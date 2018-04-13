@@ -25,5 +25,18 @@ namespace DataLayer.Repositories
                 return getAll.Where(x => x.ID == ID);
             }
         }
+
+        public void Delete(long ID)
+        {
+            using (var context = new InventoryContext())
+            {
+
+                var GITxn = context.GITransactions.Where(id => id.ID == ID);
+                if (GITxn.Any())
+                    context.GITransactions.RemoveRange(GITxn);
+
+                context.SaveChanges();
+            }
+        }
     }
 }

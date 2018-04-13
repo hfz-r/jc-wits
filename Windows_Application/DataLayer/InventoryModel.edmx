@@ -29,7 +29,7 @@
           <Property Name="HeatingCoil2" Type="nvarchar" MaxLength="100" />
           <Property Name="Heater" Type="nvarchar" MaxLength="50" />
           <Property Name="SalesOrder" Type="nvarchar" MaxLength="200" Nullable="false" />
-          <Property Name="Item" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Item" Type="decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="SerialNo" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
@@ -68,8 +68,8 @@
           <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="GRID" Type="bigint" Nullable="false" />
           <Property Name="Eun" Type="varchar" MaxLength="10" />
-          <Property Name="Quantity" Type="numeric" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="QtyReceived" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="QtyReceived" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
@@ -87,19 +87,19 @@
           <Property Name="PowerSupply" Type="nvarchar" MaxLength="200" />
           <Property Name="FanMotor1" Type="nvarchar" MaxLength="100" />
           <Property Name="FanMotor2" Type="nvarchar" MaxLength="50" />
-          <Property Name="Qty" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Qty" Type="decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="CoolingCoil" Type="nvarchar" MaxLength="100" />
           <Property Name="HeatingCoil" Type="nvarchar" MaxLength="100" />
           <Property Name="Heater" Type="nvarchar" MaxLength="50" />
           <Property Name="SalesOrder" Type="nvarchar" MaxLength="200" Nullable="false" />
-          <Property Name="Item" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Item" Type="decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="SerialNo" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="ShipStatus" Type="bit" />
-          <Property Name="QtyReceived" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QtyReceived" Type="decimal" Precision="18" Scale="0" />
         </EntityType>
         <EntityType Name="FCUTransaction">
           <Key>
@@ -107,7 +107,7 @@
           </Key>
           <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CountryID" Type="bigint" />
-          <Property Name="Quantity" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Quantity" Type="decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="FCUID" Type="bigint" Nullable="false" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
@@ -142,7 +142,7 @@
           <Property Name="ENMaterialShortText" Type="varchar" MaxLength="200" />
           <Property Name="MaterialShortText" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="Ok" Type="bit" />
-          <Property Name="Quantity" Type="numeric" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="Eun" Type="varchar" MaxLength="10" />
           <Property Name="MvmtType" Type="varchar" MaxLength="10" />
           <Property Name="StorageLoc" Type="nvarchar" MaxLength="200" Nullable="false" />
@@ -154,7 +154,7 @@
           <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="QtyReceived" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="QtyReceived" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="GRTransaction">
           <Key>
@@ -166,6 +166,8 @@
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
           <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="GRID" Type="bigint" Nullable="false" />
+          <Property Name="DeliveryNote" Type="varchar" MaxLength="200" />
+          <Property Name="BillOfLading" Type="varchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
@@ -255,18 +257,6 @@
             </Principal>
             <Dependent Role="AHUTransaction">
               <PropertyRef Name="CountryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EunKG_GoodsReceive">
-          <End Role="GoodsReceive" Type="Self.GoodsReceive" Multiplicity="1" />
-          <End Role="EunKG" Type="Self.EunKG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="GoodsReceive">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EunKG">
-              <PropertyRef Name="GRID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -413,10 +403,6 @@
           <AssociationSet Name="FK_AHU_COUNTRYID" Association="Self.FK_AHU_COUNTRYID">
             <End Role="Country" EntitySet="Country" />
             <End Role="AHUTransaction" EntitySet="AHUTransaction" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EunKG_GoodsReceive" Association="Self.FK_EunKG_GoodsReceive">
-            <End Role="GoodsReceive" EntitySet="GoodsReceive" />
-            <End Role="EunKG" EntitySet="EunKG" />
           </AssociationSet>
           <AssociationSet Name="FK_FCU_COUNTRYID" Association="Self.FK_FCU_COUNTRYID">
             <End Role="Country" EntitySet="Country" />
@@ -641,6 +627,8 @@
           <Property Name="GRID" Type="Int64" Nullable="false" />
           <NavigationProperty Name="GoodsReceive" Relationship="Self.FK_GoodsReceive_GRID" FromRole="GRTransaction" ToRole="GoodsReceive" />
           <NavigationProperty Name="Reason" Relationship="Self.FK_Reason_ReasonID" FromRole="GRTransaction" ToRole="Reason" />
+          <Property Name="DeliveryNote" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="BillOfLading" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
@@ -1111,6 +1099,8 @@
           <EntitySetMapping Name="GRTransactions">
             <EntityTypeMapping TypeName="InventoryModel.GRTransaction">
               <MappingFragment StoreEntitySet="GRTransaction">
+                <ScalarProperty Name="BillOfLading" ColumnName="BillOfLading" />
+                <ScalarProperty Name="DeliveryNote" ColumnName="DeliveryNote" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="ReasonID" ColumnName="ReasonID" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />

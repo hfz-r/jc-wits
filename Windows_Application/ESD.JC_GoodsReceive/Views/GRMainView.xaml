@@ -223,7 +223,7 @@
                         </StackPanel>
                     </Button>
                     <Separator/>
-                    <Button ToolTipService.ToolTip="Click to delete selected item" Command="{Binding DeleteFGCommand}">
+                    <Button ToolTipService.ToolTip="Click to delete selected item" Command="{Binding DeleteCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">

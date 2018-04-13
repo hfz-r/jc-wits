@@ -107,3 +107,6 @@ C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Ap
 C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.csproj.GenerateResource.Cache
 C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.dll
 C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure.pdb
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\Controls\SidePanelTab.g.cs
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\ESD.JC_Infrastructure_MarkupCompile.lref
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\Controls\SidePanelTab.baml

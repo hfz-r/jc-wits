@@ -1,13 +1,4 @@
-﻿//namespace DataLayer
-//{
-//    public partial class AHU
-//    {
-//        public bool IsChecked { get; set; }
-//        public long IDSeq { get; set; }
-//    }
-//}
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace DataLayer
 {

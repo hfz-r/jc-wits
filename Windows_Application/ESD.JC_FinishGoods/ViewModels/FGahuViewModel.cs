@@ -28,6 +28,7 @@ using System.Text;
 using System.Drawing.Printing;
 using System.Reflection;
 using TDSFramework;
+using System.Configuration;
 
 namespace ESD.JC_FinishGoods.ViewModels
 {
@@ -151,7 +152,7 @@ namespace ESD.JC_FinishGoods.ViewModels
         public DelegateCommand ImportFGCommand;
         public DelegateCommand ExportFGCommand;
         public DelegateCommand PrintLblCommand;
-        public DelegateCommand DeleteFGCommand;
+        public DelegateCommand DeleteCommand;
         public DelegateCommand OKCommand;
         public DelegateCommand XOKCommand;
 
@@ -185,7 +186,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             ImportFGCommand = new DelegateCommand(Import, CanImport);
             ExportFGCommand = new DelegateCommand(Export, CanExport);
             PrintLblCommand = new DelegateCommand(PrintLabel, CanDeletePrint);
-            DeleteFGCommand = new DelegateCommand(Delete, CanDeletePrint);
+            DeleteCommand = new DelegateCommand(Delete, CanDeletePrint);
             OKCommand = new DelegateCommand(OKImport);
             XOKCommand = new DelegateCommand(OnLoaded);
         }
@@ -212,7 +213,7 @@ namespace ESD.JC_FinishGoods.ViewModels
         {
             tempCollection = new ObservableCollection<AHU>();
             ahuCollection = new ObservableCollection<AHU>();
-            foreach (var obj in ahuServices.GetAll(false))
+            foreach (var obj in ahuServices.GetAll(true))
             {
                 if (obj.SectionReceived == null)
                     obj.ShipStatus = false;
@@ -321,7 +322,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             RaisePropertyChanged("AHU");
 
             PrintLblCommand.RaiseCanExecuteChanged();
-            DeleteFGCommand.RaiseCanExecuteChanged();
+            DeleteCommand.RaiseCanExecuteChanged();
         }
 
         private void SetIsSelectedProperty(bool isSelected)
@@ -348,7 +349,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             }
 
             PrintLblCommand.RaiseCanExecuteChanged();
-            DeleteFGCommand.RaiseCanExecuteChanged();
+            DeleteCommand.RaiseCanExecuteChanged();
 
             AHU = new ListCollectionView(tempObj);
             AHU.SortDescriptions.Add(new SortDescription("CreatedOn", ListSortDirection.Descending));
@@ -816,8 +817,17 @@ namespace ESD.JC_FinishGoods.ViewModels
             storage.ColumnsHeaders.Add("Shipped On");
 
             ObservableCollection<AHUImportCLassModel> importObj = new ObservableCollection<AHUImportCLassModel>();
+            DateTime? createdDateTime = null;
+            string createdBy = string.Empty;
+
             foreach (var ahu in ahuCollection)
             {
+                if (ahu.AHUTransactions != null && ahu.AHUTransactions.Count > 0)
+                {
+                    createdDateTime = ahu.AHUTransactions.Select(x => x.CreatedOn).FirstOrDefault();
+                    createdBy = ahu.AHUTransactions.Select(x => x.CreatedBy).FirstOrDefault();
+                }
+
                 importObj.Add(new AHUImportCLassModel
                 {
                     Project = ahu.Project,
@@ -828,9 +838,12 @@ namespace ESD.JC_FinishGoods.ViewModels
                     Item = ahu.Item,
                     SerialNo = ahu.SerialNo,
                     SectionReceived = ahu.SectionReceived.GetValueOrDefault(),
-                    ShippedBy = ahu.CreatedBy,
-                    ShippedOn = Convert.ToString(ahu.CreatedOn)
+                    ShippedBy = createdBy,
+                    ShippedOn = Convert.ToString(createdDateTime)
                 });
+
+                createdDateTime = null;
+                createdBy = string.Empty;
             }
 
             if (importObj != null)
@@ -994,7 +1007,8 @@ namespace ESD.JC_FinishGoods.ViewModels
                     
                     System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
                     pd.PrinterSettings = new PrinterSettings();
-                    pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
+                    pd.PrinterSettings.PrinterName = ConfigurationManager.AppSettings["FGPrinterName"];
+                    pd.PrinterSettings.Copies = Convert.ToInt16(ConfigurationManager.AppSettings["FGPrintCount"]);
 
                     try
                     {
@@ -1037,9 +1051,10 @@ namespace ESD.JC_FinishGoods.ViewModels
                             strPallet.Replace("<SalesOrder>", item.SalesOrder);
                             strPallet.Replace("<Section>", item.Section.ToString());
                             strPallet.Replace("<Item>", item.Item.ToString());
+                            strPallet.Replace("<QRCode>", item.SerialNo + ";" + "AHU");
                             strPallet.Replace("<SerialNo>", item.SerialNo);
 
-                            for (int i = 0; i < Properties.Settings.Default.PrintCount; i++)
+                            for (int i = 0; i < pd.PrinterSettings.Copies; i++)
                             {
                                 if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
                                 {
@@ -1084,7 +1099,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             ImportFGCommand.IsActive = IsActive;
             ExportFGCommand.IsActive = IsActive;
             PrintLblCommand.IsActive = IsActive;
-            DeleteFGCommand.IsActive = IsActive;
+            DeleteCommand.IsActive = IsActive;
             OKCommand.IsActive = IsActive;
             XOKCommand.IsActive = IsActive;
 

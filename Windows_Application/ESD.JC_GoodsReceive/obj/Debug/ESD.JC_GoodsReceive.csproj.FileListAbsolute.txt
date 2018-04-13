@@ -273,3 +273,16 @@ C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Ap
 C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.csproj.GenerateResource.Cache
 C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.dll
 C:\Users\yennyenn\Desktop\WITS - Win @ 03042018\WITS - Win @ 03042018\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\ESD.JC_GoodsReceive.pdb
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\Timer.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\ToggleSwitch.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\Timer.pdb
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\de\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\en\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\es\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\fr\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\it\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\ja\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\ko\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\ru\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
+C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\bin\Debug\zh-Hant\System.Windows.Interactivity.resources.dll

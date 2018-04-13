@@ -28,6 +28,7 @@ using System.Text;
 using System.Drawing.Printing;
 using System.Reflection;
 using TDSFramework;
+using System.Configuration;
 
 namespace ESD.JC_FinishGoods.ViewModels
 {
@@ -151,7 +152,7 @@ namespace ESD.JC_FinishGoods.ViewModels
         public DelegateCommand ImportFGCommand;
         public DelegateCommand ExportFGCommand;
         public DelegateCommand PrintLblCommand;
-        public DelegateCommand DeleteFGCommand;
+        public DelegateCommand DeleteCommand;
         public DelegateCommand OKCommand;
         public DelegateCommand XOKCommand;
 
@@ -185,7 +186,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             ImportFGCommand = new DelegateCommand(Import, CanImport);
             ExportFGCommand = new DelegateCommand(Export, CanExport);
             PrintLblCommand = new DelegateCommand(PrintLabel, CanPrint);
-            DeleteFGCommand = new DelegateCommand(Delete, CanDelete);
+            DeleteCommand = new DelegateCommand(Delete, CanDelete);
             OKCommand = new DelegateCommand(OKImport);
             XOKCommand = new DelegateCommand(OnLoaded);
         }
@@ -213,7 +214,7 @@ namespace ESD.JC_FinishGoods.ViewModels
         {
             tempCollection = new ObservableCollection<FCU>();
             fcuCollection = new ObservableCollection<FCU>();
-            foreach (var obj in fcuServices.GetAll(false))
+            foreach (var obj in fcuServices.GetAll(true))
             {
                 if (obj.QtyReceived == null)
                     obj.ShipStatus = false;
@@ -269,7 +270,7 @@ namespace ESD.JC_FinishGoods.ViewModels
         private bool Filter(object item)
         {
             var fcu = (FCU)item;
-            if (fcu.ID == 1)
+            if (fcu.ID == 0)
             {
                 if (string.IsNullOrEmpty(FilterTextBox))
                     return true;
@@ -322,7 +323,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             RaisePropertyChanged("FCU");
 
             PrintLblCommand.RaiseCanExecuteChanged();
-            DeleteFGCommand.RaiseCanExecuteChanged();
+            DeleteCommand.RaiseCanExecuteChanged();
         }
 
         private void SetIsSelectedProperty(bool isSelected)
@@ -349,7 +350,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             }
 
             PrintLblCommand.RaiseCanExecuteChanged();
-            DeleteFGCommand.RaiseCanExecuteChanged();
+            DeleteCommand.RaiseCanExecuteChanged();
 
             FCU = new ListCollectionView(tempObj);
             FCU.SortDescriptions.Add(new SortDescription("Project", ListSortDirection.Ascending));
@@ -550,6 +551,17 @@ namespace ESD.JC_FinishGoods.ViewModels
                                 else
                                     obj.PowerSupply = SetCellValue(cell);
                                 break;
+                            case 31:
+                                if (cell == null)
+                                    continue;
+                                if (cell.CellType.ToString() == "Formula")
+                                    if (cell.CachedFormulaResultType.ToString() == "Error")
+                                        continue;
+                                    else
+                                        obj.Heater = SetFormulaCellValue(cell);
+                                else
+                                    obj.Heater = SetCellValue(cell);
+                                break;
                         }
                     }
 
@@ -558,7 +570,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                 }
                 #endregion Cells Comparison
 
-                if (tempCollection.Count() > 0)
+                if (tempCollection != null && tempCollection.Count() > 0)
                 {
                     IsImportBtnEnabled = true;
                     ImportFGCommand.RaiseCanExecuteChanged();
@@ -596,7 +608,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             {
                 temp.Add(new FCU
                 {
-                    ID = Convert.ToInt64(rec.IDSeq),
+                    IDSeq = Convert.ToInt64(rec.IDSeq),
                     Project = rec.Project,
                     UnitTag = rec.UnitTag,
                     PartNo = rec.PartNo,
@@ -607,6 +619,7 @@ namespace ESD.JC_FinishGoods.ViewModels
                     Qty = rec.Qty,
                     Qty2 = rec.Qty,
                     CoolingCoil = rec.CoolingCoil1 + "R" + "/" + rec.CoolingCoil2 + "H",
+                    Heater = rec.Heater,
                     SalesOrder = rec.SalesOrder,
                     Item = rec.Item,
                     SerialNo = rec.SerialNo,
@@ -670,8 +683,17 @@ namespace ESD.JC_FinishGoods.ViewModels
             storage.ColumnsHeaders.Add("Shipped On");
 
             ObservableCollection<FCUImportCLassModel> importObj = new ObservableCollection<FCUImportCLassModel>();
+            DateTime? createdDateTime = null;
+            string createdBy = string.Empty;
+
             foreach (var fcu in fcuCollection)
             {
+                if (fcu.FCUTransactions != null && fcu.FCUTransactions.Count > 0)
+                {
+                    createdDateTime = fcu.FCUTransactions.Select(x => x.CreatedOn).FirstOrDefault();
+                    createdBy = fcu.FCUTransactions.Select(x => x.CreatedBy).FirstOrDefault();
+                }
+
                 importObj.Add(new FCUImportCLassModel
                 {
                     Project = fcu.Project,
@@ -682,9 +704,12 @@ namespace ESD.JC_FinishGoods.ViewModels
                     Item = fcu.Item,
                     SerialNo = fcu.SerialNo,
                     QtyReceived = fcu.QtyReceived.GetValueOrDefault(),
-                    ShippedBy = fcu.CreatedBy,
-                    ShippedOn = Convert.ToString(fcu.CreatedOn)
+                    ShippedBy = createdBy,
+                    ShippedOn = Convert.ToString(createdDateTime)
                 });
+
+                createdDateTime = null;
+                createdBy = string.Empty;
             }
 
             if (importObj != null)
@@ -789,6 +814,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             obj.FanMotor2 = fcu.FanMotor2;
             obj.Qty = fcu.Qty;
             obj.CoolingCoil = fcu.CoolingCoil;
+            obj.Heater = fcu.Heater;
             obj.SalesOrder = fcu.SalesOrder;
             obj.Item = fcu.Item;
             obj.ModifiedOn = DateTime.Now;
@@ -849,7 +875,8 @@ namespace ESD.JC_FinishGoods.ViewModels
                     
                     System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
                     pd.PrinterSettings = new PrinterSettings();
-                    pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
+                    pd.PrinterSettings.PrinterName = ConfigurationManager.AppSettings["FGPrinterName"];
+                    pd.PrinterSettings.Copies = Convert.ToInt16(ConfigurationManager.AppSettings["FGPrintCount"]);
 
                     try
                     {
@@ -885,9 +912,10 @@ namespace ESD.JC_FinishGoods.ViewModels
                             strPallet.Replace("<SalesOrder>", item.SalesOrder);
                             strPallet.Replace("<Qty>", item.Qty.ToString("G29"));
                             strPallet.Replace("<Item>", item.Item.ToString());
+                            strPallet.Replace("<QRCode>", item.SerialNo + ";" + "FCU");
                             strPallet.Replace("<SerialNo>", item.SerialNo);
 
-                            for (int i = 0; i < Properties.Settings.Default.PrintCount; i++)
+                            for (int i = 0; i < pd.PrinterSettings.Copies; i++)
                             {
                                 if (RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, strPallet.ToString()) == false)
                                 {
@@ -932,7 +960,7 @@ namespace ESD.JC_FinishGoods.ViewModels
             ImportFGCommand.IsActive = IsActive;
             ExportFGCommand.IsActive = IsActive;
             PrintLblCommand.IsActive = IsActive;
-            DeleteFGCommand.IsActive = IsActive;
+            DeleteCommand.IsActive = IsActive;
             OKCommand.IsActive = IsActive;
             XOKCommand.IsActive = IsActive;
 
@@ -1035,7 +1063,7 @@ namespace ESD.JC_FinishGoods.ViewModels
         [FieldOrder(4)]
         public string Model { get; set; }
 
-        [FieldOrder(16)]
+        [FieldOrder(17)]
         public string PowerSupply { get; set; }
 
         [FieldOrder(11)]
@@ -1054,6 +1082,9 @@ namespace ESD.JC_FinishGoods.ViewModels
         public string CoolingCoil2 { get; set; }
 
         [FieldOrder(15)]
+        public string Heater { get; set; }
+
+        [FieldOrder(16)]
         public string SalesOrder { get; set; }
 
         [FieldOrder(6)]
@@ -1065,7 +1096,7 @@ namespace ESD.JC_FinishGoods.ViewModels
         [FieldOrder(8)]
         public decimal QtyReceived { get; set; }
 
-        [FieldOrder(17)]
+        [FieldOrder(18)]
         public string IDSeq { get; set; }
 
         [FieldOrder(9)]

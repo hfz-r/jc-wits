@@ -163,6 +163,8 @@
     <EntitySetMapping Name="GRTransactions">
       <EntityTypeMapping TypeName="InventoryModel.GRTransaction">
         <MappingFragment StoreEntitySet="GRTransaction">
+          <ScalarProperty Name="BillOfLading" ColumnName="BillOfLading" />
+          <ScalarProperty Name="DeliveryNote" ColumnName="DeliveryNote" />
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="ReasonID" ColumnName="ReasonID" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
