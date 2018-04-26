@@ -1012,6 +1012,7 @@ namespace ESD.WITS
                         sSQL += " SELECT SUM([Quantity]) AS TotalQty";
                         sSQL += " FROM [dbo].[GRTransaction]";
                         sSQL += " WHERE GRID = @GRID)";
+                        sSQL += " AND ID = @GRID";
 
                         using (SqlConnection connection = new SqlConnection(connectionString))
                         {
