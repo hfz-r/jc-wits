@@ -18,6 +18,8 @@ namespace ESD.WITS
 {
     public partial class frmMain : Form
     {
+        #region Private Class
+
         private class ModuleAccessCtrl
         {
             public string Module { get; set; }
@@ -59,8 +61,11 @@ namespace ESD.WITS
             TRANSFER_POST = 1
         }
 
-        #region Variable
+        #endregion
 
+        #region Variable Declaration
+
+        private bool ValChange = false;
         private Color placeHolderDefaultColor = Color.Black;
         private Color defaultColor = Color.Black;
         private const string placeHolder = "Scan...";       
@@ -70,7 +75,7 @@ namespace ESD.WITS
         private string gStrDBName = string.Empty;
         private string gStrSQLUser = string.Empty;
         private string gStrSQLPwd = string.Empty;
-        private string connectionString = "Data Source=192.168.180.37,5050;Initial Catalog=ESD_WITS;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";
+        private string connectionString = "Data Source=10.105.152.73,1438;Initial Catalog=INVENTORY ;Trusted_Connection=Yes;User ID=sa;Password=Password1;Persist Security Info=False;Integrated Security=False;";
         private int GRID = 0;
         private bool isPartialTxn = false;
         private List<GI> GIList = new List<GI>();
@@ -496,7 +501,7 @@ namespace ESD.WITS
         /// Validate respective field before submitting to DB
         /// </summary>
         /// <returns></returns>
-        private bool ValidateGR()
+        private bool ValidateGR(bool IsCheckReason)
         {
             if (string.IsNullOrEmpty(txtGRSAPNo.Text) || txtGRSAPNo.Text == placeHolder)
             {
@@ -541,29 +546,32 @@ namespace ESD.WITS
                 }
             }
 
-            if (!string.IsNullOrEmpty(txtGRQtyOrdered.Text) && !string.IsNullOrEmpty(txtGRQty.Text))
+            if (IsCheckReason)
             {
-                if (isPartialTxn)
+                if (!string.IsNullOrEmpty(txtGRQtyOrdered.Text) && !string.IsNullOrEmpty(txtGRQty.Text))
                 {
-                    double remaining = Convert.ToDouble(txtGRQty.Text) + Convert.ToDouble(txtGRQtyRcvd.Text);
-                    if (Convert.ToDouble(txtGRQty.Text) > 0 &&
-                        remaining < Convert.ToDouble(txtGRQtyOrdered.Text) &&
-                        string.IsNullOrEmpty(cmbBoxGRReason.Text))
+                    if (isPartialTxn)
                     {
-                        MessageBox.Show("Select Reason", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                        cmbBoxGRReason.Focus();
-                        return false;
+                        double remaining = Convert.ToDouble(txtGRQty.Text) + Convert.ToDouble(txtGRQtyRcvd.Text);
+                        if (Convert.ToDouble(txtGRQty.Text) > 0 &&
+                            remaining < Convert.ToDouble(txtGRQtyOrdered.Text) &&
+                            string.IsNullOrEmpty(cmbBoxGRReason.Text))
+                        {
+                            MessageBox.Show("Select Reason", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                            cmbBoxGRReason.Focus();
+                            return false;
+                        }
                     }
-                }
-                else
-                {
-                    if (Convert.ToDouble(txtGRQty.Text) > 0 &&
-                        Convert.ToDouble(txtGRQty.Text) < Convert.ToDouble(txtGRQtyOrdered.Text) &&
-                        string.IsNullOrEmpty(cmbBoxGRReason.Text))
+                    else
                     {
-                        MessageBox.Show("Select Reason", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                        cmbBoxGRReason.Focus();
-                        return false;
+                        if (Convert.ToDouble(txtGRQty.Text) > 0 &&
+                            Convert.ToDouble(txtGRQty.Text) < Convert.ToDouble(txtGRQtyOrdered.Text) &&
+                            string.IsNullOrEmpty(cmbBoxGRReason.Text))
+                        {
+                            MessageBox.Show("Select Reason", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                            cmbBoxGRReason.Focus();
+                            return false;
+                        }
                     }
                 }
             }
@@ -595,6 +603,7 @@ namespace ESD.WITS
                     cmbBoxGRReason.DisplayMember = "ReasonDesc";
                     cmbBoxGRReason.ValueMember = "ID";
                     cmbBoxGRReason.SelectedIndex = -1;
+                    ValChange = true;
                 }
                 
                 connection.Close();
@@ -604,10 +613,80 @@ namespace ESD.WITS
         /// <summary>
         /// Get details by SAP No
         /// </summary>
-        private void GetGoodsReceipt()
+        private void GetPurchaseOrder(ComboBox cmbBox, string SAPNo, bool isGR)
         {
+            string sSQL = string.Empty;
             Cursor.Current = Cursors.WaitCursor; // set the wait cursor
+
+            sSQL = "SELECT [PurchaseOrder] ";
+            sSQL += " FROM [dbo].[GoodsReceive]";
+            sSQL += " WHERE [Material] = '" + SAPNo + "'";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(sSQL, connection);
+
+                using (SqlDataAdapter sda = new SqlDataAdapter(command))
+                {
+                    DataTable dt = new DataTable();
+                    sda.Fill(dt);
+
+                    cmbBox.DataSource = dt;
+                    cmbBox.DisplayMember = "PurchaseOrder";
+                }
+            }
+
+            if (cmbBox.Items.Count == 1)
+            {
+                cmbBox.Enabled = false;
+                cmbBox.SelectedIndex = 0;
+                cmbBox.Enabled = false;
+
+                if (isGR)
+                {
+                    GetGR();
+                }
+            }
+            else if (cmbBox.Items.Count > 1)
+            {
+                cmbBox.Enabled = true;
+                cmbBox.BackColor = System.Drawing.SystemColors.Window;
+                cmbBox.Focus();
+            }
+            else
+            {
+                //if new record
+                if (isGR)
+                {
+                    ClearCache(false);
+                    ResetNewRecord();
+                }
+                else
+                {
+                    txtGIQtyAvbl.Text = string.Empty;
+                    txtGIQtyAvblEun.Text = string.Empty;
+                    txtGIQtyEun.Text = string.Empty;
+                }
+
+                MessageBox.Show("SAP No does not exist.");
+            }
+
+            Cursor.Current = Cursors.Default;
+        }
+
+        /// <summary>
+        /// Get GR by Purchase Order and Material No
+        /// </summary>
+        private void GetGR()
+        {
+            isPartialTxn = false;
+            string sSQL = string.Empty;
+            byte? isTxnCompleted = null;
+            string qtyRcvd = string.Empty;
+            string qtyOrd = string.Empty;
             string[] temp = null;
+
             if (!string.IsNullOrEmpty(txtGRSAPNo.Text))
             {
                 temp = txtGRSAPNo.Text.Split(';');
@@ -615,11 +694,6 @@ namespace ESD.WITS
             }
 
             txtGRSAPNo.SelectAll();
-            isPartialTxn = false;
-            string sSQL = string.Empty;
-            byte? isTxnCompleted = null;
-            string qtyRcvd = string.Empty;
-            string qtyOrd = string.Empty; 
 
             sSQL = "SELECT GR.[ID] ";
             sSQL += ", GR.[MaterialShortText]";
@@ -627,13 +701,12 @@ namespace ESD.WITS
             sSQL += ", GR.[Quantity]";
             sSQL += ", GR.[Eun]";
             sSQL += ", ISNULL(SUM(GRT.Quantity),0) AS QtyOrdered";
-            sSQL += ", GR.[PurchaseOrder]";
             sSQL += ", GR.[PostingDate]";
             sSQL += " FROM [dbo].[GoodsReceive] GR";
             sSQL += " LEFT OUTER JOIN [dbo].[GRTransaction] GRT";
             sSQL += " ON GR.ID = GRT.GRID";
-            sSQL += " WHERE GR.[Material] = '" + txtGRSAPNo.Text + "'";
-            sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Ok], GR.[Quantity], GR.[Eun], GR.[PurchaseOrder], GR.[PostingDate]";
+            sSQL += " WHERE GR.[Material] = '" + txtGRSAPNo.Text + "' AND GR.[PurchaseOrder] = '" + cmbGRPurchaseOrder.Text + "'";
+            sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Ok], GR.[Quantity], GR.[Eun], GR.[PurchaseOrder], GR.[PostingDate]";    
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -648,18 +721,17 @@ namespace ESD.WITS
                         txtGRMSDesc.Text = reader[1].ToString();
                         isTxnCompleted = Convert.ToByte(reader[2]); //var
                         txtGREun.Text = reader[4].ToString();
-                        qtyOrd = reader[3].ToString() == "0.00" ? "0" : reader[3].ToString();                       
+                        qtyOrd = reader[3].ToString() == "0.00" ? "0" : reader[3].ToString();
                         txtGROrderedEun.Text = reader[4].ToString();
                         txtGRQtyOrdered.Text = txtGROrderedEun.Text != "KG" ?
                            (Convert.ToInt64(Math.Floor(Convert.ToDouble(qtyOrd)))).ToString() : qtyOrd.ToString();
                         txtGRRcvdEun.Text = txtGROrderedEun.Text;
                         qtyRcvd = reader[5].ToString() == "0.00" ? "0" : reader[5].ToString();
-                        txtGRQtyRcvd.Text = txtGRRcvdEun.Text != "KG" ? 
+                        txtGRQtyRcvd.Text = txtGRRcvdEun.Text != "KG" ?
                             (Convert.ToInt64(Math.Floor(Convert.ToDouble(qtyRcvd)))).ToString() : qtyRcvd.ToString();
                         txtGRDelNote.Text = string.Empty;
                         txtGRBillLading.Text = string.Empty;
-                        txtGRPurchaseOrder.Text = reader[6].ToString();
-                        dtPickerGRPostingDate.Text = reader[7].ToString();
+                        dtPickerGRPostingDate.Text = reader[6].ToString();
                         txtGRMSDesc.BackColor = Color.Black;
                         txtGRQtyOrdered.BackColor = Color.Black;
                         txtGROrderedEun.BackColor = Color.Black;
@@ -699,13 +771,11 @@ namespace ESD.WITS
                                 labelGRQtyRcvd.Visible = false;
                                 txtGRQtyRcvd.Visible = false;
                                 txtGRRcvdEun.Visible = false;
-                                labelGRQty.Location = new Point(7, 161);
-                                btnGRMinusQty.Location = new Point(104, 157);
-                                txtGRQty.Location = new Point(126, 157);
-                                btnGRAddQty.Location = new Point(170, 157);
-                                txtGREun.Location = new Point(197, 157);
-                                labelGRReason.Location = new Point(8, 190);
-                                cmbBoxGRReason.Location = new Point(103, 187);
+                                labelGRQty.Location = new Point(6, 189);
+                                btnGRMinusQty.Location = new Point(103, 185);
+                                txtGRQty.Location = new Point(125, 185);
+                                btnGRAddQty.Location = new Point(169, 185);
+                                txtGREun.Location = new Point(196, 185);
                             }
                             else if (!string.IsNullOrEmpty(qtyRcvd) && Convert.ToDouble(qtyRcvd) < Convert.ToDouble(txtGRQtyOrdered.Text))
                             {
@@ -721,13 +791,12 @@ namespace ESD.WITS
                                 labelGRQtyRcvd.Visible = true;
                                 txtGRQtyRcvd.Visible = true;
                                 txtGRRcvdEun.Visible = true;
-                                labelGRQty.Location = new Point(7, 190);
-                                btnGRMinusQty.Location = new Point(104, 187);
-                                txtGRQty.Location = new Point(126, 187);
-                                btnGRAddQty.Location = new Point(170, 187);
-                                txtGREun.Location = new Point(197, 187);
-                                labelGRReason.Location = new Point(8, 219);
-                                cmbBoxGRReason.Location = new Point(103, 216);
+                                labelGRQty.Visible = true;
+                                labelGRQty.Location = new Point(6, 218);
+                                btnGRMinusQty.Location = new Point(103, 215);
+                                txtGRQty.Location = new Point(125, 215);
+                                btnGRAddQty.Location = new Point(169, 215);
+                                txtGREun.Location = new Point(196, 215);
                             }
                         }
 
@@ -741,9 +810,8 @@ namespace ESD.WITS
                     {
                         Cursor.Current = Cursors.Default;
                         //if new record
-                        ClearCache(false);
+                        ClearCache(true);
                         ResetNewRecord();
-                        MessageBox.Show("SAP No does not exist.");
                     }
                 }
                 connection.Close();
@@ -756,24 +824,23 @@ namespace ESD.WITS
         private void ResetNewRecord()
         {
             txtGRQty.Text = "0";
-            btnGRNext.Enabled = true;
+            btnGRNext.Enabled = true;                       
             labelGRQty.Visible = true;
-            labelGRQty.Location = new Point(7, 161);
+            labelGRQty.Location = new Point(6, 189);
             btnGRMinusQty.Visible = true;
-            btnGRMinusQty.Location = new Point(104, 157);
+            btnGRMinusQty.Location = new Point(103, 185);
             txtGRQty.Visible = true;
-            txtGRQty.Location = new Point(126, 157);
+            txtGRQty.Location = new Point(125, 185);
             btnGRAddQty.Visible = true;
-            btnGRAddQty.Location = new Point(170, 157);
+            btnGRAddQty.Location = new Point(169, 185);
             txtGREun.Visible = true;
-            txtGREun.Location = new Point(197, 157);
-            labelGRReason.Visible = true;
-            labelGRReason.Location = new Point(8, 190);
-            cmbBoxGRReason.Visible = true;
-            cmbBoxGRReason.Location = new Point(103, 187);
+            txtGREun.Location = new Point(196, 185);
             labelGRQtyRcvd.Visible = false;
             txtGRQtyRcvd.Visible = false;
             txtGRRcvdEun.Visible = false;
+            dtPickerGRPostingDate.Enabled = true;
+            cmbGRPurchaseOrder.Enabled = false;
+            cmbGRPurchaseOrder.BackColor = System.Drawing.SystemColors.ScrollBar;
             txtGRSAPNo.Focus();
         }
 
@@ -785,6 +852,7 @@ namespace ESD.WITS
         {
             txtGRQty.Text = string.Empty;
             txtGREun.Text = string.Empty;
+            cmbGRPurchaseOrder.DataSource = null;
             cmbBoxGRReason.SelectedValue = 0;
             cmbBoxGRReason.SelectedValue = -1;
             txtGRQtyRcvd.Text = string.Empty;
@@ -818,7 +886,7 @@ namespace ESD.WITS
             if (e != null && e.KeyCode == Keys.Enter)
             {
                 ResetNewRecord();
-                GetGoodsReceipt();
+                GetPurchaseOrder(cmbGRPurchaseOrder, txtGRSAPNo.Text, true);
             }
         }
 
@@ -964,7 +1032,7 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void btnGRSubmit_Click(object sender, EventArgs e)
         {
-            if (ValidateGR())
+            if (ValidateGR(true))
             {
                 if (string.IsNullOrEmpty(txtGRQtyOrdered.Text))
                 {
@@ -1041,6 +1109,7 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void btnGRHome_Click(object sender, EventArgs e)
         {
+            ClearCache(true);
             txtGRSAPNo.Text = string.Empty;
             txtGRQty.Text = "0";
             pnlGdReceipt.Visible = false;
@@ -1077,14 +1146,13 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void btnGRNext_Click(object sender, EventArgs e)
         {
-            if (ValidateGR())
+            if (ValidateGR(false))
             {
                 Cursor.Current = Cursors.WaitCursor;
                 pnlGdReceipt.Visible = false;
                 pnlGdReceiptCont.Visible = true;
                 pnlGdReceiptCont.Dock = DockStyle.Fill;
-                txtGRDelNote.Focus();
-                txtGRDelNote.SelectAll();
+                cmbBoxGRReason.Focus();
                 Cursor.Current = Cursors.Default;
             }
         }
@@ -1113,6 +1181,37 @@ namespace ESD.WITS
             txtGRQty.SelectAll();
         }
 
+        /// <summary>
+        /// Lost focus on qty text box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtGRQty_LostFocus(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtGRQty.Text))
+            {
+                txtGRQty.Text = "0";
+            }
+
+            if (txtGRQty.Text.StartsWith("0") && !txtGRQty.Text.StartsWith("0.") && txtGRQty.Text.Length > 1)
+            {
+                txtGRQty.Text = txtGRQty.Text.Substring(1);
+            }
+        }
+
+        /// <summary>
+        /// Purchase Order value change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cmbGRPurchaseOrder_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (cmbGRPurchaseOrder.Text != "System.Data.DataRowView")
+            {
+                GetGR();
+            }
+        }
+
         #endregion
 
         #region Goods Issue
@@ -1129,7 +1228,7 @@ namespace ESD.WITS
         /// <summary>
         /// get all data
         /// </summary>
-        private void GetGoodsIssueForGI()
+        private void GetGoodsIssue()
         {
             try
             {
@@ -1157,7 +1256,7 @@ namespace ESD.WITS
                 sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "') AS QtyRemaining, GR.[ENMaterialShortText]";
                 sSQL += " FROM [dbo].[GoodsReceive] GR ";
                 sSQL += " LEFT OUTER JOIN [dbo].[GRTransaction] GRT   ON GR.ID = GRT.GRID ";
-                sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "' ";
+                sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "' AND GR.[PurchaseOrder] = '" + cmbGIPurchaseOrder.Text + "'";
                 sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Quantity], GR.[Eun], GR.[StorageLoc], GR.[ENMaterialShortText]";
                 sSQL += " HAVING SUM(GRT.Quantity) > 0 ";
 
@@ -1322,6 +1421,10 @@ namespace ESD.WITS
             btnGIDelete.Enabled = false;
             btnGINext.Enabled = false;
             txtText.Text = string.Empty;
+            cmbGIPurchaseOrder.DataSource = null;
+            cmbGIPurchaseOrder.Enabled = false;
+            cmbGIPurchaseOrder.BackColor = System.Drawing.SystemColors.ScrollBar;
+
         }
 
         /// <summary>
@@ -1339,6 +1442,16 @@ namespace ESD.WITS
             lblGILocTo.Enabled = false;
             cmbBoxGILocTo.Enabled = false;
             txtGIProdNo.Focus();
+            if (cmbBoxGILocTo.SelectedItem != null)
+            {
+                cmbBoxGILocTo.SelectedIndex = 0;
+                cmbBoxGILocTo.SelectedIndex = -1;
+            }
+            if (cmbBoxGILocFrom.SelectedItem != null)
+            {
+                cmbBoxGILocFrom.SelectedIndex = 0;
+                cmbBoxGILocFrom.SelectedIndex = -1;
+            }
         }
 
         /// <summary>
@@ -1356,6 +1469,7 @@ namespace ESD.WITS
             lblGIProdNo.Enabled = false;
             txtGIProdNo.Enabled = false;
             cmbBoxGILocFrom.Focus();
+            txtGIProdNo.Text = string.Empty;
         }
 
         /// <summary>
@@ -1367,7 +1481,7 @@ namespace ESD.WITS
         {
             if (e != null && e.KeyCode == Keys.Enter)
             {
-                GetGoodsIssueForGI();
+                GetPurchaseOrder(cmbGIPurchaseOrder, txtGISAPNo.Text, false);
             }
         }
 
@@ -1577,6 +1691,9 @@ namespace ESD.WITS
                         txtGIQty.Text = "0";
                         txtGISAPNo.Focus();
                         txtGISAPNo.SelectAll();
+                        cmbGIPurchaseOrder.DataSource = null;
+                        cmbGIPurchaseOrder.Enabled = false;
+                        cmbGIPurchaseOrder.BackColor = System.Drawing.SystemColors.ScrollBar;
                     }
                     else
                     {
@@ -1752,6 +1869,22 @@ namespace ESD.WITS
                 {
                     MessageBox.Show("Enter SAP No");
                     txtGISAPNo.Focus();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Purchase Order value change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cmbGIPurchaseOrder_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (cmbGIPurchaseOrder.DataSource != null)
+            {
+                if (cmbGIPurchaseOrder.Text != "System.Data.DataRowView")
+                {
+                    GetGoodsIssue();
                 }
             }
         }
@@ -2258,19 +2391,6 @@ namespace ESD.WITS
         }
 
         #endregion
-
-        private void txtGRQty_LostFocus(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(txtGRQty.Text))
-            {
-                txtGRQty.Text = "0";
-            }
-
-            if (txtGRQty.Text.StartsWith("0") && !txtGRQty.Text.StartsWith("0.") && txtGRQty.Text.Length > 1)
-            {
-                txtGRQty.Text = txtGRQty.Text.Substring(1);
-            }
-        }
 
         #endregion
     }

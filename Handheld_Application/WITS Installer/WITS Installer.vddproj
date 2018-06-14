@@ -722,7 +722,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:WITS Installer"
+        "ProductName" = "8:WITS"
         "Manufacturer" = "8:Toshiba"
         "OSVersionMin" = "8:4.0"
         "OSVersionMax" = "8:6.99"
@@ -760,7 +760,7 @@
             }
             "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_C4F07F9E3D984483865153CDB2E9D98A"
             {
-            "SourcePath" = "8:..\\ESD.WITS\\obj\\Release\\Warehouse Inventory Tracking System.exe"
+            "SourcePath" = "8:..\\ESD.WITS\\obj\\Debug\\Warehouse Inventory Tracking System.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C2AB6859B20A4B4D8ECF2508BE908A28"

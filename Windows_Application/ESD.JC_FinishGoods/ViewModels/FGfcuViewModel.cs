@@ -80,8 +80,16 @@ namespace ESD.JC_FinishGoods.ViewModels
             set
             {
                 SetProperty(ref _FilterTextBox, value);
-                if (FCU != null)
+                if (string.IsNullOrEmpty(FilterTextBox))
+                {
+                    FCU = new ListCollectionView(fcuCollection);
                     CollectionViewSource.GetDefaultView(FCU).Refresh();
+                }
+                if (FCU != null)
+                {
+                    CollectionViewSource.GetDefaultView(FCU).Filter = Filter;
+                    CollectionViewSource.GetDefaultView(FCU).Refresh();
+                }
             }
         }
 
@@ -331,6 +339,8 @@ namespace ESD.JC_FinishGoods.ViewModels
             ObservableCollection<FCU> tempObj = new ObservableCollection<FCU>();
             if (tempCollection != null && tempCollection.Count() > 0)
                 tempObj = tempCollection;
+            else if (!string.IsNullOrEmpty(FilterTextBox) && FCU != null)
+                tempObj = new ObservableCollection<FCU>(FCU.Cast<FCU>());
             else
                 tempObj = fcuCollection;
 

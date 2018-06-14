@@ -83,8 +83,16 @@ namespace ESD.JC_GoodsReceive.ViewModels
             set
             {
                 SetProperty(ref _FilterTextBox, value);
-                if (GoodReceives != null)
+                if (string.IsNullOrEmpty(FilterTextBox))
+                {
+                    GoodReceives = new ListCollectionView(grCollection);
                     CollectionViewSource.GetDefaultView(GoodReceives).Refresh();
+                }
+                if (GoodReceives != null)
+                {
+                    CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
+                    CollectionViewSource.GetDefaultView(GoodReceives).Refresh();
+                }
             }
         }
 
@@ -677,7 +685,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 {
                     if (gr.IsChecked == true)
                     {
-                        var obj = grServices.GetGRBySAPNo(gr.Material);
+                        var obj = grServices.GetGRBySAPNo(gr.Material, gr.PurchaseOrder);
                         {
                             if (obj != null)
                             {
@@ -723,7 +731,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         private void PopulateRecords(ImportCLassModel rec, ObservableCollection<GoodsReceive> temp)
         {
-            if (grCollection.Any(sap => sap.Material == rec.Material) == false)
+            if (grCollection.Any(sap => sap.Material == rec.Material && sap.PurchaseOrder == rec.PurchaseOrder) == false)
             {
                 temp.Add(new GoodsReceive
                 {
@@ -1068,6 +1076,8 @@ namespace ESD.JC_GoodsReceive.ViewModels
             ObservableCollection<GoodsReceive> tempObj = new ObservableCollection<GoodsReceive>();
             if (tempCollection != null && tempCollection.Count() > 0)
                 tempObj = tempCollection;
+            else if (!string.IsNullOrEmpty(FilterTextBox) && GoodReceives != null)
+                tempObj = new ObservableCollection<GoodsReceive>(GoodReceives.Cast<GoodsReceive>());
             else
                 tempObj = grCollection;
 

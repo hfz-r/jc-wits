@@ -80,8 +80,16 @@ namespace ESD.JC_FinishGoods.ViewModels
             set
             {
                 SetProperty(ref _FilterTextBox, value);
-                if (AHU != null)
+                if(string.IsNullOrEmpty(FilterTextBox))
+                {
+                    AHU = new ListCollectionView(ahuCollection);
                     CollectionViewSource.GetDefaultView(AHU).Refresh();
+                }
+                if (AHU != null)
+                {
+                    CollectionViewSource.GetDefaultView(AHU).Filter = Filter;
+                    CollectionViewSource.GetDefaultView(AHU).Refresh();
+                }
             }
         }
 
@@ -330,6 +338,8 @@ namespace ESD.JC_FinishGoods.ViewModels
             ObservableCollection<AHU> tempObj = new ObservableCollection<AHU>();
             if (tempCollection != null && tempCollection.Count() > 0)
                 tempObj = tempCollection;
+            else if (!string.IsNullOrEmpty(FilterTextBox) && AHU != null)
+                tempObj = new ObservableCollection<AHU>(AHU.Cast<AHU>());
             else
                 tempObj = ahuCollection;
 
@@ -969,7 +979,9 @@ namespace ESD.JC_FinishGoods.ViewModels
             {
                 if (MessageBox.Show("Confirm to delete?", "Delete", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    var listObj = ahuCollection.Where(x => x.IsChecked == true).ToList();
+                    List<AHU> listObj = new List<AHU>();
+
+                    listObj = ahuCollection.Where(x => x.IsChecked == true).ToList();
 
                     try
                     {

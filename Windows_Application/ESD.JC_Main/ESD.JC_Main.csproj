@@ -63,7 +63,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\WITS_Logo.ico</ApplicationIcon>
@@ -181,6 +181,7 @@
     </EmbeddedResource>
     <None Include="..\App.config">
       <Link>App.config</Link>
+      <SubType>Designer</SubType>
     </None>
     <None Include="ESD.JC_Main_TemporaryKey.pfx" />
     <None Include="packages.config" />

@@ -198,6 +198,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>-->
                 <DataGridTextColumn Header="SAP No." MinWidth="140" Width="Auto" Binding="{Binding GoodsReceive.Material}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="Purchase Order" MinWidth="140" Width="Auto" Binding="{Binding GoodsReceive.PurchaseOrder}" CanUserSort="True" Foreground="Black"/>
                 <!--<DataGridTextColumn Header="Text" Width="*" MinWidth="250" Binding="{Binding Text}" Foreground="Black"/>-->
                 <DataGridTextColumn Header="Quantity" MinWidth="100" CanUserSort="True" Width="*" Binding="{Binding Quantity, StringFormat={}{0:G29}}" Foreground="Black"/>
                 <DataGridTextColumn Header="Eun" MinWidth="100" CanUserSort="True" Width="*" Binding="{Binding GoodsReceive.Eun}" Foreground="Black"/>

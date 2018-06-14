@@ -31,11 +31,11 @@ namespace DataLayer.Repositories
             }
         }
 
-        public GoodsReceive GetGRBySAPNo(string sap_no)
+        public GoodsReceive GetGRBySAPNo(string sap_no, string po)
         {
             using (var context = new InventoryContext())
             {
-                var gr = context.GoodsReceives.Where(x => x.Material == sap_no).FirstOrDefault();
+                var gr = context.GoodsReceives.Where(x => x.Material == sap_no && x.PurchaseOrder == po).FirstOrDefault();
                 if (gr != null)
                 {
                     context.Entry(gr).Collection(x => x.GRTransactions).Load();

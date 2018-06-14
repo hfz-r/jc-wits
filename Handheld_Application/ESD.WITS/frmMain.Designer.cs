@@ -49,14 +49,14 @@
             this.label10 = new System.Windows.Forms.Label();
             this.lblFG = new System.Windows.Forms.Label();
             this.pnlGdReceipt = new System.Windows.Forms.Panel();
+            this.label14 = new System.Windows.Forms.Label();
+            this.cmbGRPurchaseOrder = new System.Windows.Forms.ComboBox();
             this.dtPickerGRPostingDate = new System.Windows.Forms.DateTimePicker();
             this.btnGRClear = new System.Windows.Forms.Button();
             this.txtGRRcvdEun = new System.Windows.Forms.TextBox();
             this.txtGRQtyRcvd = new System.Windows.Forms.TextBox();
             this.labelGRQtyRcvd = new System.Windows.Forms.Label();
             this.txtGROrderedEun = new System.Windows.Forms.TextBox();
-            this.cmbBoxGRReason = new System.Windows.Forms.ComboBox();
-            this.labelGRReason = new System.Windows.Forms.Label();
             this.txtGREun = new System.Windows.Forms.TextBox();
             this.txtGRQtyOrdered = new System.Windows.Forms.TextBox();
             this.lblGRMS = new System.Windows.Forms.Label();
@@ -72,7 +72,11 @@
             this.btnGRHome = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.cmbBoxGRReason = new System.Windows.Forms.ComboBox();
+            this.labelGRReason = new System.Windows.Forms.Label();
             this.pnlGdIssue = new System.Windows.Forms.Panel();
+            this.lblGIPNo = new System.Windows.Forms.Label();
+            this.cmbGIPurchaseOrder = new System.Windows.Forms.ComboBox();
             this.btnGINext = new System.Windows.Forms.Button();
             this.txtGIQtyAvblEun = new System.Windows.Forms.TextBox();
             this.txtGIQtyEun = new System.Windows.Forms.TextBox();
@@ -118,8 +122,6 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.pnlGdReceiptCont = new System.Windows.Forms.Panel();
-            this.txtGRPurchaseOrder = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
             this.btnGRContClear = new System.Windows.Forms.Button();
             this.txtGRBillLading = new System.Windows.Forms.TextBox();
             this.btnGRBack = new System.Windows.Forms.Button();
@@ -339,14 +341,14 @@
             // pnlGdReceipt
             // 
             this.pnlGdReceipt.BackColor = System.Drawing.SystemColors.HighlightText;
+            this.pnlGdReceipt.Controls.Add(this.label14);
+            this.pnlGdReceipt.Controls.Add(this.cmbGRPurchaseOrder);
             this.pnlGdReceipt.Controls.Add(this.dtPickerGRPostingDate);
             this.pnlGdReceipt.Controls.Add(this.btnGRClear);
             this.pnlGdReceipt.Controls.Add(this.txtGRRcvdEun);
             this.pnlGdReceipt.Controls.Add(this.txtGRQtyRcvd);
             this.pnlGdReceipt.Controls.Add(this.labelGRQtyRcvd);
             this.pnlGdReceipt.Controls.Add(this.txtGROrderedEun);
-            this.pnlGdReceipt.Controls.Add(this.cmbBoxGRReason);
-            this.pnlGdReceipt.Controls.Add(this.labelGRReason);
             this.pnlGdReceipt.Controls.Add(this.txtGREun);
             this.pnlGdReceipt.Controls.Add(this.txtGRQtyOrdered);
             this.pnlGdReceipt.Controls.Add(this.lblGRMS);
@@ -367,13 +369,29 @@
             this.pnlGdReceipt.Size = new System.Drawing.Size(240, 292);
             this.pnlGdReceipt.Visible = false;
             // 
+            // label14
+            // 
+            this.label14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.label14.Location = new System.Drawing.Point(7, 70);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(75, 20);
+            this.label14.Text = "PO:";
+            // 
+            // cmbGRPurchaseOrder
+            // 
+            this.cmbGRPurchaseOrder.Location = new System.Drawing.Point(103, 67);
+            this.cmbGRPurchaseOrder.Name = "cmbGRPurchaseOrder";
+            this.cmbGRPurchaseOrder.Size = new System.Drawing.Size(130, 23);
+            this.cmbGRPurchaseOrder.TabIndex = 2;
+            this.cmbGRPurchaseOrder.SelectedValueChanged += new System.EventHandler(this.cmbGRPurchaseOrder_SelectedValueChanged);
+            // 
             // dtPickerGRPostingDate
             // 
             this.dtPickerGRPostingDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtPickerGRPostingDate.Location = new System.Drawing.Point(104, 68);
+            this.dtPickerGRPostingDate.Location = new System.Drawing.Point(103, 96);
             this.dtPickerGRPostingDate.Name = "dtPickerGRPostingDate";
             this.dtPickerGRPostingDate.Size = new System.Drawing.Size(130, 24);
-            this.dtPickerGRPostingDate.TabIndex = 2;
+            this.dtPickerGRPostingDate.TabIndex = 3;
             // 
             // btnGRClear
             // 
@@ -388,7 +406,7 @@
             // txtGRRcvdEun
             // 
             this.txtGRRcvdEun.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGRRcvdEun.Location = new System.Drawing.Point(197, 157);
+            this.txtGRRcvdEun.Location = new System.Drawing.Point(196, 185);
             this.txtGRRcvdEun.Name = "txtGRRcvdEun";
             this.txtGRRcvdEun.ReadOnly = true;
             this.txtGRRcvdEun.Size = new System.Drawing.Size(36, 23);
@@ -398,7 +416,7 @@
             // txtGRQtyRcvd
             // 
             this.txtGRQtyRcvd.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGRQtyRcvd.Location = new System.Drawing.Point(104, 157);
+            this.txtGRQtyRcvd.Location = new System.Drawing.Point(103, 185);
             this.txtGRQtyRcvd.Name = "txtGRQtyRcvd";
             this.txtGRQtyRcvd.ReadOnly = true;
             this.txtGRQtyRcvd.Size = new System.Drawing.Size(89, 23);
@@ -408,7 +426,7 @@
             // labelGRQtyRcvd
             // 
             this.labelGRQtyRcvd.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.labelGRQtyRcvd.Location = new System.Drawing.Point(7, 161);
+            this.labelGRQtyRcvd.Location = new System.Drawing.Point(6, 189);
             this.labelGRQtyRcvd.Name = "labelGRQtyRcvd";
             this.labelGRQtyRcvd.Size = new System.Drawing.Size(104, 20);
             this.labelGRQtyRcvd.Text = "Qty Received:";
@@ -416,32 +434,17 @@
             // txtGROrderedEun
             // 
             this.txtGROrderedEun.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGROrderedEun.Location = new System.Drawing.Point(197, 128);
+            this.txtGROrderedEun.Location = new System.Drawing.Point(196, 156);
             this.txtGROrderedEun.Name = "txtGROrderedEun";
             this.txtGROrderedEun.ReadOnly = true;
             this.txtGROrderedEun.Size = new System.Drawing.Size(36, 23);
             this.txtGROrderedEun.TabIndex = 0;
             this.txtGROrderedEun.TabStop = false;
             // 
-            // cmbBoxGRReason
-            // 
-            this.cmbBoxGRReason.Location = new System.Drawing.Point(103, 216);
-            this.cmbBoxGRReason.Name = "cmbBoxGRReason";
-            this.cmbBoxGRReason.Size = new System.Drawing.Size(130, 23);
-            this.cmbBoxGRReason.TabIndex = 6;
-            // 
-            // labelGRReason
-            // 
-            this.labelGRReason.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.labelGRReason.Location = new System.Drawing.Point(8, 219);
-            this.labelGRReason.Name = "labelGRReason";
-            this.labelGRReason.Size = new System.Drawing.Size(74, 20);
-            this.labelGRReason.Text = "Reason:";
-            // 
             // txtGREun
             // 
             this.txtGREun.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGREun.Location = new System.Drawing.Point(197, 187);
+            this.txtGREun.Location = new System.Drawing.Point(196, 215);
             this.txtGREun.Name = "txtGREun";
             this.txtGREun.ReadOnly = true;
             this.txtGREun.Size = new System.Drawing.Size(36, 23);
@@ -451,7 +454,7 @@
             // txtGRQtyOrdered
             // 
             this.txtGRQtyOrdered.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGRQtyOrdered.Location = new System.Drawing.Point(104, 128);
+            this.txtGRQtyOrdered.Location = new System.Drawing.Point(103, 156);
             this.txtGRQtyOrdered.Name = "txtGRQtyOrdered";
             this.txtGRQtyOrdered.ReadOnly = true;
             this.txtGRQtyOrdered.Size = new System.Drawing.Size(89, 23);
@@ -461,7 +464,7 @@
             // lblGRMS
             // 
             this.lblGRMS.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.lblGRMS.Location = new System.Drawing.Point(7, 102);
+            this.lblGRMS.Location = new System.Drawing.Point(6, 130);
             this.lblGRMS.Name = "lblGRMS";
             this.lblGRMS.Size = new System.Drawing.Size(87, 20);
             this.lblGRMS.Text = "MS Desc.:";
@@ -470,7 +473,7 @@
             // 
             this.txtGRMSDesc.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.txtGRMSDesc.ForeColor = System.Drawing.Color.Black;
-            this.txtGRMSDesc.Location = new System.Drawing.Point(104, 98);
+            this.txtGRMSDesc.Location = new System.Drawing.Point(103, 126);
             this.txtGRMSDesc.Name = "txtGRMSDesc";
             this.txtGRMSDesc.ReadOnly = true;
             this.txtGRMSDesc.Size = new System.Drawing.Size(129, 23);
@@ -480,36 +483,36 @@
             // lblGRQtyOrd
             // 
             this.lblGRQtyOrd.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.lblGRQtyOrd.Location = new System.Drawing.Point(7, 132);
+            this.lblGRQtyOrd.Location = new System.Drawing.Point(6, 160);
             this.lblGRQtyOrd.Name = "lblGRQtyOrd";
             this.lblGRQtyOrd.Size = new System.Drawing.Size(104, 20);
             this.lblGRQtyOrd.Text = "Qty Ordered:";
             // 
             // btnGRAddQty
             // 
-            this.btnGRAddQty.Location = new System.Drawing.Point(170, 187);
+            this.btnGRAddQty.Location = new System.Drawing.Point(169, 215);
             this.btnGRAddQty.Name = "btnGRAddQty";
             this.btnGRAddQty.Size = new System.Drawing.Size(23, 23);
-            this.btnGRAddQty.TabIndex = 5;
+            this.btnGRAddQty.TabIndex = 6;
             this.btnGRAddQty.Text = "+";
             this.btnGRAddQty.Click += new System.EventHandler(this.btnAddIn_Click);
             // 
             // btnGRMinusQty
             // 
-            this.btnGRMinusQty.Location = new System.Drawing.Point(104, 187);
+            this.btnGRMinusQty.Location = new System.Drawing.Point(103, 215);
             this.btnGRMinusQty.Name = "btnGRMinusQty";
             this.btnGRMinusQty.Size = new System.Drawing.Size(23, 23);
-            this.btnGRMinusQty.TabIndex = 3;
+            this.btnGRMinusQty.TabIndex = 4;
             this.btnGRMinusQty.Text = "-";
             this.btnGRMinusQty.Click += new System.EventHandler(this.btnMinusIn_Click);
             // 
             // txtGRQty
             // 
-            this.txtGRQty.Location = new System.Drawing.Point(126, 187);
+            this.txtGRQty.Location = new System.Drawing.Point(125, 215);
             this.txtGRQty.MaxLength = 6;
             this.txtGRQty.Name = "txtGRQty";
             this.txtGRQty.Size = new System.Drawing.Size(44, 23);
-            this.txtGRQty.TabIndex = 4;
+            this.txtGRQty.TabIndex = 5;
             this.txtGRQty.TextChanged += new System.EventHandler(this.txtGRQty_TextChanged);
             this.txtGRQty.GotFocus += new System.EventHandler(this.txtGRQty_GotFocus);
             this.txtGRQty.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumeric_KeyPress);
@@ -518,7 +521,7 @@
             // labelGRQty
             // 
             this.labelGRQty.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.labelGRQty.Location = new System.Drawing.Point(7, 190);
+            this.labelGRQty.Location = new System.Drawing.Point(6, 218);
             this.labelGRQty.Name = "labelGRQty";
             this.labelGRQty.Size = new System.Drawing.Size(100, 20);
             this.labelGRQty.Text = "Quantity:";
@@ -572,14 +575,31 @@
             // label12
             // 
             this.label12.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label12.Location = new System.Drawing.Point(8, 72);
+            this.label12.Location = new System.Drawing.Point(7, 100);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(124, 20);
             this.label12.Text = "Posting Date:";
             // 
+            // cmbBoxGRReason
+            // 
+            this.cmbBoxGRReason.Location = new System.Drawing.Point(112, 41);
+            this.cmbBoxGRReason.Name = "cmbBoxGRReason";
+            this.cmbBoxGRReason.Size = new System.Drawing.Size(120, 23);
+            this.cmbBoxGRReason.TabIndex = 1;
+            // 
+            // labelGRReason
+            // 
+            this.labelGRReason.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.labelGRReason.Location = new System.Drawing.Point(8, 44);
+            this.labelGRReason.Name = "labelGRReason";
+            this.labelGRReason.Size = new System.Drawing.Size(74, 20);
+            this.labelGRReason.Text = "Reason:";
+            // 
             // pnlGdIssue
             // 
             this.pnlGdIssue.BackColor = System.Drawing.SystemColors.HighlightText;
+            this.pnlGdIssue.Controls.Add(this.lblGIPNo);
+            this.pnlGdIssue.Controls.Add(this.cmbGIPurchaseOrder);
             this.pnlGdIssue.Controls.Add(this.btnGINext);
             this.pnlGdIssue.Controls.Add(this.txtGIQtyAvblEun);
             this.pnlGdIssue.Controls.Add(this.txtGIQtyEun);
@@ -601,6 +621,22 @@
             this.pnlGdIssue.Size = new System.Drawing.Size(240, 292);
             this.pnlGdIssue.Visible = false;
             // 
+            // lblGIPNo
+            // 
+            this.lblGIPNo.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.lblGIPNo.Location = new System.Drawing.Point(7, 78);
+            this.lblGIPNo.Name = "lblGIPNo";
+            this.lblGIPNo.Size = new System.Drawing.Size(75, 20);
+            this.lblGIPNo.Text = "PO:";
+            // 
+            // cmbGIPurchaseOrder
+            // 
+            this.cmbGIPurchaseOrder.Location = new System.Drawing.Point(103, 75);
+            this.cmbGIPurchaseOrder.Name = "cmbGIPurchaseOrder";
+            this.cmbGIPurchaseOrder.Size = new System.Drawing.Size(130, 23);
+            this.cmbGIPurchaseOrder.TabIndex = 25;
+            this.cmbGIPurchaseOrder.SelectedValueChanged += new System.EventHandler(this.cmbGIPurchaseOrder_SelectedValueChanged);
+            // 
             // btnGINext
             // 
             this.btnGINext.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -614,7 +650,7 @@
             // txtGIQtyAvblEun
             // 
             this.txtGIQtyAvblEun.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGIQtyAvblEun.Location = new System.Drawing.Point(197, 77);
+            this.txtGIQtyAvblEun.Location = new System.Drawing.Point(197, 102);
             this.txtGIQtyAvblEun.Name = "txtGIQtyAvblEun";
             this.txtGIQtyAvblEun.ReadOnly = true;
             this.txtGIQtyAvblEun.Size = new System.Drawing.Size(36, 23);
@@ -624,7 +660,7 @@
             // txtGIQtyEun
             // 
             this.txtGIQtyEun.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGIQtyEun.Location = new System.Drawing.Point(197, 106);
+            this.txtGIQtyEun.Location = new System.Drawing.Point(197, 131);
             this.txtGIQtyEun.Name = "txtGIQtyEun";
             this.txtGIQtyEun.ReadOnly = true;
             this.txtGIQtyEun.Size = new System.Drawing.Size(36, 23);
@@ -634,7 +670,7 @@
             // txtGIQtyAvbl
             // 
             this.txtGIQtyAvbl.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGIQtyAvbl.Location = new System.Drawing.Point(104, 77);
+            this.txtGIQtyAvbl.Location = new System.Drawing.Point(104, 102);
             this.txtGIQtyAvbl.Name = "txtGIQtyAvbl";
             this.txtGIQtyAvbl.ReadOnly = true;
             this.txtGIQtyAvbl.Size = new System.Drawing.Size(89, 23);
@@ -644,14 +680,14 @@
             // lblGIQtyAvbl
             // 
             this.lblGIQtyAvbl.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.lblGIQtyAvbl.Location = new System.Drawing.Point(7, 81);
+            this.lblGIQtyAvbl.Location = new System.Drawing.Point(7, 106);
             this.lblGIQtyAvbl.Name = "lblGIQtyAvbl";
             this.lblGIQtyAvbl.Size = new System.Drawing.Size(104, 20);
             this.lblGIQtyAvbl.Text = "Qty Available:";
             // 
             // btnGIAddQty
             // 
-            this.btnGIAddQty.Location = new System.Drawing.Point(170, 106);
+            this.btnGIAddQty.Location = new System.Drawing.Point(170, 131);
             this.btnGIAddQty.Name = "btnGIAddQty";
             this.btnGIAddQty.Size = new System.Drawing.Size(23, 23);
             this.btnGIAddQty.TabIndex = 4;
@@ -660,7 +696,7 @@
             // 
             // btGIMinusQty
             // 
-            this.btGIMinusQty.Location = new System.Drawing.Point(104, 106);
+            this.btGIMinusQty.Location = new System.Drawing.Point(104, 131);
             this.btGIMinusQty.Name = "btGIMinusQty";
             this.btGIMinusQty.Size = new System.Drawing.Size(23, 23);
             this.btGIMinusQty.TabIndex = 2;
@@ -669,7 +705,7 @@
             // 
             // txtGIQty
             // 
-            this.txtGIQty.Location = new System.Drawing.Point(126, 106);
+            this.txtGIQty.Location = new System.Drawing.Point(126, 131);
             this.txtGIQty.MaxLength = 6;
             this.txtGIQty.Name = "txtGIQty";
             this.txtGIQty.Size = new System.Drawing.Size(44, 23);
@@ -679,7 +715,7 @@
             // lblGIQty
             // 
             this.lblGIQty.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.lblGIQty.Location = new System.Drawing.Point(7, 109);
+            this.lblGIQty.Location = new System.Drawing.Point(7, 134);
             this.lblGIQty.Name = "lblGIQty";
             this.lblGIQty.Size = new System.Drawing.Size(100, 20);
             this.lblGIQty.Text = "Quantity:";
@@ -707,9 +743,9 @@
             // dataGrdGI
             // 
             this.dataGrdGI.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.dataGrdGI.Location = new System.Drawing.Point(7, 135);
+            this.dataGrdGI.Location = new System.Drawing.Point(7, 160);
             this.dataGrdGI.Name = "dataGrdGI";
-            this.dataGrdGI.Size = new System.Drawing.Size(226, 107);
+            this.dataGrdGI.Size = new System.Drawing.Size(226, 82);
             this.dataGrdGI.TabIndex = 10;
             // 
             // txtGISAPNo
@@ -1017,8 +1053,6 @@
             // pnlGdReceiptCont
             // 
             this.pnlGdReceiptCont.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.pnlGdReceiptCont.Controls.Add(this.txtGRPurchaseOrder);
-            this.pnlGdReceiptCont.Controls.Add(this.label14);
             this.pnlGdReceiptCont.Controls.Add(this.btnGRContClear);
             this.pnlGdReceiptCont.Controls.Add(this.txtGRBillLading);
             this.pnlGdReceiptCont.Controls.Add(this.btnGRBack);
@@ -1027,28 +1061,13 @@
             this.pnlGdReceiptCont.Controls.Add(this.label21);
             this.pnlGdReceiptCont.Controls.Add(this.btnGRHomeCont);
             this.pnlGdReceiptCont.Controls.Add(this.label22);
+            this.pnlGdReceiptCont.Controls.Add(this.cmbBoxGRReason);
+            this.pnlGdReceiptCont.Controls.Add(this.labelGRReason);
             this.pnlGdReceiptCont.Controls.Add(this.label23);
             this.pnlGdReceiptCont.Location = new System.Drawing.Point(495, 299);
             this.pnlGdReceiptCont.Name = "pnlGdReceiptCont";
             this.pnlGdReceiptCont.Size = new System.Drawing.Size(240, 292);
             this.pnlGdReceiptCont.Visible = false;
-            // 
-            // txtGRPurchaseOrder
-            // 
-            this.txtGRPurchaseOrder.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGRPurchaseOrder.Location = new System.Drawing.Point(112, 98);
-            this.txtGRPurchaseOrder.Name = "txtGRPurchaseOrder";
-            this.txtGRPurchaseOrder.ReadOnly = true;
-            this.txtGRPurchaseOrder.Size = new System.Drawing.Size(120, 23);
-            this.txtGRPurchaseOrder.TabIndex = 11;
-            // 
-            // label14
-            // 
-            this.label14.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label14.Location = new System.Drawing.Point(7, 102);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(115, 20);
-            this.label14.Text = "PO:";
             // 
             // btnGRContClear
             // 
@@ -1056,16 +1075,16 @@
             this.btnGRContClear.Location = new System.Drawing.Point(72, 256);
             this.btnGRContClear.Name = "btnGRContClear";
             this.btnGRContClear.Size = new System.Drawing.Size(50, 24);
-            this.btnGRContClear.TabIndex = 3;
+            this.btnGRContClear.TabIndex = 4;
             this.btnGRContClear.Text = "Clear";
             this.btnGRContClear.Click += new System.EventHandler(this.btnGRContClear_Click);
             // 
             // txtGRBillLading
             // 
-            this.txtGRBillLading.Location = new System.Drawing.Point(112, 68);
+            this.txtGRBillLading.Location = new System.Drawing.Point(112, 99);
             this.txtGRBillLading.Name = "txtGRBillLading";
             this.txtGRBillLading.Size = new System.Drawing.Size(120, 23);
-            this.txtGRBillLading.TabIndex = 2;
+            this.txtGRBillLading.TabIndex = 3;
             // 
             // btnGRBack
             // 
@@ -1073,7 +1092,7 @@
             this.btnGRBack.Location = new System.Drawing.Point(128, 256);
             this.btnGRBack.Name = "btnGRBack";
             this.btnGRBack.Size = new System.Drawing.Size(50, 24);
-            this.btnGRBack.TabIndex = 4;
+            this.btnGRBack.TabIndex = 5;
             this.btnGRBack.Text = "Back";
             this.btnGRBack.Click += new System.EventHandler(this.btnGRBack_Click);
             // 
@@ -1083,21 +1102,21 @@
             this.btnGRSubmit.Location = new System.Drawing.Point(184, 256);
             this.btnGRSubmit.Name = "btnGRSubmit";
             this.btnGRSubmit.Size = new System.Drawing.Size(50, 24);
-            this.btnGRSubmit.TabIndex = 5;
+            this.btnGRSubmit.TabIndex = 6;
             this.btnGRSubmit.Text = "Post";
             this.btnGRSubmit.Click += new System.EventHandler(this.btnGRSubmit_Click);
             // 
             // txtGRDelNote
             // 
-            this.txtGRDelNote.Location = new System.Drawing.Point(112, 39);
+            this.txtGRDelNote.Location = new System.Drawing.Point(112, 70);
             this.txtGRDelNote.Name = "txtGRDelNote";
             this.txtGRDelNote.Size = new System.Drawing.Size(120, 23);
-            this.txtGRDelNote.TabIndex = 1;
+            this.txtGRDelNote.TabIndex = 2;
             // 
             // label21
             // 
             this.label21.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label21.Location = new System.Drawing.Point(7, 42);
+            this.label21.Location = new System.Drawing.Point(7, 73);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(104, 20);
             this.label21.Text = "Delivery Note:";
@@ -1125,7 +1144,7 @@
             // label23
             // 
             this.label23.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.label23.Location = new System.Drawing.Point(7, 72);
+            this.label23.Location = new System.Drawing.Point(7, 103);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(124, 20);
             this.label23.Text = "Bill of Lading:";
@@ -1259,8 +1278,10 @@
         private System.Windows.Forms.RadioButton rdBtnFGTfrtoWarehse;
         private System.Windows.Forms.ComboBox cmbBoxFGLocation;
         private System.Windows.Forms.Label lblFGLocation;
-        private System.Windows.Forms.TextBox txtGRPurchaseOrder;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.ComboBox cmbGRPurchaseOrder;
+        private System.Windows.Forms.Label lblGIPNo;
+        private System.Windows.Forms.ComboBox cmbGIPurchaseOrder;
     }
 }
 

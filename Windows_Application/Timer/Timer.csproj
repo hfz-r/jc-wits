@@ -115,6 +115,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ESD.JC_Infrastructure\ESD.JC_Infrastructure.csproj">
       <Project>{3FFE8EC2-5990-4664-9F45-14C469255859}</Project>
       <Name>ESD.JC_Infrastructure</Name>
