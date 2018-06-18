@@ -119,7 +119,7 @@ namespace ESD.JC_GoodsIssue.ViewModels
             var id = GetRequestedGIID(navigationContext);
             if (id.HasValue)
             {
-                this.GoodsIssue = GIServices.GetGI(id.Value);
+                this.GoodsIssue = GIServices.GetGI(id.Value.ToString());
 
                 if (GoodsIssue.TransferType == "TRANSFER_POST")
                 {

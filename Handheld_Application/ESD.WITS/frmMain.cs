@@ -32,6 +32,7 @@ namespace ESD.WITS
             public string SAPNo { get; set; }
             public string Qty { get; set; }
             public string ENDesc { get; set; }
+            public string Eun { get; set; }
         }
 
         private class AHUFCU
@@ -65,7 +66,6 @@ namespace ESD.WITS
 
         #region Variable Declaration
 
-        private bool ValChange = false;
         private Color placeHolderDefaultColor = Color.Black;
         private Color defaultColor = Color.Black;
         private const string placeHolder = "Scan...";       
@@ -75,8 +75,9 @@ namespace ESD.WITS
         private string gStrDBName = string.Empty;
         private string gStrSQLUser = string.Empty;
         private string gStrSQLPwd = string.Empty;
-        private string connectionString = "Data Source=10.105.152.73,1438;Initial Catalog=INVENTORY ;Trusted_Connection=Yes;User ID=sa;Password=Password1;Persist Security Info=False;Integrated Security=False;";
+        private string connectionString = "Data Source=10.105.152.73,1438;Initial Catalog=INVENTORY;Trusted_Connection=Yes;User ID=sa;Password=Password1;Persist Security Info=False;Integrated Security=False;";
         private int GRID = 0;
+        private string Material = string.Empty;
         private bool isPartialTxn = false;
         private List<GI> GIList = new List<GI>();
         private List<Location> LocationList = new List<Location>();
@@ -87,7 +88,6 @@ namespace ESD.WITS
         private string ENMatShortText = string.Empty;
         private int FGQtyBal = 0;
         private AHUFCU AHUFCURec = new AHUFCU();
-        private bool isShip = false;
         private bool IsAHUTxn = false;
         #endregion
 
@@ -603,7 +603,6 @@ namespace ESD.WITS
                     cmbBoxGRReason.DisplayMember = "ReasonDesc";
                     cmbBoxGRReason.ValueMember = "ID";
                     cmbBoxGRReason.SelectedIndex = -1;
-                    ValChange = true;
                 }
                 
                 connection.Close();
@@ -1248,16 +1247,15 @@ namespace ESD.WITS
                 txtGIQtyAvblEun.Text = string.Empty;
                 txtGIQtyEun.Text = string.Empty;
 
-                sSQL = " SELECT GR.[ID], GR.[MaterialShortText], GR.[Eun], GR.[StorageLoc],";
+                sSQL = " SELECT GR.[Material], GR.[MaterialShortText], GR.[Eun], GR.[StorageLoc],";
                 sSQL += "ISNULL(SUM(GRT.Quantity),0) -";
-                sSQL += " (SELECT ISNULL(SUM(GIT.Quantity),0) AS QtyAvailableGI";
-                sSQL += " FROM [dbo].[GoodsReceive] GR ";
-                sSQL += " INNER JOIN [dbo].[GITransaction] GIT   ON GR.ID = GIT.GRID ";
-                sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "') AS QtyRemaining, GR.[ENMaterialShortText]";
+                sSQL += " (SELECT ISNULL(SUM(Quantity),0) AS QtyAvailableGI";
+                sSQL += " FROM [dbo].[GITransaction] ";
+                sSQL += " WHERE [Material] = '" + txtGISAPNo.Text + "') AS QtyRemaining, GR.[ENMaterialShortText]";
                 sSQL += " FROM [dbo].[GoodsReceive] GR ";
                 sSQL += " LEFT OUTER JOIN [dbo].[GRTransaction] GRT   ON GR.ID = GRT.GRID ";
-                sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "' AND GR.[PurchaseOrder] = '" + cmbGIPurchaseOrder.Text + "'";
-                sSQL += " GROUP BY GR.[ID], GR.[MaterialShortText], GR.[Quantity], GR.[Eun], GR.[StorageLoc], GR.[ENMaterialShortText]";
+                sSQL += " WHERE GR.[Material] = '" + txtGISAPNo.Text + "'";
+                sSQL += " GROUP BY GR.[Material], GR.[MaterialShortText], GR.[Quantity], GR.[Eun], GR.[StorageLoc], GR.[ENMaterialShortText]";
                 sSQL += " HAVING SUM(GRT.Quantity) > 0 ";
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1270,7 +1268,7 @@ namespace ESD.WITS
                         Cursor.Current = Cursors.Default;
                         if (reader != null && reader.Read())
                         {
-                            GRID = Convert.ToInt32(reader[0]);
+                            Material = reader[0].ToString();
                             txtGIQtyAvblEun.Text = reader[2].ToString();
                             txtGIQtyEun.Text = reader[2].ToString();
                             txtGIQty.Text = "0";
@@ -1404,6 +1402,7 @@ namespace ESD.WITS
         /// </summary>
         private void ClearGICache()
         {
+            Material = string.Empty;
             txtGIQty.Text = string.Empty;
             txtGISAPNo.Text = string.Empty;
             dataGrdGI.DataSource = null;
@@ -1421,10 +1420,6 @@ namespace ESD.WITS
             btnGIDelete.Enabled = false;
             btnGINext.Enabled = false;
             txtText.Text = string.Empty;
-            cmbGIPurchaseOrder.DataSource = null;
-            cmbGIPurchaseOrder.Enabled = false;
-            cmbGIPurchaseOrder.BackColor = System.Drawing.SystemColors.ScrollBar;
-
         }
 
         /// <summary>
@@ -1481,7 +1476,8 @@ namespace ESD.WITS
         {
             if (e != null && e.KeyCode == Keys.Enter)
             {
-                GetPurchaseOrder(cmbGIPurchaseOrder, txtGISAPNo.Text, false);
+                GetGoodsIssue();
+                //GetPurchaseOrder(cmbGIPurchaseOrder, txtGISAPNo.Text, false);
             }
         }
 
@@ -1575,7 +1571,7 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void btnGIAdd_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtGIQtyAvbl.Text) && !string.IsNullOrEmpty(txtGIQty.Text) && GRID != 0)
+            if (!string.IsNullOrEmpty(txtGIQtyAvbl.Text) && !string.IsNullOrEmpty(txtGIQty.Text) && !string.IsNullOrEmpty(Material))
             {
                 if (Convert.ToDouble(txtGIQty.Text) > Convert.ToDouble(txtGIQtyAvbl.Text))
                 {
@@ -1604,10 +1600,10 @@ namespace ESD.WITS
                             //{
                                 GIList.Add(new GI
                                 { 
-                                    ID = GRID,
                                     SAPNo = txtGISAPNo.Text,
                                     Qty = txtGIQty.Text,
-                                    ENDesc = ENMatShortText
+                                    ENDesc = ENMatShortText,
+                                    Eun = txtGIQtyEun.Text
                                 });
                             //}
                         }
@@ -1615,10 +1611,10 @@ namespace ESD.WITS
                         {
                             GIList.Add(new GI
                             {
-                                ID = GRID,
                                 SAPNo = txtGISAPNo.Text,
                                 Qty = txtGIQty.Text,
-                                ENDesc = ENMatShortText
+                                ENDesc = ENMatShortText,
+                                Eun = txtGIQtyEun.Text
                             });
                         }
 
@@ -1691,9 +1687,6 @@ namespace ESD.WITS
                         txtGIQty.Text = "0";
                         txtGISAPNo.Focus();
                         txtGISAPNo.SelectAll();
-                        cmbGIPurchaseOrder.DataSource = null;
-                        cmbGIPurchaseOrder.Enabled = false;
-                        cmbGIPurchaseOrder.BackColor = System.Drawing.SystemColors.ScrollBar;
                     }
                     else
                     {
@@ -1791,9 +1784,10 @@ namespace ESD.WITS
                                 sSQL = " INSERT INTO [dbo].[GITransaction]";
                                 sSQL += " ([Text]";
                                 sSQL += " ,[Quantity]";
+                                sSQL += " ,[Eun]";
                                 sSQL += " ,[CreatedOn]";
                                 sSQL += " ,[CreatedBy]";
-                                sSQL += " ,[GRID]";
+                                sSQL += " ,[Material]";
                                 sSQL += " ,[TransferType]";
                                 sSQL += " ,[ProductionNo]";
                                 sSQL += " ,[LocationToID]";
@@ -1801,9 +1795,10 @@ namespace ESD.WITS
                                 sSQL += " VALUES";
                                 sSQL += " ('" + txtText.Text + "'";
                                 sSQL += " ,'" + item.Qty + "'";
+                                sSQL += " ,'" + item.Eun + "'";
                                 sSQL += " ,'" + serverTime.ToString("yyyy-MM-dd HH:mm:ss") + "'";
                                 sSQL += " ,'" + txtUserID.Text + "'";
-                                sSQL += " ,'" + item.ID + "'";
+                                sSQL += " ,'" + item.SAPNo + "'";
                                 sSQL += " ,'" + transferType + "'";
                                 sSQL += !string.IsNullOrEmpty(txtGIProdNo.Text) ? " ,'" + txtGIProdNo.Text + "'" : " ,NULL";
                                 sSQL += !string.IsNullOrEmpty(cmbBoxGILocTo.Text) ? " ,'" + cmbBoxGILocTo.SelectedValue + "'" : " ,NULL";
@@ -1873,22 +1868,6 @@ namespace ESD.WITS
             }
         }
 
-        /// <summary>
-        /// Purchase Order value change
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void cmbGIPurchaseOrder_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (cmbGIPurchaseOrder.DataSource != null)
-            {
-                if (cmbGIPurchaseOrder.Text != "System.Data.DataRowView")
-                {
-                    GetGoodsIssue();
-                }
-            }
-        }
-
         #endregion
 
         #region Outbound Delivery
@@ -1945,7 +1924,6 @@ namespace ESD.WITS
             rdBtnFGTfrtoCustomer.Enabled = false;
             lblFGCountry.Enabled = false;
             FGQtyBal = 0;
-            isShip = false;
             txtFGSerial.Focus();
             cmbBoxFGCountry.Enabled = false;
             cmbBoxFGLocation.Enabled = false;      
@@ -1969,7 +1947,6 @@ namespace ESD.WITS
                 cmbBoxFGLocation.SelectedIndex = 0;
                 cmbBoxFGLocation.SelectedIndex = -1;
             }
-            isShip = false;
             cmbBoxFGCountry.Enabled = false;
             lblFGCountry.Enabled = false;
             dataGrdFG.DataSource = null;
@@ -2179,7 +2156,6 @@ namespace ESD.WITS
                             lblFGLocation.Enabled = false;
                             lblFGCountry.Enabled = false;
                             MessageBox.Show("All package has been shipped.");
-                            isShip = true;
                         }
                         else
                         {
@@ -2192,7 +2168,6 @@ namespace ESD.WITS
                             btnFGShip.Enabled = true;
                             lblFGLocation.Enabled = true;
                             lblFGCountry.Enabled = false;
-                            isShip = false;
                         }
                     }
                     else
@@ -2200,7 +2175,6 @@ namespace ESD.WITS
                         Cursor.Current = Cursors.Default;
                         ClearFGCache();
                         MessageBox.Show("Serial No. does not exist.");
-                        isShip = false;
                     }
                 }
                 connection.Close();

@@ -19,13 +19,13 @@ namespace DataLayer
         public decimal Quantity { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
-        public long GRID { get; set; }
+        public string Material { get; set; }
         public string TransferType { get; set; }
         public string ProductionNo { get; set; }
         public Nullable<long> LocationToID { get; set; }
         public Nullable<long> LocationFromID { get; set; }
+        public string Eun { get; set; }
     
-        public virtual GoodsReceive GoodsReceive { get; set; }
         public virtual Location Location { get; set; }
         public virtual Location Location1 { get; set; }
     }

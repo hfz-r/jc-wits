@@ -76,13 +76,9 @@ namespace DataLayer.Repositories
         }
 
         public void Delete(long ID)
-        { using (var context = new InventoryContext())
+        {
+            using (var context = new InventoryContext())
             {
-
-                var GITxn = context.GITransactions.Where(id => id.GRID == ID);
-                if (GITxn.Any())
-                    context.GITransactions.RemoveRange(GITxn);
-
                 var GRTxn = context.GRTransactions.Where(id => id.GRID == ID);
                 if (GRTxn.Any())
                     context.GRTransactions.RemoveRange(GRTxn);

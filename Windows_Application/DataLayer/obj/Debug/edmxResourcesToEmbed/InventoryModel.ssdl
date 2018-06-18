@@ -115,9 +115,10 @@
     <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Text" Type="varchar" MaxLength="200" Nullable="false" />
     <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="Eun" Type="nvarchar" MaxLength="10" />
     <Property Name="CreatedOn" Type="datetime" Nullable="false" />
     <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
-    <Property Name="GRID" Type="bigint" Nullable="false" />
+    <Property Name="Material" Type="nvarchar" MaxLength="50" />
     <Property Name="TransferType" Type="nvarchar" MaxLength="50" />
     <Property Name="ProductionNo" Type="nvarchar" MaxLength="50" />
     <Property Name="LocationToID" Type="bigint" />
@@ -158,11 +159,11 @@
     <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="ReasonID" Type="bigint" />
     <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="DeliveryNote" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="BillOfLading" Type="varchar" MaxLength="200" Nullable="false" />
     <Property Name="CreatedOn" Type="datetime" Nullable="false" />
     <Property Name="CreatedBy" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="GRID" Type="bigint" Nullable="false" />
-    <Property Name="DeliveryNote" Type="varchar" MaxLength="200" />
-    <Property Name="BillOfLading" Type="varchar" MaxLength="200" />
   </EntityType>
   <EntityType Name="Location">
     <Key>
@@ -255,6 +256,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_EunKG_GoodsReceive">
+    <End Role="GoodsReceive" Type="Self.GoodsReceive" Multiplicity="1" />
+    <End Role="EunKG" Type="Self.EunKG" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GoodsReceive">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="EunKG">
+        <PropertyRef Name="GRID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_FCU_COUNTRYID">
     <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
     <End Role="FCUTransaction" Type="Self.FCUTransaction" Multiplicity="*" />
@@ -276,18 +289,6 @@
       </Principal>
       <Dependent Role="FCUTransaction">
         <PropertyRef Name="FCUID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_GoodsIssue_GRID">
-    <End Role="GoodsReceive" Type="Self.GoodsReceive" Multiplicity="1" />
-    <End Role="GITransaction" Type="Self.GITransaction" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="GoodsReceive">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="GITransaction">
-        <PropertyRef Name="GRID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -399,6 +400,10 @@
       <End Role="Country" EntitySet="Country" />
       <End Role="AHUTransaction" EntitySet="AHUTransaction" />
     </AssociationSet>
+    <AssociationSet Name="FK_EunKG_GoodsReceive" Association="Self.FK_EunKG_GoodsReceive">
+      <End Role="GoodsReceive" EntitySet="GoodsReceive" />
+      <End Role="EunKG" EntitySet="EunKG" />
+    </AssociationSet>
     <AssociationSet Name="FK_FCU_COUNTRYID" Association="Self.FK_FCU_COUNTRYID">
       <End Role="Country" EntitySet="Country" />
       <End Role="FCUTransaction" EntitySet="FCUTransaction" />
@@ -406,10 +411,6 @@
     <AssociationSet Name="FK_FCU_FCUID" Association="Self.FK_FCU_FCUID">
       <End Role="FCU" EntitySet="FCU" />
       <End Role="FCUTransaction" EntitySet="FCUTransaction" />
-    </AssociationSet>
-    <AssociationSet Name="FK_GoodsIssue_GRID" Association="Self.FK_GoodsIssue_GRID">
-      <End Role="GoodsReceive" EntitySet="GoodsReceive" />
-      <End Role="GITransaction" EntitySet="GITransaction" />
     </AssociationSet>
     <AssociationSet Name="FK_GoodsIssue_LocationFromID" Association="Self.FK_GoodsIssue_LocationFromID">
       <End Role="Location" EntitySet="Location" />

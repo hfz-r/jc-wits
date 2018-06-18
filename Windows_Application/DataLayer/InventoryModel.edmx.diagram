@@ -5,33 +5,32 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="59a75ac19d76413db92a48b5212735da" Name="Diagram1" ZoomLevel="97">
-        <EntityTypeShape EntityType="InventoryModel.AHU" Width="1.5" PointX="5.75" PointY="17.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.AHUTransaction" Width="1.5" PointX="8" PointY="13.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.Country" Width="1.5" PointX="5.75" PointY="13.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.EunKG" Width="1.5" PointX="3" PointY="14.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.FCU" Width="1.5" PointX="8.75" PointY="17" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.FCUTransaction" Width="1.5" PointX="11" PointY="13.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.GITransaction" Width="1.5" PointX="3" PointY="6.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.GoodsReceive" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.GRTransaction" Width="1.5" PointX="6" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.Location" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.ModuleAccessCtrl" Width="1.5" PointX="8.75" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.ModuleAccessCtrlTransaction" Width="1.5" PointX="11" PointY="3.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.Reason" Width="1.5" PointX="3.75" PointY="2.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="InventoryModel.Role" Width="1.5" PointX="8.75" PointY="4.25" IsExpanded="true" />
-        <AssociationConnector Association="InventoryModel.FK_AHU_AHUID" ManuallyRouted="false" />
-        <AssociationConnector Association="InventoryModel.FK_AHU_COUNTRYID" ManuallyRouted="false" />
-        <AssociationConnector Association="InventoryModel.FK_FCU_COUNTRYID" ManuallyRouted="false" />
-        <AssociationConnector Association="InventoryModel.FK_EunKG_GoodsReceive" ManuallyRouted="false" />
-        <AssociationConnector Association="InventoryModel.FK_FCU_FCUID" ManuallyRouted="false" />
-        <AssociationConnector Association="InventoryModel.FK_GoodsIssue_GRID" ManuallyRouted="false" />
-        <AssociationConnector Association="InventoryModel.FK_GoodsIssue_LocationFromID" ManuallyRouted="false" />
-        <AssociationConnector Association="InventoryModel.FK_GoodsIssue_LocationToID" ManuallyRouted="false" />
-        <AssociationConnector Association="InventoryModel.FK_GoodsReceive_GRID" ManuallyRouted="false" />
-        <AssociationConnector Association="InventoryModel.FK_Reason_ReasonID" ManuallyRouted="false" />
-        <AssociationConnector Association="InventoryModel.FK_MODULEACCESSCTRL_MODULEID" ManuallyRouted="false" />
-        <AssociationConnector Association="InventoryModel.FK_MODULEACCESSCTRL_ROLEID" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="InventoryModel.User" Width="1.5" PointX="11" PointY="7" />
+        <EntityTypeShape EntityType="InventoryModel.AHU" Width="1.5" PointX="10.75" PointY="19.25" />
+        <EntityTypeShape EntityType="InventoryModel.AHUTransaction" Width="1.5" PointX="13" PointY="15.125" />
+        <EntityTypeShape EntityType="InventoryModel.Country" Width="1.5" PointX="10.75" PointY="15.25" />
+        <EntityTypeShape EntityType="InventoryModel.EunKG" Width="1.5" PointX="8" PointY="9.25" />
+        <EntityTypeShape EntityType="InventoryModel.FCU" Width="1.5" PointX="13.75" PointY="8.875" />
+        <EntityTypeShape EntityType="InventoryModel.FCUTransaction" Width="1.5" PointX="16" PointY="15.125" />
+        <EntityTypeShape EntityType="InventoryModel.GITransaction" Width="1.5" PointX="8" PointY="2.25" />
+        <EntityTypeShape EntityType="InventoryModel.GoodsReceive" Width="1.5" PointX="5.75" PointY="7.875" />
+        <EntityTypeShape EntityType="InventoryModel.GRTransaction" Width="1.5" PointX="11" PointY="9.25" />
+        <EntityTypeShape EntityType="InventoryModel.Location" Width="1.5" PointX="5.75" PointY="2.625" />
+        <EntityTypeShape EntityType="InventoryModel.ModuleAccessCtrl" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="InventoryModel.ModuleAccessCtrlTransaction" Width="1.5" PointX="3" PointY="3.5" />
+        <EntityTypeShape EntityType="InventoryModel.Reason" Width="1.5" PointX="8.75" PointY="13.625" />
+        <EntityTypeShape EntityType="InventoryModel.Role" Width="1.5" PointX="0.75" PointY="4.125" />
+        <EntityTypeShape EntityType="InventoryModel.User" Width="1.5" PointX="3" PointY="6.75" />
+        <AssociationConnector Association="InventoryModel.FK_AHU_AHUID" />
+        <AssociationConnector Association="InventoryModel.FK_AHU_COUNTRYID" />
+        <AssociationConnector Association="InventoryModel.FK_FCU_COUNTRYID" />
+        <AssociationConnector Association="InventoryModel.FK_EunKG_GoodsReceive" />
+        <AssociationConnector Association="InventoryModel.FK_FCU_FCUID" />
+        <AssociationConnector Association="InventoryModel.FK_GoodsIssue_LocationFromID" />
+        <AssociationConnector Association="InventoryModel.FK_GoodsIssue_LocationToID" />
+        <AssociationConnector Association="InventoryModel.FK_GoodsReceive_GRID" />
+        <AssociationConnector Association="InventoryModel.FK_Reason_ReasonID" />
+        <AssociationConnector Association="InventoryModel.FK_MODULEACCESSCTRL_MODULEID" />
+        <AssociationConnector Association="InventoryModel.FK_MODULEACCESSCTRL_ROLEID" />
         <AssociationConnector Association="InventoryModel.FK_Role_RoleID" />
       </Diagram>
     </edmx:Diagrams>

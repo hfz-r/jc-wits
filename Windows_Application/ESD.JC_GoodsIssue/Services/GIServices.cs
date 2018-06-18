@@ -1,5 +1,6 @@
 ﻿using DataLayer;
 using DataLayer.Repositories;
+using System;
 using System.Collections.Generic;
 
 namespace ESD.JC_GoodsIssue.Services
@@ -21,14 +22,36 @@ namespace ESD.JC_GoodsIssue.Services
                 return giRepository.GetAll(false);
         }
 
-        public GITransaction GetGoodsIssue(long ID)
+        //public GITransaction GetGoodsIssue(long ID)
+        //{
+        //    return giRepository.GetGoodsIssue(ID);
+        //}
+
+        public GITransaction GetGI(string Material)
         {
-            return giRepository.GetGoodsIssue(ID);
+            return giRepository.GetGI(Material);
         }
 
-        public GITransaction GetGI(long ID)
+        public bool Delete(string Material)
         {
-            return giRepository.GetGI(ID);
+            try
+            {
+                var giObj = GetGI(Material);
+                if (giObj != null)
+                {
+                    giRepository.Delete(Material);
+                }
+                else
+                {
+                    throw new Exception("Record Not Found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return true;
         }
     }
 }

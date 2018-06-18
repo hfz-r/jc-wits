@@ -17,11 +17,11 @@ namespace DataLayer
         public long ID { get; set; }
         public Nullable<long> ReasonID { get; set; }
         public decimal Quantity { get; set; }
+        public string DeliveryNote { get; set; }
+        public string BillOfLading { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
         public long GRID { get; set; }
-        public string DeliveryNote { get; set; }
-        public string BillOfLading { get; set; }
     
         public virtual GoodsReceive GoodsReceive { get; set; }
         public virtual Reason Reason { get; set; }

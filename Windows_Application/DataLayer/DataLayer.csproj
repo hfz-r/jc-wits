@@ -155,6 +155,9 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>InventoryModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="..\App.config">
+      <Link>App.config</Link>
+    </None>
     <None Include="InventoryModel.edmx.diagram">
       <DependentUpon>InventoryModel.edmx</DependentUpon>
     </None>

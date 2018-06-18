@@ -75,8 +75,6 @@
             this.cmbBoxGRReason = new System.Windows.Forms.ComboBox();
             this.labelGRReason = new System.Windows.Forms.Label();
             this.pnlGdIssue = new System.Windows.Forms.Panel();
-            this.lblGIPNo = new System.Windows.Forms.Label();
-            this.cmbGIPurchaseOrder = new System.Windows.Forms.ComboBox();
             this.btnGINext = new System.Windows.Forms.Button();
             this.txtGIQtyAvblEun = new System.Windows.Forms.TextBox();
             this.txtGIQtyEun = new System.Windows.Forms.TextBox();
@@ -598,8 +596,6 @@
             // pnlGdIssue
             // 
             this.pnlGdIssue.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.pnlGdIssue.Controls.Add(this.lblGIPNo);
-            this.pnlGdIssue.Controls.Add(this.cmbGIPurchaseOrder);
             this.pnlGdIssue.Controls.Add(this.btnGINext);
             this.pnlGdIssue.Controls.Add(this.txtGIQtyAvblEun);
             this.pnlGdIssue.Controls.Add(this.txtGIQtyEun);
@@ -621,22 +617,6 @@
             this.pnlGdIssue.Size = new System.Drawing.Size(240, 292);
             this.pnlGdIssue.Visible = false;
             // 
-            // lblGIPNo
-            // 
-            this.lblGIPNo.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.lblGIPNo.Location = new System.Drawing.Point(7, 78);
-            this.lblGIPNo.Name = "lblGIPNo";
-            this.lblGIPNo.Size = new System.Drawing.Size(75, 20);
-            this.lblGIPNo.Text = "PO:";
-            // 
-            // cmbGIPurchaseOrder
-            // 
-            this.cmbGIPurchaseOrder.Location = new System.Drawing.Point(103, 75);
-            this.cmbGIPurchaseOrder.Name = "cmbGIPurchaseOrder";
-            this.cmbGIPurchaseOrder.Size = new System.Drawing.Size(130, 23);
-            this.cmbGIPurchaseOrder.TabIndex = 25;
-            this.cmbGIPurchaseOrder.SelectedValueChanged += new System.EventHandler(this.cmbGIPurchaseOrder_SelectedValueChanged);
-            // 
             // btnGINext
             // 
             this.btnGINext.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
@@ -650,7 +630,7 @@
             // txtGIQtyAvblEun
             // 
             this.txtGIQtyAvblEun.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGIQtyAvblEun.Location = new System.Drawing.Point(197, 102);
+            this.txtGIQtyAvblEun.Location = new System.Drawing.Point(197, 76);
             this.txtGIQtyAvblEun.Name = "txtGIQtyAvblEun";
             this.txtGIQtyAvblEun.ReadOnly = true;
             this.txtGIQtyAvblEun.Size = new System.Drawing.Size(36, 23);
@@ -660,7 +640,7 @@
             // txtGIQtyEun
             // 
             this.txtGIQtyEun.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGIQtyEun.Location = new System.Drawing.Point(197, 131);
+            this.txtGIQtyEun.Location = new System.Drawing.Point(197, 105);
             this.txtGIQtyEun.Name = "txtGIQtyEun";
             this.txtGIQtyEun.ReadOnly = true;
             this.txtGIQtyEun.Size = new System.Drawing.Size(36, 23);
@@ -670,7 +650,7 @@
             // txtGIQtyAvbl
             // 
             this.txtGIQtyAvbl.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtGIQtyAvbl.Location = new System.Drawing.Point(104, 102);
+            this.txtGIQtyAvbl.Location = new System.Drawing.Point(104, 76);
             this.txtGIQtyAvbl.Name = "txtGIQtyAvbl";
             this.txtGIQtyAvbl.ReadOnly = true;
             this.txtGIQtyAvbl.Size = new System.Drawing.Size(89, 23);
@@ -680,14 +660,14 @@
             // lblGIQtyAvbl
             // 
             this.lblGIQtyAvbl.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.lblGIQtyAvbl.Location = new System.Drawing.Point(7, 106);
+            this.lblGIQtyAvbl.Location = new System.Drawing.Point(7, 80);
             this.lblGIQtyAvbl.Name = "lblGIQtyAvbl";
             this.lblGIQtyAvbl.Size = new System.Drawing.Size(104, 20);
             this.lblGIQtyAvbl.Text = "Qty Available:";
             // 
             // btnGIAddQty
             // 
-            this.btnGIAddQty.Location = new System.Drawing.Point(170, 131);
+            this.btnGIAddQty.Location = new System.Drawing.Point(170, 105);
             this.btnGIAddQty.Name = "btnGIAddQty";
             this.btnGIAddQty.Size = new System.Drawing.Size(23, 23);
             this.btnGIAddQty.TabIndex = 4;
@@ -696,7 +676,7 @@
             // 
             // btGIMinusQty
             // 
-            this.btGIMinusQty.Location = new System.Drawing.Point(104, 131);
+            this.btGIMinusQty.Location = new System.Drawing.Point(104, 105);
             this.btGIMinusQty.Name = "btGIMinusQty";
             this.btGIMinusQty.Size = new System.Drawing.Size(23, 23);
             this.btGIMinusQty.TabIndex = 2;
@@ -705,7 +685,7 @@
             // 
             // txtGIQty
             // 
-            this.txtGIQty.Location = new System.Drawing.Point(126, 131);
+            this.txtGIQty.Location = new System.Drawing.Point(126, 105);
             this.txtGIQty.MaxLength = 6;
             this.txtGIQty.Name = "txtGIQty";
             this.txtGIQty.Size = new System.Drawing.Size(44, 23);
@@ -715,7 +695,7 @@
             // lblGIQty
             // 
             this.lblGIQty.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.lblGIQty.Location = new System.Drawing.Point(7, 134);
+            this.lblGIQty.Location = new System.Drawing.Point(7, 108);
             this.lblGIQty.Name = "lblGIQty";
             this.lblGIQty.Size = new System.Drawing.Size(100, 20);
             this.lblGIQty.Text = "Quantity:";
@@ -743,9 +723,9 @@
             // dataGrdGI
             // 
             this.dataGrdGI.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.dataGrdGI.Location = new System.Drawing.Point(7, 160);
+            this.dataGrdGI.Location = new System.Drawing.Point(7, 134);
             this.dataGrdGI.Name = "dataGrdGI";
-            this.dataGrdGI.Size = new System.Drawing.Size(226, 82);
+            this.dataGrdGI.Size = new System.Drawing.Size(226, 108);
             this.dataGrdGI.TabIndex = 10;
             // 
             // txtGISAPNo
@@ -1280,8 +1260,6 @@
         private System.Windows.Forms.Label lblFGLocation;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.ComboBox cmbGRPurchaseOrder;
-        private System.Windows.Forms.Label lblGIPNo;
-        private System.Windows.Forms.ComboBox cmbGIPurchaseOrder;
     }
 }
 

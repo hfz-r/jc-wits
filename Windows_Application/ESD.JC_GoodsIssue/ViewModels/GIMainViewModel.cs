@@ -230,7 +230,7 @@ namespace ESD.JC_GoodsIssue.ViewModels
             var gi = e.Item as GITransaction;
             if (gi == null)
                 e.Accepted = false;
-            else if ((gi.GoodsReceive.Material.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) || 
+            else if ((gi.Material.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase) || 
                       gi.Text.StartsWith(FilterTextBox, StringComparison.OrdinalIgnoreCase)) != true)
                 e.Accepted = false;
         }
@@ -361,10 +361,10 @@ namespace ESD.JC_GoodsIssue.ViewModels
             {
                 exportObj.Add(new ExportCLassModel
                 {
-                    SAPNo = gr.GoodsReceive.Material,
+                    SAPNo = gr.Material,
                     Text = gr.Text,
                     Quantity = gr.Quantity,
-                    Eun = gr.GoodsReceive.Eun,
+                    Eun = gr.Eun,
                     TransferType = gr.TransferType.Contains("POST") ? "Transfer Posting" : "Transfer to Production",
                     ProductionNo = gr.ProductionNo,
                     LocationTo = (gr.Location1 != null) ? gr.Location1.LocationDesc : string.Empty,

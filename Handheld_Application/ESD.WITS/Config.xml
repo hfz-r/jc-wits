@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Configuration>
-  <SQLServerName>10.105.152.73,1438</SQLServerName> 
-  <!--To change the Server Name accordingly-->
+  <SQLServerName>10.105.152.73,1438</SQLServerName> To change the Server Name accordingly  
   <SQLDatabaseName>INVENTORY</SQLDatabaseName>
   <SQLCommandTimeOut>60</SQLCommandTimeOut>
   <SQLUserID>sa</SQLUserID>
-  <SQLPassword>Password1</SQLPassword>
+  <SQLPassword>Password1</SQLPassword>  
   <SQLConnectionTimeOut>60</SQLConnectionTimeOut>
 </Configuration>

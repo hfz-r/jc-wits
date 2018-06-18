@@ -48,7 +48,7 @@
                 </Grid.ColumnDefinitions>
 
                 <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
-                    <!--<Button ToolTipService.ToolTip="Click to delete selected item" Command="{Binding DeleteCommand}">
+                    <Button ToolTipService.ToolTip="Click to delete selected item" Command="{Binding DeleteCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
@@ -64,7 +64,7 @@
                             </Image>
                         </StackPanel>
                     </Button>
-                    <Separator/>-->
+                    <Separator/>
                     <Button ToolTipService.ToolTip="Click to export" Command="{Binding ExportCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
@@ -197,13 +197,12 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>-->
-                <DataGridTextColumn Header="SAP No." MinWidth="140" Width="Auto" Binding="{Binding GoodsReceive.Material}" CanUserSort="True" Foreground="Black"/>
-                <DataGridTextColumn Header="Purchase Order" MinWidth="140" Width="Auto" Binding="{Binding GoodsReceive.PurchaseOrder}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="SAP No." MinWidth="140" Width="Auto" Binding="{Binding Material}" CanUserSort="True" Foreground="Black"/>
                 <!--<DataGridTextColumn Header="Text" Width="*" MinWidth="250" Binding="{Binding Text}" Foreground="Black"/>-->
                 <DataGridTextColumn Header="Quantity" MinWidth="100" CanUserSort="True" Width="*" Binding="{Binding Quantity, StringFormat={}{0:G29}}" Foreground="Black"/>
-                <DataGridTextColumn Header="Eun" MinWidth="100" CanUserSort="True" Width="*" Binding="{Binding GoodsReceive.Eun}" Foreground="Black"/>
+                <DataGridTextColumn Header="Eun" MinWidth="100" CanUserSort="True" Width="*" Binding="{Binding Eun}" Foreground="Black"/>
                 <DataGridTextColumn Header="Transfer Type" MinWidth="140" CanUserSort="True"  Width="Auto" Binding="{Binding TransferType}" Foreground="Black"/>
-                <DataGridTextColumn Header="Production No." MinWidth="120" CanUserSort="True"  Width="Auto" Binding="{Binding ProductionNo}" Foreground="Black"/>
+                <!--<DataGridTextColumn Header="Production No." MinWidth="120" CanUserSort="True"  Width="Auto" Binding="{Binding ProductionNo}" Foreground="Black"/>-->
                 <DataGridTextColumn Header="Location To" MinWidth="100" Width="*" CanUserSort="True"  Binding="{Binding Location1.LocationDesc}" Foreground="Black"/>
                 <DataGridTextColumn Header="Location From" MinWidth="100" Width="*" CanUserSort="True"  Binding="{Binding Location.LocationDesc}" Foreground="Black"/>
                 <DataGridTextColumn Header="Issued By" MinWidth="150" Width="*" CanUserSort="True" Binding="{Binding CreatedBy}" Foreground="Black"/>
