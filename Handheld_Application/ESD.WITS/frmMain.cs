@@ -89,6 +89,7 @@ namespace ESD.WITS
         private int FGQtyBal = 0;
         private AHUFCU AHUFCURec = new AHUFCU();
         private bool IsAHUTxn = false;
+        string[] temp = null;
         #endregion
 
         #region Initialization
@@ -684,15 +685,6 @@ namespace ESD.WITS
             byte? isTxnCompleted = null;
             string qtyRcvd = string.Empty;
             string qtyOrd = string.Empty;
-            string[] temp = null;
-
-            if (!string.IsNullOrEmpty(txtGRSAPNo.Text))
-            {
-                temp = txtGRSAPNo.Text.Split(';');
-                txtGRSAPNo.Text = temp[0];
-            }
-
-            txtGRSAPNo.SelectAll();
 
             sSQL = "SELECT GR.[ID] ";
             sSQL += ", GR.[MaterialShortText]";
@@ -885,6 +877,15 @@ namespace ESD.WITS
             if (e != null && e.KeyCode == Keys.Enter)
             {
                 ResetNewRecord();
+
+                if (!string.IsNullOrEmpty(txtGRSAPNo.Text))
+                {
+                    temp = txtGRSAPNo.Text.Split(';');
+                    txtGRSAPNo.Text = temp[0];
+                }
+
+                txtGRSAPNo.SelectAll();
+
                 GetPurchaseOrder(cmbGRPurchaseOrder, txtGRSAPNo.Text, true);
             }
         }
