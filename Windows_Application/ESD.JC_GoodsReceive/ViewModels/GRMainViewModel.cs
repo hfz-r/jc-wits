@@ -29,7 +29,6 @@ using FileHelpers.Events;
 using System.Threading;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
-using System.Configuration;
 
 namespace ESD.JC_GoodsReceive.ViewModels
 {
@@ -83,16 +82,8 @@ namespace ESD.JC_GoodsReceive.ViewModels
             set
             {
                 SetProperty(ref _FilterTextBox, value);
-                if (string.IsNullOrEmpty(FilterTextBox))
-                {
-                    GoodReceives = new ListCollectionView(grCollection);
-                    CollectionViewSource.GetDefaultView(GoodReceives).Refresh();
-                }
                 if (GoodReceives != null)
-                {
-                    CollectionViewSource.GetDefaultView(GoodReceives).Filter = Filter;
                     CollectionViewSource.GetDefaultView(GoodReceives).Refresh();
-                }
             }
         }
 
@@ -185,7 +176,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
         private DelegateCommand<object> _ImportGRCommand;
         private DelegateCommand<object> _ExportGRCommand;
         private DelegateCommand<object> _PrintLblCommand;
-        private DelegateCommand<object> _DeleteCommand;
+        private DelegateCommand<object> _DeleteFGCommand;
         private DelegateCommand<object> _IsSelected;
         private DelegateCommand _checkedAllCommand;
         private DelegateCommand _unCheckedAllCommand;
@@ -207,7 +198,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             _ImportGRCommand = new DelegateCommand<object>(ImportGR, CanImport);
             _ExportGRCommand = new DelegateCommand<object>(ExportGR, CanExport);
             _PrintLblCommand = new DelegateCommand<object>(PrintLabel, CanDeletePrint);
-            _DeleteCommand = new DelegateCommand<object>(Delete, CanDeletePrint);
+            _DeleteFGCommand = new DelegateCommand<object>(Delete, CanDeletePrint);
             _IsSelected = new DelegateCommand<object>(CheckBoxIsSelected);
             _checkedAllCommand = new DelegateCommand(() =>
             {
@@ -238,9 +229,9 @@ namespace ESD.JC_GoodsReceive.ViewModels
         {
             get { return this._PrintLblCommand; }
         }
-        public ICommand DeleteCommand
+        public ICommand DeleteFGCommand
         {
-            get { return this._DeleteCommand; }
+            get { return this._DeleteFGCommand; }
         }
         public ICommand IsSelected
         {
@@ -369,7 +360,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             RaisePropertyChanged("GoodReceives");
 
             _PrintLblCommand.RaiseCanExecuteChanged();
-            _DeleteCommand.RaiseCanExecuteChanged();
+            _DeleteFGCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanImport(object ignored)
@@ -685,7 +676,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 {
                     if (gr.IsChecked == true)
                     {
-                        var obj = grServices.GetGRBySAPNo(gr.Material, gr.PurchaseOrder);
+                        var obj = grServices.GetGRBySAPNo(gr.Material);
                         {
                             if (obj != null)
                             {
@@ -731,7 +722,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
 
         private void PopulateRecords(ImportCLassModel rec, ObservableCollection<GoodsReceive> temp)
         {
-            if (grCollection.Any(sap => sap.Material == rec.Material && sap.PurchaseOrder == rec.PurchaseOrder) == false)
+            if (grCollection.Any(sap => sap.Material == rec.Material) == false)
             {
                 temp.Add(new GoodsReceive
                 {
@@ -838,8 +829,8 @@ namespace ESD.JC_GoodsReceive.ViewModels
                                 PostingDate = rec.PostingDate,
                                 PurchaseOrder = rec.PurchaseOrder,
                                 Vendor = rec.Vendor ?? string.Empty,
-                                DeliveryNote = item.DeliveryNote ?? string.Empty,
-                                BillOfLading = item.BillOfLading ?? string.Empty,
+                                DeliveryNote = rec.DeliveryNote ?? string.Empty,
+                                BillOfLading = rec.BillOfLading ?? string.Empty,
                                 HeaderText = rec.HeaderText ?? string.Empty,
                                 Material = rec.Material,
                                 MaterialShortText = rec.MaterialShortText,
@@ -953,7 +944,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                     
                     System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
                     pd.PrinterSettings = new PrinterSettings();
-                    pd.PrinterSettings.PrinterName = ConfigurationManager.AppSettings["GRPrinterName"];
+                    pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
 
                     try
                     {
@@ -1076,8 +1067,6 @@ namespace ESD.JC_GoodsReceive.ViewModels
             ObservableCollection<GoodsReceive> tempObj = new ObservableCollection<GoodsReceive>();
             if (tempCollection != null && tempCollection.Count() > 0)
                 tempObj = tempCollection;
-            else if (!string.IsNullOrEmpty(FilterTextBox) && GoodReceives != null)
-                tempObj = new ObservableCollection<GoodsReceive>(GoodReceives.Cast<GoodsReceive>());
             else
                 tempObj = grCollection;
 
@@ -1097,7 +1086,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
             }
 
             _PrintLblCommand.RaiseCanExecuteChanged();
-            _DeleteCommand.RaiseCanExecuteChanged();
+            _DeleteFGCommand.RaiseCanExecuteChanged();
 
             GoodReceives = new ListCollectionView(tempObj);
             GoodReceives.SortDescriptions.Add(new SortDescription("PurchaseOrder", ListSortDirection.Ascending));
@@ -1127,43 +1116,39 @@ namespace ESD.JC_GoodsReceive.ViewModels
                 if (msg.State == "Completed")
                 {
                     #region refresh grid
-                    
+
                     foreach (var obj in grCollection)
                     {
                         var gr = grServices.GetGR(obj.ID);
+                        obj.Ok = gr.Ok.GetValueOrDefault();
+                        obj.Quantity = gr.Quantity;
+                        obj.QtyReceived = gr.QtyReceived;
 
-                        if (gr != null)
+                        if (obj.QtyReceived == null)
+                            obj.Ok = false;
+                        else
                         {
-                            obj.Ok = gr.Ok.GetValueOrDefault();
-                            obj.Quantity = gr.Quantity;
-                            obj.QtyReceived = gr.QtyReceived;
+                            if (obj.QtyReceived == obj.Quantity)
+                                obj.Ok = true;
+                            else if (obj.QtyReceived < obj.Quantity)
+                                obj.Ok = null;
+                        }
 
-                            if (obj.QtyReceived == null)
-                                obj.Ok = false;
-                            else
+                        obj.Ok2 = obj.Ok;
+                        obj.Quantity2 = obj.Quantity;
+                        obj.QtyReceived2 = obj.QtyReceived;
+
+                        if (OkFilter.All(x => x.Item.BoolOk != gr.Ok))
+                        {
+                            OkFilter.Add(new CheckedListItem<OkCategory>
                             {
-                                if (obj.QtyReceived == obj.Quantity)
-                                    obj.Ok = true;
-                                else if (obj.QtyReceived < obj.Quantity)
-                                    obj.Ok = null;
-                            }
-
-                            obj.Ok2 = obj.Ok;
-                            obj.Quantity2 = obj.Quantity;
-                            obj.QtyReceived2 = obj.QtyReceived;
-
-                            if (OkFilter.All(x => x.Item.BoolOk != gr.Ok))
-                            {
-                                OkFilter.Add(new CheckedListItem<OkCategory>
+                                IsChecked = true,
+                                Item = new OkCategory
                                 {
-                                    IsChecked = true,
-                                    Item = new OkCategory
-                                    {
-                                        BoolOk = gr.Ok,
-                                        TextOk = gr.Ok == null ? " - Partial" : (gr.Ok.ToString() == "False") ? " - NOT OK" : " - OK"
-                                    }
-                                });
-                            }
+                                    BoolOk = gr.Ok,
+                                    TextOk = gr.Ok == null ? " - Partial" : (gr.Ok.ToString() == "False") ? " - NOT OK" : " - OK"
+                                }
+                            });
                         }
                     }
 

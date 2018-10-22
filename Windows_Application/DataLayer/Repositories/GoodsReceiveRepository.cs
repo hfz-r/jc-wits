@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System;
 
 namespace DataLayer.Repositories
 {
@@ -31,11 +30,11 @@ namespace DataLayer.Repositories
             }
         }
 
-        public GoodsReceive GetGRBySAPNo(string sap_no, string po)
+        public GoodsReceive GetGRBySAPNo(string sap_no)
         {
             using (var context = new InventoryContext())
             {
-                var gr = context.GoodsReceives.Where(x => x.Material == sap_no && x.PurchaseOrder == po).FirstOrDefault();
+                var gr = context.GoodsReceives.Where(x => x.Material == sap_no).FirstOrDefault();
                 if (gr != null)
                 {
                     context.Entry(gr).Collection(x => x.GRTransactions).Load();
@@ -80,12 +79,10 @@ namespace DataLayer.Repositories
             using (var context = new InventoryContext())
             {
                 var GRTxn = context.GRTransactions.Where(id => id.GRID == ID);
-                if (GRTxn.Any())
-                    context.GRTransactions.RemoveRange(GRTxn);
+                context.GRTransactions.RemoveRange(GRTxn);
 
                 var EUNTxn = context.EunKGs.Where(id => id.GRID == ID);
-                if (EUNTxn.Any())
-                    context.EunKGs.RemoveRange(EUNTxn);
+                context.EunKGs.RemoveRange(EUNTxn);
 
                 var GR = context.GoodsReceives.Where(id => id.ID == ID);
                 context.GoodsReceives.RemoveRange(GR);

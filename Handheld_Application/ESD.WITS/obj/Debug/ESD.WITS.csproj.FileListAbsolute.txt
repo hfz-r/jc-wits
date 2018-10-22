@@ -1,7 +1,6 @@
 C:\WITS\Handheld_Application\ESD.WITS\bin\Debug\Warehouse Inventory Tracking System.exe
 C:\WITS\Handheld_Application\ESD.WITS\bin\Debug\Warehouse Inventory Tracking System.pdb
 C:\WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Data.SqlClient.dll
-C:\WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Data.SqlServerCe.dll
 C:\WITS\Handheld_Application\ESD.WITS\obj\Debug\ResolveAssemblyReference.cache
 C:\WITS\Handheld_Application\ESD.WITS\obj\Debug\ESD.WITS.frmMain.resources
 C:\WITS\Handheld_Application\ESD.WITS\obj\Debug\ESD.WITS.Properties.Resources.resources
@@ -31,3 +30,7 @@ C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\obj\Debug\ESD.WI
 C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\obj\Debug\ESD.WITS.csproj.GenerateResource.Cache
 C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\obj\Debug\Warehouse Inventory Tracking System.exe
 C:\Users\yennyenn\Desktop\JC-WITS\Handheld_Application\ESD.WITS\obj\Debug\Warehouse Inventory Tracking System.pdb
+C:\WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Core.dll
+C:\WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Xml.Linq.dll
+C:\WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Core.xml
+C:\WITS\Handheld_Application\ESD.WITS\bin\Debug\System.Xml.Linq.xml

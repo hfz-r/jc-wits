@@ -1,4 +1,13 @@
-﻿using System.ComponentModel;
+﻿//namespace DataLayer
+//{
+//    public partial class FCU
+//    {
+//        public bool IsChecked { get; set; }
+//        public long IDSeq { get; set; }
+//    }
+//}
+
+using System.ComponentModel;
 
 namespace DataLayer
 {

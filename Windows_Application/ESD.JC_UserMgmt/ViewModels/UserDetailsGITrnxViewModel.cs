@@ -53,11 +53,11 @@ namespace ESD.JC_UserMgmt.ViewModels
                 giTrnxCollectionExt.Add(new GITransactionExt
                 {
                     ID = item.ID,
-                    SAPNo = item.Material,
+                    SAPNo = item.GoodsReceive.Material,
                     TransferType = item.TransferType,
-                    //QuantityOrdered = item.GoodsReceive.Quantity,
+                    QuantityOrdered = item.GoodsReceive.Quantity,
                     QuantityReceived = item.Quantity,
-                    //Ok = item.GoodsReceive.Ok
+                    Ok = item.GoodsReceive.Ok
                 });
             }
 

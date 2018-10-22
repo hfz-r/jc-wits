@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESD.WITS", "ESD.WITS\ESD.WITS.csproj", "{86D66C0C-0353-43D4-868E-3AD7E85D6380}"
 EndProject
-Project("{B900F1C2-3D47-4FEC-85B3-04AAF18C3634}") = "WITS Installer", "WITS Installer\WITS Installer.vddproj", "{E2A43431-1324-41E7-8115-CB020AFD8DA4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,8 +15,6 @@ Global
 		{86D66C0C-0353-43D4-868E-3AD7E85D6380}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86D66C0C-0353-43D4-868E-3AD7E85D6380}.Release|Any CPU.Build.0 = Release|Any CPU
 		{86D66C0C-0353-43D4-868E-3AD7E85D6380}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{E2A43431-1324-41E7-8115-CB020AFD8DA4}.Debug|Any CPU.ActiveCfg = Debug
-		{E2A43431-1324-41E7-8115-CB020AFD8DA4}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

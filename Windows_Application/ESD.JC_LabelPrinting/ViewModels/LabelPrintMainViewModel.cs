@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Configuration;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
@@ -232,7 +231,7 @@ namespace ESD.JC_LabelPrinting.ViewModels
                 {
                     System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
                     pd.PrinterSettings = new PrinterSettings();
-                    pd.PrinterSettings.PrinterName = ConfigurationManager.AppSettings["GRPrinterName"];
+                    pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
 
                     try
                     {

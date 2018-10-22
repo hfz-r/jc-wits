@@ -4,7 +4,7 @@
 library
 C#
 .cs
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\
+C:\WITS\Windows_Application\ESD.JC_ReasonMgmt\obj\Debug\
 ESD.JC_ReasonMgmt
 none
 false
@@ -12,8 +12,8 @@ DEBUG;TRACE
 
 291955410
 
-17-1887537423
-781092557435
+17-787097506
+78702429920
 Views\ReasonMainView.xaml;Views\ReasonMgmtNavigationItemView.xaml;
 
 False

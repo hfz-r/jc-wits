@@ -4,7 +4,7 @@
   <description asmv2:iconFile="Resources\WITS_Logo.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="ESD.JC_Main" version="1.0.0.1" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="ESD.JC_Main" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
     <commandLine file="ESD.JC_Main.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -50,7 +50,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>eaHhI0E0iTr9yPrCYnBz1uGNvLj9HJ2eKLzXa4DzgGE=</dsig:DigestValue>
+        <dsig:DigestValue>T89ILC/AsUk305RyZUfvBlQE0xzP/hjM9Fd7+YAlaoM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -86,43 +86,43 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>xRMFVGnDBYxe10qRf0CyEnBd+F+0bYTfDAgkqGEjTIk=</dsig:DigestValue>
+        <dsig:DigestValue>56aqGp+QfI+tj5/2GmuptDoYZMWaPupjgEIaglnFeNY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_FinishGoods.dll" size="512512">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_FinishGoods.dll" size="504320">
       <assemblyIdentity name="ESD.JC_FinishGoods" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>T9+F3vL3Af3X/DrdUnVhrdu89qv8R41GrS9fv+B9wj0=</dsig:DigestValue>
+        <dsig:DigestValue>LMyDiG/83d7kT85dLm31VYq8aHV8KtuxPWT7tuUGT1g=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_GoodsIssue.dll" size="67072">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_GoodsIssue.dll" size="61440">
       <assemblyIdentity name="ESD.JC_GoodsIssue" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>sCHtVVlauVRmsHHpk5Ca8gkHrRwjdns/5fPmQ76YVXQ=</dsig:DigestValue>
+        <dsig:DigestValue>/npmDCEq5uNPeMDfYC5jwb0n8Dg4GZYhXf7jzwLe4G8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_GoodsReceive.dll" size="189952">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_GoodsReceive.dll" size="191488">
       <assemblyIdentity name="ESD.JC_GoodsReceive" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>KQZnDRqTlTpqiIrujc7AOlQw09P79Q6OdmPbbJot8Uk=</dsig:DigestValue>
+        <dsig:DigestValue>n+snEiGGlBy5m+eBLHELK9JjEIOlG6DZ0B5JcAFcn0k=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -134,7 +134,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>4YgC7/U3ACK5njaNMZ+e1yKDxq2kKAOwcE9YMzQMC+8=</dsig:DigestValue>
+        <dsig:DigestValue>mqOi4NupcdKQaL1FXCpmqFe52jHJQln+7SnPuySKqAA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -146,7 +146,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>4YEJtZqt8uQMVG7KploetiYg9b0ZGVku+US/lnAIoB0=</dsig:DigestValue>
+        <dsig:DigestValue>EqqT9xNXwQoEGTcmfLQktLxC6Me10RW4W2I0Da6OhIg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -158,19 +158,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>wUicpCpFkTbC9GkYKUaKG1M120JrIPj1JDzJCnK0WjU=</dsig:DigestValue>
+        <dsig:DigestValue>xTWGevsRNARnEmjGITgxfPM6XQMPm+xNR57HTE1kznQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_Main.exe" size="1101824">
-      <assemblyIdentity name="ESD.JC_Main" version="1.0.0.1" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESD.JC_Main.exe" size="1102784">
+      <assemblyIdentity name="ESD.JC_Main" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>XoGdHH0CiXsVOCXD2F0wSjpYiziG2vaG9Mrg1lninXw=</dsig:DigestValue>
+        <dsig:DigestValue>+yiApiyS62OwLJY5a7J9uVNMm/nZw81YTH7SlJexh4s=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -182,7 +182,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>sNWpl6vYr66/815BKzzVw/qUd0yTmC3qRf44CyGiZtE=</dsig:DigestValue>
+        <dsig:DigestValue>3tWnw5Odbf0u8wGlzFB+1AjNQUNBvO6sB2GN2qdddcs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -194,7 +194,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>QvOtcio1UYP1l3fr+AYm3dRTWLicTOI/3y/VRTzig44=</dsig:DigestValue>
+        <dsig:DigestValue>CVfZSNa9yhEqeUCOx2G05jJo3/bdYmMosqA1a7xbgCc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -206,7 +206,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>dg4pw936QN81CGmd1TdtUPaBn7DPtBYdEf5bJB2Zs/U=</dsig:DigestValue>
+        <dsig:DigestValue>b4RDGJBHyojEa0Md356ylDw4coxaTnokSNbExSRlR10=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -662,29 +662,29 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>jumSpEQO8lQX4UVMeSvj+4Cxr0w2WHcwGBC/5gFCr8A=</dsig:DigestValue>
+        <dsig:DigestValue>QWh6IojxXUeYNDPFmhNaWozDUdLX71jTJAn8iBWoVUE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ToggleSwitch.dll" size="44032">
-      <assemblyIdentity name="ToggleSwitch" version="1.1.2.0" publicKeyToken="8637099990568F75" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ToggleSwitch.dll" size="45568">
+      <assemblyIdentity name="ToggleSwitch" version="1.1.1.0" publicKeyToken="8637099990568F75" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>TFEdpf4TiWzq23Meee9+cfdJNApIBsgUR/fwzc3QLzY=</dsig:DigestValue>
+        <dsig:DigestValue>6NW7q9JVFUe9zwbawwtMkpem929VuiuPOCpfir9q3kM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="ESD.JC_Main.exe.config" size="1566">
+  <file name="ESD.JC_Main.exe.config" size="2030">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>zfp0PUtx1BrvbSn1m8quFcuQFeRbfPeFaqsRKHZRhtA=</dsig:DigestValue>
+      <dsig:DigestValue>8lZnTKEDMUFrkTjnEYzTueq5F3plATPMGMyUPRYz03c=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Resources\WITS_Logo.ico" size="59899">

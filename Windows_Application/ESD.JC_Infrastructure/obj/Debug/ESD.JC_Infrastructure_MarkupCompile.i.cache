@@ -4,7 +4,7 @@
 library
 C#
 .cs
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\
+C:\WITS\Windows_Application\ESD.JC_Infrastructure\obj\Debug\
 ESD.JC_Infrastructure
 none
 false
@@ -12,9 +12,9 @@ DEBUG;TRACE
 
 3-1626318504
 
-431128539438
-69904117710
+43-2065987941
+69591124596
 Controls\ProgressDialog.xaml;Controls\SidePanelTab.xaml;Controls\Slider.xaml;
 
-False
+True
 

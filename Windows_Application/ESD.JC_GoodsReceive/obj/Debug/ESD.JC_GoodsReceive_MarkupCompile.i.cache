@@ -4,7 +4,7 @@
 library
 C#
 .cs
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\
+C:\WITS\Windows_Application\ESD.JC_GoodsReceive\obj\Debug\
 ESD.JC_GoodsReceive
 none
 false
@@ -12,9 +12,9 @@ DEBUG;TRACE
 
 6-51183288
 
-38-377180310
-91519704652
+399110046
+90-147032486
 Views\EunKGDetailsView.xaml;Views\GRDetailsSummaryView.xaml;Views\GRDetailsTransactionView.xaml;Views\GRDetailsView.xaml;Views\GRMainView.xaml;Views\GRNavigationItemView.xaml;
 
-False
+True
 

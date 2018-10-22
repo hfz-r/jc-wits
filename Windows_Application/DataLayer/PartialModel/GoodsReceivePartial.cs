@@ -1,4 +1,12 @@
-﻿using System.ComponentModel;
+﻿//namespace DataLayer
+//{
+//    public partial class GoodsReceive
+//    {
+//        public bool IsChecked { get; set; }
+//    }
+//}
+
+using System.ComponentModel;
 
 namespace DataLayer
 {

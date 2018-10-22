@@ -11,7 +11,7 @@ namespace DataLayer.Repositories
             using (var context = new InventoryContext())
             {
                 if (eagerLoading)
-                    return context.GITransactions.Include(c => c.Location).Include(c => c.Location1).ToList();
+                    return context.GITransactions.Include(g => g.GoodsReceive).Include(c => c.Location).Include(c => c.Location1).ToList();
                 else
                     return context.GITransactions.ToList();
             }
@@ -23,18 +23,6 @@ namespace DataLayer.Repositories
             {
                 var getAll = GetAll(true);
                 return getAll.Where(x => x.ID == ID);
-            }
-        }
-
-        public void Delete(long ID)
-        {
-            using (var context = new InventoryContext())
-            {
-                var GITxn = context.GITransactions.Where(x => x.ID == ID);
-                if (GITxn.Any())
-                    context.GITransactions.RemoveRange(GITxn);
-
-                context.SaveChanges();
             }
         }
     }

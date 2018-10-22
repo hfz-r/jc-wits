@@ -22,7 +22,6 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Reflection;
 using TDSFramework;
-using System.Configuration;
 
 namespace ESD.JC_GoodsReceive.ViewModels
 {
@@ -515,7 +514,7 @@ namespace ESD.JC_GoodsReceive.ViewModels
                     {
                         System.Windows.Forms.PrintDialog pd = new System.Windows.Forms.PrintDialog();
                         pd.PrinterSettings = new PrinterSettings();
-                        pd.PrinterSettings.PrinterName = ConfigurationManager.AppSettings["GRPrinterName"];
+                        pd.PrinterSettings.PrinterName = Properties.Settings.Default.PrinterPort;
 
                         try
                         {

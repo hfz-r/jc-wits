@@ -5,10 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ESD.JC_GoodsReceive.Views"
              mc:Ignorable="d" 
-            xmlns:inf="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:inf="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
+             xmlns:conv="clr-namespace:ESD.JC_GoodsReceive.Converters"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <inf:UnitKGsConverter x:Key="UnitKGs"/>
+        <conv:QuantityFormattingConverter x:Key="QuantityFormattingConverter"/>
         
         <DataTemplate x:Key="GRDetailTemplate">
             <Grid>
@@ -30,12 +33,14 @@
                 <TextBlock FontWeight="Bold" Grid.Row="0" Grid.Column="1">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Text" Value="{Binding Quantity, StringFormat={}{0:G29}}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Eun, Converter={StaticResource UnitKGs}}" Value="true">
-                                    <Setter Property="Text" Value="{Binding Quantity, StringFormat=N2}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
+                            <Setter Property="Text">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource QuantityFormattingConverter}">
+                                        <Binding Path="Eun"/>
+                                        <Binding Path="Quantity"/>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
@@ -44,12 +49,14 @@
                 <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="1">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Text" Value="{Binding QtyReceived, FallbackValue=0, TargetNullValue=0, StringFormat={}{0:G29}}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Eun, Converter={StaticResource UnitKGs}}" Value="true">
-                                    <Setter Property="Text" Value="{Binding  QtyReceived, StringFormat=N2}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
+                            <Setter Property="Text">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource QuantityFormattingConverter}">
+                                        <Binding Path="Eun"/>
+                                        <Binding Path="QtyReceived" FallbackValue="{x:Static sys:Decimal.Zero}" TargetNullValue="{x:Static sys:Decimal.Zero}"/>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
@@ -58,12 +65,14 @@
                 <TextBlock FontWeight="Bold" Grid.Row="2" Grid.Column="1">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Text" Value="{Binding DataContext.RemainingQty, StringFormat={}{0:G29}, ElementName=LayoutRoot}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Eun, Converter={StaticResource UnitKGs}}" Value="true">
-                                    <Setter Property="Text" Value="{Binding DataContext.RemainingQty, ElementName=LayoutRoot, StringFormat=N2}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
+                            <Setter Property="Text">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource QuantityFormattingConverter}">
+                                        <Binding Path="Eun"/>
+                                        <Binding Path="DataContext.RemainingQty" ElementName="LayoutRoot"/>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>

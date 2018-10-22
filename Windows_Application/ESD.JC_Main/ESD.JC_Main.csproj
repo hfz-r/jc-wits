@@ -63,7 +63,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\WITS_Logo.ico</ApplicationIcon>
@@ -129,9 +129,8 @@
     <Reference Include="TDSFramework">
       <HintPath>..\packages\TDSFramework.dll</HintPath>
     </Reference>
-    <Reference Include="ToggleSwitch, Version=1.1.2.0, Culture=neutral, PublicKeyToken=8637099990568f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\ToggleSwitch.1.1.2\lib\net40-client\ToggleSwitch.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="ToggleSwitch">
+      <HintPath>..\packages\ToggleSwitch.1.1.1\lib\net40-client\ToggleSwitch.dll</HintPath>
     </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
@@ -179,10 +178,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="..\App.config">
-      <Link>App.config</Link>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="ESD.JC_Main_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -191,6 +186,11 @@
       <SubType>Designer</SubType>
     </None>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Styles.xaml">

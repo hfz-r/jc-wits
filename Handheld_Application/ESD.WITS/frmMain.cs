@@ -75,7 +75,7 @@ namespace ESD.WITS
         private string gStrDBName = string.Empty;
         private string gStrSQLUser = string.Empty;
         private string gStrSQLPwd = string.Empty;
-        private string connectionString = "Data Source=10.105.152.73,1438;Initial Catalog=INVENTORY;Trusted_Connection=Yes;User ID=sa;Password=Password1;Persist Security Info=False;Integrated Security=False;";
+        private string connectionString = "Data Source=ESD-HAFIZ;Initial Catalog=ESD_WITS;Trusted_Connection=Yes;User ID=sa;Password=p@ssw0rd;Persist Security Info=False;Integrated Security=False;";
         private int GRID = 0;
         private string Material = string.Empty;
         private bool isPartialTxn = false;
@@ -711,15 +711,17 @@ namespace ESD.WITS
                         GRID = Convert.ToInt32(reader[0]);
                         txtGRMSDesc.Text = reader[1].ToString();
                         isTxnCompleted = Convert.ToByte(reader[2]); //var
+                        //getting eun
                         txtGREun.Text = reader[4].ToString();
-                        qtyOrd = reader[3].ToString() == "0.00" ? "0" : reader[3].ToString();
                         txtGROrderedEun.Text = reader[4].ToString();
-                        txtGRQtyOrdered.Text = txtGROrderedEun.Text != "KG" ?
-                           (Convert.ToInt64(Math.Floor(Convert.ToDouble(qtyOrd)))).ToString() : qtyOrd.ToString();
-                        txtGRRcvdEun.Text = txtGROrderedEun.Text;
+                        txtGRRcvdEun.Text = reader[4].ToString();
+                        //getting quantity - start
+                        qtyOrd = reader[3].ToString() == "0.00" ? "0" : reader[3].ToString();
+                        txtGRQtyOrdered.Text = FormatQuantity(txtGROrderedEun.Text, qtyOrd);
+
                         qtyRcvd = reader[5].ToString() == "0.00" ? "0" : reader[5].ToString();
-                        txtGRQtyRcvd.Text = txtGRRcvdEun.Text != "KG" ?
-                            (Convert.ToInt64(Math.Floor(Convert.ToDouble(qtyRcvd)))).ToString() : qtyRcvd.ToString();
+                        txtGRQtyRcvd.Text = FormatQuantity(txtGRRcvdEun.Text, qtyRcvd);
+                        //getting quantity - end
                         txtGRDelNote.Text = string.Empty;
                         txtGRBillLading.Text = string.Empty;
                         dtPickerGRPostingDate.Text = reader[6].ToString();
@@ -810,6 +812,23 @@ namespace ESD.WITS
         }
 
         /// <summary>
+        /// Format quantity based on given unit.
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <param name="quantity"></param>
+        /// <returns>formatted quantity</returns>
+        private string FormatQuantity(string unit, string quantity)
+        {
+            object qty = Convert.ToDecimal(quantity);
+            if (unit == "KG")
+                qty = string.Format("{0:N2}", Convert.ToDecimal(quantity));
+            else if (unit == "M2" || unit == "M3")
+                qty = string.Format("{0:N3}", Convert.ToDecimal(quantity));
+
+            return string.Format("{0:G29}", qty);
+        }
+
+        /// <summary>
         /// Reset label and textbox
         /// </summary>
         private void ResetNewRecord()
@@ -874,7 +893,9 @@ namespace ESD.WITS
         /// <param name="e"></param>
         private void txtSAPNo_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e != null && e.KeyCode == Keys.Enter)
+            //CHANGE THIS BACK!
+            //if (e != null && e.KeyCode == Keys.Enter)
+            if (e != null && e.KeyCode == Keys.Escape)
             {
                 ResetNewRecord();
 
@@ -956,6 +977,15 @@ namespace ESD.WITS
                     txtGRQty.Text = decreasedVal.ToString();
                 }
             }
+            else if (txtGREun.Text == "M2" || txtGREun.Text == "M3")
+            {
+                double decreasedVal = double.Parse(txtGRQty.Text) - 0.001;
+
+                if (decreasedVal >= 0)
+                {
+                    txtGRQty.Text = decreasedVal.ToString();
+                }
+            }
             else
             {
                 int decreasedVal = int.Parse(txtGRQty.Text) - 1;
@@ -981,6 +1011,22 @@ namespace ESD.WITS
             if (txtGREun.Text == "KG")
             {
                 double increasedVal = double.Parse(txtGRQty.Text) + 0.01;
+                if (isPartialTxn && Convert.ToDouble(txtGRQtyRcvd.Text) < Convert.ToDouble(txtGRQtyOrdered.Text))
+                {
+                    double remaining = Convert.ToDouble(txtGRQtyOrdered.Text) - Convert.ToDouble(txtGRQtyRcvd.Text);
+                    if (increasedVal <= remaining)
+                    {
+                        txtGRQty.Text = increasedVal.ToString();
+                    }
+                }
+                else if (increasedVal <= Convert.ToDouble(txtGRQtyOrdered.Text))
+                {
+                    txtGRQty.Text = increasedVal.ToString();
+                }
+            }
+            else if (txtGREun.Text == "M2" || txtGREun.Text == "M3")
+            {
+                double increasedVal = double.Parse(txtGRQty.Text) + 0.001;
                 if (isPartialTxn && Convert.ToDouble(txtGRQtyRcvd.Text) < Convert.ToDouble(txtGRQtyOrdered.Text))
                 {
                     double remaining = Convert.ToDouble(txtGRQtyOrdered.Text) - Convert.ToDouble(txtGRQtyRcvd.Text);

@@ -4,7 +4,7 @@
 library
 C#
 .cs
-C:\Users\yennyenn\Desktop\JC-WITS\Windows_Application\ESD.JC_UserMgmt\obj\Debug\
+C:\WITS\Windows_Application\ESD.JC_UserMgmt\obj\Debug\
 ESD.JC_UserMgmt
 none
 false
@@ -13,7 +13,7 @@ DEBUG;TRACE
 61667054602
 
 29-1963130116
-79-864879451
+79-2126811328
 Views\UserDetailsGITrnxView.xaml;Views\UserDetailsGRTrnxView.xaml;Views\UserDetailsView.xaml;Views\UserMainView.xaml;Views\UserMgmtNavigationItemView.xaml;Views\UserOperationView.xaml;
 
 False

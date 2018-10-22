@@ -6,8 +6,7 @@ namespace ESD.JC_GoodsIssue.Services
     public interface IGIServices
     {
         IEnumerable<GITransaction> GetAll(bool eagerLoading);
-        //GITransaction GetGoodsIssue(long ID);
-        GITransaction GetGI(string Material);
-        bool Delete(string Material);
+        GITransaction GetGoodsIssue(long ID);
+        GITransaction GetGI(long ID);
     }
 }

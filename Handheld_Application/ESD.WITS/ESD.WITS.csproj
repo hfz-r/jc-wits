@@ -95,7 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.xml" />
-    <Content Include="dbnetlib.dll" />
     <Content Include="WITS_Logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />

@@ -8,12 +8,14 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:inf="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
+             xmlns:conv="clr-namespace:ESD.JC_GoodsReceive.Converters"
              d:DesignHeight="600" d:DesignWidth="400">
     <UserControl.Resources>
         <inf:UnitKGsConverter x:Key="UnitKGs"/>
         <inf:BrushColorConverter x:Key="BooleanToBrush"/>
         <inf:TooltipsConverter x:Key="TooltipsToString"/>
-
+        <conv:QuantityFormattingConverter x:Key="QuantityFormattingConverter"/>
+        
         <Style TargetType="Button" x:Key="FlatButtonStyle">
             <Setter Property="Background" Value="{Binding Path=Ok, Converter={StaticResource BooleanToBrush}, Mode=OneWay}"/>
             <Setter Property="Foreground" Value="Transparent"/>
@@ -116,12 +118,14 @@
                 <TextBlock Grid.Row="8" Grid.Column="1" AutomationProperties.AutomationId="QuantityData">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Text" Value="{Binding Quantity, StringFormat={}{0:G29}}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Eun, Converter={StaticResource UnitKGs}}" Value="true">
-                                    <Setter Property="Text" Value="{Binding Quantity, StringFormat=N2}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
+                            <Setter Property="Text">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource QuantityFormattingConverter}">
+                                        <Binding Path="Eun"/>
+                                        <Binding Path="Quantity"/>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>

@@ -7,12 +7,10 @@
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
             xmlns:wpf="clr-namespace:Prism.Interactivity;assembly=Prism.Wpf"
-            xmlns:conv="clr-namespace:ESD.JC_GoodsReceive.Converters;assembly=ESD.JC_GoodsReceive"
             xmlns:prism="http://prismlibrary.com/"
             xmlns:infrastructure="clr-namespace:ESD.JC_Infrastructure;assembly=ESD.JC_Infrastructure"
             d:DesignWidth="800" d:DesignHeight="600">
     <UserControl.Resources>
-        <conv:CollectionToBooleanConverter x:Key="CollectionToBooleanConverter"/>
         <infrastructure:ObservableCommand x:Key="OpenGIDetailsCommand" Value="{Binding OpenGIDetailsCommand}"/>
         <CollectionViewSource x:Key="TrnxEntries" Source="{Binding GoodsIssues}">
             <CollectionViewSource.GroupDescriptions>
@@ -48,23 +46,6 @@
                 </Grid.ColumnDefinitions>
 
                 <ToolBar Background="Transparent" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="0, 5, 0, 5" Loaded="ToolBar_Loaded">
-                    <Button ToolTipService.ToolTip="Click to delete selected item" Command="{Binding DeleteCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <Image RenderOptions.BitmapScalingMode="HighQuality" 
-                                   Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
-                                <Image.Style>
-                                    <Style TargetType="Image">
-                                        <Style.Triggers>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="Opacity" Value="0.5" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
-                        </StackPanel>
-                    </Button>
-                    <Separator/>
                     <Button ToolTipService.ToolTip="Click to export" Command="{Binding ExportCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
@@ -161,30 +142,6 @@
                 </GroupStyle>
             </DataGrid.GroupStyle>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Width="Auto">
-                <DataGridTemplateColumn.Header>
-                    <CheckBox ToolTipService.ToolTip="Check All" 
-                                IsThreeState="True"
-                                IsChecked="{Binding DataContext.GoodsReceive, ElementName=LayoutRoot, Converter={StaticResource CollectionToBooleanConverter}, Mode=OneWay}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Checked" >
-                                <wpf:InvokeCommandAction Command="{Binding DataContext.CheckedAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="Unchecked" >
-                                <wpf:InvokeCommandAction Command="{Binding DataContext.UnCheckedAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </CheckBox>
-                    </DataGridTemplateColumn.Header>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox HorizontalAlignment="Center" 
-                                    IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" 
-					                Command="{Binding DataContext.IsSelected, ElementName=LayoutRoot}" 
-					                CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
                 <!--<DataGridTemplateColumn Header="SAP No." SortMemberPath="GoodsReceive.Material" Width="Auto" MinWidth="200">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -197,12 +154,12 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>-->
-                <DataGridTextColumn Header="SAP No." MinWidth="140" Width="Auto" Binding="{Binding Material}" CanUserSort="True" Foreground="Black"/>
+                <DataGridTextColumn Header="SAP No." MinWidth="140" Width="Auto" Binding="{Binding GoodsReceive.Material}" CanUserSort="True" Foreground="Black"/>
                 <!--<DataGridTextColumn Header="Text" Width="*" MinWidth="250" Binding="{Binding Text}" Foreground="Black"/>-->
                 <DataGridTextColumn Header="Quantity" MinWidth="100" CanUserSort="True" Width="*" Binding="{Binding Quantity, StringFormat={}{0:G29}}" Foreground="Black"/>
-                <DataGridTextColumn Header="Eun" MinWidth="100" CanUserSort="True" Width="*" Binding="{Binding Eun}" Foreground="Black"/>
+                <DataGridTextColumn Header="Eun" MinWidth="100" CanUserSort="True" Width="*" Binding="{Binding GoodsReceive.Eun}" Foreground="Black"/>
                 <DataGridTextColumn Header="Transfer Type" MinWidth="140" CanUserSort="True"  Width="Auto" Binding="{Binding TransferType}" Foreground="Black"/>
-                <!--<DataGridTextColumn Header="Production No." MinWidth="120" CanUserSort="True"  Width="Auto" Binding="{Binding ProductionNo}" Foreground="Black"/>-->
+                <DataGridTextColumn Header="Production No." MinWidth="120" CanUserSort="True"  Width="Auto" Binding="{Binding ProductionNo}" Foreground="Black"/>
                 <DataGridTextColumn Header="Location To" MinWidth="100" Width="*" CanUserSort="True"  Binding="{Binding Location1.LocationDesc}" Foreground="Black"/>
                 <DataGridTextColumn Header="Location From" MinWidth="100" Width="*" CanUserSort="True"  Binding="{Binding Location.LocationDesc}" Foreground="Black"/>
                 <DataGridTextColumn Header="Issued By" MinWidth="150" Width="*" CanUserSort="True" Binding="{Binding CreatedBy}" Foreground="Black"/>

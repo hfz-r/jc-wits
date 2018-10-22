@@ -16,8 +16,10 @@
         <infrastructure:BrushColorConverter x:Key="BooleanToBrushConverter"/>
         <infrastructure:OKcolumnColorConverter x:Key="ColumnColorConverter"/>
         <infrastructure:TooltipsConverter x:Key="TooltipsToString"/>
+        <infrastructure:UnitKGsConverter x:Key="UnitKGs"/>
         <infrastructure:ObservableCommand x:Key="OpenGRDetailsCommand" Value="{Binding OpenGRDetailsCommand}"/>
         <conv:CollectionToBooleanConverter x:Key="CollectionToBooleanConverter"/>
+        <conv:QuantityFormattingConverter x:Key="QuantityFormattingConverter"/>
 
         <Style TargetType="Button" x:Key="OKColumnFlatButtonStyle">
             <Setter Property="Background">
@@ -38,6 +40,17 @@
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type TextBlock}" x:Key="FormattedQuantity">
+            <Setter Property="Text">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource QuantityFormattingConverter}">
+                        <Binding Path="Eun"/>
+                        <Binding Path="Quantity"/>
+                    </MultiBinding>
                 </Setter.Value>
             </Setter>
         </Style>
@@ -99,8 +112,7 @@
 
                         <TextBlock Text="Qty:" FontWeight="Bold"
                            Grid.Row="6" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="QtyLbl"/>
-                        <TextBlock Text="{Binding Quantity, StringFormat={}{0:G29}}"                           
-                           Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="QtyData"/>
+                        <TextBlock Grid.Row="6" Grid.Column="1" AutomationProperties.AutomationId="QtyData" Style="{StaticResource FormattedQuantity}"/>
 
                         <TextBlock Text="Bun:" FontWeight="Bold"
                            Grid.Row="7" Grid.Column="0" Margin="5,0,5,0" AutomationProperties.AutomationId="EunLbl"/>
@@ -153,7 +165,7 @@
                             <TextBlock Grid.Column="0" Text="BIN:" FontWeight="Bold" HorizontalAlignment="Right" />
                             <TextBlock Grid.Column="1" Text="{Binding StorageBin}" FontWeight="Bold" HorizontalAlignment="Left" />
                             <TextBlock Grid.Column="3" Text="QTY:" FontWeight="Bold" HorizontalAlignment="Right" />
-                            <TextBlock Grid.Column="4" Text="{Binding Quantity, StringFormat={}{0:G29}}" FontWeight="Bold" HorizontalAlignment="Left" />
+                            <TextBlock Grid.Column="4" FontWeight="Bold" HorizontalAlignment="Left" Style="{StaticResource FormattedQuantity}"/>
                             <TextBlock Grid.Column="5" Text="{Binding Eun}" FontWeight="Bold" HorizontalAlignment="Left" />
                         </Grid>
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding PurchaseOrder}" FontWeight="Bold" VerticalAlignment="Center" AutomationProperties.AutomationId="PONoData"/>
@@ -223,7 +235,7 @@
                         </StackPanel>
                     </Button>
                     <Separator/>
-                    <Button ToolTipService.ToolTip="Click to delete selected item" Command="{Binding DeleteCommand}">
+                    <Button ToolTipService.ToolTip="Click to delete selected item" Command="{Binding DeleteFGCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" 
                                    Source="/Resources/btn_delete.png" Height="40" Width="40" Margin="4">
@@ -412,7 +424,7 @@
                         </StackPanel>
                     </DataGridTextColumn.Header>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Quantity" Width="Auto" Binding="{Binding Quantity, StringFormat={}{0:G29}}" Foreground="Black"/>
+                <DataGridTextColumn Header="Quantity" Width="Auto" Foreground="Black" ElementStyle="{StaticResource FormattedQuantity}"/>
                 <DataGridTextColumn Header="Eun" Width="Auto" Binding="{Binding Eun}" Foreground="Black"/>
                 <DataGridTextColumn Header="Mvmt Type" Width="Auto" Binding="{Binding MvmtType}" Foreground="Black"/>
                 <DataGridTextColumn Header="Storage Loc" Width="Auto" Binding="{Binding StorageLoc}" Foreground="Black"/>

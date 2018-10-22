@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="PrintCount" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1</Value>
+      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="PrinterPort" Type="System.String" Scope="User">
-      <Value Profile="(Default)">TEC B-SA4T (300 dpi)</Value>
+      <Value Profile="(Default)">TEC B-SX4T (203 dpi)</Value>
     </Setting>
   </Settings>
 </SettingsFile>

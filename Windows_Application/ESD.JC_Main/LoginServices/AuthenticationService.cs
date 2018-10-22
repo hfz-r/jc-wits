@@ -23,7 +23,15 @@ namespace ESD.JC_Main.LoginServices
         {
             var userData = userRepository.Login(username, HashConverter.CalculateHash(clearTextPassword, username));
             if (userData == null)
-                throw new UnauthorizedAccessException("Access denied. Please provide some valid credentials.");            
+                throw new UnauthorizedAccessException("Access denied. Please provide some valid credentials.");
+
+            //#region Handheld != Access Denied
+            //if (userData.RoleID.HasValue && userData.Role.RoleCode != "ADMINISTRATOR")
+            //{
+            //    if (DisableAccessForHandheldUser(userData.RoleID.Value))
+            //        throw new UnauthorizedAccessException("Access denied. This role was not authorized to access the system.");
+            //}
+            //#endregion Handheld User != Access Denied
 
             CustomPrincipal customPrincipal = Thread.CurrentPrincipal as CustomPrincipal;
             if (customPrincipal == null)

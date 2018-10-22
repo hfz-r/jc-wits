@@ -70,9 +70,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Transaction Time" Width="Auto" MinWidth="200" Binding="{Binding CreatedOn, StringFormat=hh\\:mm\\:ss tt}" CanUserSort="True"/>
                     <DataGridTextColumn Header="Quantity Received" Width="Auto" MinWidth="20" Binding="{Binding Quantity, StringFormat={}{0:G29}}" CanUserSort="True"/>
-                    <DataGridTextColumn Header="Reason" Width="Auto" MinWidth="100" Binding="{Binding Reason.ReasonDesc}" />
-                    <DataGridTextColumn Header="Delivery Note" Width="Auto" MinWidth="150" Binding="{Binding DeliveryNote}" />
-                    <DataGridTextColumn Header="Bill Of Lading" Width="Auto" MinWidth="150" Binding="{Binding BillOfLading}" />
+                    <DataGridTextColumn Header="Reason" Width="Auto" MinWidth="400" Binding="{Binding Reason.ReasonDesc}" />
                     <DataGridTextColumn Header="Received By" Width="Auto" MinWidth="300" Binding="{Binding CreatedBy}" CanUserSort="True"/>
                 </DataGrid.Columns>
             </DataGrid>
